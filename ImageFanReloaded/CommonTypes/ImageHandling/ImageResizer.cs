@@ -7,15 +7,20 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
     public class ImageResizer
         : IImageResizer
     {
-        public static readonly ImageResizer Instance = new ImageResizer();
+        public static readonly IImageResizer Instance = new ImageResizer();
 
         public Image CreateThumbnail(Image image, int thumbnailSize)
         {
             if (image == null)
-                throw new ArgumentNullException("image", "The image cannot be null.");
+            {
+                throw new ArgumentNullException(nameof(image));
+            }
+
             if (thumbnailSize <= 0)
-                throw new ArgumentOutOfRangeException("thumbnailSize",
+            {
+                throw new ArgumentOutOfRangeException(nameof(thumbnailSize),
                                                       "The thumbnail size cannot be non-positive.");
+            }
 
             var thumbnailBounds = new Rectangle(0, 0, thumbnailSize, thumbnailSize);
             return CreateResizedImage(image, thumbnailBounds);
@@ -24,14 +29,51 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
         public Image CreateResizedImage(Image image, Rectangle imageSize)
         {
             if (image == null)
-                throw new ArgumentNullException("image", "The image cannot be null.");
+            {
+                throw new ArgumentNullException(nameof(image));
+            }
+
             if (imageSize.Width <= 0)
-                throw new ArgumentOutOfRangeException("imageSize.Width",
+            {
+                throw new ArgumentOutOfRangeException(nameof(imageSize.Width),
                                                       "The width cannot be non-positive.");
+            }
+
             if (imageSize.Height <= 0)
-                throw new ArgumentOutOfRangeException("imageSize.Height",
+            {
+                throw new ArgumentOutOfRangeException(nameof(imageSize.Height),
                                                       "The height cannot be non-positive.");
-            
+            }
+
+            var resizedImage = GetResizedImage(image, imageSize);
+
+            try
+            {
+                using (var graphics = Graphics.FromImage(resizedImage))
+                {
+                    graphics.DrawImage(image, 0, 0, resizedImage.Width, resizedImage.Height);
+                }
+            }
+            catch
+            {
+                using (var graphics = Graphics.FromImage(resizedImage))
+                {
+                    graphics.DrawImage(GlobalData.InvalidImageAsBitmap, 0, 0, resizedImage.Width, resizedImage.Height);
+                }
+            }
+
+            return resizedImage;
+        }
+
+
+        #region Private
+
+        private ImageResizer()
+        {
+        }
+
+        private Image GetResizedImage(Image image, Rectangle imageSize)
+        {
             var width = image.Width;
             var height = image.Height;
 
@@ -66,26 +108,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
             }
 
             var resizedImage = new Bitmap(width, height);
-
-            try
-            {
-                using (var graphics = Graphics.FromImage(resizedImage))
-                    graphics.DrawImage(image, 0, 0, width, height);
-            }
-            catch
-            {
-                using (var graphics = Graphics.FromImage(resizedImage))
-                    graphics.DrawImage(GlobalData.InvalidImageAsBitmap, 0, 0, width, height);
-            }
-
             return resizedImage;
-        }
-
-
-        #region Private
-
-        private ImageResizer()
-        {
         }
 
         #endregion

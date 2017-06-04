@@ -9,11 +9,11 @@ namespace ImageFanReloaded.Views.Interface
     {
         event EventHandler<FileSystemEntryChangedEventArgs> FolderChanged;
 
-        void PopulateSubFoldersTree(IEnumerable<FileSystemEntryInfo> subFolders,
+        void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
                                     bool rootNodes);
 
         void ClearThumbnailBoxes();
-        void PopulateThumbnailBoxes(IEnumerable<ThumbnailInfo> thumbnails);
+        void PopulateThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnails);
 
         void Show();
     }

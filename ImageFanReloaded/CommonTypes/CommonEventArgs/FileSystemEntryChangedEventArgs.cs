@@ -8,7 +8,9 @@ namespace ImageFanReloaded.CommonTypes.CommonEventArgs
         public FileSystemEntryChangedEventArgs(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
-                throw new ArgumentException("Path cannot be empty.", "path");
+            {
+                throw new ArgumentException(nameof(path));
+            }
 
             Path = path;
         }

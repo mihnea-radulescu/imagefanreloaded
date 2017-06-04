@@ -9,14 +9,18 @@ namespace ImageFanReloaded.Factories
             get
             {
                 if (TypesFactory == null)
+                {
                     TypesFactory = new ProductionTypesFactory();
+                }
 
                 return TypesFactory;
             }
             set
             {
                 if (value != null)
+                {
                     TypesFactory = value;
+                }
             }
         }
 

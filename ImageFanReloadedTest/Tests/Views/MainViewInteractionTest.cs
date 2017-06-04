@@ -22,7 +22,7 @@ namespace ImageFanReloadedTest.Tests.Views
 
             _mainViewMock.Verify(mainView =>
                                  mainView.PopulateSubFoldersTree(
-                                                It.IsAny<IEnumerable<FileSystemEntryInfo>>(),
+                                                It.IsAny<IReadOnlyCollection<FileSystemEntryInfo>>(),
                                                 true),
                                  Times.Exactly(2));
         }
@@ -39,7 +39,7 @@ namespace ImageFanReloadedTest.Tests.Views
 
             _mainViewMock.Verify(mainView =>
                                  mainView.PopulateSubFoldersTree(
-                                                It.IsAny<IEnumerable<FileSystemEntryInfo>>(),
+                                                It.IsAny<IReadOnlyCollection<FileSystemEntryInfo>>(),
                                                 false),
                                  Times.Once());
         }

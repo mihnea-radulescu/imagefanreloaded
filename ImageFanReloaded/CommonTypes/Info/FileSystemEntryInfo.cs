@@ -10,16 +10,19 @@ namespace ImageFanReloaded.CommonTypes.Info
         public FileSystemEntryInfo(string name, string path, ImageSource icon)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Name cannot be empty.", "name");
+            {
+                throw new ArgumentException("Name cannot be empty.", nameof(name));
+            }
+
             if (string.IsNullOrWhiteSpace(path))
-                throw new ArgumentException("Path cannot be empty.", "path");
-            if (icon == null)
-                throw new ArgumentNullException("icon", "Icon cannot be null.");
+            {
+                throw new ArgumentException("Path cannot be empty.", nameof(path));
+            }
 
             Name = name;
             Path = path;
 
-            Icon = icon;
+            Icon = icon ?? throw new ArgumentNullException(nameof(icon));
         }
         
         public string Name { get; private set; }

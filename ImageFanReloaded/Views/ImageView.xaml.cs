@@ -2,7 +2,6 @@
 using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 using ImageFanReloaded.Views.Interface;
 using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,16 +20,18 @@ namespace ImageFanReloaded.Views
         
         public void SetImage(IImageFile imageFile)
         {
-            if (imageFile == null)
-                throw new ArgumentNullException("imageFile", "Image file cannot be null.");
+            _imageFile = imageFile ?? throw new ArgumentNullException(nameof(imageFile));
 
-            _imageFile = imageFile;
             Title = _imageFile.FileName;
 
             if (_imageViewState == ImageViewState.FullScreen)
+            {
                 GoFullScreen();
+            }
             else if (_imageViewState == ImageViewState.Detailed)
+            {
                 GoDetailed();
+            }
         }
 
 
@@ -44,17 +45,27 @@ namespace ImageFanReloaded.Views
             var keyPressed = e.Key;
 
             if (GlobalData.BackwardNavigationKeys.Contains(keyPressed))
+            {
                 RaiseThumbnailChanged(-1);
+            }
             else if (GlobalData.ForwardNavigationKeys.Contains(keyPressed))
+            {
                 RaiseThumbnailChanged(1);
+            }
             else if (keyPressed == Key.Enter)
+            {
                 ChangeImageMode();
+            }
             else if (keyPressed == Key.Escape)
             {
                 if (_imageViewState == ImageViewState.FullScreen)
+                {
                     Close();
+                }
                 else if (_imageViewState == ImageViewState.Detailed)
+                {
                     GoFullScreen();
+                }
             }
         }
 
@@ -75,25 +86,31 @@ namespace ImageFanReloaded.Views
                 var delta = e.Delta;
 
                 if (delta > 0)
+                {
                     RaiseThumbnailChanged(-1);
+                }
                 else if (delta < 0)
+                {
                     RaiseThumbnailChanged(1);
+                }
             }
         }
 
         private void RaiseThumbnailChanged(int increment)
         {
-            var thumbnailChangedHandler = ThumbnailChanged;
-            if (thumbnailChangedHandler != null)
-                thumbnailChangedHandler(this, new ThumbnailChangedEventArgs(increment));
+            ThumbnailChanged?.Invoke(this, new ThumbnailChangedEventArgs(increment));
         }
 
         private void ChangeImageMode()
         {
             if (_imageViewState == ImageViewState.FullScreen)
+            {
                 GoDetailed();
+            }
             else if (_imageViewState == ImageViewState.Detailed)
+            {
                 GoFullScreen();
+            }
         }
 
         private void GoFullScreen()

@@ -13,9 +13,10 @@ namespace ImageFanReloaded.Controls
         public ThumbnailBox(ThumbnailInfo thumbnailInfo)
         {
             if (thumbnailInfo == null)
-                throw new ArgumentNullException("thumbnailInfo",
-                                                "Thumbnail info cannot be null.");
-            
+            {
+                throw new ArgumentNullException(nameof(thumbnailInfo));
+            }
+
             InitializeComponent();
 
             SetControlProperties();
@@ -57,7 +58,9 @@ namespace ImageFanReloaded.Controls
         private void SetThumbnailInfo(ThumbnailInfo thumbnailInfo)
         {
             if (_thumbnailInfo != null)
+            {
                 _thumbnailInfo.ThumbnailImageChanged -= OnThumbnailImageChanged;
+            }
 
             _thumbnailInfo = thumbnailInfo;
             ImageFile = _thumbnailInfo.ImageFile;
@@ -75,9 +78,7 @@ namespace ImageFanReloaded.Controls
 
         private void OnMouseClick(object sender, MouseButtonEventArgs e)
         {
-            var thumbnailBoxClickedHandler = ThumbnailBoxClicked;
-            if (thumbnailBoxClickedHandler != null)
-                thumbnailBoxClickedHandler(this, EventArgs.Empty);
+            ThumbnailBoxClicked?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

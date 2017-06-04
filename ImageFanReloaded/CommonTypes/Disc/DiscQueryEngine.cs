@@ -12,9 +12,9 @@ namespace ImageFanReloaded.CommonTypes.Disc
     public class DiscQueryEngine
         : IDiscQueryEngine
     {
-        public static readonly DiscQueryEngine Instance = new DiscQueryEngine();
+        public static readonly IDiscQueryEngine Instance = new DiscQueryEngine();
         
-        public IEnumerable<FileSystemEntryInfo> GetAllDrives()
+        public IReadOnlyCollection<FileSystemEntryInfo> GetAllDrives()
         {
             return DriveInfo.GetDrives()
                             .Select(aDriveInfo =>
@@ -25,7 +25,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
                             .ToArray();
         }
 
-        public IEnumerable<FileSystemEntryInfo> GetSpecialFolders()
+        public IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFolders()
         {
             return SpecialFolders
                             .Select(aSpecialFolder =>
@@ -37,10 +37,12 @@ namespace ImageFanReloaded.CommonTypes.Disc
                             .ToArray();
         }
 
-        public IEnumerable<FileSystemEntryInfo> GetSubFolders(string folderPath)
+        public IReadOnlyCollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
         {
             if (string.IsNullOrWhiteSpace(folderPath))
-                throw new ArgumentException("Folder path cannot be empty.", "folderPath");
+            {
+                throw new ArgumentException(nameof(folderPath));
+            }
 
             try
             {
@@ -56,24 +58,31 @@ namespace ImageFanReloaded.CommonTypes.Disc
             }
             catch
             {
-                return Enumerable.Empty<FileSystemEntryInfo>();
+                return Enumerable
+                    .Empty<FileSystemEntryInfo>()
+                    .ToArray();
             }
         }
 
-        public IEnumerable<IImageFile> GetImageFiles(string folderPath)
+        public IReadOnlyCollection<IImageFile> GetImageFiles(string folderPath)
         {
             if (string.IsNullOrEmpty(folderPath))
-                throw new ArgumentException("Folder path cannot be empty.", "folderPath");
-            
-            IEnumerable<FileInfo> filesInformation;
+            {
+                throw new ArgumentException(nameof(folderPath));
+            }
+
+            IReadOnlyCollection<FileInfo> filesInformation;
             try
             {
                 filesInformation = new DirectoryInfo(folderPath)
-                                            .GetFiles("*", SearchOption.TopDirectoryOnly);
+                                            .GetFiles("*", SearchOption.TopDirectoryOnly)
+                                            .ToArray();
             }
             catch
             {
-                return Enumerable.Empty<IImageFile>();
+                return Enumerable
+                    .Empty<IImageFile>()
+                    .ToArray();
             }
 
             var imageFiles = filesInformation
@@ -120,7 +129,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
 
 		private static readonly string UserProfilePath;
 
-        private static readonly ICollection<string> SpecialFolders;
+        private static readonly IReadOnlyCollection<string> SpecialFolders;
 
 		private static readonly HashSet<string> ImageFileExtensions;
 

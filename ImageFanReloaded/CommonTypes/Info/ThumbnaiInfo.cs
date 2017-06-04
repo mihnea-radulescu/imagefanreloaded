@@ -10,10 +10,8 @@ namespace ImageFanReloaded.CommonTypes.Info
     {
         public ThumbnailInfo(IImageFile imageFile)
         {
-            if (imageFile == null)
-                throw new ArgumentNullException("imageFile", "Image file cannot be null.");
+            ImageFile = imageFile ?? throw new ArgumentNullException(nameof(imageFile));
 
-            ImageFile = imageFile;
             _thumbnailImage = GlobalData.LoadingImageThumbnail;
         }
 
@@ -49,9 +47,7 @@ namespace ImageFanReloaded.CommonTypes.Info
 
         private void OnThumbnailImageChanged(object sender, EventArgs e)
         {
-            var thumbnailImageChangedHandler = ThumbnailImageChanged;
-            if (thumbnailImageChangedHandler != null)
-                thumbnailImageChangedHandler(sender, e);
+            ThumbnailImageChanged?.Invoke(sender, e);
         }
 
         #endregion

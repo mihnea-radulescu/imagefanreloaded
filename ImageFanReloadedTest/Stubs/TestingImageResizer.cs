@@ -15,13 +15,12 @@ namespace ImageFanReloadedTest.Stubs
 
         public Image CreateResizedImage(Image image, Rectangle imageSize)
         {
-            var width = imageSize.Width;
-            var height = imageSize.Height;
-
-            var resizedImage = new Bitmap(width, height);
+            var resizedImage = new Bitmap(imageSize.Width, imageSize.Height);
 
             using (var graphics = Graphics.FromImage(resizedImage))
-                graphics.DrawImage(GlobalData.InvalidImageAsBitmap, 0, 0, width, height);
+            {
+                graphics.DrawImage(GlobalData.InvalidImageAsBitmap, 0, 0, resizedImage.Width, resizedImage.Height);
+            }
 
             return resizedImage;
         }

@@ -10,7 +10,7 @@ namespace ImageFanReloadedTest.Stubs
     public class TestingDiscQueryEngine
         : IDiscQueryEngine
     {
-        public IEnumerable<FileSystemEntryInfo> GetAllDrives()
+        public IReadOnlyCollection<FileSystemEntryInfo> GetAllDrives()
         {
             return new[]
             { 
@@ -20,7 +20,7 @@ namespace ImageFanReloadedTest.Stubs
             };
         }
 
-        public IEnumerable<FileSystemEntryInfo> GetSpecialFolders()
+        public IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFolders()
         {
             return new[]
             { 
@@ -28,7 +28,7 @@ namespace ImageFanReloadedTest.Stubs
             };
         }
 
-        public IEnumerable<FileSystemEntryInfo> GetSubFolders(string folderPath)
+        public IReadOnlyCollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
         {
             return new[]
             { 
@@ -44,7 +44,7 @@ namespace ImageFanReloadedTest.Stubs
             };
         }
 
-        public IEnumerable<IImageFile> GetImageFiles(string folderPath)
+        public IReadOnlyCollection<IImageFile> GetImageFiles(string folderPath)
         {
             return new[]
             { 

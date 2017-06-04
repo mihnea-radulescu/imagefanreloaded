@@ -1,6 +1,5 @@
 ﻿using ImageFanReloaded;
 using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
-using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Media;

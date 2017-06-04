@@ -15,9 +15,12 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
         public ImageFile(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
-                throw new ArgumentException("File path cannot be empty.", "filePath");
+            {
+                throw new ArgumentException(nameof(filePath));
+            }
 
             GetFileNameAndPath(filePath);
+
             _lockObject = new object();
         }
 
@@ -42,7 +45,9 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
                 finally
                 {
                     if (imageFromFile != null)
+                    {
                         imageFromFile.Dispose();
+                    }
                 }
             }
         }
@@ -50,12 +55,17 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
         public ImageSource GetResizedImage(Rectangle imageSize)
         {
             if (imageSize.Width <= 0)
-                throw new ArgumentOutOfRangeException("imageSize.Width",
+            {
+                throw new ArgumentOutOfRangeException(nameof(imageSize.Width),
                                                       "The width cannot be non-positive.");
+            }
+
             if (imageSize.Height <= 0)
-                throw new ArgumentOutOfRangeException("imageSize.Height",
+            {
+                throw new ArgumentOutOfRangeException(nameof(imageSize.Height),
                                                       "The height cannot be non-positive.");
-            
+            }
+
             Image imageFromFile = null;
             Image resizedImage = null;
 
@@ -78,9 +88,14 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
             finally
             {
                 if (imageFromFile != null)
+                {
                     imageFromFile.Dispose();
+                }
+
                 if (resizedImage != null)
+                {
                     resizedImage.Dispose();
+                }
             }
         }
 
@@ -108,9 +123,11 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
                 lock (_lockObject)
                 {
                     if (_thumbnailInput == null)
+                    {
                         throw new InvalidOperationException(
                             "ReadThumbnailInput() must be executed prior to calling the Thumbnail property.");
-                    
+                    }
+
                     Image thumbnail = null;
 
                     try
@@ -130,7 +147,9 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
                         DisposeThumbnailInput();
 
                         if (thumbnail != null)
+                        {
                             thumbnail.Dispose();
+                        }
                     }
                 }
             }
@@ -154,7 +173,9 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
         {
             if ((_thumbnailInput != null) &&
                 (_thumbnailInput != GlobalData.InvalidImageAsBitmap))
+            {
                 _thumbnailInput.Dispose();
+            }
 
             _thumbnailInput = null;
         }

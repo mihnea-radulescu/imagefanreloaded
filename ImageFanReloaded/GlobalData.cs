@@ -5,7 +5,6 @@ using ImageFanReloaded.Properties;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -49,16 +48,20 @@ namespace ImageFanReloaded
                                         .ConvertToImageSource();
 
             using (var driveIconBitmap = Resources.DriveIcon)
+            {
                 DriveIcon = TypesFactory
                                         .ImageResizerInstance
                                         .CreateThumbnail(driveIconBitmap, 24)
                                         .ConvertToImageSource();
+            }
 
             using (var folderIconBitmap = Resources.FolderIcon)
+            {
                 FolderIcon = TypesFactory
                                         .ImageResizerInstance
                                         .CreateThumbnail(folderIconBitmap, 24)
                                         .ConvertToImageSource();
+            }
 
             ProcessorCount = Environment.ProcessorCount;
 

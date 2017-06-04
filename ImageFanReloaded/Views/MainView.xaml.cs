@@ -18,7 +18,7 @@ namespace ImageFanReloaded.Views
         
         public event EventHandler<FileSystemEntryChangedEventArgs> FolderChanged;
 
-        public void PopulateSubFoldersTree(IEnumerable<FileSystemEntryInfo> subFolders,
+        public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
                                            bool rootNodes)
         {
             if (rootNodes)
@@ -29,21 +29,25 @@ namespace ImageFanReloaded.Views
                     {
                         FileSystemEntryInfo = aSubFolder
                     };
+
                     _folderTreeView.Items.Add(aTreeViewItem);
                 }
             }
             else if (_folderTreeView.SelectedItem != null)
             {
                 var selectedItem = _folderTreeView.SelectedItem as TreeViewItem;
+
                 if (selectedItem != null)
                 {
                     selectedItem.Items.Clear();
+
                     foreach (var aSubFolder in subFolders)
                     {
                         var aTreeViewItem = new FileSystemEntryTreeViewItem
                         {
                             FileSystemEntryInfo = aSubFolder
                         };
+
                         selectedItem.Items.Add(aTreeViewItem);
                     }
                 }
@@ -60,7 +64,7 @@ namespace ImageFanReloaded.Views
             _selectedThumbnailBox = null;
         }
 
-        public void PopulateThumbnailBoxes(IEnumerable<ThumbnailInfo> thumbnails)
+        public void PopulateThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnails)
         {
             foreach (var aThumbnail in thumbnails)
             {
@@ -69,13 +73,19 @@ namespace ImageFanReloaded.Views
                     (sender, e) =>
                     {
                         var thumbnailBox = sender as ThumbnailBox;
+
                         if (thumbnailBox.IsSelected)
+                        {
                             DisplayImage();
+                        }
                         else
+                        {
                             SelectThumbnailBox(thumbnailBox);
+                        }
                     };
 
                 _thumbnailBoxList.Add(aThumbnailBox);
+
                 if (_thumbnailBoxList.Count == 1)
                 {
                     SelectThumbnailBox(aThumbnailBox);
@@ -104,9 +114,11 @@ namespace ImageFanReloaded.Views
                                                          RoutedPropertyChangedEventArgs<object> e)
         {
             var folderChangedHandler = FolderChanged;
+
             if (folderChangedHandler != null)
             {
                 var selectedFolderTreeViewItem = e.NewValue as FileSystemEntryTreeViewItem;
+
                 if (selectedFolderTreeViewItem != null)
                 {
                     var selectedFolderPath = selectedFolderTreeViewItem.FileSystemEntryInfo.Path;
@@ -118,18 +130,24 @@ namespace ImageFanReloaded.Views
 
         private void OnKeyPressed(object sender, KeyEventArgs e)
         {
-            if (e.OriginalSource == _thumbnailScrollViewer)
-                if (_selectedThumbnailBox != null)
-                {
-                    var keyPressed = e.Key;
+            if (e.OriginalSource == _thumbnailScrollViewer &&
+                _selectedThumbnailBox != null)
+            {
+                var keyPressed = e.Key;
 
-                    if (GlobalData.BackwardNavigationKeys.Contains(keyPressed))
-                        AdvanceToThumbnailIndex(-1);
-                    else if (GlobalData.ForwardNavigationKeys.Contains(keyPressed))
-                        AdvanceToThumbnailIndex(1);
-                    else if (keyPressed == Key.Enter)
-                        DisplayImage();
+                if (GlobalData.BackwardNavigationKeys.Contains(keyPressed))
+                {
+                    AdvanceToThumbnailIndex(-1);
                 }
+                else if (GlobalData.ForwardNavigationKeys.Contains(keyPressed))
+                {
+                    AdvanceToThumbnailIndex(1);
+                }
+                else if (keyPressed == Key.Enter)
+                {
+                    DisplayImage();
+                }
+            }
         }
 
         private void OnScrollKeyPressed(object sender, KeyEventArgs e)
@@ -142,7 +160,9 @@ namespace ImageFanReloaded.Views
             if (_selectedThumbnailBox != thumbnailBox)
             {
                 if (_selectedThumbnailBox != null)
+                {
                     _selectedThumbnailBox.UnselectThumbnail();
+                }
 
                 _selectedThumbnailBox = thumbnailBox;
                 _selectedThumbnailIndex = _thumbnailBoxList

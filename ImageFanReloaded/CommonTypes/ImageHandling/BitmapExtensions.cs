@@ -13,11 +13,15 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
         public static ImageSource ConvertToImageSource(this Image inputImage)
         {
             if (inputImage == null)
+            {
                 throw new NullReferenceException("Input image cannot be null.");
+            }
 
             var inputBitmap = inputImage as Bitmap;
             if (inputBitmap == null)
+            {
                 throw new InvalidOperationException("Input image must be a Bitmap object.");
+            }
 
             IntPtr hBitmap = IntPtr.Zero;
 
@@ -34,7 +38,9 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
             finally
             {
                 if (hBitmap != IntPtr.Zero)
+                {
                     DeleteObject(hBitmap);
+                }
             }
         }
 
