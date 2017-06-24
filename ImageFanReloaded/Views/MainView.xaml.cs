@@ -14,8 +14,11 @@ namespace ImageFanReloaded.Views
     public partial class MainView
         : Window, IMainView
     {
-        public static readonly MainView Instance = new MainView();
-        
+        public MainView()
+        {
+            InitializeComponent();
+        }
+
         public event EventHandler<FileSystemEntryChangedEventArgs> FolderChanged;
 
         public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
@@ -104,11 +107,6 @@ namespace ImageFanReloaded.Views
         private List<ThumbnailBox> _thumbnailBoxList;
         private int _selectedThumbnailIndex;
         private ThumbnailBox _selectedThumbnailBox;
-
-        private MainView()
-        {
-            InitializeComponent();
-        }
 
         private void OnFolderTreeViewSelectedItemChanged(object sender,
                                                          RoutedPropertyChangedEventArgs<object> e)

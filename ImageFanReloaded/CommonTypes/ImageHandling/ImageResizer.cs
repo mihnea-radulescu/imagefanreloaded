@@ -7,8 +7,6 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
     public class ImageResizer
         : IImageResizer
     {
-        public static readonly IImageResizer Instance = new ImageResizer();
-
         public Image CreateThumbnail(Image image, int thumbnailSize)
         {
             if (image == null)
@@ -67,10 +65,6 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
 
 
         #region Private
-
-        private ImageResizer()
-        {
-        }
 
         private Image GetResizedImage(Image image, Rectangle imageSize)
         {

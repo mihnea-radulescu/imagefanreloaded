@@ -17,7 +17,7 @@ namespace ImageFanReloaded.Presenters
         {
             _discQueryEngine = TypesFactoryResolver
                 .TypesFactoryInstance
-                .DiscQueryEngineInstance;
+                .GetDiscQueryEngine();
 
             _mainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
             _mainView.FolderChanged += OnFolderChanged;

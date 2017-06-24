@@ -12,8 +12,6 @@ namespace ImageFanReloaded.CommonTypes.Disc
     public class DiscQueryEngine
         : IDiscQueryEngine
     {
-        public static readonly IDiscQueryEngine Instance = new DiscQueryEngine();
-        
         public IReadOnlyCollection<FileSystemEntryInfo> GetAllDrives()
         {
             return DriveInfo.GetDrives()
@@ -41,7 +39,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
         {
             if (string.IsNullOrWhiteSpace(folderPath))
             {
-                throw new ArgumentException(nameof(folderPath));
+                throw new ArgumentException("Folder path cannot be empty.", nameof(folderPath));
             }
 
             try
@@ -58,9 +56,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
             }
             catch
             {
-                return Enumerable
-                    .Empty<FileSystemEntryInfo>()
-                    .ToArray();
+                return EmptyFileSystemEntryInfoCollection;
             }
         }
 
@@ -68,7 +64,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
         {
             if (string.IsNullOrEmpty(folderPath))
             {
-                throw new ArgumentException(nameof(folderPath));
+                throw new ArgumentException("Folder path cannot be empty.", nameof(folderPath));
             }
 
             IReadOnlyCollection<FileInfo> filesInformation;
@@ -80,9 +76,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
             }
             catch
             {
-                return Enumerable
-                    .Empty<IImageFile>()
-                    .ToArray();
+                return EmptyImageFileCollection;
             }
 
             var imageFiles = filesInformation
@@ -101,13 +95,17 @@ namespace ImageFanReloaded.CommonTypes.Disc
 
         #region Private
 
-        private DiscQueryEngine()
-        {
-        }
-
 		static DiscQueryEngine()
 		{
-			UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            EmptyFileSystemEntryInfoCollection = Enumerable
+                .Empty<FileSystemEntryInfo>()
+                .ToArray();
+
+            EmptyImageFileCollection = Enumerable
+                .Empty<IImageFile>()
+                .ToArray();
+
+            UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
 			SpecialFolders = new List<string>
             {
@@ -127,7 +125,10 @@ namespace ImageFanReloaded.CommonTypes.Disc
             };
 		}
 
-		private static readonly string UserProfilePath;
+        private static readonly IReadOnlyCollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
+        private static readonly IReadOnlyCollection<IImageFile> EmptyImageFileCollection;
+
+        private static readonly string UserProfilePath;
 
         private static readonly IReadOnlyCollection<string> SpecialFolders;
 

@@ -11,19 +11,23 @@ namespace ImageFanReloaded.Factories
     public class ProductionTypesFactory
         : ITypesFactory
     {
-        public IDiscQueryEngine DiscQueryEngineInstance
+        public ProductionTypesFactory()
         {
-            get { return DiscQueryEngine.Instance; }
+            _discQueryEngine = new DiscQueryEngine();
+
+            _imageResizer = new ImageResizer();
+
+            _mainView = new MainView();
         }
 
-        public IImageResizer ImageResizerInstance
+        public IDiscQueryEngine GetDiscQueryEngine()
         {
-            get { return ImageResizer.Instance; }
+            return _discQueryEngine;
         }
 
-        public IMainView MainViewInstance
+        public IImageResizer GetImageResizer()
         {
-            get { return MainView.Instance; }
+            return _imageResizer;
         }
 
         public IImageFile GetImageFile(string filePath)
@@ -31,9 +35,25 @@ namespace ImageFanReloaded.Factories
             return new ImageFile(filePath);
         }
 
+        public IMainView GetMainView()
+        {
+            return _mainView;
+        }
+
         public IImageView GetImageView()
         {
             return new ImageView();
         }
+
+
+        #region Private
+
+        private readonly IDiscQueryEngine _discQueryEngine;
+
+        private readonly IImageResizer _imageResizer;
+
+        private readonly IMainView _mainView;
+
+        #endregion
     }
 }

@@ -32,7 +32,7 @@ namespace ImageFanReloaded
 
         static GlobalData()
         {
-            ImageResizer = TypesFactoryResolver.TypesFactoryInstance.ImageResizerInstance;
+            ImageResizer = TypesFactoryResolver.TypesFactoryInstance.GetImageResizer();
             
             InvalidImageAsBitmap = Resources.InvalidImage;
 

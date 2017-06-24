@@ -10,24 +10,24 @@ namespace ImageFanReloadedTest.Factories
     public class TestingTypesFactory
         : ITypesFactory
     {
-        public IDiscQueryEngine DiscQueryEngineInstance
+        public IDiscQueryEngine GetDiscQueryEngine()
         {
-            get { return new TestingDiscQueryEngine(); }
+            return new TestingDiscQueryEngine();
         }
 
-        public IImageResizer ImageResizerInstance
+        public IImageResizer GetImageResizer()
         {
-            get { return new TestingImageResizer(); }
-        }
-
-        public IMainView MainViewInstance
-        {
-            get { throw new NotImplementedException(); }
+            return new TestingImageResizer();
         }
 
         public IImageFile GetImageFile(string filePath)
         {
             return new TestingImageFile(filePath);
+        }
+
+        public IMainView GetMainView()
+        {
+            throw new NotImplementedException();
         }
 
         public IImageView GetImageView()

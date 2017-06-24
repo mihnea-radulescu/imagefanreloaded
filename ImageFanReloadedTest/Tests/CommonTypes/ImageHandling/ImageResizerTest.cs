@@ -16,7 +16,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
             Image image = null;
             var thumbnailSize = 25;
 
-            var imageResizer = ImageResizer.Instance.CreateThumbnail(image, thumbnailSize);
+            var imageResizer = new ImageResizer().CreateThumbnail(image, thumbnailSize);
         }
 
         [TestMethod, TestCategory("Unit")]
@@ -26,7 +26,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
             Image image = GlobalData.InvalidImageAsBitmap;
             var thumbnailSize = 0;
 
-            var imageResizer = ImageResizer.Instance.CreateThumbnail(image, thumbnailSize);
+            var imageResizer = new ImageResizer().CreateThumbnail(image, thumbnailSize);
         }
 
         [TestMethod, TestCategory("Functional")]
@@ -36,8 +36,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
             {
                 var thumbnailSize = 25;
 
-                using (var thumbnail =
-                            ImageResizer.Instance.CreateThumbnail(image, thumbnailSize))
+                using (var thumbnail = new ImageResizer().CreateThumbnail(image, thumbnailSize))
                 {
                     Assert.IsNotNull(thumbnail);
                 }
@@ -51,7 +50,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
             Image image = null;
             var imageSize = new Rectangle(0, 0, 25, 25);
 
-            var imageResizer = ImageResizer.Instance.CreateResizedImage(image, imageSize);
+            var imageResizer = new ImageResizer().CreateResizedImage(image, imageSize);
         }
 
         [TestMethod, TestCategory("Unit")]
@@ -61,7 +60,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
             Image image = GlobalData.InvalidImageAsBitmap;
             var imageSize = new Rectangle(0, 0, 5, -3);
 
-            var imageResizer = ImageResizer.Instance.CreateResizedImage(image, imageSize);
+            var imageResizer = new ImageResizer().CreateResizedImage(image, imageSize);
         }
 
         [TestMethod, TestCategory("Functional")]
@@ -71,8 +70,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
             {
                 var imageSize = new Rectangle(0, 0, 25, 15);
 
-                using (var resizedImage =
-                            ImageResizer.Instance.CreateResizedImage(image, imageSize))
+                using (var resizedImage = new ImageResizer().CreateResizedImage(image, imageSize))
                 {
                     Assert.IsNotNull(resizedImage);
                 }

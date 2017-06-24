@@ -11,7 +11,7 @@ namespace ImageFanReloaded
         {
             base.OnStartup(e);
 
-            var mainView = TypesFactoryResolver.TypesFactoryInstance.MainViewInstance;
+            var mainView = TypesFactoryResolver.TypesFactoryInstance.GetMainView();
             new MainPresenter(mainView);
             mainView.Show();
         }

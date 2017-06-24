@@ -9,7 +9,7 @@ namespace ImageFanReloaded.CommonTypes.CommonEventArgs
         {
             if (string.IsNullOrWhiteSpace(path))
             {
-                throw new ArgumentException(nameof(path));
+                throw new ArgumentException("Path cannot be empty.", nameof(path));
             }
 
             Path = path;

@@ -1,6 +1,4 @@
 ﻿using ImageFanReloaded.CommonTypes.Disc;
-using ImageFanReloaded.Factories;
-using ImageFanReloadedTest.Factories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -13,7 +11,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.Disc
         [TestMethod, TestCategory("Functional")]
         public void Test_GetAllDrives_ReturnsNonEmptyDrivesCollection()
         {
-            var allDrives = DiscQueryEngine.Instance.GetAllDrives();
+            var allDrives = new DiscQueryEngine().GetAllDrives();
 
             Assert.IsTrue(allDrives.Any());
         }
@@ -21,7 +19,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.Disc
         [TestMethod, TestCategory("Functional")]
         public void Test_GetSpecialFolders_ReturnsNonNullCollection()
         {
-            var specialFolders = DiscQueryEngine.Instance.GetSpecialFolders();
+            var specialFolders = new DiscQueryEngine().GetSpecialFolders();
 
             Assert.IsNotNull(specialFolders);
         }
@@ -32,7 +30,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.Disc
         {
             var testFolderPath = string.Empty;
 
-            var subFolders = DiscQueryEngine.Instance.GetSubFolders(testFolderPath);
+            var subFolders = new DiscQueryEngine().GetSubFolders(testFolderPath);
         }
 
         [TestMethod, TestCategory("Functional")]
@@ -40,7 +38,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.Disc
         {
             var testFolderPath = @"zzzzz";
 
-            var subFolders = DiscQueryEngine.Instance.GetSubFolders(testFolderPath);
+            var subFolders = new DiscQueryEngine().GetSubFolders(testFolderPath);
 
             Assert.IsFalse(subFolders.Any());
         }
@@ -50,7 +48,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.Disc
         {
             var testFolderPath = @"TestData\TestFolder";
 
-            var testSubFolders = DiscQueryEngine.Instance.GetSubFolders(testFolderPath);
+            var testSubFolders = new DiscQueryEngine().GetSubFolders(testFolderPath);
 
             Assert.AreEqual(2, testSubFolders.Count());
             Assert.IsTrue(testSubFolders.Any(aSubFolder =>
@@ -65,7 +63,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.Disc
         {
             var testFolderPath = string.Empty;
 
-            var imageFiles = DiscQueryEngine.Instance.GetImageFiles(testFolderPath);
+            var imageFiles = new DiscQueryEngine().GetImageFiles(testFolderPath);
         }
 
         [TestMethod, TestCategory("Functional")]
@@ -73,7 +71,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.Disc
         {
             var testFolderPath = @"zzzzz";
 
-            var imageFiles = DiscQueryEngine.Instance.GetImageFiles(testFolderPath);
+            var imageFiles = new DiscQueryEngine().GetImageFiles(testFolderPath);
 
             Assert.IsFalse(imageFiles.Any());
         }
@@ -83,22 +81,11 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.Disc
         {
             var testFolderPath = @"TestData";
 
-            var testImages = DiscQueryEngine.Instance.GetImageFiles(testFolderPath);
+            var testImages = new DiscQueryEngine().GetImageFiles(testFolderPath);
 
             Assert.AreEqual(1, testImages.Count());
             Assert.IsTrue(testImages.Any(anImage =>
                                          anImage.FileName == "TestImage.jpg"));
         }
-
-
-        #region TestSetup
-
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext testContext)
-        {
-            TypesFactoryResolver.TypesFactoryInstance = new TestingTypesFactory();
-        }
-
-        #endregion
     }
 }

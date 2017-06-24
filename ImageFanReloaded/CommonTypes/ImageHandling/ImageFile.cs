@@ -16,7 +16,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                throw new ArgumentException(nameof(filePath));
+                throw new ArgumentException("File path cannot be empty.", nameof(filePath));
             }
 
             GetFileNameAndPath(filePath);
@@ -72,16 +72,19 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
             try
             {
                 imageFromFile = new Bitmap(_fileNameWithPath);
-                resizedImage = TypesFactoryResolver.TypesFactoryInstance.ImageResizerInstance
-                                        .CreateResizedImage(imageFromFile, imageSize);
+                resizedImage = TypesFactoryResolver
+                    .TypesFactoryInstance
+                    .GetImageResizer()
+                    .CreateResizedImage(imageFromFile, imageSize);
 
                 return resizedImage.ConvertToImageSource();
             }
             catch
             {
-                resizedImage = TypesFactoryResolver.TypesFactoryInstance.ImageResizerInstance
-                                        .CreateResizedImage(GlobalData.InvalidImageAsBitmap,
-                                                            imageSize);
+                resizedImage = TypesFactoryResolver
+                    .TypesFactoryInstance
+                    .GetImageResizer()
+                    .CreateResizedImage(GlobalData.InvalidImageAsBitmap, imageSize);
                 
                 return resizedImage.ConvertToImageSource();
             }
@@ -132,9 +135,10 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
 
                     try
                     {
-                        thumbnail = TypesFactoryResolver.TypesFactoryInstance.ImageResizerInstance
-                                        .CreateThumbnail(_thumbnailInput,
-                                                         GlobalData.ThumbnailSize);
+                        thumbnail = TypesFactoryResolver
+                            .TypesFactoryInstance
+                            .GetImageResizer()
+                            .CreateThumbnail(_thumbnailInput, GlobalData.ThumbnailSize);
 
                         return thumbnail.ConvertToImageSource();
                     }

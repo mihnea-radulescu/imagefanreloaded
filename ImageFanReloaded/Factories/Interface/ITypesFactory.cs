@@ -6,12 +6,14 @@ namespace ImageFanReloaded.Factories.Interface
 {
     public interface ITypesFactory
     {
-        IDiscQueryEngine DiscQueryEngineInstance { get;  }
-        IImageResizer ImageResizerInstance { get; }
+        IDiscQueryEngine GetDiscQueryEngine();
 
-        IMainView MainViewInstance { get; }
+        IImageResizer GetImageResizer();
 
         IImageFile GetImageFile(string filePath);
+
+        IMainView GetMainView();
+
         IImageView GetImageView();
     }
 }
