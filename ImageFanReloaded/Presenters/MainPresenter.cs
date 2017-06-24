@@ -1,4 +1,5 @@
 ﻿using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.Disc.Interface;
 using ImageFanReloaded.CommonTypes.Info;
 using ImageFanReloaded.Factories;
 using ImageFanReloaded.Views.Interface;
@@ -14,6 +15,10 @@ namespace ImageFanReloaded.Presenters
     {
         public MainPresenter(IMainView mainView)
         {
+            _discQueryEngine = TypesFactoryResolver
+                .TypesFactoryInstance
+                .DiscQueryEngineInstance;
+
             _mainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
             _mainView.FolderChanged += OnFolderChanged;
 
@@ -25,7 +30,10 @@ namespace ImageFanReloaded.Presenters
 
         #region Private
 
-        private IMainView _mainView;
+        private readonly IDiscQueryEngine _discQueryEngine;
+
+        private readonly IMainView _mainView;
+
         private object _populateThumbnailsLockObject;
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -40,19 +48,16 @@ namespace ImageFanReloaded.Presenters
 
         private void PopulateDrivesAndSpecialFolders()
         {
-            var specialFolders = TypesFactoryResolver.TypesFactoryInstance
-                                            .DiscQueryEngineInstance.GetSpecialFolders();
+            var specialFolders = _discQueryEngine.GetSpecialFolders();
             _mainView.PopulateSubFoldersTree(specialFolders, true);
             
-            var drives = TypesFactoryResolver.TypesFactoryInstance
-                                            .DiscQueryEngineInstance.GetAllDrives();
+            var drives = _discQueryEngine.GetAllDrives();
             _mainView.PopulateSubFoldersTree(drives, true);
         }
 
         private void PopulateSubFolders(string folderPath)
         {
-            var subFolders = TypesFactoryResolver.TypesFactoryInstance
-                                            .DiscQueryEngineInstance.GetSubFolders(folderPath);
+            var subFolders = _discQueryEngine.GetSubFolders(folderPath);
             _mainView.PopulateSubFoldersTree(subFolders, false);
         }
 
@@ -121,9 +126,7 @@ namespace ImageFanReloaded.Presenters
 
         private IEnumerable<ThumbnailInfo> GetImageFiles(string folderPath)
         {
-            var imageFiles = TypesFactoryResolver.TypesFactoryInstance
-                                                        .DiscQueryEngineInstance
-                                                        .GetImageFiles(folderPath);
+            var imageFiles = _discQueryEngine.GetImageFiles(folderPath);
 
             var thumbnailInfoCollection =
                 imageFiles

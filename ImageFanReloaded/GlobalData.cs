@@ -1,6 +1,6 @@
 ﻿using ImageFanReloaded.CommonTypes.ImageHandling;
+using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 using ImageFanReloaded.Factories;
-using ImageFanReloaded.Factories.Interface;
 using ImageFanReloaded.Properties;
 using System;
 using System.Collections.Generic;
@@ -32,33 +32,29 @@ namespace ImageFanReloaded
 
         static GlobalData()
         {
-            TypesFactory = new ProductionTypesFactory();
+            ImageResizer = TypesFactoryResolver.TypesFactoryInstance.ImageResizerInstance;
             
             InvalidImageAsBitmap = Resources.InvalidImage;
 
             InvalidImage = Resources.InvalidImage.ConvertToImageSource();
-            InvalidImageThumbnail = TypesFactory
-                                        .ImageResizerInstance
+            InvalidImageThumbnail = ImageResizer
                                         .CreateThumbnail(Resources.InvalidImage, ThumbnailSize)
                                         .ConvertToImageSource();
 
-            LoadingImageThumbnail = TypesFactory
-                                        .ImageResizerInstance
+            LoadingImageThumbnail = ImageResizer
                                         .CreateThumbnail(Resources.LoadingImage, ThumbnailSize)
                                         .ConvertToImageSource();
 
             using (var driveIconBitmap = Resources.DriveIcon)
             {
-                DriveIcon = TypesFactory
-                                        .ImageResizerInstance
+                DriveIcon = ImageResizer
                                         .CreateThumbnail(driveIconBitmap, 24)
                                         .ConvertToImageSource();
             }
 
             using (var folderIconBitmap = Resources.FolderIcon)
             {
-                FolderIcon = TypesFactory
-                                        .ImageResizerInstance
+                FolderIcon = ImageResizer
                                         .CreateThumbnail(folderIconBitmap, 24)
                                         .ConvertToImageSource();
             }
@@ -69,6 +65,7 @@ namespace ImageFanReloaded
             { 
                 Key.W, Key.A, Key.Up, Key.Left, Key.Back, Key.PageUp
             };
+
             ForwardNavigationKeys = new HashSet<Key>
             { 
                 Key.S, Key.D, Key.Down, Key.Right, Key.Space, Key.PageDown
@@ -78,7 +75,7 @@ namespace ImageFanReloaded
 
         #region Private
 
-        public static readonly ITypesFactory TypesFactory;
+        private static readonly IImageResizer ImageResizer;
 
         #endregion
     }
