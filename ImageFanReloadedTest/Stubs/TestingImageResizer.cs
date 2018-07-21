@@ -1,6 +1,7 @@
-﻿using ImageFanReloaded;
+﻿using System.Drawing;
+
+using ImageFanReloaded;
 using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
-using System.Drawing;
 
 namespace ImageFanReloadedTest.Stubs
 {

@@ -1,10 +1,10 @@
-﻿using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
-using ImageFanReloaded.Factories;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Media;
+
+using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling
 {
@@ -12,8 +12,10 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
     public class ImageFile
         : IImageFile
     {
-        public ImageFile(string filePath)
+        public ImageFile(IImageResizer imageResizer, string filePath)
         {
+            _imageResizer = imageResizer ?? throw new ArgumentNullException(nameof(imageResizer));
+
             if (string.IsNullOrEmpty(filePath))
             {
                 throw new ArgumentException("File path cannot be empty.", nameof(filePath));
@@ -72,19 +74,13 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
             try
             {
                 imageFromFile = new Bitmap(_fileNameWithPath);
-                resizedImage = TypesFactoryResolver
-                    .TypesFactoryInstance
-                    .GetImageResizer()
-                    .CreateResizedImage(imageFromFile, imageSize);
+                resizedImage = _imageResizer.CreateResizedImage(imageFromFile, imageSize);
 
                 return resizedImage.ConvertToImageSource();
             }
             catch
             {
-                resizedImage = TypesFactoryResolver
-                    .TypesFactoryInstance
-                    .GetImageResizer()
-                    .CreateResizedImage(GlobalData.InvalidImageAsBitmap, imageSize);
+                resizedImage = _imageResizer.CreateResizedImage(GlobalData.InvalidImageAsBitmap, imageSize);
                 
                 return resizedImage.ConvertToImageSource();
             }
@@ -135,10 +131,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
 
                     try
                     {
-                        thumbnail = TypesFactoryResolver
-                            .TypesFactoryInstance
-                            .GetImageResizer()
-                            .CreateThumbnail(_thumbnailInput, GlobalData.ThumbnailSize);
+                        thumbnail = _imageResizer.CreateThumbnail(_thumbnailInput, GlobalData.ThumbnailSize);
 
                         return thumbnail.ConvertToImageSource();
                     }
@@ -159,8 +152,9 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
             }
         }
 
-
         #region Private
+
+        private readonly IImageResizer _imageResizer;
 
         private string _fileNameWithPath;
         private Image _thumbnailInput;

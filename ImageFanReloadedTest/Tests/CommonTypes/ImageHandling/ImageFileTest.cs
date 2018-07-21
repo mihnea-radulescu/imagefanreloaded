@@ -1,10 +1,14 @@
-﻿using ImageFanReloaded;
+﻿using System;
+using System.Drawing;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using ImageFanReloaded;
 using ImageFanReloaded.CommonTypes.ImageHandling;
+using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 using ImageFanReloaded.Factories;
 using ImageFanReloadedTest.Factories;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Drawing;
+using ImageFanReloadedTest.Stubs;
 
 namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
 {
@@ -17,7 +21,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = string.Empty;
             
-            new ImageFile(filePath);
+            new ImageFile(ImageResizer, filePath);
         }
 
         [TestMethod, TestCategory("Unit")]
@@ -25,7 +29,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestImage.jpg";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             var imageFileName = imageFile.FileName;
 
             Assert.AreEqual("TestImage.jpg", imageFileName);
@@ -36,7 +40,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestDataFile.txt";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             var image = imageFile.Image;
 
             Assert.AreEqual(GlobalData.InvalidImage, image);
@@ -47,7 +51,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestImage.jpg";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             var image = imageFile.Image;
 
             Assert.IsNotNull(image);
@@ -59,7 +63,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestImage.jpg";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             var imageSize = new Rectangle(0, 0, -5, 0);
             var image = imageFile.GetResizedImage(imageSize);
         }
@@ -69,7 +73,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestDataFile.txt";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             var imageSize = new Rectangle(0, 0, 25, 15);
             var image = imageFile.GetResizedImage(imageSize);
 
@@ -81,7 +85,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestImage.jpg";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             var imageSize = new Rectangle(0, 0, 25, 25);
             var image = imageFile.GetResizedImage(imageSize);
 
@@ -93,7 +97,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestDataFile.txt";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             imageFile.ReadThumbnailInputFromDisc();
         }
 
@@ -102,7 +106,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestImage.jpg";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             imageFile.ReadThumbnailInputFromDisc();
         }
 
@@ -112,7 +116,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestImage.jpg";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             var thumbnail = imageFile.Thumbnail;
         }
 
@@ -121,7 +125,7 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestDataFile.txt";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             imageFile.ReadThumbnailInputFromDisc();
             var thumbnail = imageFile.Thumbnail;
 
@@ -133,20 +137,23 @@ namespace ImageFanReloadedTest.Tests.CommonTypes.ImageHandling
         {
             var filePath = @"TestData\TestImage.jpg";
 
-            var imageFile = new ImageFile(filePath);
+            var imageFile = new ImageFile(ImageResizer, filePath);
             imageFile.ReadThumbnailInputFromDisc();
             var thumbnail = imageFile.Thumbnail;
 
             Assert.IsNotNull(thumbnail);
         }
 
-
         #region TestSetup
+
+        private static IImageResizer ImageResizer;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)
         {
             TypesFactoryResolver.TypesFactoryInstance = new TestingTypesFactory();
+
+            ImageResizer = new TestingImageResizer();
         }
 
         #endregion

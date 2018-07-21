@@ -44,7 +44,6 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
             }
         }
 
-
         #region Private
 
         [DllImport("gdi32.dll")]

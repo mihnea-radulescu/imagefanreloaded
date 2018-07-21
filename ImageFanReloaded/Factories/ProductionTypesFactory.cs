@@ -32,7 +32,7 @@ namespace ImageFanReloaded.Factories
 
         public IImageFile GetImageFile(string filePath)
         {
-            return new ImageFile(filePath);
+            return new ImageFile(_imageResizer, filePath);
         }
 
         public IMainView GetMainView()
@@ -44,7 +44,6 @@ namespace ImageFanReloaded.Factories
         {
             return new ImageView();
         }
-
 
         #region Private
 

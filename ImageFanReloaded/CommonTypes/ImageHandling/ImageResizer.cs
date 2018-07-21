@@ -1,6 +1,7 @@
-﻿using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
-using System;
+﻿using System;
 using System.Drawing;
+
+using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling
 {
@@ -62,7 +63,6 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
 
             return resizedImage;
         }
-
 
         #region Private
 
