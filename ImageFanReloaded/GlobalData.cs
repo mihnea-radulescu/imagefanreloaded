@@ -1,12 +1,12 @@
-﻿using ImageFanReloaded.CommonTypes.ImageHandling;
-using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
-using ImageFanReloaded.Factories;
-using ImageFanReloaded.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Input;
 using System.Windows.Media;
+
+using ImageFanReloaded.CommonTypes.ImageHandling;
+using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
+using ImageFanReloaded.Properties;
 
 namespace ImageFanReloaded
 {
@@ -29,10 +29,9 @@ namespace ImageFanReloaded
         public static readonly HashSet<Key> BackwardNavigationKeys;
         public static readonly HashSet<Key> ForwardNavigationKeys;
 
-
         static GlobalData()
         {
-            ImageResizer = TypesFactoryResolver.TypesFactoryInstance.GetImageResizer();
+            ImageResizer = new ImageResizer();
             
             InvalidImageAsBitmap = Resources.InvalidImage;
 

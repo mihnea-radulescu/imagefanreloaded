@@ -27,7 +27,6 @@ namespace ImageFanReloaded.Views
 			return bounds;
 		}
 
-
 		#region Private
 
 		private const int DpiStandardUnit = 96;

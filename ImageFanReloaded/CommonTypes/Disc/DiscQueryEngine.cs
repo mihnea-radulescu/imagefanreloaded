@@ -1,17 +1,24 @@
-using ImageFanReloaded.CommonTypes.Disc.Interface;
-using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
-using ImageFanReloaded.CommonTypes.Info;
-using ImageFanReloaded.Factories;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using ImageFanReloaded.CommonTypes.Disc.Interface;
+using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
+using ImageFanReloaded.CommonTypes.Info;
+using ImageFanReloaded.Factories.Interface;
 
 namespace ImageFanReloaded.CommonTypes.Disc
 {
     public class DiscQueryEngine
         : IDiscQueryEngine
     {
+        public DiscQueryEngine(IImageFileFactory imageFileFactory, IImageResizer imageResizer)
+        {
+            _imageFileFactory = imageFileFactory ?? throw new ArgumentNullException(nameof(imageFileFactory));
+            _imageResizer = imageResizer ?? throw new ArgumentNullException(nameof(imageResizer));
+        }
+
         public IReadOnlyCollection<FileSystemEntryInfo> GetAllDrives()
         {
             return DriveInfo.GetDrives()
@@ -83,15 +90,12 @@ namespace ImageFanReloaded.CommonTypes.Disc
                                 .Where(aFileInfo =>
                                        ImageFileExtensions.Contains(aFileInfo.Extension))
                                 .OrderBy(aFileInfo => aFileInfo.Name)
-                                .Select(aFileInfo =>
-                                       TypesFactoryResolver.TypesFactoryInstance
-                                                           .GetImageFile(aFileInfo.FullName))
+                                .Select(aFileInfo => _imageFileFactory.GetImageFile(_imageResizer, aFileInfo.FullName))
                                 .OrderBy(aFileInfo => aFileInfo.FileName)
                                 .ToArray();
 
             return imageFiles;
         }
-
 
         #region Private
 
@@ -133,6 +137,9 @@ namespace ImageFanReloaded.CommonTypes.Disc
         private static readonly IReadOnlyCollection<string> SpecialFolders;
 
 		private static readonly HashSet<string> ImageFileExtensions;
+
+        private readonly IImageFileFactory _imageFileFactory;
+        private readonly IImageResizer _imageResizer;
 
         #endregion
     }

@@ -1,6 +1,10 @@
-﻿using ImageFanReloaded.Factories;
+﻿using System.Windows;
+
+using ImageFanReloaded.CommonTypes.Disc;
+using ImageFanReloaded.CommonTypes.ImageHandling;
+using ImageFanReloaded.Factories;
 using ImageFanReloaded.Presenters;
-using System.Windows;
+using ImageFanReloaded.Views;
 
 namespace ImageFanReloaded
 {
@@ -11,8 +15,13 @@ namespace ImageFanReloaded
         {
             base.OnStartup(e);
 
-            var mainView = TypesFactoryResolver.TypesFactoryInstance.GetMainView();
-            new MainPresenter(mainView);
+            var imageViewFactory = new ImageViewFactory();
+            var imageFileFactory = new ImageFileFactory();
+            var imageResizer = new ImageResizer();
+            var discQueryEngine = new DiscQueryEngine(imageFileFactory, imageResizer);
+
+            var mainView = new MainView(imageViewFactory);
+            new MainPresenter(discQueryEngine, mainView);
             mainView.Show();
         }
     }

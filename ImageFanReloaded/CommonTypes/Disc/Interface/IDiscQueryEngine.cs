@@ -1,6 +1,7 @@
-﻿using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
+﻿using System.Collections.Generic;
+
+using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 using ImageFanReloaded.CommonTypes.Info;
-using System.Collections.Generic;
 
 namespace ImageFanReloaded.CommonTypes.Disc.Interface
 {

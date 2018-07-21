@@ -1,5 +1,6 @@
-﻿using ImageFanReloaded.CommonTypes.Info;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+
+using ImageFanReloaded.CommonTypes.Info;
 
 namespace ImageFanReloaded.Controls
 {
@@ -25,7 +26,6 @@ namespace ImageFanReloaded.Controls
                 _fileSystemEntryTextBlock.Text = _fileSystemEntryInfo.Name;
             }
         }
-
 
         #region Private
 

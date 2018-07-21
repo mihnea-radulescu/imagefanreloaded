@@ -59,6 +59,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CommonTypes\CommonEventArgs\ThumbnailChangedEventArgs.cs" />
+    <Compile Include="Factories\ImageViewFactory.cs" />
+    <Compile Include="Factories\ImageFileFactory.cs" />
+    <Compile Include="Factories\Interface\IImageFileFactory.cs" />
+    <Compile Include="Factories\Interface\IImageViewFactory.cs" />
     <Compile Include="Views\ImageViewState.cs" />
     <Compile Include="Views\WindowExtensions.cs" />
     <Page Include="Controls\FileSystemEntryTreeViewItem.xaml">
@@ -82,8 +86,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CommonTypes\CommonEventArgs\FileSystemEntryChangedEventArgs.cs" />
-    <Compile Include="Factories\TypesFactoryResolver.cs" />
-    <Compile Include="Factories\ProductionTypesFactory.cs" />
     <Compile Include="CommonTypes\ImageHandling\Interface\IImageFile.cs" />
     <Compile Include="CommonTypes\ImageHandling\Interface\IImageResizer.cs" />
     <Compile Include="CommonTypes\Info\ThumbnaiInfo.cs" />
@@ -97,7 +99,6 @@
     <Compile Include="CommonTypes\ImageHandling\BitmapExtensions.cs" />
     <Compile Include="CommonTypes\ImageHandling\ImageFile.cs" />
     <Compile Include="CommonTypes\ImageHandling\ImageResizer.cs" />
-    <Compile Include="Factories\Interface\ITypesFactory.cs" />
     <Compile Include="Presenters\MainPresenter.cs" />
     <Compile Include="Controls\FileSystemEntryTreeViewItem.xaml.cs">
       <DependentUpon>FileSystemEntryTreeViewItem.xaml</DependentUpon>

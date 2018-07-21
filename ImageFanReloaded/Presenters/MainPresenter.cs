@@ -1,23 +1,21 @@
-﻿using ImageFanReloaded.CommonTypes.CommonEventArgs;
-using ImageFanReloaded.CommonTypes.Disc.Interface;
-using ImageFanReloaded.CommonTypes.Info;
-using ImageFanReloaded.Factories;
-using ImageFanReloaded.Views.Interface;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.Disc.Interface;
+using ImageFanReloaded.CommonTypes.Info;
+using ImageFanReloaded.Views.Interface;
+
 namespace ImageFanReloaded.Presenters
 {
     public class MainPresenter
     {
-        public MainPresenter(IMainView mainView)
+        public MainPresenter(IDiscQueryEngine discQueryEngine, IMainView mainView)
         {
-            _discQueryEngine = TypesFactoryResolver
-                .TypesFactoryInstance
-                .GetDiscQueryEngine();
+            _discQueryEngine = discQueryEngine ?? throw new ArgumentNullException(nameof(discQueryEngine));
 
             _mainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
             _mainView.FolderChanged += OnFolderChanged;
@@ -26,7 +24,6 @@ namespace ImageFanReloaded.Presenters
 
             PopulateDrivesAndSpecialFolders();
         }
-
 
         #region Private
 

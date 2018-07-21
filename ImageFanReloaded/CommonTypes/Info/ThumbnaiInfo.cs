@@ -1,7 +1,8 @@
-﻿using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Windows.Media;
+
+using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 
 namespace ImageFanReloaded.CommonTypes.Info
 {
@@ -39,7 +40,6 @@ namespace ImageFanReloaded.CommonTypes.Info
         }
 
         public event EventHandler ThumbnailImageChanged;
-
 
         #region Private
 

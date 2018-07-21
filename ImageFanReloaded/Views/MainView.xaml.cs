@@ -1,21 +1,24 @@
-﻿using ImageFanReloaded.CommonTypes.CommonEventArgs;
-using ImageFanReloaded.CommonTypes.Info;
-using ImageFanReloaded.Controls;
-using ImageFanReloaded.Factories;
-using ImageFanReloaded.Views.Interface;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+
+using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.Info;
+using ImageFanReloaded.Controls;
+using ImageFanReloaded.Factories.Interface;
+using ImageFanReloaded.Views.Interface;
 
 namespace ImageFanReloaded.Views
 {
     public partial class MainView
         : Window, IMainView
     {
-        public MainView()
+        public MainView(IImageViewFactory imageViewFactory)
         {
+            _imageViewFactory = imageViewFactory;
+
             InitializeComponent();
         }
 
@@ -101,8 +104,9 @@ namespace ImageFanReloaded.Views
             }
         }
 
-
         #region Private
+
+        private readonly IImageViewFactory _imageViewFactory;
 
         private List<ThumbnailBox> _thumbnailBoxList;
         private int _selectedThumbnailIndex;
@@ -194,7 +198,7 @@ namespace ImageFanReloaded.Views
         {
             var imageFile = _selectedThumbnailBox.ImageFile;
 
-            var imageView = TypesFactoryResolver.TypesFactoryInstance.GetImageView();
+            var imageView = _imageViewFactory.ImageView;
             imageView.SetImage(_selectedThumbnailBox.ImageFile);
 
             imageView.ThumbnailChanged +=

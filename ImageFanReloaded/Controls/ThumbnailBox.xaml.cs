@@ -1,9 +1,10 @@
-﻿using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
-using ImageFanReloaded.CommonTypes.Info;
-using System;
+﻿using System;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+
+using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
+using ImageFanReloaded.CommonTypes.Info;
 
 namespace ImageFanReloaded.Controls
 {
@@ -43,7 +44,6 @@ namespace ImageFanReloaded.Controls
             Cursor = Cursors.Arrow;
             IsSelected = false;
         }
-
 
         #region Private
 
