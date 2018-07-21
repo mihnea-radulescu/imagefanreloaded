@@ -5,14 +5,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 using ImageFanReloaded.CommonTypes.ImageHandling;
-using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 using ImageFanReloaded.Properties;
 
 namespace ImageFanReloaded
 {
     public static class GlobalData
     {
-        public const int ThumbnailSize = 200;
+        public static readonly int ThumbnailSize;
 
         public static readonly Image InvalidImageAsBitmap;
 
@@ -31,29 +30,31 @@ namespace ImageFanReloaded
 
         static GlobalData()
         {
-            ImageResizer = new ImageResizer();
-            
+            var imageResizer = new ImageResizer();
+
+            ThumbnailSize = Settings.Default.ThumbnailSize;
+
             InvalidImageAsBitmap = Resources.InvalidImage;
 
             InvalidImage = Resources.InvalidImage.ConvertToImageSource();
-            InvalidImageThumbnail = ImageResizer
+            InvalidImageThumbnail = imageResizer
                                         .CreateThumbnail(Resources.InvalidImage, ThumbnailSize)
                                         .ConvertToImageSource();
 
-            LoadingImageThumbnail = ImageResizer
+            LoadingImageThumbnail = imageResizer
                                         .CreateThumbnail(Resources.LoadingImage, ThumbnailSize)
                                         .ConvertToImageSource();
 
             using (var driveIconBitmap = Resources.DriveIcon)
             {
-                DriveIcon = ImageResizer
+                DriveIcon = imageResizer
                                         .CreateThumbnail(driveIconBitmap, 24)
                                         .ConvertToImageSource();
             }
 
             using (var folderIconBitmap = Resources.FolderIcon)
             {
-                FolderIcon = ImageResizer
+                FolderIcon = imageResizer
                                         .CreateThumbnail(folderIconBitmap, 24)
                                         .ConvertToImageSource();
             }
@@ -70,12 +71,5 @@ namespace ImageFanReloaded
                 Key.S, Key.D, Key.Down, Key.Right, Key.Space, Key.PageDown
             };
         }
-
-
-        #region Private
-
-        private static readonly IImageResizer ImageResizer;
-
-        #endregion
     }
 }
