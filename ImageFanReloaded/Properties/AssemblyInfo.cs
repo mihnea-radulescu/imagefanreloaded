@@ -2,12 +2,12 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 
-[assembly: AssemblyTitle("Image Fan Reloaded")]
+[assembly: AssemblyTitle("ImageFan Reloaded")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Image Fan Reloaded")]
-[assembly: AssemblyCopyright("Copyright © Mihnea Rădulescu 2015 - 2017")]
+[assembly: AssemblyProduct("ImageFan Reloaded")]
+[assembly: AssemblyCopyright("Copyright © Mihnea Rădulescu 2015 - 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
