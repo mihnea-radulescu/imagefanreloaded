@@ -21,8 +21,8 @@ namespace ImageFanReloaded
             var imageResizer = new ImageResizer();
             var discQueryEngine = new DiscQueryEngine(imageFileFactory, imageResizer);
 
-            var mainView = new MainView(imageViewFactory);
             var visualActionDispatcher = new VisualActionDispatcher(Dispatcher);
+            var mainView = new MainView(imageViewFactory, visualActionDispatcher);
 
             new MainPresenter(discQueryEngine, mainView, visualActionDispatcher);
             mainView.Show();

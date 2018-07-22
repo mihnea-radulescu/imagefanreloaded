@@ -7,10 +7,10 @@ namespace ImageFanReloaded.CommonTypes.Disc.Interface
 {
     public interface IDiscQueryEngine
     {
-        IReadOnlyCollection<FileSystemEntryInfo> GetAllDrives();
-        IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFolders();
-        IReadOnlyCollection<FileSystemEntryInfo> GetSubFolders(string folderPath);
+        ICollection<FileSystemEntryInfo> GetAllDrives();
+        ICollection<FileSystemEntryInfo> GetSpecialFolders();
+        ICollection<FileSystemEntryInfo> GetSubFolders(string folderPath);
 
-        IReadOnlyCollection<IImageFile> GetImageFiles(string folderPath);
+        ICollection<IImageFile> GetImageFiles(string folderPath);
     }
 }

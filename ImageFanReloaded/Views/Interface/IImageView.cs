@@ -1,6 +1,7 @@
-﻿using ImageFanReloaded.CommonTypes.CommonEventArgs;
+﻿using System;
+
+using ImageFanReloaded.CommonTypes.CommonEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
-using System;
 
 namespace ImageFanReloaded.Views.Interface
 {

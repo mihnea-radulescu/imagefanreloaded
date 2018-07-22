@@ -79,7 +79,7 @@ namespace ImageFanReloaded.Infrastructure
             }
         }
 
-        private IReadOnlyList<ThumbnailInfo> GetImageFiles(string folderPath)
+        private IList<ThumbnailInfo> GetImageFiles(string folderPath)
         {
             var imageFiles = _discQueryEngine.GetImageFiles(folderPath);
 
@@ -90,7 +90,7 @@ namespace ImageFanReloaded.Infrastructure
             return thumbnailInfoList;
         }
 
-        private void ReadThumbnailInput(IReadOnlyList<ThumbnailInfo> currentThumbnails)
+        private void ReadThumbnailInput(IList<ThumbnailInfo> currentThumbnails)
         {
             for (var i = 0; ContinueThumbnailGeneration && i < currentThumbnails.Count; i++)
             {
@@ -98,7 +98,7 @@ namespace ImageFanReloaded.Infrastructure
             }
         }
 
-        private void GetThumbnails(IReadOnlyCollection<ThumbnailInfo> currentThumbnails)
+        private void GetThumbnails(ICollection<ThumbnailInfo> currentThumbnails)
         {
             currentThumbnails
                 .AsParallel()
@@ -108,6 +108,7 @@ namespace ImageFanReloaded.Infrastructure
                     if (ContinueThumbnailGeneration)
                     {
                         var currentThumbnail = aThumbnail.GetThumbnail();
+
                         currentThumbnail.Freeze();
 
                         aThumbnail.ThumbnailImage = currentThumbnail;

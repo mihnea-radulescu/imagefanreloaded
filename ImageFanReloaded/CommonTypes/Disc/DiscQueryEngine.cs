@@ -19,7 +19,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
             _imageResizer = imageResizer ?? throw new ArgumentNullException(nameof(imageResizer));
         }
 
-        public IReadOnlyCollection<FileSystemEntryInfo> GetAllDrives()
+        public ICollection<FileSystemEntryInfo> GetAllDrives()
         {
             return DriveInfo.GetDrives()
                             .Select(aDriveInfo =>
@@ -30,7 +30,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
                             .ToArray();
         }
 
-        public IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFolders()
+        public ICollection<FileSystemEntryInfo> GetSpecialFolders()
         {
             return SpecialFolders
                             .Select(aSpecialFolder =>
@@ -42,7 +42,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
                             .ToArray();
         }
 
-        public IReadOnlyCollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
+        public ICollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
         {
             if (string.IsNullOrWhiteSpace(folderPath))
             {
@@ -67,14 +67,14 @@ namespace ImageFanReloaded.CommonTypes.Disc
             }
         }
 
-        public IReadOnlyCollection<IImageFile> GetImageFiles(string folderPath)
+        public ICollection<IImageFile> GetImageFiles(string folderPath)
         {
             if (string.IsNullOrEmpty(folderPath))
             {
                 throw new ArgumentException("Folder path cannot be empty.", nameof(folderPath));
             }
 
-            IReadOnlyCollection<FileInfo> filesInformation;
+            ICollection<FileInfo> filesInformation;
             try
             {
                 filesInformation = new DirectoryInfo(folderPath)
@@ -129,12 +129,12 @@ namespace ImageFanReloaded.CommonTypes.Disc
             };
 		}
 
-        private static readonly IReadOnlyCollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
-        private static readonly IReadOnlyCollection<IImageFile> EmptyImageFileCollection;
+        private static readonly ICollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
+        private static readonly ICollection<IImageFile> EmptyImageFileCollection;
 
         private static readonly string UserProfilePath;
 
-        private static readonly IReadOnlyCollection<string> SpecialFolders;
+        private static readonly ICollection<string> SpecialFolders;
 
 		private static readonly HashSet<string> ImageFileExtensions;
 

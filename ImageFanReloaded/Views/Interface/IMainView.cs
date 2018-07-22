@@ -1,7 +1,8 @@
-﻿using ImageFanReloaded.CommonTypes.CommonEventArgs;
-using ImageFanReloaded.CommonTypes.Info;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.Info;
 
 namespace ImageFanReloaded.Views.Interface
 {
@@ -9,11 +10,11 @@ namespace ImageFanReloaded.Views.Interface
     {
         event EventHandler<FolderChangedEventArgs> FolderChanged;
 
-        void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
+        void PopulateSubFoldersTree(ICollection<FileSystemEntryInfo> subFolders,
                                     bool rootNodes);
 
         void ClearThumbnailBoxes();
-        void PopulateThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnails);
+        void PopulateThumbnailBoxes(ICollection<ThumbnailInfo> thumbnails);
 
         void Show();
     }
