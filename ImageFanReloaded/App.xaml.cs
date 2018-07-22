@@ -3,6 +3,7 @@
 using ImageFanReloaded.CommonTypes.Disc;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.Factories;
+using ImageFanReloaded.Infrastructure;
 using ImageFanReloaded.Presenters;
 using ImageFanReloaded.Views;
 
@@ -21,7 +22,9 @@ namespace ImageFanReloaded
             var discQueryEngine = new DiscQueryEngine(imageFileFactory, imageResizer);
 
             var mainView = new MainView(imageViewFactory);
-            new MainPresenter(discQueryEngine, mainView, Dispatcher);
+            var visualActionDispatcher = new VisualActionDispatcher(Dispatcher);
+
+            new MainPresenter(discQueryEngine, mainView, visualActionDispatcher);
             mainView.Show();
         }
     }

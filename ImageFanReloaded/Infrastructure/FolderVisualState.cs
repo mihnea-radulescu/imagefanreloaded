@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Windows.Threading;
 
 using ImageFanReloaded.CommonTypes.Disc.Interface;
 using ImageFanReloaded.CommonTypes.Info;
+using ImageFanReloaded.Infrastructure.Interface;
 using ImageFanReloaded.Views.Interface;
 
 namespace ImageFanReloaded.Infrastructure
@@ -15,7 +15,7 @@ namespace ImageFanReloaded.Infrastructure
         public FolderVisualState(
             IDiscQueryEngine discQueryEngine,
             IMainView mainView,
-            Dispatcher dispatcher,
+            IVisualActionDispatcher dispatcher,
             object generateThumbnailsLockObject,
             string folderPath)
         {
@@ -45,7 +45,7 @@ namespace ImageFanReloaded.Infrastructure
 
         private readonly IDiscQueryEngine _discQueryEngine;
         private readonly IMainView _mainView;
-        private readonly Dispatcher _dispatcher;
+        private readonly IVisualActionDispatcher _dispatcher;
         private readonly object _generateThumbnailsLockObject;
 
         private readonly string _folderPath;
@@ -63,9 +63,9 @@ namespace ImageFanReloaded.Infrastructure
 
                 var thumbnails = GetImageFiles(_folderPath);
 
-                for (var thumbnailCollection = thumbnails;
-                     thumbnailCollection.Any();
-                     thumbnailCollection = thumbnailCollection.Skip(GlobalData.ProcessorCount).ToList())
+                for (var thumbnailCollection = (IEnumerable<ThumbnailInfo>)thumbnails;
+                     ContinueThumbnailGeneration && thumbnailCollection.Any();
+                     thumbnailCollection = thumbnailCollection.Skip(GlobalData.ProcessorCount))
                 {
                     var currentThumbnails = thumbnailCollection
                         .Take(GlobalData.ProcessorCount)

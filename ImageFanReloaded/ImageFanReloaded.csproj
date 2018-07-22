@@ -64,6 +64,8 @@
     <Compile Include="Factories\Interface\IImageFileFactory.cs" />
     <Compile Include="Factories\Interface\IImageViewFactory.cs" />
     <Compile Include="Infrastructure\FolderVisualState.cs" />
+    <Compile Include="Infrastructure\Interface\IVisualActionDispatcher.cs" />
+    <Compile Include="Infrastructure\VisualActionDispatcher.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

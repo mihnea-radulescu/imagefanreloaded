@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Windows.Threading;
 
 using ImageFanReloaded.CommonTypes.CommonEventArgs;
 using ImageFanReloaded.CommonTypes.Disc.Interface;
 using ImageFanReloaded.Infrastructure;
+using ImageFanReloaded.Infrastructure.Interface;
 using ImageFanReloaded.Views.Interface;
 
 namespace ImageFanReloaded.Presenters
 {
     public class MainPresenter
     {
-        public MainPresenter(IDiscQueryEngine discQueryEngine, IMainView mainView, Dispatcher dispatcher)
+        public MainPresenter(IDiscQueryEngine discQueryEngine, IMainView mainView, IVisualActionDispatcher dispatcher)
         {
             _discQueryEngine = discQueryEngine ?? throw new ArgumentNullException(nameof(discQueryEngine));
 
@@ -28,7 +28,7 @@ namespace ImageFanReloaded.Presenters
 
         private readonly IDiscQueryEngine _discQueryEngine;
         private readonly IMainView _mainView;
-        private readonly Dispatcher _dispatcher;
+        private readonly IVisualActionDispatcher _dispatcher;
 
         private FolderVisualState _folderVisualState;
         private object _generateThumbnailsLockObject;
