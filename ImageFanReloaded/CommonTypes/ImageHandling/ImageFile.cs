@@ -115,38 +115,35 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
             }
         }
 
-        public ImageSource Thumbnail
+        public ImageSource GetThumbnail()
         {
-            get
+            lock (_lockObject)
             {
-                lock (_lockObject)
+                if (_thumbnailInput == null)
                 {
-                    if (_thumbnailInput == null)
-                    {
-                        throw new InvalidOperationException(
-                            "ReadThumbnailInput() must be executed prior to calling the Thumbnail property.");
-                    }
+                    throw new InvalidOperationException(
+                        "ReadThumbnailInput() must be executed prior to calling the Thumbnail property.");
+                }
 
-                    Image thumbnail = null;
+                Image thumbnail = null;
 
-                    try
-                    {
-                        thumbnail = _imageResizer.CreateThumbnail(_thumbnailInput, GlobalData.ThumbnailSize);
+                try
+                {
+                    thumbnail = _imageResizer.CreateThumbnail(_thumbnailInput, GlobalData.ThumbnailSize);
 
-                        return thumbnail.ConvertToImageSource();
-                    }
-                    catch
-                    {
-                        return GlobalData.InvalidImageThumbnail;
-                    }
-                    finally
-                    {
-                        DisposeThumbnailInput();
+                    return thumbnail.ConvertToImageSource();
+                }
+                catch
+                {
+                    return GlobalData.InvalidImageThumbnail;
+                }
+                finally
+                {
+                    DisposeThumbnailInput();
 
-                        if (thumbnail != null)
-                        {
-                            thumbnail.Dispose();
-                        }
+                    if (thumbnail != null)
+                    {
+                        thumbnail.Dispose();
                     }
                 }
             }

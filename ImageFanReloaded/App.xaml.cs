@@ -21,7 +21,7 @@ namespace ImageFanReloaded
             var discQueryEngine = new DiscQueryEngine(imageFileFactory, imageResizer);
 
             var mainView = new MainView(imageViewFactory);
-            new MainPresenter(discQueryEngine, mainView);
+            new MainPresenter(discQueryEngine, mainView, Dispatcher);
             mainView.Show();
         }
     }

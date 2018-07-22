@@ -7,7 +7,7 @@ namespace ImageFanReloaded.Views.Interface
 {
     public interface IMainView
     {
-        event EventHandler<FileSystemEntryChangedEventArgs> FolderChanged;
+        event EventHandler<FolderChangedEventArgs> FolderChanged;
 
         void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
                                     bool rootNodes);

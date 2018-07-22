@@ -12,6 +12,6 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Interface
         ImageSource GetResizedImage(Rectangle imageSize);
 
         void ReadThumbnailInputFromDisc();
-        ImageSource Thumbnail { get; }
+        ImageSource GetThumbnail();
     }
 }

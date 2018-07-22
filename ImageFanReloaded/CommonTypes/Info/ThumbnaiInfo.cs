@@ -31,13 +31,13 @@ namespace ImageFanReloaded.CommonTypes.Info
             }
         }
 
-        public string ThumbnailText
-        { 
-            get
-            {
-                return ImageFile.FileName;
-            }
-        }
+        public string ThumbnailText => ImageFile.FileName;
+
+        public void ReadThumbnailInputFromDisc()
+            => ImageFile.ReadThumbnailInputFromDisc();
+
+        public ImageSource GetThumbnail()
+            => ImageFile.GetThumbnail();
 
         public event EventHandler ThumbnailImageChanged;
 

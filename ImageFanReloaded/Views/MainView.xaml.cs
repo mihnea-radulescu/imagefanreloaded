@@ -22,7 +22,7 @@ namespace ImageFanReloaded.Views
             InitializeComponent();
         }
 
-        public event EventHandler<FileSystemEntryChangedEventArgs> FolderChanged;
+        public event EventHandler<FolderChangedEventArgs> FolderChanged;
 
         public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
                                            bool rootNodes)
@@ -125,7 +125,7 @@ namespace ImageFanReloaded.Views
                 {
                     var selectedFolderPath = selectedFolderTreeViewItem.FileSystemEntryInfo.Path;
                     folderChangedHandler(this,
-                                         new FileSystemEntryChangedEventArgs(selectedFolderPath));
+                                         new FolderChangedEventArgs(selectedFolderPath));
                 }
             }
         }

@@ -63,6 +63,7 @@
     <Compile Include="Factories\ImageFileFactory.cs" />
     <Compile Include="Factories\Interface\IImageFileFactory.cs" />
     <Compile Include="Factories\Interface\IImageViewFactory.cs" />
+    <Compile Include="Infrastructure\FolderVisualState.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -90,7 +91,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CommonTypes\CommonEventArgs\FileSystemEntryChangedEventArgs.cs" />
+    <Compile Include="CommonTypes\CommonEventArgs\FolderChangedEventArgs.cs" />
     <Compile Include="CommonTypes\ImageHandling\Interface\IImageFile.cs" />
     <Compile Include="CommonTypes\ImageHandling\Interface\IImageResizer.cs" />
     <Compile Include="CommonTypes\Info\ThumbnaiInfo.cs" />

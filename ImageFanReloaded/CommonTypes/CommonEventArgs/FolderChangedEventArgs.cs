@@ -2,10 +2,10 @@
 
 namespace ImageFanReloaded.CommonTypes.CommonEventArgs
 {
-    public class FileSystemEntryChangedEventArgs
+    public class FolderChangedEventArgs
         : EventArgs
     {
-        public FileSystemEntryChangedEventArgs(string path)
+        public FolderChangedEventArgs(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {

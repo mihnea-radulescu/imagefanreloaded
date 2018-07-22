@@ -1,26 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Windows.Threading;
 
 using ImageFanReloaded.CommonTypes.CommonEventArgs;
 using ImageFanReloaded.CommonTypes.Disc.Interface;
-using ImageFanReloaded.CommonTypes.Info;
+using ImageFanReloaded.Infrastructure;
 using ImageFanReloaded.Views.Interface;
 
 namespace ImageFanReloaded.Presenters
 {
     public class MainPresenter
     {
-        public MainPresenter(IDiscQueryEngine discQueryEngine, IMainView mainView)
+        public MainPresenter(IDiscQueryEngine discQueryEngine, IMainView mainView, Dispatcher dispatcher)
         {
             _discQueryEngine = discQueryEngine ?? throw new ArgumentNullException(nameof(discQueryEngine));
 
             _mainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
             _mainView.FolderChanged += OnFolderChanged;
 
-            _populateThumbnailsLockObject = new object();
+            _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
+            _generateThumbnailsLockObject = new object();
 
             PopulateDrivesAndSpecialFolders();
         }
@@ -28,143 +27,41 @@ namespace ImageFanReloaded.Presenters
         #region Private
 
         private readonly IDiscQueryEngine _discQueryEngine;
-
         private readonly IMainView _mainView;
+        private readonly Dispatcher _dispatcher;
 
-        private object _populateThumbnailsLockObject;
-        private CancellationTokenSource _cancellationTokenSource;
-
-        private void OnFolderChanged(object sender, FileSystemEntryChangedEventArgs e)
-        {
-            StopPopulateThumbnails();
-
-            PopulateSubFolders(e.Path);
-
-            PopulateThumbnails(e.Path);
-        }
+        private FolderVisualState _folderVisualState;
+        private object _generateThumbnailsLockObject;
 
         private void PopulateDrivesAndSpecialFolders()
         {
             var specialFolders = _discQueryEngine.GetSpecialFolders();
             _mainView.PopulateSubFoldersTree(specialFolders, true);
-            
+
             var drives = _discQueryEngine.GetAllDrives();
             _mainView.PopulateSubFoldersTree(drives, true);
         }
 
-        private void PopulateSubFolders(string folderPath)
+        private void OnFolderChanged(object sender, FolderChangedEventArgs e)
         {
-            var subFolders = _discQueryEngine.GetSubFolders(folderPath);
-            _mainView.PopulateSubFoldersTree(subFolders, false);
+            UpdateUserInterface(e.Path);
         }
 
-        private void StopPopulateThumbnails()
+        private void UpdateUserInterface(string folderPath)
         {
-            try
+            if (_folderVisualState != null)
             {
-                _cancellationTokenSource.Cancel();
+                _folderVisualState.NotifyStopThumbnailGeneration();
             }
-            catch
-            {
-            }
-        }
 
-        private async void PopulateThumbnails(string folderPath)
-        {
-            try
-            {
-                Monitor.Enter(_populateThumbnailsLockObject);
+            _folderVisualState = new FolderVisualState(
+                _discQueryEngine,
+                _mainView,
+                _dispatcher,
+                _generateThumbnailsLockObject,
+                folderPath);
 
-                _mainView.ClearThumbnailBoxes();
-
-                using (_cancellationTokenSource = new CancellationTokenSource())
-                {
-                    var cancellationToken = _cancellationTokenSource.Token;
-
-                    var getImageFilesTask = Task.Run(() => GetImageFiles(folderPath));
-                    var thumbnails = await getImageFilesTask;
-
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    for (var thumbnailCollection = thumbnails;
-                             thumbnailCollection.Any();
-                             thumbnailCollection =
-                                        thumbnailCollection.Skip(GlobalData.ProcessorCount))
-                    {
-                        var currentThumbnails = thumbnailCollection
-                            .Take(GlobalData.ProcessorCount)
-                            .ToArray();
-
-                        var readThumbnailInputTask = Task.Run(
-                            () => ReadThumbnailInput(currentThumbnails, cancellationToken));
-                        await readThumbnailInputTask;
-
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            return;
-                        }
-
-                        _mainView.PopulateThumbnailBoxes(currentThumbnails);
-
-                        var getThumbnailsTask = Task.Run(
-                            () => GetThumbnails(currentThumbnails, cancellationToken));
-                        await getThumbnailsTask;
-                    }
-                }
-            }
-            finally
-            {
-                Monitor.Exit(_populateThumbnailsLockObject);
-            }
-        }
-
-        private IEnumerable<ThumbnailInfo> GetImageFiles(string folderPath)
-        {
-            var imageFiles = _discQueryEngine.GetImageFiles(folderPath);
-
-            var thumbnailInfoCollection =
-                imageFiles
-                    .Select(anImageFile => new ThumbnailInfo(anImageFile))
-                    .ToArray();
-
-            return thumbnailInfoCollection;
-        }
-
-        private void ReadThumbnailInput(
-            ICollection<ThumbnailInfo> currentThumbnails,
-            CancellationToken cancellationToken)
-        {
-            foreach (var aThumbnail in currentThumbnails)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                aThumbnail.ImageFile.ReadThumbnailInputFromDisc();
-            }
-        }
-
-        private void GetThumbnails(
-            ICollection<ThumbnailInfo> currentThumbnails,
-            CancellationToken cancellationToken)
-        {
-            currentThumbnails
-                .AsParallel()
-                .AsOrdered()
-                .ForAll(aThumbnail =>
-                {
-                    if (!cancellationToken.IsCancellationRequested)
-                    {
-                        var currentThumbnail = aThumbnail.ImageFile.Thumbnail;
-                        currentThumbnail.Freeze();
-
-                        aThumbnail.ThumbnailImage = currentThumbnail;
-                    }
-                });
+            _folderVisualState.UpdateVisualState();
         }
 
         #endregion
