@@ -15,6 +15,7 @@ namespace ImageFanReloaded.Views.Interface
 
         void ClearThumbnailBoxes();
         void PopulateThumbnailBoxes(ICollection<ThumbnailInfo> thumbnails);
+        void RefreshThumbnailBoxes(ICollection<ThumbnailInfo> thumbnails);
 
         void Show();
     }

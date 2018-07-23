@@ -5,17 +5,14 @@ using System.Windows.Media;
 
 using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 using ImageFanReloaded.CommonTypes.Info;
-using ImageFanReloaded.Infrastructure.Interface;
 
 namespace ImageFanReloaded.Controls
 {
     public partial class ThumbnailBox
         : UserControl
     {
-        public ThumbnailBox(IVisualActionDispatcher dispatcher, ThumbnailInfo thumbnailInfo)
+        public ThumbnailBox(ThumbnailInfo thumbnailInfo)
         {
-            _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
-
             if (thumbnailInfo == null)
             {
                 throw new ArgumentNullException(nameof(thumbnailInfo));
@@ -48,14 +45,17 @@ namespace ImageFanReloaded.Controls
             IsSelected = false;
         }
 
+        public void RefreshThumbnail()
+        {
+            _thumbnailImage.Source = _thumbnailInfo.ThumbnailImage;
+        }
+
         public void DisposeThumbnail()
         {
             ImageFile.Dispose();
         }
-
+        
         #region Private
-
-        private readonly IVisualActionDispatcher _dispatcher;
 
         private ThumbnailInfo _thumbnailInfo;
 
@@ -72,13 +72,6 @@ namespace ImageFanReloaded.Controls
 
             _thumbnailImage.Source = _thumbnailInfo.ThumbnailImage;
             _thumbnailTextBlock.Text = _thumbnailInfo.ThumbnailText;
-
-            _thumbnailInfo.ThumbnailImageChanged += OnThumbnailImageChanged;
-        }
-
-        private void OnThumbnailImageChanged(object sender, EventArgs e)
-        {
-            _dispatcher.Invoke(() => _thumbnailImage.Source = _thumbnailInfo.ThumbnailImage);
         }
 
         private void OnMouseClick(object sender, MouseButtonEventArgs e)

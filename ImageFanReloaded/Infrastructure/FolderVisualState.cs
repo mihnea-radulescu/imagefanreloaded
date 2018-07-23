@@ -75,6 +75,7 @@ namespace ImageFanReloaded.Infrastructure
                     _dispatcher.Invoke(() => _mainView.PopulateThumbnailBoxes(currentThumbnails));
 
                     GetThumbnails(currentThumbnails);
+                    _dispatcher.Invoke(() => _mainView.RefreshThumbnailBoxes(currentThumbnails));
                 }
             }
         }
@@ -104,11 +105,7 @@ namespace ImageFanReloaded.Infrastructure
             {
                 if (ContinueThumbnailGeneration)
                 {
-                    var currentThumbnail = aThumbnailInfo.GetThumbnail();
-
-                    currentThumbnail.Freeze();
-
-                    aThumbnailInfo.ThumbnailImage = currentThumbnail;
+                    aThumbnailInfo.SaveThumbnail();
                 }
             });
         }

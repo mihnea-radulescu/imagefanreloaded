@@ -8,7 +8,6 @@ using ImageFanReloaded.CommonTypes.CommonEventArgs;
 using ImageFanReloaded.CommonTypes.Info;
 using ImageFanReloaded.Controls;
 using ImageFanReloaded.Factories.Interface;
-using ImageFanReloaded.Infrastructure.Interface;
 using ImageFanReloaded.Views.Interface;
 
 namespace ImageFanReloaded.Views
@@ -16,10 +15,9 @@ namespace ImageFanReloaded.Views
     public partial class MainView
         : Window, IMainView
     {
-        public MainView(IImageViewFactory imageViewFactory, IVisualActionDispatcher dispatcher)
+        public MainView(IImageViewFactory imageViewFactory)
         {
             _imageViewFactory = imageViewFactory ?? throw new ArgumentNullException(nameof(imageViewFactory));
-            _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 
             InitializeComponent();
         }
@@ -84,7 +82,9 @@ namespace ImageFanReloaded.Views
         {
             foreach (var aThumbnail in thumbnails)
             {
-                var aThumbnailBox = new ThumbnailBox(_dispatcher, aThumbnail);
+                var aThumbnailBox = new ThumbnailBox(aThumbnail);
+                aThumbnail.ThumbnailBox = aThumbnailBox;
+
                 aThumbnailBox.ThumbnailBoxClicked +=
                     (sender, e) =>
                     {
@@ -114,10 +114,17 @@ namespace ImageFanReloaded.Views
             }
         }
 
+        public void RefreshThumbnailBoxes(ICollection<ThumbnailInfo> thumbnails)
+        {
+            foreach (var aThumbnail in thumbnails)
+            {
+                aThumbnail.RefreshThumbnail();
+            }
+        }
+
         #region Private
 
         private readonly IImageViewFactory _imageViewFactory;
-        private readonly IVisualActionDispatcher _dispatcher;
 
         private List<ThumbnailBox> _thumbnailBoxList;
         private int _selectedThumbnailIndex;

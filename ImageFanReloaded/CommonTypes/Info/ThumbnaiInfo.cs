@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows.Media;
 
 using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
+using ImageFanReloaded.Controls;
 
 namespace ImageFanReloaded.CommonTypes.Info
 {
@@ -13,43 +14,26 @@ namespace ImageFanReloaded.CommonTypes.Info
         {
             ImageFile = imageFile ?? throw new ArgumentNullException(nameof(imageFile));
 
-            _thumbnailImage = GlobalData.LoadingImageThumbnail;
+            ThumbnailImage = GlobalData.LoadingImageThumbnail;
         }
+
+        public ThumbnailBox ThumbnailBox { get; set; }
 
         public IImageFile ImageFile { get; private set; }
 
-        public ImageSource ThumbnailImage
-        { 
-            get
-            {
-                return _thumbnailImage;
-            }
-            set
-            {
-                _thumbnailImage = value;
-                OnThumbnailImageChanged(this, EventArgs.Empty);
-            }
-        }
-
+        public ImageSource ThumbnailImage { get; set; }
         public string ThumbnailText => ImageFile.FileName;
 
         public void ReadThumbnailInputFromDisc()
             => ImageFile.ReadThumbnailInputFromDisc();
 
-        public ImageSource GetThumbnail()
-            => ImageFile.GetThumbnail();
-
-        public event EventHandler ThumbnailImageChanged;
-
-        #region Private
-
-        private ImageSource _thumbnailImage;
-
-        private void OnThumbnailImageChanged(object sender, EventArgs e)
+        public void SaveThumbnail()
         {
-            ThumbnailImageChanged?.Invoke(sender, e);
+            ThumbnailImage = ImageFile.GetThumbnail();
+            ThumbnailImage.Freeze();
         }
 
-        #endregion
+        public void RefreshThumbnail()
+            => ThumbnailBox.RefreshThumbnail();
     }
 }
