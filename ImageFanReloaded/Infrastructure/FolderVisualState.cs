@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 
 using ImageFanReloaded.CommonTypes.Disc.Interface;
 using ImageFanReloaded.CommonTypes.Info;
@@ -38,7 +38,7 @@ namespace ImageFanReloaded.Infrastructure
 
         public void UpdateVisualState()
         {
-            ThreadPool.QueueUserWorkItem(UpdateVisualStateHelper);
+            Task.Factory.StartNew(() => UpdateVisualStateHelper());
         }
 
         #region Private
@@ -52,7 +52,7 @@ namespace ImageFanReloaded.Infrastructure
 
         private volatile bool _generateThumbnails;
 
-        private void UpdateVisualStateHelper(object state)
+        private void UpdateVisualStateHelper()
         {
             lock (_generateThumbnailsLockObject)
             {
@@ -85,7 +85,7 @@ namespace ImageFanReloaded.Infrastructure
 
             var thumbnailInfoList = imageFiles
                 .Select(anImageFile => new ThumbnailInfo(anImageFile))
-                .ToArray();
+                .ToList();
 
             return thumbnailInfoList;
         }
@@ -100,20 +100,17 @@ namespace ImageFanReloaded.Infrastructure
 
         private void GetThumbnails(ICollection<ThumbnailInfo> currentThumbnails)
         {
-            currentThumbnails
-                .AsParallel()
-                .AsOrdered()
-                .ForAll(aThumbnail =>
+            Parallel.ForEach(currentThumbnails, aThumbnail =>
+            {
+                if (ContinueThumbnailGeneration)
                 {
-                    if (ContinueThumbnailGeneration)
-                    {
-                        var currentThumbnail = aThumbnail.GetThumbnail();
+                    var currentThumbnail = aThumbnail.GetThumbnail();
 
-                        currentThumbnail.Freeze();
+                    currentThumbnail.Freeze();
 
-                        aThumbnail.ThumbnailImage = currentThumbnail;
-                    }
-                });
+                    aThumbnail.ThumbnailImage = currentThumbnail;
+                }
+            });
         }
 
         #endregion
