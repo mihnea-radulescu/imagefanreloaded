@@ -100,15 +100,15 @@ namespace ImageFanReloaded.Infrastructure
 
         private void GetThumbnails(ICollection<ThumbnailInfo> currentThumbnails)
         {
-            Parallel.ForEach(currentThumbnails, aThumbnail =>
+            Parallel.ForEach(currentThumbnails, aThumbnailInfo =>
             {
                 if (ContinueThumbnailGeneration)
                 {
-                    var currentThumbnail = aThumbnail.GetThumbnail();
+                    var currentThumbnail = aThumbnailInfo.GetThumbnail();
 
                     currentThumbnail.Freeze();
 
-                    aThumbnail.ThumbnailImage = currentThumbnail;
+                    aThumbnailInfo.ThumbnailImage = currentThumbnail;
                 }
             });
         }

@@ -102,8 +102,6 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
         {
             lock (_thumbnailGenerationLockObject)
             {
-                DisposeThumbnailInput();
-                
                 try
                 {
                     _thumbnailInput = new Bitmap(_fileNameWithPath);
@@ -139,14 +137,20 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
                 }
                 finally
                 {
-                    DisposeThumbnailInput();
-
                     if (thumbnail != null)
                     {
                         thumbnail.Dispose();
                     }
+
+                    DisposeThumbnailInput();
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #region Private
@@ -164,15 +168,21 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
             _fileNameWithPath = filePath;
         }
 
+        private void Dispose(bool isDisposing)
+        {
+            if (isDisposing)
+            {
+                DisposeThumbnailInput();
+            }
+        }
+
         private void DisposeThumbnailInput()
         {
-            if ((_thumbnailInput != null) &&
-                (_thumbnailInput != GlobalData.InvalidImageAsBitmap))
+            if (_thumbnailInput != null &&
+                _thumbnailInput != GlobalData.InvalidImageAsBitmap)
             {
                 _thumbnailInput.Dispose();
             }
-
-            _thumbnailInput = null;
         }
 
         #endregion

@@ -64,12 +64,20 @@ namespace ImageFanReloaded.Views
 
         public void ClearThumbnailBoxes()
         {
-            _thumbnailWrapPanel.Children.Clear();
-            _thumbnailScrollViewer.ScrollToVerticalOffset(0);
+            if (_thumbnailBoxList != null)
+            {
+                foreach (var aThumbnailBox in _thumbnailBoxList)
+                {
+                    aThumbnailBox.DisposeThumbnail();
+                }
+            }
 
             _thumbnailBoxList = new List<ThumbnailBox>();
             _selectedThumbnailIndex = -1;
             _selectedThumbnailBox = null;
+
+            _thumbnailWrapPanel.Children.Clear();
+            _thumbnailScrollViewer.ScrollToVerticalOffset(0);
         }
 
         public void PopulateThumbnailBoxes(ICollection<ThumbnailInfo> thumbnails)

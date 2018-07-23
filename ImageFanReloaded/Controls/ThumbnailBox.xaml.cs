@@ -48,6 +48,11 @@ namespace ImageFanReloaded.Controls
             IsSelected = false;
         }
 
+        public void DisposeThumbnail()
+        {
+            ImageFile.Dispose();
+        }
+
         #region Private
 
         private readonly IVisualActionDispatcher _dispatcher;
