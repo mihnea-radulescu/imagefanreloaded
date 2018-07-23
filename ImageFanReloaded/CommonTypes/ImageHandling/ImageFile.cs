@@ -23,7 +23,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
 
             GetFileNameAndPath(filePath);
 
-            _lockObject = new object();
+            _thumbnailGenerationLockObject = new object();
         }
 
         public string FileName { get; private set; }
@@ -100,7 +100,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
 
         public void ReadThumbnailInputFromDisc()
         {
-            lock (_lockObject)
+            lock (_thumbnailGenerationLockObject)
             {
                 DisposeThumbnailInput();
                 
@@ -117,12 +117,12 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
 
         public ImageSource GetThumbnail()
         {
-            lock (_lockObject)
+            lock (_thumbnailGenerationLockObject)
             {
                 if (_thumbnailInput == null)
                 {
                     throw new InvalidOperationException(
-                        "ReadThumbnailInput() must be executed prior to calling the Thumbnail property.");
+                        "The method ReadThumbnailInputFromDisc() must be executed prior to calling the method GetThumbnail().");
                 }
 
                 Image thumbnail = null;
@@ -155,7 +155,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
 
         private string _fileNameWithPath;
         private Image _thumbnailInput;
-        private object _lockObject;
+        private object _thumbnailGenerationLockObject;
 
         private void GetFileNameAndPath(string filePath)
         {

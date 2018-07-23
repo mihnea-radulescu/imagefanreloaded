@@ -199,8 +199,6 @@ namespace ImageFanReloaded.Views
 
         private void DisplayImage()
         {
-            var imageFile = _selectedThumbnailBox.ImageFile;
-
             var imageView = _imageViewFactory.ImageView;
             imageView.SetImage(_selectedThumbnailBox.ImageFile);
 
