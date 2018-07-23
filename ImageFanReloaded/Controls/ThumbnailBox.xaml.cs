@@ -67,11 +67,6 @@ namespace ImageFanReloaded.Controls
 
         private void SetThumbnailInfo(ThumbnailInfo thumbnailInfo)
         {
-            if (_thumbnailInfo != null)
-            {
-                _thumbnailInfo.ThumbnailImageChanged -= OnThumbnailImageChanged;
-            }
-
             _thumbnailInfo = thumbnailInfo;
             ImageFile = _thumbnailInfo.ImageFile;
 
