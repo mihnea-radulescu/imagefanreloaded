@@ -28,28 +28,25 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
 
         public string FileName { get; private set; }
 
-        public ImageSource Image
+        public ImageSource GetImage()
         {
-            get
+            Image imageFromFile = null;
+
+            try
             {
-                Image imageFromFile = null;
+                imageFromFile = new Bitmap(_fileNameWithPath);
 
-                try
+                return imageFromFile.ConvertToImageSource();
+            }
+            catch
+            {
+                return GlobalData.InvalidImage;
+            }
+            finally
+            {
+                if (imageFromFile != null)
                 {
-                    imageFromFile = new Bitmap(_fileNameWithPath);
-
-                    return imageFromFile.ConvertToImageSource();
-                }
-                catch
-                {
-                    return GlobalData.InvalidImage;
-                }
-                finally
-                {
-                    if (imageFromFile != null)
-                    {
-                        imageFromFile.Dispose();
-                    }
+                    imageFromFile.Dispose();
                 }
             }
         }

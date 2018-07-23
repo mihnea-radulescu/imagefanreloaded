@@ -144,7 +144,7 @@ namespace ImageFanReloaded.Views
             _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 
             _imageViewState = ImageViewState.Detailed;
-            _image.Source = _imageFile.Image;
+            _image.Source = _imageFile.GetImage();
 
             EndInit();
         }

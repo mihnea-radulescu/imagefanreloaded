@@ -9,7 +9,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Interface
     {
         string FileName { get; }
 
-        ImageSource Image { get; }
+        ImageSource GetImage();
 
         ImageSource GetResizedImage(Rectangle imageSize);
 
