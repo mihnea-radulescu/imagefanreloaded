@@ -10,7 +10,7 @@ using ImageFanReloaded.Views.Interface;
 
 namespace ImageFanReloaded.Infrastructure
 {
-    public class FolderVisualState
+    public class FolderVisualState : IFolderVisualState
     {
         public FolderVisualState(
             IDiscQueryEngine discQueryEngine,
@@ -27,14 +27,11 @@ namespace ImageFanReloaded.Infrastructure
 
             _folderPath = folderPath;
 
-            _generateThumbnails = true;
+            _continueThumbnailGeneration = true;
         }
 
         public void NotifyStopThumbnailGeneration()
-            => _generateThumbnails = false;
-
-        public bool ContinueThumbnailGeneration
-            => _generateThumbnails;
+            => _continueThumbnailGeneration = false;
 
         public void UpdateVisualState()
         {
@@ -50,7 +47,7 @@ namespace ImageFanReloaded.Infrastructure
 
         private readonly string _folderPath;
 
-        private volatile bool _generateThumbnails;
+        private volatile bool _continueThumbnailGeneration;
 
         private void UpdateVisualStateHelper()
         {
@@ -64,7 +61,7 @@ namespace ImageFanReloaded.Infrastructure
                 var thumbnails = GetImageFiles(_folderPath);
 
                 for (var thumbnailCollection = (IEnumerable<ThumbnailInfo>)thumbnails;
-                     ContinueThumbnailGeneration && thumbnailCollection.Any();
+                     _continueThumbnailGeneration && thumbnailCollection.Any();
                      thumbnailCollection = thumbnailCollection.Skip(GlobalData.ProcessorCount))
                 {
                     var currentThumbnails = thumbnailCollection
@@ -93,7 +90,7 @@ namespace ImageFanReloaded.Infrastructure
 
         private void ReadThumbnailInput(IList<ThumbnailInfo> currentThumbnails)
         {
-            for (var i = 0; ContinueThumbnailGeneration && i < currentThumbnails.Count; i++)
+            for (var i = 0; _continueThumbnailGeneration && i < currentThumbnails.Count; i++)
             {
                 currentThumbnails[i].ReadThumbnailInputFromDisc();
             }
@@ -103,7 +100,7 @@ namespace ImageFanReloaded.Infrastructure
         {
             Parallel.ForEach(currentThumbnails, aThumbnailInfo =>
             {
-                if (ContinueThumbnailGeneration)
+                if (_continueThumbnailGeneration)
                 {
                     aThumbnailInfo.SaveThumbnail();
                 }

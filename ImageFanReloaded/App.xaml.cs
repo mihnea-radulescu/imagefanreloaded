@@ -24,7 +24,9 @@ namespace ImageFanReloaded
             var mainView = new MainView(imageViewFactory);
 
             var visualActionDispatcher = new VisualActionDispatcher(Dispatcher);
-            new MainPresenter(discQueryEngine, mainView, visualActionDispatcher);
+            var folderVisualStateFactory = new FolderVisualStateFactory();
+
+            new MainPresenter(discQueryEngine, mainView, visualActionDispatcher, folderVisualStateFactory);
             mainView.Show();
         }
     }

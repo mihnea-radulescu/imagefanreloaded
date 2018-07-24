@@ -59,11 +59,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CommonTypes\CommonEventArgs\ThumbnailChangedEventArgs.cs" />
+    <Compile Include="Factories\FolderVisualStateFactory.cs" />
     <Compile Include="Factories\ImageViewFactory.cs" />
     <Compile Include="Factories\ImageFileFactory.cs" />
+    <Compile Include="Factories\Interface\IFolderVisualStateFactory.cs" />
     <Compile Include="Factories\Interface\IImageFileFactory.cs" />
     <Compile Include="Factories\Interface\IImageViewFactory.cs" />
     <Compile Include="Infrastructure\FolderVisualState.cs" />
+    <Compile Include="Infrastructure\Interface\IFolderVisualState.cs" />
     <Compile Include="Infrastructure\Interface\IVisualActionDispatcher.cs" />
     <Compile Include="Infrastructure\VisualActionDispatcher.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

@@ -2,7 +2,7 @@
 
 using ImageFanReloaded.CommonTypes.CommonEventArgs;
 using ImageFanReloaded.CommonTypes.Disc.Interface;
-using ImageFanReloaded.Infrastructure;
+using ImageFanReloaded.Factories.Interface;
 using ImageFanReloaded.Infrastructure.Interface;
 using ImageFanReloaded.Views.Interface;
 
@@ -10,7 +10,11 @@ namespace ImageFanReloaded.Presenters
 {
     public class MainPresenter
     {
-        public MainPresenter(IDiscQueryEngine discQueryEngine, IMainView mainView, IVisualActionDispatcher dispatcher)
+        public MainPresenter(
+            IDiscQueryEngine discQueryEngine,
+            IMainView mainView,
+            IVisualActionDispatcher dispatcher,
+            IFolderVisualStateFactory folderVisualStateFactory)
         {
             _discQueryEngine = discQueryEngine ?? throw new ArgumentNullException(nameof(discQueryEngine));
 
@@ -18,6 +22,8 @@ namespace ImageFanReloaded.Presenters
             _mainView.FolderChanged += OnFolderChanged;
 
             _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
+            _folderVisualStateFactory = folderVisualStateFactory;
 
             _generateThumbnailsLockObject = new object();
 
@@ -29,8 +35,9 @@ namespace ImageFanReloaded.Presenters
         private readonly IDiscQueryEngine _discQueryEngine;
         private readonly IMainView _mainView;
         private readonly IVisualActionDispatcher _dispatcher;
+        private readonly IFolderVisualStateFactory _folderVisualStateFactory;
 
-        private FolderVisualState _folderVisualState;
+        private IFolderVisualState _folderVisualState;
         private object _generateThumbnailsLockObject;
 
         private void PopulateDrivesAndSpecialFolders()
@@ -54,7 +61,7 @@ namespace ImageFanReloaded.Presenters
                 _folderVisualState.NotifyStopThumbnailGeneration();
             }
 
-            _folderVisualState = new FolderVisualState(
+            _folderVisualState = _folderVisualStateFactory.GetFolderVisualState(
                 _discQueryEngine,
                 _mainView,
                 _dispatcher,
