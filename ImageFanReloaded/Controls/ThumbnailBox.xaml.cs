@@ -52,7 +52,7 @@ namespace ImageFanReloaded.Controls
 
         public void DisposeThumbnail()
         {
-            ImageFile.Dispose();
+            ImageFile.DisposeThumbnailInput();
         }
         
         #region Private

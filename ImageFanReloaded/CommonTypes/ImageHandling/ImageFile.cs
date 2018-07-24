@@ -12,16 +12,17 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
     public class ImageFile
         : IImageFile
     {
-        public ImageFile(IImageResizer imageResizer, string filePath)
+        public ImageFile(IImageResizer imageResizer, string imageFilePath)
         {
             _imageResizer = imageResizer ?? throw new ArgumentNullException(nameof(imageResizer));
 
-            if (string.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(imageFilePath))
             {
-                throw new ArgumentException("File path cannot be empty.", nameof(filePath));
+                throw new ArgumentException("Image file path cannot be empty.", nameof(imageFilePath));
             }
 
-            GetFileNameAndPath(filePath);
+            _imageFilePath = imageFilePath;
+            FileName = Path.GetFileName(imageFilePath);
 
             _thumbnailGenerationLockObject = new object();
         }
@@ -30,25 +31,23 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
 
         public ImageSource GetImage()
         {
-            Image imageFromFile = null;
+            Image image = null;
+            var imageSource = GlobalData.InvalidImage;
 
             try
             {
-                imageFromFile = new Bitmap(_fileNameWithPath);
-
-                return imageFromFile.ConvertToImageSource();
+                image = new Bitmap(_imageFilePath);
+                imageSource = image.ConvertToImageSource();
             }
             catch
             {
-                return GlobalData.InvalidImage;
             }
             finally
             {
-                if (imageFromFile != null)
-                {
-                    imageFromFile.Dispose();
-                }
+                image?.Dispose();
             }
+
+            return imageSource;
         }
 
         public ImageSource GetResizedImage(Rectangle imageSize)
@@ -65,34 +64,26 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
                                                       "The height cannot be non-positive.");
             }
 
-            Image imageFromFile = null;
+            Image image = null;
             Image resizedImage = null;
+            var resizedImageSource = GlobalData.InvalidImage;
 
             try
             {
-                imageFromFile = new Bitmap(_fileNameWithPath);
-                resizedImage = _imageResizer.CreateResizedImage(imageFromFile, imageSize);
-
-                return resizedImage.ConvertToImageSource();
+                image = new Bitmap(_imageFilePath);
+                resizedImage = _imageResizer.CreateResizedImage(image, imageSize);
+                resizedImageSource = resizedImage.ConvertToImageSource();
             }
             catch
             {
-                resizedImage = _imageResizer.CreateResizedImage(GlobalData.InvalidImageAsBitmap, imageSize);
-                
-                return resizedImage.ConvertToImageSource();
             }
             finally
             {
-                if (imageFromFile != null)
-                {
-                    imageFromFile.Dispose();
-                }
-
-                if (resizedImage != null)
-                {
-                    resizedImage.Dispose();
-                }
+                image?.Dispose();
+                resizedImage?.Dispose();
             }
+
+            return resizedImageSource;
         }
 
         public void ReadThumbnailInputFromDisc()
@@ -101,7 +92,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
             {
                 try
                 {
-                    _thumbnailInput = new Bitmap(_fileNameWithPath);
+                    _thumbnailInput = new Bitmap(_imageFilePath);
                 }
                 catch
                 {
@@ -121,59 +112,28 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
                 }
 
                 Image thumbnail = null;
+                var thumbnailSource = GlobalData.InvalidImageThumbnail;
 
                 try
                 {
                     thumbnail = _imageResizer.CreateThumbnail(_thumbnailInput, GlobalData.ThumbnailSize);
-
-                    return thumbnail.ConvertToImageSource();
+                    thumbnailSource = thumbnail.ConvertToImageSource();
                 }
                 catch
                 {
-                    return GlobalData.InvalidImageThumbnail;
                 }
                 finally
                 {
-                    if (thumbnail != null)
-                    {
-                        thumbnail.Dispose();
-                    }
+                    thumbnail?.Dispose();
 
                     DisposeThumbnailInput();
                 }
+
+                return thumbnailSource;
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        #region Private
-
-        private readonly IImageResizer _imageResizer;
-
-        private string _fileNameWithPath;
-        private Image _thumbnailInput;
-        private object _thumbnailGenerationLockObject;
-
-        private void GetFileNameAndPath(string filePath)
-        {
-            FileName = Path.GetFileName(filePath);
-
-            _fileNameWithPath = filePath;
-        }
-
-        private void Dispose(bool isDisposing)
-        {
-            if (isDisposing)
-            {
-                DisposeThumbnailInput();
-            }
-        }
-
-        private void DisposeThumbnailInput()
+        public void DisposeThumbnailInput()
         {
             if (_thumbnailInput != null &&
                 _thumbnailInput != GlobalData.InvalidImageAsBitmap)
@@ -181,6 +141,14 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
                 _thumbnailInput.Dispose();
             }
         }
+
+        #region Private
+
+        private readonly IImageResizer _imageResizer;
+        private readonly string _imageFilePath;
+        private readonly object _thumbnailGenerationLockObject;
+
+        private Image _thumbnailInput;
 
         #endregion
     }
