@@ -85,7 +85,7 @@ namespace ImageFanReloaded.Infrastructure
             var imageFiles = _discQueryEngine.GetImageFiles(folderPath);
 
             var thumbnailInfoList = imageFiles
-                .Select(anImageFile => new ThumbnailInfo(anImageFile))
+                .Select(anImageFile => new ThumbnailInfo(_dispatcher, anImageFile))
                 .ToList();
 
             return thumbnailInfoList;

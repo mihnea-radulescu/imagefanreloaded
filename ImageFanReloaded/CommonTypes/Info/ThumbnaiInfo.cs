@@ -4,14 +4,16 @@ using System.Windows.Media;
 
 using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 using ImageFanReloaded.Controls;
+using ImageFanReloaded.Infrastructure.Interface;
 
 namespace ImageFanReloaded.CommonTypes.Info
 {
     [DebuggerDisplay("{ThumbnailText}")]
     public class ThumbnailInfo
     {
-        public ThumbnailInfo(IImageFile imageFile)
+        public ThumbnailInfo(IVisualActionDispatcher dispatcher, IImageFile imageFile)
         {
+            _dispatcher = dispatcher;
             ImageFile = imageFile ?? throw new ArgumentNullException(nameof(imageFile));
 
             ThumbnailImage = GlobalData.LoadingImageThumbnail;
@@ -29,11 +31,29 @@ namespace ImageFanReloaded.CommonTypes.Info
 
         public void SaveThumbnail()
         {
-            ThumbnailImage = ImageFile.GetThumbnail();
-            ThumbnailImage.Freeze();
+            try
+            {
+                SaveThumbnailHelper();
+            }
+            catch
+            {
+                _dispatcher.Invoke(() => SaveThumbnailHelper());
+            }
         }
 
         public void RefreshThumbnail()
             => ThumbnailBox.RefreshThumbnail();
+
+        #region Private
+
+        private readonly IVisualActionDispatcher _dispatcher;
+
+        private void SaveThumbnailHelper()
+        {
+            ThumbnailImage = ImageFile.GetThumbnail();
+            ThumbnailImage.Freeze();
+        }
+
+        #endregion
     }
 }
