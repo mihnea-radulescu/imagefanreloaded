@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Windows.Media;
 
 using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
-using ImageFanReloaded.Controls;
+using ImageFanReloaded.Controls.Interface;
 using ImageFanReloaded.Infrastructure.Interface;
 
 namespace ImageFanReloaded.CommonTypes.Info
@@ -19,7 +19,7 @@ namespace ImageFanReloaded.CommonTypes.Info
             ThumbnailImage = GlobalData.LoadingImageThumbnail;
         }
 
-        public ThumbnailBox ThumbnailBox { get; set; }
+        public IRefreshableControl ThumbnailBox { get; set; }
 
         public IImageFile ImageFile { get; private set; }
 
@@ -35,14 +35,14 @@ namespace ImageFanReloaded.CommonTypes.Info
             {
                 SaveThumbnailHelper();
             }
-            catch
+            catch (InvalidOperationException)
             {
                 _dispatcher.Invoke(() => SaveThumbnailHelper());
             }
         }
 
         public void RefreshThumbnail()
-            => ThumbnailBox.RefreshThumbnail();
+            => ThumbnailBox.Refresh();
 
         #region Private
 

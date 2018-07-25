@@ -5,11 +5,12 @@ using System.Windows.Media;
 
 using ImageFanReloaded.CommonTypes.ImageHandling.Interface;
 using ImageFanReloaded.CommonTypes.Info;
+using ImageFanReloaded.Controls.Interface;
 
 namespace ImageFanReloaded.Controls
 {
     public partial class ThumbnailBox
-        : UserControl
+        : UserControl, IRefreshableControl
     {
         public ThumbnailBox(ThumbnailInfo thumbnailInfo)
         {
@@ -45,7 +46,7 @@ namespace ImageFanReloaded.Controls
             IsSelected = false;
         }
 
-        public void RefreshThumbnail()
+        public void Refresh()
         {
             _thumbnailImage.Source = _thumbnailInfo.ThumbnailImage;
         }
