@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using ImageFanReloaded.CommonTypes.Disc.Interface;
@@ -27,11 +28,11 @@ namespace ImageFanReloaded.Infrastructure
 
 			_folderPath = folderPath;
 
-			_continueThumbnailGeneration = true;
+			_thumbnailGeneration = new CancellationTokenSource();
 		}
 
 		public void NotifyStopThumbnailGeneration()
-			=> _continueThumbnailGeneration = false;
+			=> _thumbnailGeneration.Cancel();
 
 		public void UpdateVisualState()
 		{
@@ -47,7 +48,7 @@ namespace ImageFanReloaded.Infrastructure
 
 		private readonly string _folderPath;
 
-		private volatile bool _continueThumbnailGeneration;
+		private readonly CancellationTokenSource _thumbnailGeneration;
 
 		private void UpdateVisualStateHelper()
 		{
@@ -61,7 +62,7 @@ namespace ImageFanReloaded.Infrastructure
 				var thumbnails = GetImageFiles(_folderPath);
 
 				for (var thumbnailCollection = (IEnumerable<ThumbnailInfo>)thumbnails;
-					 _continueThumbnailGeneration && thumbnailCollection.Any();
+					 !_thumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
 					 thumbnailCollection = thumbnailCollection.Skip(GlobalData.ProcessorCount))
 				{
 					var currentThumbnails = thumbnailCollection
@@ -90,7 +91,7 @@ namespace ImageFanReloaded.Infrastructure
 
 		private void ReadThumbnailInput(IList<ThumbnailInfo> currentThumbnails)
 		{
-			for (var i = 0; _continueThumbnailGeneration && i < currentThumbnails.Count; i++)
+			for (var i = 0; !_thumbnailGeneration.IsCancellationRequested && i < currentThumbnails.Count; i++)
 			{
 				currentThumbnails[i].ReadThumbnailInputFromDisc();
 			}
@@ -110,14 +111,20 @@ namespace ImageFanReloaded.Infrastructure
 				thumbnailGenerationTasks[currentIndex] = aThumbnailGenerationTask;
 			}
 
-			if (_continueThumbnailGeneration)
+			for (var i = 0; i < thumbnailGenerationTasks.Length; i++)
 			{
-				foreach (var aThumbnailGenerationTask in thumbnailGenerationTasks)
+				if (!_thumbnailGeneration.IsCancellationRequested)
 				{
-					aThumbnailGenerationTask.Start();
+					thumbnailGenerationTasks[i].Start();
 				}
+			}
 
-				Task.WaitAll(thumbnailGenerationTasks);
+			try
+			{
+				Task.WaitAll(thumbnailGenerationTasks, _thumbnailGeneration.Token);
+			}
+			catch (OperationCanceledException)
+			{
 			}
 		}
 
