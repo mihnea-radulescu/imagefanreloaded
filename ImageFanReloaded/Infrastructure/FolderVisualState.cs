@@ -10,103 +10,117 @@ using ImageFanReloaded.Views.Interface;
 
 namespace ImageFanReloaded.Infrastructure
 {
-    public class FolderVisualState : IFolderVisualState
-    {
-        public FolderVisualState(
-            IDiscQueryEngine discQueryEngine,
-            IMainView mainView,
-            IVisualActionDispatcher dispatcher,
-            object generateThumbnailsLockObject,
-            string folderPath)
-        {
-            _discQueryEngine = discQueryEngine ?? throw new ArgumentNullException(nameof(discQueryEngine));
-            _mainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
-            _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
-            _generateThumbnailsLockObject = generateThumbnailsLockObject
-                ?? throw new ArgumentNullException(nameof(generateThumbnailsLockObject));
+	public class FolderVisualState : IFolderVisualState
+	{
+		public FolderVisualState(
+			IDiscQueryEngine discQueryEngine,
+			IMainView mainView,
+			IVisualActionDispatcher dispatcher,
+			object generateThumbnailsLockObject,
+			string folderPath)
+		{
+			_discQueryEngine = discQueryEngine ?? throw new ArgumentNullException(nameof(discQueryEngine));
+			_mainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
+			_dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+			_generateThumbnailsLockObject = generateThumbnailsLockObject
+				?? throw new ArgumentNullException(nameof(generateThumbnailsLockObject));
 
-            _folderPath = folderPath;
+			_folderPath = folderPath;
 
-            _continueThumbnailGeneration = true;
-        }
+			_continueThumbnailGeneration = true;
+		}
 
-        public void NotifyStopThumbnailGeneration()
-            => _continueThumbnailGeneration = false;
+		public void NotifyStopThumbnailGeneration()
+			=> _continueThumbnailGeneration = false;
 
-        public void UpdateVisualState()
-        {
-            Task.Factory.StartNew(() => UpdateVisualStateHelper());
-        }
+		public void UpdateVisualState()
+		{
+			Task.Factory.StartNew(() => UpdateVisualStateHelper());
+		}
 
-        #region Private
+		#region Private
 
-        private readonly IDiscQueryEngine _discQueryEngine;
-        private readonly IMainView _mainView;
-        private readonly IVisualActionDispatcher _dispatcher;
-        private readonly object _generateThumbnailsLockObject;
+		private readonly IDiscQueryEngine _discQueryEngine;
+		private readonly IMainView _mainView;
+		private readonly IVisualActionDispatcher _dispatcher;
+		private readonly object _generateThumbnailsLockObject;
 
-        private readonly string _folderPath;
+		private readonly string _folderPath;
 
-        private volatile bool _continueThumbnailGeneration;
+		private volatile bool _continueThumbnailGeneration;
 
-        private void UpdateVisualStateHelper()
-        {
-            lock (_generateThumbnailsLockObject)
-            {
-                _dispatcher.Invoke(() => _mainView.ClearThumbnailBoxes());
+		private void UpdateVisualStateHelper()
+		{
+			lock (_generateThumbnailsLockObject)
+			{
+				_dispatcher.Invoke(() => _mainView.ClearThumbnailBoxes());
 
-                var subFolders = _discQueryEngine.GetSubFolders(_folderPath);
-                _dispatcher.Invoke(() => _mainView.PopulateSubFoldersTree(subFolders, false));
+				var subFolders = _discQueryEngine.GetSubFolders(_folderPath);
+				_dispatcher.Invoke(() => _mainView.PopulateSubFoldersTree(subFolders, false));
 
-                var thumbnails = GetImageFiles(_folderPath);
+				var thumbnails = GetImageFiles(_folderPath);
 
-                for (var thumbnailCollection = (IEnumerable<ThumbnailInfo>)thumbnails;
-                     _continueThumbnailGeneration && thumbnailCollection.Any();
-                     thumbnailCollection = thumbnailCollection.Skip(GlobalData.ProcessorCount))
-                {
-                    var currentThumbnails = thumbnailCollection
-                        .Take(GlobalData.ProcessorCount)
-                        .ToArray();
+				for (var thumbnailCollection = (IEnumerable<ThumbnailInfo>)thumbnails;
+					 _continueThumbnailGeneration && thumbnailCollection.Any();
+					 thumbnailCollection = thumbnailCollection.Skip(GlobalData.ProcessorCount))
+				{
+					var currentThumbnails = thumbnailCollection
+						.Take(GlobalData.ProcessorCount)
+						.ToArray();
 
-                    ReadThumbnailInput(currentThumbnails);
-                    _dispatcher.Invoke(() => _mainView.PopulateThumbnailBoxes(currentThumbnails));
+					ReadThumbnailInput(currentThumbnails);
+					_dispatcher.Invoke(() => _mainView.PopulateThumbnailBoxes(currentThumbnails));
 
-                    GetThumbnails(currentThumbnails);
-                    _dispatcher.Invoke(() => _mainView.RefreshThumbnailBoxes(currentThumbnails));
-                }
-            }
-        }
+					GetThumbnails(currentThumbnails);
+					_dispatcher.Invoke(() => _mainView.RefreshThumbnailBoxes(currentThumbnails));
+				}
+			}
+		}
 
-        private IList<ThumbnailInfo> GetImageFiles(string folderPath)
-        {
-            var imageFiles = _discQueryEngine.GetImageFiles(folderPath);
+		private IList<ThumbnailInfo> GetImageFiles(string folderPath)
+		{
+			var imageFiles = _discQueryEngine.GetImageFiles(folderPath);
 
-            var thumbnailInfoList = imageFiles
-                .Select(anImageFile => new ThumbnailInfo(_dispatcher, anImageFile))
-                .ToList();
+			var thumbnailInfoList = imageFiles
+				.Select(anImageFile => new ThumbnailInfo(_dispatcher, anImageFile))
+				.ToList();
 
-            return thumbnailInfoList;
-        }
+			return thumbnailInfoList;
+		}
 
-        private void ReadThumbnailInput(IList<ThumbnailInfo> currentThumbnails)
-        {
-            for (var i = 0; _continueThumbnailGeneration && i < currentThumbnails.Count; i++)
-            {
-                currentThumbnails[i].ReadThumbnailInputFromDisc();
-            }
-        }
+		private void ReadThumbnailInput(IList<ThumbnailInfo> currentThumbnails)
+		{
+			for (var i = 0; _continueThumbnailGeneration && i < currentThumbnails.Count; i++)
+			{
+				currentThumbnails[i].ReadThumbnailInputFromDisc();
+			}
+		}
 
-        private void GetThumbnails(ICollection<ThumbnailInfo> currentThumbnails)
-        {
-            Parallel.ForEach(currentThumbnails, aThumbnailInfo =>
-            {
-                if (_continueThumbnailGeneration)
-                {
-                    aThumbnailInfo.SaveThumbnail();
-                }
-            });
-        }
+		private void GetThumbnails(IList<ThumbnailInfo> currentThumbnails)
+		{
+			var thumbnailGenerationTasks = new Task[currentThumbnails.Count];
 
-        #endregion
-    }
+			for (var i = 0; i < currentThumbnails.Count; i++)
+			{
+				var currentIndex = i;
+
+				var aThumbnailGenerationTask = new Task(() =>
+					currentThumbnails[currentIndex].SaveThumbnail());
+
+				thumbnailGenerationTasks[currentIndex] = aThumbnailGenerationTask;
+			}
+
+			if (_continueThumbnailGeneration)
+			{
+				foreach (var aThumbnailGenerationTask in thumbnailGenerationTasks)
+				{
+					aThumbnailGenerationTask.Start();
+				}
+
+				Task.WaitAll(thumbnailGenerationTasks);
+			}
+		}
+
+		#endregion
+	}
 }
