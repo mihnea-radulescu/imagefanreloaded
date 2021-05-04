@@ -16,11 +16,12 @@ namespace ImageFanReloaded
         {
             base.OnStartup(e);
 
-            var imageViewFactory = new ImageViewFactory();
             var imageFileFactory = new ImageFileFactory();
             var imageResizer = new ImageResizer();
-            var discQueryEngine = new DiscQueryEngine(imageFileFactory, imageResizer);
+            var fileSystemEntryComparer = new FileSystemEntryComparer();
+            var discQueryEngine = new DiscQueryEngine(imageFileFactory, imageResizer, fileSystemEntryComparer);
 
+            var imageViewFactory = new ImageViewFactory();
             var mainView = new MainView(imageViewFactory);
 
             var visualActionDispatcher = new VisualActionDispatcher(Dispatcher);

@@ -13,10 +13,14 @@ namespace ImageFanReloaded.CommonTypes.Disc
     public class DiscQueryEngine
         : IDiscQueryEngine
     {
-        public DiscQueryEngine(IImageFileFactory imageFileFactory, IImageResizer imageResizer)
+        public DiscQueryEngine(
+            IImageFileFactory imageFileFactory,
+            IImageResizer imageResizer,
+            IFileSystemEntryComparer fileSystemEntryComparer)
         {
             _imageFileFactory = imageFileFactory ?? throw new ArgumentNullException(nameof(imageFileFactory));
             _imageResizer = imageResizer ?? throw new ArgumentNullException(nameof(imageResizer));
+            _fileSystemEntryComparer = fileSystemEntryComparer ?? throw new ArgumentNullException(nameof(fileSystemEntryComparer));
         }
 
         public ICollection<FileSystemEntryInfo> GetAllDrives()
@@ -58,7 +62,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
                                                     aDirectory.Name,
                                                     aDirectory.FullName,
                                                     GlobalData.FolderIcon))
-                                            .OrderBy(aDirectory => aDirectory.Name)
+                                            .OrderBy(aDirectory => aDirectory.Name, _fileSystemEntryComparer)
                                             .ToArray();
             }
             catch
@@ -91,7 +95,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
                                        ImageFileExtensions.Contains(aFileInfo.Extension))
                                 .OrderBy(aFileInfo => aFileInfo.Name)
                                 .Select(aFileInfo => _imageFileFactory.GetImageFile(_imageResizer, aFileInfo.FullName))
-                                .OrderBy(aFileInfo => aFileInfo.FileName)
+                                .OrderBy(aFileInfo => aFileInfo.FileName, _fileSystemEntryComparer)
                                 .ToArray();
 
             return imageFiles;
@@ -140,6 +144,7 @@ namespace ImageFanReloaded.CommonTypes.Disc
 
         private readonly IImageFileFactory _imageFileFactory;
         private readonly IImageResizer _imageResizer;
+        private readonly IFileSystemEntryComparer _fileSystemEntryComparer;
 
         #endregion
     }

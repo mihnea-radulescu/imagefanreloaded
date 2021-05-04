@@ -59,6 +59,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CommonTypes\CommonEventArgs\ThumbnailChangedEventArgs.cs" />
+    <Compile Include="CommonTypes\Disc\Interface\IFileSystemEntryComparer.cs" />
+    <Compile Include="CommonTypes\Disc\FileSystemEntryComparer.cs" />
+    <Compile Include="CommonTypes\Disc\Unmanaged\UnmanagedStringComparer.cs" />
     <Compile Include="Controls\Interface\IRefreshableControl.cs" />
     <Compile Include="Factories\FolderVisualStateFactory.cs" />
     <Compile Include="Factories\ImageViewFactory.cs" />
