@@ -7,7 +7,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ImageFan Reloaded")]
-[assembly: AssemblyCopyright("Copyright © Mihnea Rădulescu 2015 - 2021")]
+[assembly: AssemblyCopyright("Copyright © Mihnea Rădulescu 2015 - 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -18,4 +18,4 @@ using System.Windows;
 	ResourceDictionaryLocation.SourceAssembly
 )]
 
-[assembly: AssemblyVersion("1.2021.05.04")]
+[assembly: AssemblyVersion("1.2023.07.07")]

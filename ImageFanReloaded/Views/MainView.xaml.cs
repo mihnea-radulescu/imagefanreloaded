@@ -45,16 +45,17 @@ namespace ImageFanReloaded.Views
 
                 if (selectedItem != null)
                 {
-                    selectedItem.Items.Clear();
-
-                    foreach (var aSubFolder in subFolders)
+                    if (selectedItem.Items.Count == 0)
                     {
-                        var aTreeViewItem = new FileSystemEntryTreeViewItem
+                        foreach (var aSubFolder in subFolders)
                         {
-                            FileSystemEntryInfo = aSubFolder
-                        };
+                            var aTreeViewItem = new FileSystemEntryTreeViewItem
+                            {
+                                FileSystemEntryInfo = aSubFolder
+                            };
 
-                        selectedItem.Items.Add(aTreeViewItem);
+                            selectedItem.Items.Add(aTreeViewItem);
+                        }
                     }
                 }
             }
