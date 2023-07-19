@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageFanReloaded", "ImageFanReloaded\ImageFanReloaded.csproj", "{3BA2DC2E-9217-4FBD-8696-3FA5F7270278}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageFanReloaded-WPF", "ImageFanReloaded-WPF\ImageFanReloaded-WPF.csproj", "{3BA2DC2E-9217-4FBD-8696-3FA5F7270278}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

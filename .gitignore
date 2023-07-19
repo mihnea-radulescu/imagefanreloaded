@@ -1,4 +1,3 @@
-
 .vs/*
-ImageFanReloaded/bin/*
-ImageFanReloaded/obj/*
+bin
+obj
