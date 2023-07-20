@@ -24,6 +24,9 @@
         </Grid.ColumnDefinitions>
         <TreeView Name="_folderTreeView"
                   SelectedItemChanged="OnFolderTreeViewSelectedItemChanged">
+            <TreeView.Resources>
+                <SolidColorBrush Color="LightBlue" x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"/>
+            </TreeView.Resources>
         </TreeView>
         <GridSplitter Grid.Column="1"
                       ResizeBehavior="PreviousAndNext"
