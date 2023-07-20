@@ -18,9 +18,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="15*"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="85*"/>
         </Grid.ColumnDefinitions>
         <TreeView Name="_folderTreeView"
                   SelectedItemChanged="OnFolderTreeViewSelectedItemChanged">

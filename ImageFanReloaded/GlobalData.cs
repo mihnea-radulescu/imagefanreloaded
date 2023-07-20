@@ -11,7 +11,7 @@ namespace ImageFanReloaded
 {
     public static class GlobalData
     {
-        public const int ThumbnailSize = 200;
+        public const int ThumbnailSize = 250;
 
         public static readonly Image InvalidImageAsBitmap;
 
