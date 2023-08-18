@@ -1,0 +1,17 @@
+﻿<Window x:Class="ImageFanReloaded.Views.Implementation.ImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Icon="/ApplicationIcon.ico"
+        WindowStartupLocation="CenterScreen"
+        FontSize="12"
+        Background="Black"
+        Cursor="Hand"
+        KeyUp="OnKeyPressed"
+        MouseUp="OnMouseClick"
+        PreviewMouseWheel="OnMouseWheel">
+    <ScrollViewer Name="_imageScrollViewer"
+                  FocusVisualStyle="{x:Null}"
+                  PreviewKeyDown="OnScrollKeyPressed">
+        <Image Name="_image" Stretch="None"/>
+    </ScrollViewer>
+</Window>
