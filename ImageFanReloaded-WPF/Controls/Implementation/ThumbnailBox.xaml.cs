@@ -12,11 +12,6 @@ namespace ImageFanReloaded.Controls.Implementation
     {
         public ThumbnailBox(ThumbnailInfo thumbnailInfo)
         {
-            if (thumbnailInfo == null)
-            {
-                throw new ArgumentNullException(nameof(thumbnailInfo));
-            }
-
             InitializeComponent();
 
             SetControlProperties();

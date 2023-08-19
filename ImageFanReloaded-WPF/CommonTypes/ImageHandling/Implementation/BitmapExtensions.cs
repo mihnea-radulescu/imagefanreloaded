@@ -12,11 +12,6 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
     {
         public static ImageSource ConvertToImageSource(this Image inputImage)
         {
-            if (inputImage == null)
-            {
-                throw new NullReferenceException("Input image cannot be null.");
-            }
-
             var inputBitmap = inputImage as Bitmap;
             if (inputBitmap == null)
             {

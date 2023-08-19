@@ -5,7 +5,8 @@ using ImageFanReloaded.Views;
 
 namespace ImageFanReloaded.Factories.Implementation
 {
-    public class FolderVisualStateFactory : IFolderVisualStateFactory
+    public class FolderVisualStateFactory
+        : IFolderVisualStateFactory
     {
         public IFolderVisualState GetFolderVisualState(
             IDiscQueryEngine discQueryEngine,
@@ -14,7 +15,7 @@ namespace ImageFanReloaded.Factories.Implementation
             object generateThumbnailsLockObject,
             string folderPath)
         {
-            var folderVisualState = new FolderVisualState(
+            IFolderVisualState folderVisualState = new FolderVisualState(
                 discQueryEngine,
                 mainView,
                 dispatcher,

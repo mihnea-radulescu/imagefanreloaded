@@ -19,8 +19,7 @@ namespace ImageFanReloaded.Views.Implementation
         
         public void SetImage(IImageFile imageFile)
         {
-            _imageFile = imageFile ?? throw new ArgumentNullException(nameof(imageFile));
-
+            _imageFile = imageFile;
             Title = _imageFile.FileName;
 
             if (_imageViewState == ImageViewState.FullScreen)
@@ -32,7 +31,6 @@ namespace ImageFanReloaded.Views.Implementation
                 GoDetailed();
             }
         }
-
 
         #region Private
 

@@ -15,7 +15,7 @@ namespace ImageFanReloaded.Views.Implementation
     {
         public MainWindow(IImageViewFactory imageViewFactory)
         {
-            _imageViewFactory = imageViewFactory ?? throw new ArgumentNullException(nameof(imageViewFactory));
+            _imageViewFactory = imageViewFactory;
 
             InitializeComponent();
         }

@@ -2,7 +2,8 @@
 
 namespace ImageFanReloaded.CommonTypes.Disc
 {
-	public interface IFileSystemEntryComparer : IComparer<string>
+	public interface IFileSystemEntryComparer
+		: IComparer<string>
 	{
 	}
 }

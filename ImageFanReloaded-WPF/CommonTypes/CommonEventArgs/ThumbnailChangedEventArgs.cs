@@ -10,6 +10,6 @@ namespace ImageFanReloaded.CommonTypes.CommonEventArgs
             Increment = increment;
         }
 
-        public int Increment { get; private set; }
+        public int Increment { get; }
     }
 }

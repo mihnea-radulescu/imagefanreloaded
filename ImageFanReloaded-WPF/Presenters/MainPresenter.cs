@@ -1,5 +1,4 @@
-﻿using System;
-using ImageFanReloaded.CommonTypes.CommonEventArgs;
+﻿using ImageFanReloaded.CommonTypes.CommonEventArgs;
 using ImageFanReloaded.CommonTypes.Disc;
 using ImageFanReloaded.Factories;
 using ImageFanReloaded.Infrastructure;
@@ -15,13 +14,12 @@ namespace ImageFanReloaded.Presenters
             IVisualActionDispatcher dispatcher,
             IFolderVisualStateFactory folderVisualStateFactory)
         {
-            _discQueryEngine = discQueryEngine ?? throw new ArgumentNullException(nameof(discQueryEngine));
+            _discQueryEngine = discQueryEngine;
 
-            _mainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
+            _mainView = mainView;
             _mainView.FolderChanged += OnFolderChanged;
 
-            _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
-
+            _dispatcher = dispatcher;
             _folderVisualStateFactory = folderVisualStateFactory;
 
             _generateThumbnailsLockObject = new object();
@@ -36,8 +34,9 @@ namespace ImageFanReloaded.Presenters
         private readonly IVisualActionDispatcher _dispatcher;
         private readonly IFolderVisualStateFactory _folderVisualStateFactory;
 
-        private IFolderVisualState _folderVisualState;
-        private object _generateThumbnailsLockObject;
+		private readonly object _generateThumbnailsLockObject;
+
+		private IFolderVisualState _folderVisualState;
 
         private void PopulateDrivesAndSpecialFolders()
         {

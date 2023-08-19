@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 {
@@ -8,40 +7,12 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
     {
         public Image CreateThumbnail(Image image, int thumbnailSize)
         {
-            if (image == null)
-            {
-                throw new ArgumentNullException(nameof(image));
-            }
-
-            if (thumbnailSize <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(thumbnailSize),
-                                                      "The thumbnail size cannot be non-positive.");
-            }
-
             var thumbnailBounds = new Rectangle(0, 0, thumbnailSize, thumbnailSize);
             return CreateResizedImage(image, thumbnailBounds);
         }
 
         public Image CreateResizedImage(Image image, Rectangle imageSize)
         {
-            if (image == null)
-            {
-                throw new ArgumentNullException(nameof(image));
-            }
-
-            if (imageSize.Width <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(imageSize.Width),
-                                                      "The width cannot be non-positive.");
-            }
-
-            if (imageSize.Height <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(imageSize.Height),
-                                                      "The height cannot be non-positive.");
-            }
-
             var resizedImage = GetResizedImage(image, imageSize);
 
             try

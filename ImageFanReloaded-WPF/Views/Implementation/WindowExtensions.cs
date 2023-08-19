@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Reflection;
 using System.Windows;
@@ -11,11 +10,6 @@ namespace ImageFanReloaded.Views
     {
         public static Rectangle GetScreenBounds(this Window window)
         {
-            if (window == null)
-            {
-                throw new NullReferenceException("The window cannot be null.");
-            }
-
             var windowHandle = new WindowInteropHelper(window).Handle;
             var screen = Screen.FromHandle(windowHandle);
 

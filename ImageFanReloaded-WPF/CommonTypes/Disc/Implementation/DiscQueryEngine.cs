@@ -16,9 +16,9 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
             IImageResizer imageResizer,
             IFileSystemEntryComparer fileSystemEntryComparer)
         {
-            _imageFileFactory = imageFileFactory ?? throw new ArgumentNullException(nameof(imageFileFactory));
-            _imageResizer = imageResizer ?? throw new ArgumentNullException(nameof(imageResizer));
-            _fileSystemEntryComparer = fileSystemEntryComparer ?? throw new ArgumentNullException(nameof(fileSystemEntryComparer));
+            _imageFileFactory = imageFileFactory;
+            _imageResizer = imageResizer;
+            _fileSystemEntryComparer = fileSystemEntryComparer;
         }
 
         public ICollection<FileSystemEntryInfo> GetAllDrives()
@@ -46,11 +46,6 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
 
         public ICollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
         {
-            if (string.IsNullOrWhiteSpace(folderPath))
-            {
-                throw new ArgumentException("Folder path cannot be empty.", nameof(folderPath));
-            }
-
             try
             {
                 return new DirectoryInfo(folderPath)
@@ -71,11 +66,6 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
 
         public ICollection<IImageFile> GetImageFiles(string folderPath)
         {
-            if (string.IsNullOrEmpty(folderPath))
-            {
-                throw new ArgumentException("Folder path cannot be empty.", nameof(folderPath));
-            }
-
             ICollection<FileInfo> filesInformation;
             try
             {
@@ -125,6 +115,7 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
             {
                 ".bmp",
                 ".gif",
+                ".ico",
                 ".jpg", ".jpe", ".jpeg",
                 ".png",
                 ".tif", ".tiff"

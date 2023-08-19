@@ -3,7 +3,8 @@ using Avalonia.Input;
 
 namespace ImageFanReloaded.Views.Implementation;
 
-public partial class MainWindow : Window
+public partial class MainWindow
+    : Window
 {
     public MainWindow()
     {

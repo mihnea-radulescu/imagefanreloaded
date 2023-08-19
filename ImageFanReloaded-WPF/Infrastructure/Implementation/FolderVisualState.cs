@@ -9,7 +9,8 @@ using ImageFanReloaded.Views;
 
 namespace ImageFanReloaded.Infrastructure.Implementation
 {
-	public class FolderVisualState : IFolderVisualState
+	public class FolderVisualState
+		: IFolderVisualState
 	{
 		public FolderVisualState(
 			IDiscQueryEngine discQueryEngine,
@@ -18,12 +19,10 @@ namespace ImageFanReloaded.Infrastructure.Implementation
 			object generateThumbnailsLockObject,
 			string folderPath)
 		{
-			_discQueryEngine = discQueryEngine ?? throw new ArgumentNullException(nameof(discQueryEngine));
-			_mainView = mainView ?? throw new ArgumentNullException(nameof(mainView));
-			_dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
-			_generateThumbnailsLockObject = generateThumbnailsLockObject
-				?? throw new ArgumentNullException(nameof(generateThumbnailsLockObject));
-
+			_discQueryEngine = discQueryEngine;
+			_mainView = mainView;
+			_dispatcher = dispatcher;
+			_generateThumbnailsLockObject = generateThumbnailsLockObject;
 			_folderPath = folderPath;
 
 			_thumbnailGeneration = new CancellationTokenSource();

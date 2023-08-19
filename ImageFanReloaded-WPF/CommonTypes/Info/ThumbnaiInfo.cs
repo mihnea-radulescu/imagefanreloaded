@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows.Media;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.Controls;
@@ -7,13 +6,12 @@ using ImageFanReloaded.Infrastructure;
 
 namespace ImageFanReloaded.CommonTypes.Info
 {
-    [DebuggerDisplay("{ThumbnailText}")]
     public class ThumbnailInfo
     {
         public ThumbnailInfo(IVisualActionDispatcher dispatcher, IImageFile imageFile)
         {
             _dispatcher = dispatcher;
-            ImageFile = imageFile ?? throw new ArgumentNullException(nameof(imageFile));
+            ImageFile = imageFile;
 
             ThumbnailImage = GlobalData.LoadingImageThumbnail;
         }

@@ -3,11 +3,12 @@ using System.Windows.Threading;
 
 namespace ImageFanReloaded.Infrastructure.Implementation
 {
-    public class VisualActionDispatcher : IVisualActionDispatcher
+    public class VisualActionDispatcher
+        : IVisualActionDispatcher
     {
         public VisualActionDispatcher(Dispatcher dispatcher)
         {
-            _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+            _dispatcher = dispatcher;
         }
 
         public void Invoke(Action callback)

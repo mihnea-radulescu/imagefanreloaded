@@ -1,31 +1,24 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Media;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 {
-    [DebuggerDisplay("{_fileNameWithPath}")]
     public class ImageFile
         : IImageFile
     {
         public ImageFile(IImageResizer imageResizer, string imageFilePath)
         {
-            _imageResizer = imageResizer ?? throw new ArgumentNullException(nameof(imageResizer));
-
-            if (string.IsNullOrEmpty(imageFilePath))
-            {
-                throw new ArgumentException("Image file path cannot be empty.", nameof(imageFilePath));
-            }
-
+            _imageResizer = imageResizer;
             _imageFilePath = imageFilePath;
+
             FileName = Path.GetFileName(imageFilePath);
 
             _thumbnailGenerationLockObject = new object();
         }
 
-        public string FileName { get; private set; }
+        public string FileName { get; }
 
         public ImageSource GetImage()
         {
@@ -50,18 +43,6 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
         public ImageSource GetResizedImage(Rectangle imageSize)
         {
-            if (imageSize.Width <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(imageSize.Width),
-                                                      "The width cannot be non-positive.");
-            }
-
-            if (imageSize.Height <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(imageSize.Height),
-                                                      "The height cannot be non-positive.");
-            }
-
             Image image = null;
             Image resizedImage = null;
             var resizedImageSource = GlobalData.InvalidImage;
@@ -106,7 +87,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
                 if (_thumbnailInput == null)
                 {
                     throw new InvalidOperationException(
-                        "The method ReadThumbnailInputFromDisc() must be executed prior to calling the method GetThumbnail().");
+                        $"The method {nameof(ReadThumbnailInputFromDisc)} must be executed prior to calling the method {nameof(GetThumbnail)}.");
                 }
 
                 Image thumbnail = null;

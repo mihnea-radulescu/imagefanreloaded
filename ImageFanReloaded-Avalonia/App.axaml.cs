@@ -5,7 +5,8 @@ using ImageFanReloaded.Views.Implementation;
 
 namespace ImageFanReloaded;
 
-public partial class App : Application
+public partial class App
+    : Application
 {
     public override void Initialize()
     {
