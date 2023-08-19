@@ -21,7 +21,10 @@ namespace ImageFanReloaded
             base.OnStartup(e);
 
             IImageFileFactory imageFileFactory = new ImageFileFactory();
-            IImageResizer imageResizer = new ImageResizer();
+
+            IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
+            IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
+
             IFileSystemEntryComparer fileSystemEntryComparer =
                 new FileSystemEntryComparer();
             IDiscQueryEngine discQueryEngine = 

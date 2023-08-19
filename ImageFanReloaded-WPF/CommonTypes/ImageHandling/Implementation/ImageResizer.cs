@@ -5,15 +5,20 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
     public class ImageResizer
         : IImageResizer
     {
+		public ImageResizer(IImageResizeCalculator imageResizeCalculator)
+        {
+			_imageResizeCalculator = imageResizeCalculator;
+		}
+
         public Image CreateThumbnail(Image image, int thumbnailSize)
         {
-            var thumbnailBounds = new Rectangle(0, 0, thumbnailSize, thumbnailSize);
-            return CreateResizedImage(image, thumbnailBounds);
+            var thumbnailDimensions = new ImageDimensions(thumbnailSize, thumbnailSize);
+            return CreateResizedImage(image, thumbnailDimensions);
         }
 
-        public Image CreateResizedImage(Image image, Rectangle imageSize)
-        {
-            var resizedImage = GetResizedImage(image, imageSize);
+        public Image CreateResizedImage(Image image, ImageDimensions imageDimensionsToResizeTo)
+		{
+            var resizedImage = GetResizedImage(image, imageDimensionsToResizeTo);
 
             try
             {
@@ -33,47 +38,21 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             return resizedImage;
         }
 
-        #region Private
+		#region Private
 
-        private Image GetResizedImage(Image image, Rectangle imageSize)
-        {
-            var width = image.Width;
-            var height = image.Height;
+		private readonly IImageResizeCalculator _imageResizeCalculator;
 
-            if ((width > imageSize.Width) || (height > imageSize.Height))
-            {
-                if (width >= height)
-                {
-                    var aspectRatio = (float)width / (float)height;
+		private Image GetResizedImage(Image image, ImageDimensions imageDimensionsToResizeTo)
+		{
+			var imageDimensions = new ImageDimensions(image.Width, image.Height);
 
-                    width = imageSize.Width;
-                    height = (int)(width / aspectRatio);
+			var resizedImageDimensions = _imageResizeCalculator
+                .GetResizedImageDimensions(imageDimensions, imageDimensionsToResizeTo);
 
-                    if (height > imageSize.Height)
-                    {
-                        height = imageSize.Height;
-                        width = (int)(height * aspectRatio);
-                    }
-                }
-                else
-                {
-                    var aspectRatio = (float)height / (float)width;
+			var resizedImage = new Bitmap(resizedImageDimensions.Width, resizedImageDimensions.Height);
+			return resizedImage;
+		}
 
-                    height = imageSize.Height;
-                    width = (int)(height / aspectRatio);
-
-                    if (width > imageSize.Width)
-                    {
-                        width = imageSize.Width;
-                        height = (int)(width * aspectRatio);
-                    }
-                }
-            }
-
-            var resizedImage = new Bitmap(width, height);
-            return resizedImage;
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

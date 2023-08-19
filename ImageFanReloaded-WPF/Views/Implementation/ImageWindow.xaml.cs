@@ -121,8 +121,8 @@ namespace ImageFanReloaded.Views.Implementation
             _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 
             _imageViewState = ImageViewState.FullScreen;
-            var fullScreenSize = this.GetScreenBounds();
-            _image.Source = _imageFile.GetResizedImage(fullScreenSize);
+            var screenDimensions = this.GetScreenDimensions();
+            _image.Source = _imageFile.GetResizedImage(screenDimensions);
 
             EndInit();
         }

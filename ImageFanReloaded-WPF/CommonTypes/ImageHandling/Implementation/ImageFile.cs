@@ -41,7 +41,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             return imageSource;
         }
 
-        public ImageSource GetResizedImage(Rectangle imageSize)
+        public ImageSource GetResizedImage(ImageDimensions imageDimensions)
         {
             Image image = null;
             Image resizedImage = null;
@@ -50,7 +50,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             try
             {
                 image = new Bitmap(_imageFilePath);
-                resizedImage = _imageResizer.CreateResizedImage(image, imageSize);
+                resizedImage = _imageResizer.CreateResizedImage(image, imageDimensions);
                 resizedImageSource = resizedImage.ConvertToImageSource();
             }
             catch

@@ -1,14 +1,14 @@
-using System.Drawing;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using ImageFanReloaded.CommonTypes.ImageHandling;
 
 namespace ImageFanReloaded.Views
 {
     public static class WindowExtensions
     {
-        public static Rectangle GetScreenBounds(this Window window)
+        public static ImageDimensions GetScreenDimensions(this Window window)
         {
             var windowHandle = new WindowInteropHelper(window).Handle;
             var screen = Screen.FromHandle(windowHandle);
@@ -16,9 +16,8 @@ namespace ImageFanReloaded.Views
 			var width = screen.Bounds.Width * DpiStandardUnit / DpiCurrentUnit;
 			var height = screen.Bounds.Height * DpiStandardUnit / DpiCurrentUnit;
 
-            var bounds = new Rectangle(0, 0, width, height);
-
-			return bounds;
+            var screenDimensions = new ImageDimensions(width, height);
+			return screenDimensions;
 		}
 
 		#region Private

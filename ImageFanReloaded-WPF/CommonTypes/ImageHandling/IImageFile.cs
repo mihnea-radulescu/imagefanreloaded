@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling
 {
@@ -8,7 +7,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
         string FileName { get; }
 
         ImageSource GetImage();
-        ImageSource GetResizedImage(Rectangle imageSize);
+		ImageSource GetResizedImage(ImageDimensions imageDimensions);
 
         void ReadThumbnailInputFromDisc();
         ImageSource GetThumbnail();

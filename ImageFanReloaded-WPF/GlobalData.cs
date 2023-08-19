@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Input;
 using System.Windows.Media;
+using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 using ImageFanReloaded.Properties;
 
@@ -29,7 +30,8 @@ namespace ImageFanReloaded
 
         static GlobalData()
         {
-            var imageResizer = new ImageResizer();
+            IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
+            IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
             InvalidImageAsBitmap = Resources.InvalidImage;
 
