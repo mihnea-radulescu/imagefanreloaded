@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
-using System.Windows.Media;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 {
@@ -20,49 +20,38 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
         public string FileName { get; }
 
-        public ImageSource GetImage()
+        public IImage GetImage()
         {
-            Image image = null;
-            var imageSource = GlobalData.InvalidImage;
+            IImage image;
 
             try
             {
                 image = new Bitmap(_imageFilePath);
-                imageSource = image.ConvertToImageSource();
             }
             catch
             {
-            }
-            finally
-            {
-                image?.Dispose();
-            }
+                image = GlobalData.InvalidImage;
+			}
 
-            return imageSource;
+            return image;
         }
 
-        public ImageSource GetResizedImage(ImageDimensions imageDimensions)
+        public IImage GetResizedImage(ImageDimensions imageDimensions)
         {
-            Image image = null;
-            Image resizedImage = null;
-            var resizedImageSource = GlobalData.InvalidImage;
+            IImage resizedImage;
 
             try
             {
-                image = new Bitmap(_imageFilePath);
+                var image = new Bitmap(_imageFilePath);
+
                 resizedImage = _imageResizer.CreateResizedImage(image, imageDimensions);
-                resizedImageSource = resizedImage.ConvertToImageSource();
             }
             catch
             {
-            }
-            finally
-            {
-                image?.Dispose();
-                resizedImage?.Dispose();
+                resizedImage = GlobalData.InvalidImage;
             }
 
-            return resizedImageSource;
+            return resizedImage;
         }
 
         public void ReadThumbnailInputFromDisc()
@@ -75,12 +64,12 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
                 }
                 catch
                 {
-                    _thumbnailInput = GlobalData.InvalidImageAsBitmap;
+                    _thumbnailInput = GlobalData.InvalidImage;
                 }
             }
         }
 
-        public ImageSource GetThumbnail()
+        public IImage GetThumbnail()
         {
             lock (_thumbnailGenerationLockObject)
             {
@@ -90,46 +79,37 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
                         $"The method {nameof(ReadThumbnailInputFromDisc)} must be executed prior to calling the method {nameof(GetThumbnail)}.");
                 }
 
-                Image thumbnail = null;
-                var thumbnailSource = GlobalData.InvalidImageThumbnail;
+                IImage thumbnail;
 
                 try
                 {
                     thumbnail = _imageResizer.CreateThumbnail(_thumbnailInput, GlobalData.ThumbnailSize);
-                    thumbnailSource = thumbnail.ConvertToImageSource();
                 }
                 catch
                 {
+                    thumbnail = GlobalData.InvalidImageThumbnail;
                 }
                 finally
                 {
-                    thumbnail?.Dispose();
-
                     DisposeThumbnailInput();
                 }
 
-                return thumbnailSource;
+                return thumbnail;
             }
         }
 
-        public void DisposeThumbnailInput()
-        {
-            if (_thumbnailInput != null &&
-                _thumbnailInput != GlobalData.InvalidImageAsBitmap)
-            {
-                _thumbnailInput.Dispose();
-            }
-
+		public void DisposeThumbnailInput()
+		{
 			_thumbnailInput = null;
 		}
 
-        #region Private
+		#region Private
 
-        private readonly IImageResizer _imageResizer;
+		private readonly IImageResizer _imageResizer;
         private readonly string _imageFilePath;
         private readonly object _thumbnailGenerationLockObject;
 
-        private Image _thumbnailInput;
+        private IImage _thumbnailInput;
 
         #endregion
     }

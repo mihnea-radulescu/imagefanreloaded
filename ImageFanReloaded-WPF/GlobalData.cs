@@ -47,14 +47,14 @@ namespace ImageFanReloaded
             using (var driveIconBitmap = Resources.DriveIcon)
             {
                 DriveIcon = imageResizer
-                                        .CreateThumbnail(driveIconBitmap, 24)
+                                        .CreateThumbnail(driveIconBitmap, IconSize)
                                         .ConvertToImageSource();
             }
 
             using (var folderIconBitmap = Resources.FolderIcon)
             {
                 FolderIcon = imageResizer
-                                        .CreateThumbnail(folderIconBitmap, 24)
+                                        .CreateThumbnail(folderIconBitmap, IconSize)
                                         .ConvertToImageSource();
             }
 
@@ -70,5 +70,11 @@ namespace ImageFanReloaded
                 Key.S, Key.D, Key.Down, Key.Right, Key.Space, Key.PageDown
             };
         }
-    }
+
+		#region Private
+
+		private const int IconSize = 24;
+
+		#endregion
+	}
 }

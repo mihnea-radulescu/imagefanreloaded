@@ -15,8 +15,8 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             var inputBitmap = inputImage as Bitmap;
             if (inputBitmap == null)
             {
-                throw new InvalidOperationException("Input image must be a Bitmap object.");
-            }
+				throw new InvalidOperationException($"Input image must be a {nameof(Bitmap)} object.");
+			}
 
             IntPtr hBitmap = IntPtr.Zero;
 
