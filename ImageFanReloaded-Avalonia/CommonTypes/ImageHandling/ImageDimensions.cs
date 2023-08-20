@@ -1,6 +1,6 @@
 ﻿namespace ImageFanReloaded.CommonTypes.ImageHandling
 {
-	public class ImageDimensions
+	public record class ImageDimensions
 	{
         public ImageDimensions(int width, int height)
         {
@@ -8,7 +8,13 @@
             Height = height;
         }
 
-        public int Width { get; }
+		public ImageDimensions(double width, double height)
+		{
+			Width = (int)width;
+			Height = (int)height;
+		}
+
+		public int Width { get; }
 		public int Height { get; }
 	}
 }

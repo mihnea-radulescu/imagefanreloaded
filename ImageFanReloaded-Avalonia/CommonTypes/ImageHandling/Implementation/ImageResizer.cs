@@ -1,9 +1,9 @@
-﻿using Avalonia.Media;
+﻿using System;
+using System.IO;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
-using System;
-using System.IO;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 {
@@ -23,7 +23,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
         public IImage CreateResizedImage(IImage image, ImageDimensions imageDimensionsToResizeTo)
 		{
-			var imageDimensions = new ImageDimensions((int)image.Size.Width, (int)image.Size.Height);
+			var imageDimensions = new ImageDimensions(image.Size.Width, image.Size.Height);
 
 			var resizedImageDimensions = _imageResizeCalculator
 				.GetResizedImageDimensions(imageDimensions, imageDimensionsToResizeTo);
