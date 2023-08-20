@@ -63,7 +63,7 @@
     <Compile Include="CommonTypes\Disc\Implementation\FileSystemEntryComparer.cs" />
     <Compile Include="CommonTypes\Disc\Implementation\UnmanagedStringComparer.cs" />
     <Compile Include="CommonTypes\ImageHandling\IImageResizeCalculator.cs" />
-    <Compile Include="CommonTypes\ImageHandling\ImageDimensions.cs" />
+    <Compile Include="CommonTypes\ImageHandling\ImageSize.cs" />
     <Compile Include="CommonTypes\ImageHandling\Implementation\ImageResizeCalculator.cs" />
     <Compile Include="Controls\IRefreshableControl.cs" />
     <Compile Include="Factories\Implementation\FolderVisualStateFactory.cs" />

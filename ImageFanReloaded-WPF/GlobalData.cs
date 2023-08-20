@@ -11,9 +11,9 @@ namespace ImageFanReloaded
 {
     public static class GlobalData
     {
-        public const int ThumbnailSize = 250;
+		public static readonly ImageSize ThumbnailSize;
 
-        public static readonly Image InvalidImageAsBitmap;
+		public static readonly Image InvalidImageAsBitmap;
 
         public static readonly ImageSource InvalidImage;
         public static readonly ImageSource InvalidImageThumbnail;
@@ -30,31 +30,34 @@ namespace ImageFanReloaded
 
         static GlobalData()
         {
-            IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
+			ThumbnailSize = new ImageSize(ThumbnailSizeSquareLength);
+			IconSize = new ImageSize(IconSizeSquareLength);
+
+			IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
             IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
             InvalidImageAsBitmap = Resources.InvalidImage;
 
             InvalidImage = Resources.InvalidImage.ConvertToImageSource();
             InvalidImageThumbnail = imageResizer
-                                        .CreateThumbnail(Resources.InvalidImage, ThumbnailSize)
+                                        .CreateResizedImage(Resources.InvalidImage, ThumbnailSize)
                                         .ConvertToImageSource();
 
             LoadingImageThumbnail = imageResizer
-                                        .CreateThumbnail(Resources.LoadingImage, ThumbnailSize)
+                                        .CreateResizedImage(Resources.LoadingImage, ThumbnailSize)
                                         .ConvertToImageSource();
 
             using (var driveIconBitmap = Resources.DriveIcon)
             {
                 DriveIcon = imageResizer
-                                        .CreateThumbnail(driveIconBitmap, IconSize)
+                                        .CreateResizedImage(driveIconBitmap, IconSize)
                                         .ConvertToImageSource();
             }
 
             using (var folderIconBitmap = Resources.FolderIcon)
             {
                 FolderIcon = imageResizer
-                                        .CreateThumbnail(folderIconBitmap, IconSize)
+                                        .CreateResizedImage(folderIconBitmap, IconSize)
                                         .ConvertToImageSource();
             }
 
@@ -73,7 +76,10 @@ namespace ImageFanReloaded
 
 		#region Private
 
-		private const int IconSize = 24;
+		private const int ThumbnailSizeSquareLength = 250;
+		private const int IconSizeSquareLength = 24;
+
+		private static readonly ImageSize IconSize;
 
 		#endregion
 	}

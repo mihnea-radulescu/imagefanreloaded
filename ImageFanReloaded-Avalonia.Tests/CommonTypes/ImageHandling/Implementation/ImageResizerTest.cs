@@ -29,123 +29,126 @@ public class ImageResizerTest
     }
 
 	[Fact]
-	public void CreateResizedImage_SameAspectRatio_3840x2160_ReturnsUnresizedImage()
+	public void CreateResizedImage_LandscapeImage_ViewPortSizeIs3840x2160_ReturnsCorrectlyResizedImage()
 	{
 		// Arrange
-		IImage image = new Bitmap($"{InputFileName}{InputFileExtension}");
+		IImage image = new Bitmap($"{LandscapeImageFileName}{InputFileExtension}");
 
-		var imageDimensionsToResizeTo = new ImageDimensions(3840, 2160);
-		var resizedImageDimensions = new ImageDimensions(1920, 1080);
+		var viewPortSize = new ImageSize(3840, 2160);
+		var resizedImageSize = new ImageSize(1920, 1080);
 
 		_imageResizeCalculatorMock
-			.Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageDimensions(
-				new ImageDimensions(image.Size.Width, image.Size.Height),
-				imageDimensionsToResizeTo))
-			.Returns(resizedImageDimensions);
+			.Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageSize(
+				new ImageSize(image.Size.Width, image.Size.Height),
+				viewPortSize))
+			.Returns(resizedImageSize);
 
 		// Act
-		var resizedImage = _imageResizer.CreateResizedImage(image, imageDimensionsToResizeTo);
+		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 
 		// Assert
-		resizedImage.Size.Width.Should().Be(resizedImageDimensions.Width);
-		resizedImage.Size.Height.Should().Be(resizedImageDimensions.Height);
+		resizedImage.Size.Width.Should().Be(resizedImageSize.Width);
+		resizedImage.Size.Height.Should().Be(resizedImageSize.Height);
 
 		var resizedBitmap = resizedImage as Bitmap;
-		resizedBitmap.Save(
-			$"{InputFileName}-Resized-{resizedImageDimensions.Width}x{resizedImageDimensions.Height}{OutputFileExtension}");
+		var outputFileName = GetOutputImageFileName(viewPortSize, resizedImageSize);
+		resizedBitmap.Save(outputFileName);
 	}
 
 	[Fact]
-	public void CreateResizedImage_SameAspectRatio_1920x1080_ReturnsCorrectlyResizedImage()
+	public void CreateResizedImage_LandscapeImage_ViewPortSizeIs1920x1080_ReturnsCorrectlyResizedImage()
 	{
 		// Arrange
-		IImage image = new Bitmap($"{InputFileName}{InputFileExtension}");
+		IImage image = new Bitmap($"{LandscapeImageFileName}{InputFileExtension}");
 
-		var imageDimensionsToResizeTo = new ImageDimensions(1920, 1080);
-		var resizedImageDimensions = new ImageDimensions(1920, 1080);
+		var viewPortSize = new ImageSize(1920, 1080);
+		var resizedImageSize = new ImageSize(1920, 1080);
 
 		_imageResizeCalculatorMock
-			.Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageDimensions(
-				new ImageDimensions(image.Size.Width, image.Size.Height),
-				imageDimensionsToResizeTo))
-			.Returns(resizedImageDimensions);
+			.Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageSize(
+				new ImageSize(image.Size.Width, image.Size.Height),
+				viewPortSize))
+			.Returns(resizedImageSize);
 
 		// Act
-		var resizedImage = _imageResizer.CreateResizedImage(image, imageDimensionsToResizeTo);
+		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 
 		// Assert
-		resizedImage.Size.Width.Should().Be(resizedImageDimensions.Width);
-		resizedImage.Size.Height.Should().Be(resizedImageDimensions.Height);
+		resizedImage.Size.Width.Should().Be(resizedImageSize.Width);
+		resizedImage.Size.Height.Should().Be(resizedImageSize.Height);
 
 		var resizedBitmap = resizedImage as Bitmap;
-		resizedBitmap.Save(
-			$"{InputFileName}-Resized-{resizedImageDimensions.Width}x{resizedImageDimensions.Height}{OutputFileExtension}");
+		var outputFileName = GetOutputImageFileName(viewPortSize, resizedImageSize);
+		resizedBitmap.Save(outputFileName);
 	}
 
 	[Fact]
-    public void CreateResizedImage_SameAspectRatio_1280x720_ReturnsCorrectlyResizedImage()
-    {
+    public void CreateResizedImage_LandscapeImage_ViewPortSizeIs1280x720_ReturnsCorrectlyResizedImage()
+	{
 		// Arrange
-		IImage image = new Bitmap($"{InputFileName}{InputFileExtension}");
+		IImage image = new Bitmap($"{LandscapeImageFileName}{InputFileExtension}");
 
-		var imageDimensionsToResizeTo = new ImageDimensions(1280, 720);
-		var resizedImageDimensions = new ImageDimensions(1280, 720);
+		var viewPortSize = new ImageSize(1280, 720);
+		var resizedImageSize = new ImageSize(1280, 720);
 
 		_imageResizeCalculatorMock
-            .Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageDimensions(
-                new ImageDimensions(image.Size.Width, image.Size.Height),
-				imageDimensionsToResizeTo))
-            .Returns(resizedImageDimensions);
+            .Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageSize(
+                new ImageSize(image.Size.Width, image.Size.Height),
+				viewPortSize))
+            .Returns(resizedImageSize);
 
 		// Act
-		var resizedImage = _imageResizer.CreateResizedImage(image, imageDimensionsToResizeTo);
+		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 
         // Assert
-        resizedImage.Size.Width.Should().Be(resizedImageDimensions.Width);
-		resizedImage.Size.Height.Should().Be(resizedImageDimensions.Height);
+        resizedImage.Size.Width.Should().Be(resizedImageSize.Width);
+		resizedImage.Size.Height.Should().Be(resizedImageSize.Height);
 
-        var resizedBitmap = resizedImage as Bitmap;
-        resizedBitmap.Save(
-            $"{InputFileName}-Resized-{resizedImageDimensions.Width}x{resizedImageDimensions.Height}{OutputFileExtension}");
+		var resizedBitmap = resizedImage as Bitmap;
+		var outputFileName = GetOutputImageFileName(viewPortSize, resizedImageSize);
+		resizedBitmap.Save(outputFileName);
 	}
 
 	[Fact]
-	public void CreateResizedImage_SameAspectRatio_960x540_ReturnsCorrectlyResizedImage()
+	public void CreateResizedImage_LandscapeImage_ViewPortSizeIs960x540_ReturnsCorrectlyResizedImage()
 	{
 		// Arrange
-		IImage image = new Bitmap($"{InputFileName}{InputFileExtension}");
+		IImage image = new Bitmap($"{LandscapeImageFileName}{InputFileExtension}");
 
-		var imageDimensionsToResizeTo = new ImageDimensions(960, 540);
-		var resizedImageDimensions = new ImageDimensions(960, 540);
+		var viewPortSize = new ImageSize(960, 540);
+		var resizedImageSize = new ImageSize(960, 540);
 
 		_imageResizeCalculatorMock
-			.Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageDimensions(
-				new ImageDimensions(image.Size.Width, image.Size.Height),
-				imageDimensionsToResizeTo))
-			.Returns(resizedImageDimensions);
+			.Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageSize(
+				new ImageSize(image.Size.Width, image.Size.Height),
+				viewPortSize))
+			.Returns(resizedImageSize);
 
 		// Act
-		var resizedImage = _imageResizer.CreateResizedImage(image, imageDimensionsToResizeTo);
+		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 
 		// Assert
-		resizedImage.Size.Width.Should().Be(resizedImageDimensions.Width);
-		resizedImage.Size.Height.Should().Be(resizedImageDimensions.Height);
+		resizedImage.Size.Width.Should().Be(resizedImageSize.Width);
+		resizedImage.Size.Height.Should().Be(resizedImageSize.Height);
 
 		var resizedBitmap = resizedImage as Bitmap;
-		resizedBitmap.Save(
-			$"{InputFileName}-Resized-{resizedImageDimensions.Width}x{resizedImageDimensions.Height}{OutputFileExtension}");
+		var outputFileName = GetOutputImageFileName(viewPortSize, resizedImageSize);
+		resizedBitmap.Save(outputFileName);
 	}
 
 	#region Private
 
-	private const string InputFileName = "Cityscape";
+	private const string LandscapeImageFileName = "Landscape";
 	private const string InputFileExtension = ".jpg";
-
 	private const string OutputFileExtension = ".png";
 
 	private readonly Mock<IImageResizeCalculator> _imageResizeCalculatorMock;
 
     private readonly ImageResizer _imageResizer;
+
+	private static string GetOutputImageFileName(
+		ImageSize viewPortSize, ImageSize resizedImageSize)
+		=> $"{LandscapeImageFileName}-{viewPortSize.Width}x{viewPortSize.Height}-Resized-{resizedImageSize.Width}x{resizedImageSize.Height}{OutputFileExtension}";
 
     #endregion
 }

@@ -3,44 +3,47 @@
 	public class ImageResizeCalculator
 		: IImageResizeCalculator
 	{
-		public ImageDimensions GetResizedImageDimensions(
-			ImageDimensions imageDimensions, ImageDimensions imageDimensionsToResizeTo)
+		public ImageSize GetResizedImageSize(
+			ImageSize imageSize, ImageSize viewPortSize)
 		{
-			var resizedWidth = imageDimensions.Width;
-			var resizedHeight = imageDimensions.Height;
-
-			if ((resizedWidth > imageDimensionsToResizeTo.Width) || (resizedHeight > imageDimensionsToResizeTo.Height))
+			if ((imageSize.Width <= viewPortSize.Width) &&
+				(imageSize.Height <= viewPortSize.Height))
 			{
-				if (resizedWidth >= resizedHeight)
+				return imageSize;
+			}
+
+			var resizedWidth = imageSize.Width;
+			var resizedHeight = imageSize.Height;
+
+			if (resizedWidth >= resizedHeight)
+			{
+				var aspectRatio = (float)resizedWidth / (float)resizedHeight;
+
+				resizedWidth = viewPortSize.Width;
+				resizedHeight = (int)(resizedWidth / aspectRatio);
+
+				if (resizedHeight > viewPortSize.Height)
 				{
-					var aspectRatio = (float)resizedWidth / (float)resizedHeight;
-
-					resizedWidth = imageDimensionsToResizeTo.Width;
-					resizedHeight = (int)(resizedWidth / aspectRatio);
-
-					if (resizedHeight > imageDimensionsToResizeTo.Height)
-					{
-						resizedHeight = imageDimensionsToResizeTo.Height;
-						resizedWidth = (int)(resizedHeight * aspectRatio);
-					}
+					resizedHeight = viewPortSize.Height;
+					resizedWidth = (int)(resizedHeight * aspectRatio);
 				}
-				else
+			}
+			else
+			{
+				var aspectRatio = (float)resizedHeight / (float)resizedWidth;
+
+				resizedHeight = viewPortSize.Height;
+				resizedWidth = (int)(resizedHeight / aspectRatio);
+
+				if (resizedWidth > viewPortSize.Width)
 				{
-					var aspectRatio = (float)resizedHeight / (float)resizedWidth;
-
-					resizedHeight = imageDimensionsToResizeTo.Height;
-					resizedWidth = (int)(resizedHeight / aspectRatio);
-
-					if (resizedWidth > imageDimensionsToResizeTo.Width)
-					{
-						resizedWidth = imageDimensionsToResizeTo.Width;
-						resizedHeight = (int)(resizedWidth * aspectRatio);
-					}
+					resizedWidth = viewPortSize.Width;
+					resizedHeight = (int)(resizedWidth * aspectRatio);
 				}
 			}
 
-			var resizedImageDimensions = new ImageDimensions(resizedWidth, resizedHeight);
-			return resizedImageDimensions;
+			var resizedImageSize = new ImageSize(resizedWidth, resizedHeight);
+			return resizedImageSize;
 		}
 	}
 }

@@ -10,15 +10,9 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 			_imageResizeCalculator = imageResizeCalculator;
 		}
 
-        public Image CreateThumbnail(Image image, int thumbnailSize)
-        {
-            var thumbnailDimensions = new ImageDimensions(thumbnailSize, thumbnailSize);
-            return CreateResizedImage(image, thumbnailDimensions);
-        }
-
-        public Image CreateResizedImage(Image image, ImageDimensions imageDimensionsToResizeTo)
+        public Image CreateResizedImage(Image image, ImageSize viewPortSize)
 		{
-            var resizedImage = GetResizedImage(image, imageDimensionsToResizeTo);
+            var resizedImage = GetResizedImage(image, viewPortSize);
 
             try
             {
@@ -42,14 +36,14 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
 		private readonly IImageResizeCalculator _imageResizeCalculator;
 
-		private Image GetResizedImage(Image image, ImageDimensions imageDimensionsToResizeTo)
+		private Image GetResizedImage(Image image, ImageSize viewPortSize)
 		{
-			var imageDimensions = new ImageDimensions(image.Width, image.Height);
+			var imageSize = new ImageSize(image.Width, image.Height);
 
-			var resizedImageDimensions = _imageResizeCalculator
-                .GetResizedImageDimensions(imageDimensions, imageDimensionsToResizeTo);
+			var resizedImageSize = _imageResizeCalculator
+                .GetResizedImageSize(imageSize, viewPortSize);
 
-			var resizedImage = new Bitmap(resizedImageDimensions.Width, resizedImageDimensions.Height);
+			var resizedImage = new Bitmap(resizedImageSize.Width, resizedImageSize.Height);
 			return resizedImage;
 		}
 

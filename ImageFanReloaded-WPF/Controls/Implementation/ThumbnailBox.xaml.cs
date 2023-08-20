@@ -55,8 +55,8 @@ namespace ImageFanReloaded.Controls.Implementation
 
         private void SetControlProperties()
         {
-            _thumbnailImage.MaxWidth = GlobalData.ThumbnailSize;
-            _thumbnailImage.MaxHeight = GlobalData.ThumbnailSize;
+            _thumbnailImage.MaxWidth = GlobalData.ThumbnailSize.Width;
+            _thumbnailImage.MaxHeight = GlobalData.ThumbnailSize.Height;
         }
 
         private void SetThumbnailInfo(ThumbnailInfo thumbnailInfo)

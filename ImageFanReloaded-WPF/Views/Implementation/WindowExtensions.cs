@@ -8,7 +8,7 @@ namespace ImageFanReloaded.Views
 {
     public static class WindowExtensions
     {
-        public static ImageDimensions GetScreenDimensions(this Window window)
+        public static ImageSize GetScreenSize(this Window window)
         {
             var windowHandle = new WindowInteropHelper(window).Handle;
             var screen = Screen.FromHandle(windowHandle);
@@ -16,8 +16,8 @@ namespace ImageFanReloaded.Views
 			var width = screen.Bounds.Width * DpiStandardUnit / DpiCurrentUnit;
 			var height = screen.Bounds.Height * DpiStandardUnit / DpiCurrentUnit;
 
-            var screenDimensions = new ImageDimensions(width, height);
-			return screenDimensions;
+            var screenSize = new ImageSize(width, height);
+			return screenSize;
 		}
 
 		#region Private

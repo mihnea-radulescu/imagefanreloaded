@@ -15,20 +15,14 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 			_imageResizeCalculator = imageResizeCalculator;
 		}
 
-        public IImage CreateThumbnail(IImage image, int thumbnailSize)
-        {
-            var thumbnailDimensions = new ImageDimensions(thumbnailSize, thumbnailSize);
-            return CreateResizedImage(image, thumbnailDimensions);
-        }
-
-        public IImage CreateResizedImage(IImage image, ImageDimensions imageDimensionsToResizeTo)
+        public IImage CreateResizedImage(IImage image, ImageSize viewPortSize)
 		{
-			var imageDimensions = new ImageDimensions(image.Size.Width, image.Size.Height);
+			var imageSize = new ImageSize(image.Size.Width, image.Size.Height);
 
-			var resizedImageDimensions = _imageResizeCalculator
-				.GetResizedImageDimensions(imageDimensions, imageDimensionsToResizeTo);
+			var resizedImageSize = _imageResizeCalculator
+				.GetResizedImageSize(imageSize, viewPortSize);
 
-            var resizedImage = BuildResizedImage(image, resizedImageDimensions);
+            var resizedImage = BuildResizedImage(image, resizedImageSize);
             return resizedImage;
         }
 
@@ -36,7 +30,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
         private readonly IImageResizeCalculator _imageResizeCalculator;
 
-        private IImage BuildResizedImage(IImage image, ImageDimensions resizedImageDimensions)
+        private IImage BuildResizedImage(IImage image, ImageSize resizedImageSize)
         {
             var bitmap = image as Bitmap;
 
@@ -54,7 +48,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 				{
 					loadedImage.Mutate(context =>
                         context.Resize(
-                            resizedImageDimensions.Width, resizedImageDimensions.Height, KnownResamplers.Lanczos3));
+                            resizedImageSize.Width, resizedImageSize.Height, KnownResamplers.Lanczos3));
 
                     using (Stream saveStream = new MemoryStream())
                     {

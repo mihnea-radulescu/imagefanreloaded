@@ -7,7 +7,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
         string FileName { get; }
 
         IImage GetImage();
-		IImage GetResizedImage(ImageDimensions imageDimensions);
+		IImage GetResizedImage(ImageSize imageSize);
 
         void ReadThumbnailInputFromDisc();
 		IImage GetThumbnail();

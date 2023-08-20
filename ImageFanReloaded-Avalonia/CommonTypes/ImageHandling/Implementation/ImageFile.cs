@@ -36,7 +36,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             return image;
         }
 
-        public IImage GetResizedImage(ImageDimensions imageDimensions)
+        public IImage GetResizedImage(ImageSize imageSize)
         {
             IImage resizedImage;
 
@@ -44,7 +44,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             {
                 var image = new Bitmap(_imageFilePath);
 
-                resizedImage = _imageResizer.CreateResizedImage(image, imageDimensions);
+                resizedImage = _imageResizer.CreateResizedImage(image, imageSize);
             }
             catch
             {
@@ -83,7 +83,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
                 try
                 {
-                    thumbnail = _imageResizer.CreateThumbnail(_thumbnailInput, GlobalData.ThumbnailSize);
+                    thumbnail = _imageResizer.CreateResizedImage(_thumbnailInput, GlobalData.ThumbnailSize);
                 }
                 catch
                 {

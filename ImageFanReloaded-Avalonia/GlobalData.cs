@@ -12,9 +12,9 @@ namespace ImageFanReloaded
 {
     public static class GlobalData
     {
-        public const int ThumbnailSize = 250;
+        public static readonly ImageSize ThumbnailSize;
 
-        public static readonly IImage InvalidImage;
+		public static readonly IImage InvalidImage;
         public static readonly IImage InvalidImageThumbnail;
         public static readonly IImage LoadingImageThumbnail;
 
@@ -28,20 +28,23 @@ namespace ImageFanReloaded
 
         static GlobalData()
         {
-            IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
+            ThumbnailSize = new ImageSize(ThumbnailSizeSquareLength);
+            IconSize = new ImageSize(IconSizeSquareLength);
+
+			IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
             IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
             InvalidImage = GetImageFromResource(Resources.InvalidImage);
-            InvalidImageThumbnail = imageResizer.CreateThumbnail(InvalidImage, ThumbnailSize);
+            InvalidImageThumbnail = imageResizer.CreateResizedImage(InvalidImage, ThumbnailSize);
 
             var loadingImage = GetImageFromResource(Resources.LoadingImage);
-            LoadingImageThumbnail = imageResizer.CreateThumbnail(loadingImage, ThumbnailSize);
+            LoadingImageThumbnail = imageResizer.CreateResizedImage(loadingImage, ThumbnailSize);
 
             var driveImage = GetImageFromResource(Resources.DriveIcon);
-            DriveIcon = imageResizer.CreateThumbnail(driveImage, IconSize);
+            DriveIcon = imageResizer.CreateResizedImage(driveImage, IconSize);
 
 			var folderImage = GetImageFromResource(Resources.FolderIcon);
-			FolderIcon = imageResizer.CreateThumbnail(folderImage, IconSize);
+			FolderIcon = imageResizer.CreateResizedImage(folderImage, IconSize);
 
 			ProcessorCount = Environment.ProcessorCount;
 
@@ -56,9 +59,12 @@ namespace ImageFanReloaded
             };
         }
 
-		#region Private
+        #region Private
 
-		private const int IconSize = 24;
+        private const int ThumbnailSizeSquareLength = 250;
+		private const int IconSizeSquareLength = 24;
+
+		private static readonly ImageSize IconSize;
 
 		private static IImage GetImageFromResource(byte[] resourceData)
 		{

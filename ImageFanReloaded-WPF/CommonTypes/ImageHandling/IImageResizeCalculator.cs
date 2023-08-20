@@ -2,7 +2,7 @@
 {
 	public interface IImageResizeCalculator
 	{
-		ImageDimensions GetResizedImageDimensions(
-			ImageDimensions imageDimensions, ImageDimensions imageDimensionsToResizeTo);
+		ImageSize GetResizedImageSize(
+			ImageSize imageSize, ImageSize viewPortSize);
 	}
 }
