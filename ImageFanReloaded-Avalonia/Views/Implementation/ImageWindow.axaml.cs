@@ -116,11 +116,11 @@ public partial class ImageWindow
 
 		_image.Source = image;
 
-		_imageViewState = ImageViewState.FullScreen;
-		WindowState = WindowState.FullScreen;
-
 		_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+
+		_imageViewState = ImageViewState.FullScreen;
+		WindowState = WindowState.FullScreen;
 
 		EndInit();
 	}
@@ -133,12 +133,12 @@ public partial class ImageWindow
 
 		_image.Source = image;
 
-		_imageViewState = ImageViewState.Detailed;
-		WindowState = WindowState.Maximized;
-
 		_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
 		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 		_imageScrollViewer.Offset = new Vector(0, 0);
+
+		_imageViewState = ImageViewState.Detailed;
+		WindowState = WindowState.Maximized;
 
 		EndInit();
 	}
