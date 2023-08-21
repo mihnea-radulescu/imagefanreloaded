@@ -145,12 +145,10 @@
     <Resource Include="ApplicationIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Icons\DriveIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\Icons\FolderIcon.png" />
-    <Content Include="Resources\Images\InvalidImage.jpg" />
-    <Content Include="Resources\Images\LoadingImage.jpg" />
+    <Resource Include="Resources\Icons\DriveIcon.png" />
+    <Resource Include="Resources\Icons\FolderIcon.png" />
+    <Resource Include="Resources\Images\InvalidImage.jpg" />
+    <Resource Include="Resources\Images\LoadingImage.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

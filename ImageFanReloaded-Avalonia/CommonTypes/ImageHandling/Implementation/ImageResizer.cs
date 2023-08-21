@@ -2,7 +2,7 @@
 using System.IO;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Processing;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
@@ -52,7 +52,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
                     using (Stream saveStream = new MemoryStream())
                     {
-						loadedImage.Save(saveStream, new JpegEncoder());
+						loadedImage.Save(saveStream, new PngEncoder());
                         saveStream.Position = 0;
 
                         var resizedImage = new Bitmap(saveStream);
