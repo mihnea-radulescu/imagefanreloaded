@@ -9,12 +9,8 @@ using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 namespace ImageFanReloaded.Avalonia.Tests.CommonTypes.ImageHandling.Implementation;
 
 public class ImageResizerTest
+	: TestBase
 {
-    static ImageResizerTest()
-	{
-		var appBuilderInitializerInstance = AppBuilderInitializer.Instance;
-	}
-	
 	public ImageResizerTest()
     {
 		_imageResizeCalculatorMock = new Mock<IImageResizeCalculator>(MockBehavior.Strict);
@@ -34,25 +30,24 @@ public class ImageResizerTest
 		IImage image = new Bitmap($"{LandscapeImageFileName}{InputFileExtension}");
 
 		var viewPortSize = new ImageSize(viewPortWidth, viewPortHeight);
-		var resizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
+		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
 
 		_imageResizeCalculatorMock
 			.Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageSize(
 				new ImageSize(image.Size.Width, image.Size.Height),
 				viewPortSize))
-			.Returns(resizedImageSize);
+			.Returns(referenceResizedImageSize);
 
 		// Act
 		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 
 		// Assert
-		resizedImage.Size.Width.Should().Be(resizedImageSize.Width);
-		resizedImage.Size.Height.Should().Be(resizedImageSize.Height);
+		resizedImage.Size.Width.Should().Be(referenceResizedImageSize.Width);
+		resizedImage.Size.Height.Should().Be(referenceResizedImageSize.Height);
 
-		var resizedBitmap = resizedImage as Bitmap;
 		var outputFileName = GetOutputImageFileName(
-			LandscapeImageFileName, viewPortSize, resizedImageSize);
-		resizedBitmap.Save(outputFileName);
+			LandscapeImageFileName, viewPortSize, referenceResizedImageSize);
+		SaveImageToDisc(resizedImage, outputFileName);
 	}
 
 	[Theory]
@@ -67,25 +62,24 @@ public class ImageResizerTest
 		IImage image = new Bitmap($"{PortraitImageFileName}{InputFileExtension}");
 
 		var viewPortSize = new ImageSize(viewPortWidth, viewPortHeight);
-		var resizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
+		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
 
 		_imageResizeCalculatorMock
 			.Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageSize(
 				new ImageSize(image.Size.Width, image.Size.Height),
 				viewPortSize))
-			.Returns(resizedImageSize);
+			.Returns(referenceResizedImageSize);
 
 		// Act
 		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 
 		// Assert
-		resizedImage.Size.Width.Should().Be(resizedImageSize.Width);
-		resizedImage.Size.Height.Should().Be(resizedImageSize.Height);
+		resizedImage.Size.Width.Should().Be(referenceResizedImageSize.Width);
+		resizedImage.Size.Height.Should().Be(referenceResizedImageSize.Height);
 
-		var resizedBitmap = resizedImage as Bitmap;
 		var outputFileName = GetOutputImageFileName(
-			PortraitImageFileName, viewPortSize, resizedImageSize);
-		resizedBitmap.Save(outputFileName);
+			PortraitImageFileName, viewPortSize, referenceResizedImageSize);
+		SaveImageToDisc(resizedImage, outputFileName);
 	}
 
 	#region Private
@@ -94,7 +88,6 @@ public class ImageResizerTest
 	private const string PortraitImageFileName = "Portrait";
 
 	private const string InputFileExtension = ".jpg";
-	private const string OutputFileExtension = ".png";
 
 	private readonly Mock<IImageResizeCalculator> _imageResizeCalculatorMock;
 

@@ -6,12 +6,8 @@ using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 namespace ImageFanReloaded.Avalonia.Tests.CommonTypes.ImageHandling.Implementation;
 
 public class ImageResizeCalculatorTest
+	: TestBase
 {
-	static ImageResizeCalculatorTest()
-	{
-		var appBuilderInitializerInstance = AppBuilderInitializer.Instance;
-	}
-	
 	public ImageResizeCalculatorTest()
 	{
 		_imageResizeCalculator = new ImageResizeCalculator();
