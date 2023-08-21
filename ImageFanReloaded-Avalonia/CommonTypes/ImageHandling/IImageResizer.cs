@@ -4,6 +4,5 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling;
 
 public interface IImageResizer
 {
-	IImage CreateResizedImage(
-		IImage image, ImageSize viewPortSize, ImageFormat imageFormat = ImageFormat.Jpeg);
+	IImage CreateResizedImage(IImage image, ImageSize viewPortSize);
 }

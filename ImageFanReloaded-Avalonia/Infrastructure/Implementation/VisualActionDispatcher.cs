@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Avalonia.Threading;
 
 namespace ImageFanReloaded.Infrastructure.Implementation;
@@ -13,7 +14,13 @@ public class VisualActionDispatcher
 
     public void Invoke(Action callback)
     {
-        _dispatcher.Invoke(callback);
+        try
+        {
+            _dispatcher.Invoke(callback);
+        }
+        catch (TaskCanceledException)
+        {
+        }
     }
 
     #region Private

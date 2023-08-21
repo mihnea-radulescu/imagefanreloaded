@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace ImageFanReloaded.Infrastructure.Implementation
@@ -13,8 +14,14 @@ namespace ImageFanReloaded.Infrastructure.Implementation
 
         public void Invoke(Action callback)
         {
-            _dispatcher.Invoke(callback);
-        }
+			try
+			{
+				_dispatcher.Invoke(callback);
+			}
+			catch (TaskCanceledException)
+			{
+			}
+		}
 
         #region Private
 

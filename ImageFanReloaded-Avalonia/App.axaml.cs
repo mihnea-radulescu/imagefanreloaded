@@ -31,9 +31,7 @@ public partial class App
 		IImageFileFactory imageFileFactory = new ImageFileFactory();
 
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
-		IImageEncoderFactory imageEncoderFactory = new ImageEncoderFactory();
-		IImageResizer imageResizer = new ImageResizer(
-			imageResizeCalculator, imageEncoderFactory);
+		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
 		IDiscQueryEngine discQueryEngine =
 			new DiscQueryEngine(imageFileFactory, imageResizer);

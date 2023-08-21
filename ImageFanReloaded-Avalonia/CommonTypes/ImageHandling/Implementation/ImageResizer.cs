@@ -1,7 +1,6 @@
-﻿using System.IO;
+﻿using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using SixLabors.ImageSharp.Processing;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 
@@ -9,61 +8,35 @@ public class ImageResizer
     : IImageResizer
 {
 	public ImageResizer(
-        IImageResizeCalculator imageResizeCalculator,
-        IImageEncoderFactory imageEncoderFactory)
+        IImageResizeCalculator imageResizeCalculator)
     {
-	    _imageResizeCalculator = imageResizeCalculator;
-		_imageEncoderFactory = imageEncoderFactory;
+        _imageResizeCalculator = imageResizeCalculator;
 	}
 
     public IImage CreateResizedImage(
-        IImage image, ImageSize viewPortSize, ImageFormat imageFormat = ImageFormat.Jpeg)
+        IImage image, ImageSize viewPortSize)
 	{
 		var imageSize = new ImageSize(image.Size.Width, image.Size.Height);
 
 		var resizedImageSize = _imageResizeCalculator
 		    .GetResizedImageSize(imageSize, viewPortSize);
 
-        var resizedImage = BuildResizedImage(image, resizedImageSize, imageFormat);
+        var resizedImage = BuildResizedImage(image, resizedImageSize);
         return resizedImage;
     }
 
     #region Private
 
     private readonly IImageResizeCalculator _imageResizeCalculator;
-	private readonly IImageEncoderFactory _imageEncoderFactory;
 
-	private IImage BuildResizedImage(
-        IImage image, ImageSize resizedImageSize, ImageFormat imageFormat)
+	private static IImage BuildResizedImage(IImage image, ImageSize resizedImageSize)
     {
         var bitmap = (Bitmap)image;
+        var destinationSize = new PixelSize(
+            resizedImageSize.Width, resizedImageSize.Height);
 
-        using (Stream stream = new MemoryStream())
-		{
-            bitmap.Save(stream);
-            stream.Position = 0;
-
-			using (SixLabors.ImageSharp.Image loadedImage =
-                   SixLabors.ImageSharp.Image.Load(stream))
-			{
-				loadedImage.Mutate(context =>
-                context.Resize(
-                    resizedImageSize.Width,
-                    resizedImageSize.Height,
-                    KnownResamplers.Lanczos3));
-
-                using (Stream saveStream = new MemoryStream())
-                {
-                    var imageEncoder = _imageEncoderFactory.GetImageEncoder(imageFormat);
-                    
-                    loadedImage.Save(saveStream, imageEncoder);
-                    saveStream.Position = 0;
-
-                    var resizedImage = new Bitmap(saveStream);
-                    return resizedImage;
-				}
-			}
-		}
+        var resizedImage = bitmap.CreateScaledBitmap(destinationSize);
+        return resizedImage;
 	}
 
     #endregion
