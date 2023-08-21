@@ -1,16 +1,15 @@
 ﻿using Avalonia.Media;
 
-namespace ImageFanReloaded.CommonTypes.ImageHandling
+namespace ImageFanReloaded.CommonTypes.ImageHandling;
+
+public interface IImageFile
 {
-    public interface IImageFile
-    {
-        string FileName { get; }
+    string FileName { get; }
 
-        IImage GetImage();
-		IImage GetResizedImage(ImageSize imageSize);
+    IImage GetImage();
+	IImage GetResizedImage(ImageSize imageSize);
 
-        void ReadThumbnailInputFromDisc();
-		IImage GetThumbnail();
-        void DisposeThumbnailInput();
-    }
+    void ReadThumbnailInputFromDisc();
+	IImage GetThumbnail();
+    void DisposeThumbnailInput();
 }

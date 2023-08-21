@@ -1,8 +1,7 @@
-﻿namespace ImageFanReloaded.CommonTypes.ImageHandling
+﻿namespace ImageFanReloaded.CommonTypes.ImageHandling;
+
+public interface IImageResizeCalculator
 {
-	public interface IImageResizeCalculator
-	{
-		ImageSize GetResizedImageSize(
-			ImageSize imageSize, ImageSize viewPortSize);
-	}
+	ImageSize GetResizedImageSize(
+	ImageSize imageSize, ImageSize viewPortSize);
 }
