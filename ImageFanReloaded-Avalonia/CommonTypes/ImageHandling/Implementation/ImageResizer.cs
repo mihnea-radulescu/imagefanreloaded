@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using SixLabors.ImageSharp.Formats.Png;
@@ -32,12 +31,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
         private IImage BuildResizedImage(IImage image, ImageSize resizedImageSize)
         {
-            var bitmap = image as Bitmap;
-
-			if (bitmap == null)
-			{
-				throw new InvalidOperationException($"Input image must be a {nameof(Bitmap)} object.");
-			}
+            var bitmap = (Bitmap)image;
 
             using (Stream stream = new MemoryStream())
 			{

@@ -13,12 +13,12 @@ namespace ImageFanReloaded.Views.Implementation
     public partial class MainWindow
         : Window, IMainView
     {
-        public MainWindow(IImageViewFactory imageViewFactory)
+        public MainWindow()
         {
-            _imageViewFactory = imageViewFactory;
-
             InitializeComponent();
         }
+
+        public IImageViewFactory ImageViewFactory { get; set; }
 
         public event EventHandler<FolderChangedEventArgs> FolderChanged;
 
@@ -28,38 +28,29 @@ namespace ImageFanReloaded.Views.Implementation
             if (rootNodes)
             {
                 foreach (var aSubFolder in subFolders)
-                {
-                    var aTreeViewItem = new FileSystemEntryTreeViewItem
-                    {
-                        FileSystemEntryInfo = aSubFolder
-                    };
+				{
+					var treeViewItem = GetTreeViewItem(aSubFolder);
 
-                    _folderTreeView.Items.Add(aTreeViewItem);
-                }
-            }
+					_folderTreeView.Items.Add(treeViewItem);
+				}
+			}
             else if (_folderTreeView.SelectedItem != null)
             {
-                var selectedItem = _folderTreeView.SelectedItem as TreeViewItem;
+                var selectedItem = (TreeViewItem)_folderTreeView.SelectedItem;
 
-                if (selectedItem != null)
-                {
-                    if (selectedItem.Items.Count == 0)
-                    {
-                        foreach (var aSubFolder in subFolders)
-                        {
-                            var aTreeViewItem = new FileSystemEntryTreeViewItem
-                            {
-                                FileSystemEntryInfo = aSubFolder
-                            };
+				if (selectedItem.Items.Count == 0)
+				{
+					foreach (var aSubFolder in subFolders)
+					{
+						var treeViewItem = GetTreeViewItem(aSubFolder);
 
-                            selectedItem.Items.Add(aTreeViewItem);
-                        }
-                    }
-                }
-            }
+						selectedItem.Items.Add(treeViewItem);
+					}
+				}
+			}
         }
 
-        public void ClearThumbnailBoxes()
+		public void ClearThumbnailBoxes()
         {
             if (_thumbnailBoxList != null)
             {
@@ -77,17 +68,22 @@ namespace ImageFanReloaded.Views.Implementation
             _thumbnailScrollViewer.ScrollToVerticalOffset(0);
         }
 
-        public void PopulateThumbnailBoxes(ICollection<ThumbnailInfo> thumbnails)
+        public void PopulateThumbnailBoxes(
+            ICollection<ThumbnailInfo> thumbnailInfoCollection)
         {
-            foreach (var aThumbnail in thumbnails)
+            foreach (var thumbnailInfo in thumbnailInfoCollection)
             {
-                var aThumbnailBox = new ThumbnailBox(aThumbnail);
-                aThumbnail.ThumbnailBox = aThumbnailBox;
+                var aThumbnailBox = new ThumbnailBox
+                {
+                    ThumbnailInfo = thumbnailInfo
+                };
+
+                thumbnailInfo.ThumbnailBox = aThumbnailBox;
 
                 aThumbnailBox.ThumbnailBoxClicked +=
                     (sender, e) =>
                     {
-                        var thumbnailBox = sender as ThumbnailBox;
+                        var thumbnailBox = (ThumbnailBox)sender;
 
                         if (thumbnailBox.IsSelected)
                         {
@@ -113,17 +109,16 @@ namespace ImageFanReloaded.Views.Implementation
             }
         }
 
-        public void RefreshThumbnailBoxes(ICollection<ThumbnailInfo> thumbnails)
+        public void RefreshThumbnailBoxes(
+            ICollection<ThumbnailInfo> thumbnailInfoCollection)
         {
-            foreach (var aThumbnail in thumbnails)
+            foreach (var thumbnailInfo in thumbnailInfoCollection)
             {
-                aThumbnail.RefreshThumbnail();
+                thumbnailInfo.RefreshThumbnail();
             }
         }
 
         #region Private
-
-        private readonly IImageViewFactory _imageViewFactory;
 
         private List<ThumbnailBox> _thumbnailBoxList;
         private int _selectedThumbnailIndex;
@@ -136,21 +131,21 @@ namespace ImageFanReloaded.Views.Implementation
 
             if (folderChangedHandler != null)
             {
-                var selectedFolderTreeViewItem = e.NewValue as FileSystemEntryTreeViewItem;
+                var selectedFolderTreeViewItem = (TreeViewItem)e.NewValue;
+                var fileSystemEntryItem = (FileSystemEntryItem)
+                    selectedFolderTreeViewItem.Header;
 
-                if (selectedFolderTreeViewItem != null)
-                {
-                    var selectedFolderPath = selectedFolderTreeViewItem.FileSystemEntryInfo.Path;
-                    folderChangedHandler(this,
-                                         new FolderChangedEventArgs(selectedFolderPath));
-                }
-            }
+                var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo;
+				var selectedFolderPath = fileSystemEntryInfo.Path;
+
+				folderChangedHandler(this,
+									 new FolderChangedEventArgs(selectedFolderPath));
+			}
         }
 
         private void OnKeyPressed(object sender, KeyEventArgs e)
         {
-            if (e.OriginalSource == _thumbnailScrollViewer &&
-                _selectedThumbnailBox != null)
+            if (_selectedThumbnailBox != null)
             {
                 var keyPressed = e.Key;
 
@@ -174,7 +169,7 @@ namespace ImageFanReloaded.Views.Implementation
             e.Handled = true;
         }
 
-        private void SelectThumbnailBox(ThumbnailBox thumbnailBox)
+		private void SelectThumbnailBox(ThumbnailBox thumbnailBox)
         {
             if (_selectedThumbnailBox != thumbnailBox)
             {
@@ -213,7 +208,7 @@ namespace ImageFanReloaded.Views.Implementation
 
         private void DisplayImage()
         {
-            var imageView = _imageViewFactory.ImageView;
+            var imageView = ImageViewFactory.ImageView;
             imageView.SetImage(_selectedThumbnailBox.ImageFile);
 
             imageView.ThumbnailChanged +=
@@ -226,6 +221,22 @@ namespace ImageFanReloaded.Views.Implementation
             imageView.ShowDialog();
         }
 
-        #endregion
-    }
+		private static TreeViewItem GetTreeViewItem(
+            FileSystemEntryInfo fileSystemEntryInfo)
+		{
+			var fileSystemEntryItem = new FileSystemEntryItem
+			{
+				FileSystemEntryInfo = fileSystemEntryInfo
+			};
+
+			var treeViewItem = new TreeViewItem
+			{
+				Header = fileSystemEntryItem
+			};
+
+			return treeViewItem;
+		}
+
+		#endregion
+	}
 }

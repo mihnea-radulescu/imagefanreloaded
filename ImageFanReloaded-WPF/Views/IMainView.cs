@@ -13,8 +13,8 @@ namespace ImageFanReloaded.Views
                                     bool rootNodes);
 
         void ClearThumbnailBoxes();
-        void PopulateThumbnailBoxes(ICollection<ThumbnailInfo> thumbnails);
-        void RefreshThumbnailBoxes(ICollection<ThumbnailInfo> thumbnails);
+        void PopulateThumbnailBoxes(ICollection<ThumbnailInfo> thumbnailInfoCollection);
+        void RefreshThumbnailBoxes(ICollection<ThumbnailInfo> thumbnailInfoCollection);
 
         void Show();
     }

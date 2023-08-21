@@ -121,6 +121,7 @@ namespace ImageFanReloaded.Views.Implementation
             _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 
             _imageViewState = ImageViewState.FullScreen;
+
             var screenSize = this.GetScreenSize();
             _image.Source = _imageFile.GetResizedImage(screenSize);
 
@@ -131,16 +132,17 @@ namespace ImageFanReloaded.Views.Implementation
         {
             BeginInit();
 
-            _imageScrollViewer.ScrollToHorizontalOffset(0);
-            _imageScrollViewer.ScrollToVerticalOffset(0);
-
             WindowState = WindowState.Maximized;
             WindowStyle = WindowStyle.SingleBorderWindow;
 
-            _imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+			_imageScrollViewer.ScrollToHorizontalOffset(0);
+			_imageScrollViewer.ScrollToVerticalOffset(0);
+
+			_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 
             _imageViewState = ImageViewState.Detailed;
+
             _image.Source = _imageFile.GetImage();
 
             EndInit();

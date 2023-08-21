@@ -16,7 +16,7 @@ public abstract class TestBase
 
 	protected void SaveImageToDisc(IImage image, string imagePath)
 	{
-		var bitmap = image as Bitmap;
+		var bitmap = (Bitmap)image;
 		bitmap.Save(imagePath);
 	}
 

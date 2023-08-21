@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ImageFanReloaded.Views.Implementation.ImageWindow"
+		Icon="/Assets/MainWindowIcon.ico"
+		WindowStartupLocation="CenterScreen"
+        FontSize="12"
+        Background="Black"
+        Cursor="Hand"
+        KeyUp="OnKeyPressed"
+        PointerReleased="OnMouseClick"
+		PointerWheelChanged="OnMouseWheel">
+	<ScrollViewer Name="_imageScrollViewer">
+		<Image Name="_image" Stretch="None"/>
+	</ScrollViewer>
+</Window>

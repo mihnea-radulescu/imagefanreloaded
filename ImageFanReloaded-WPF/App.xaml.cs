@@ -31,7 +31,10 @@ namespace ImageFanReloaded
                 new DiscQueryEngine(imageFileFactory, imageResizer, fileSystemEntryComparer);
 
             IImageViewFactory imageViewFactory = new ImageViewFactory();
-            IMainView mainView = new MainWindow(imageViewFactory);
+            IMainView mainView = new MainWindow
+            {
+                ImageViewFactory = imageViewFactory
+            };
 
             IVisualActionDispatcher visualActionDispatcher = new VisualActionDispatcher(Dispatcher);
             IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory();

@@ -22,7 +22,8 @@
 			<ColumnDefinition MinWidth="600" Width="85*"/>
 		</Grid.ColumnDefinitions>
 		<TreeView Name="_folderTreeView"
-                  SelectionChanged="OnFolderTreeViewSelectedItemChanged">
+                  SelectionChanged="OnFolderTreeViewSelectedItemChanged"
+				  SelectionMode="Single">
 			<TreeView.Resources>
 				<SolidColorBrush x:Key="ControlBrushKey"
                                  Color="LightBlue"/>

@@ -3,10 +3,10 @@ using ImageFanReloaded.CommonTypes.Info;
 
 namespace ImageFanReloaded.Controls.Implementation
 {
-    public partial class FileSystemEntryTreeViewItem
-        : TreeViewItem
+    public partial class FileSystemEntryItem
+        : UserControl
     {
-        public FileSystemEntryTreeViewItem()
+        public FileSystemEntryItem()
         {
             InitializeComponent();
         }

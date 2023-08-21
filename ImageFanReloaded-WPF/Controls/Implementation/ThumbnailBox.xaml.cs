@@ -10,12 +10,11 @@ namespace ImageFanReloaded.Controls.Implementation
     public partial class ThumbnailBox
         : UserControl, IRefreshableControl
     {
-        public ThumbnailBox(ThumbnailInfo thumbnailInfo)
+        public ThumbnailBox()
         {
             InitializeComponent();
 
             SetControlProperties();
-            SetThumbnailInfo(thumbnailInfo);
         }
 
         public event EventHandler<EventArgs> ThumbnailBoxClicked;
@@ -23,7 +22,22 @@ namespace ImageFanReloaded.Controls.Implementation
         public IImageFile ImageFile { get; private set; }
         public bool IsSelected { get; private set; }
 
-        public void SelectThumbnail()
+		public ThumbnailInfo ThumbnailInfo
+		{
+            get => _thumbnailInfo;
+
+            set
+            {
+                _thumbnailInfo = value;
+
+                ImageFile = _thumbnailInfo.ImageFile;
+
+                _thumbnailImage.Source = _thumbnailInfo.ThumbnailImage;
+                _thumbnailTextBlock.Text = _thumbnailInfo.ThumbnailText;
+            }
+		}
+
+		public void SelectThumbnail()
         {
             _thumbnailBoxBorder.BorderBrush = Brushes.Gray;
             Cursor = Cursors.Hand;
@@ -57,15 +71,6 @@ namespace ImageFanReloaded.Controls.Implementation
         {
             _thumbnailImage.MaxWidth = GlobalData.ThumbnailSize.Width;
             _thumbnailImage.MaxHeight = GlobalData.ThumbnailSize.Height;
-        }
-
-        private void SetThumbnailInfo(ThumbnailInfo thumbnailInfo)
-        {
-            _thumbnailInfo = thumbnailInfo;
-            ImageFile = _thumbnailInfo.ImageFile;
-
-            _thumbnailImage.Source = _thumbnailInfo.ThumbnailImage;
-            _thumbnailTextBlock.Text = _thumbnailInfo.ThumbnailText;
         }
 
         private void OnMouseClick(object sender, MouseButtonEventArgs e)

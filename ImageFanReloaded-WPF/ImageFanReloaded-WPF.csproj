@@ -78,7 +78,7 @@
     <Compile Include="Infrastructure\Implementation\VisualActionDispatcher.cs" />
     <Compile Include="Views\ImageViewState.cs" />
     <Compile Include="Views\Implementation\WindowExtensions.cs" />
-    <Page Include="Controls\Implementation\FileSystemEntryTreeViewItem.xaml">
+    <Page Include="Controls\Implementation\FileSystemEntryItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -113,8 +113,8 @@
     <Compile Include="CommonTypes\ImageHandling\Implementation\ImageFile.cs" />
     <Compile Include="CommonTypes\ImageHandling\Implementation\ImageResizer.cs" />
     <Compile Include="Presenters\MainPresenter.cs" />
-    <Compile Include="Controls\Implementation\FileSystemEntryTreeViewItem.xaml.cs">
-      <DependentUpon>FileSystemEntryTreeViewItem.xaml</DependentUpon>
+    <Compile Include="Controls\Implementation\FileSystemEntryItem.xaml.cs">
+      <DependentUpon>FileSystemEntryItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Implementation\ImageWindow.xaml.cs">
       <DependentUpon>ImageWindow.xaml</DependentUpon>

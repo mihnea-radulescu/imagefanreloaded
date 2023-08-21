@@ -12,11 +12,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
     {
         public static ImageSource ConvertToImageSource(this Image inputImage)
         {
-            var inputBitmap = inputImage as Bitmap;
-            if (inputBitmap == null)
-            {
-				throw new InvalidOperationException($"Input image must be a {nameof(Bitmap)} object.");
-			}
+            var inputBitmap = (Bitmap)inputImage;
 
             IntPtr hBitmap = IntPtr.Zero;
 

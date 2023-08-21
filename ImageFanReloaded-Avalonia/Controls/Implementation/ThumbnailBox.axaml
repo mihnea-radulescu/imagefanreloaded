@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ImageFanReloaded.Controls.Implementation.ThumbnailBox"
+			 Margin="5"
+             Background="LightGray"
+			 PointerReleased="OnMouseClick">
+	<Border Name="_thumbnailBoxBorder"
+            BorderThickness="5"
+            BorderBrush="LightGray">
+		<StackPanel Orientation="Vertical">
+			<Image Name="_thumbnailImage"
+                   HorizontalAlignment="Center"
+                   Stretch="None"/>
+			<TextBlock Name="_thumbnailTextBlock"
+                       Margin="0, 3, 0, 0"
+                       HorizontalAlignment="Center"/>
+		</StackPanel>
+	</Border>
+</UserControl>
