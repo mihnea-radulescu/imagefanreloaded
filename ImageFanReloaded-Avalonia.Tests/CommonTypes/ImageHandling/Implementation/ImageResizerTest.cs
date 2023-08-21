@@ -3,6 +3,7 @@ using Moq;
 using Xunit;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 
@@ -14,8 +15,16 @@ public class ImageResizerTest
 	public ImageResizerTest()
     {
 		_imageResizeCalculatorMock = new Mock<IImageResizeCalculator>(MockBehavior.Strict);
-        
-        _imageResizer = new ImageResizer(_imageResizeCalculatorMock.Object);
+		_imageEncoderFactoryMock = new Mock<IImageEncoderFactory>(MockBehavior.Strict);
+
+		_imageEncoderFactoryMock
+			.Setup(imageEncoderFactory =>
+				   imageEncoderFactory.GetImageEncoder(It.IsAny<ImageFormat>()))
+			.Returns(new JpegEncoder());
+
+        _imageResizer = new ImageResizer(
+			_imageResizeCalculatorMock.Object,
+			_imageEncoderFactoryMock.Object);
     }
 
 	[Theory]
@@ -90,8 +99,9 @@ public class ImageResizerTest
 	private const string InputFileExtension = ".jpg";
 
 	private readonly Mock<IImageResizeCalculator> _imageResizeCalculatorMock;
+	private readonly Mock<IImageEncoderFactory> _imageEncoderFactoryMock;
 
-    private readonly ImageResizer _imageResizer;
+	private readonly ImageResizer _imageResizer;
 
 	private static string GetOutputImageFileName(
 		string imageFileName, ImageSize viewPortSize, ImageSize resizedImageSize)

@@ -7,7 +7,7 @@ public interface IImageFile
     string FileName { get; }
 
     IImage GetImage();
-	IImage GetResizedImage(ImageSize imageSize);
+	IImage GetResizedImage(ImageSize viewPortSize);
 
     void ReadThumbnailInputFromDisc();
 	IImage GetThumbnail();

@@ -41,7 +41,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             return imageSource;
         }
 
-        public ImageSource GetResizedImage(ImageSize imageSize)
+        public ImageSource GetResizedImage(ImageSize viewPortSize)
         {
             Image image = null;
             Image resizedImage = null;
@@ -50,7 +50,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             try
             {
                 image = new Bitmap(_imageFilePath);
-                resizedImage = _imageResizer.CreateResizedImage(image, imageSize);
+                resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
                 resizedImageSource = resizedImage.ConvertToImageSource();
             }
             catch

@@ -36,7 +36,7 @@ public class ImageFile
         return image;
     }
 
-    public IImage GetResizedImage(ImageSize imageSize)
+    public IImage GetResizedImage(ImageSize viewPortSize)
     {
         IImage resizedImage;
 
@@ -44,7 +44,7 @@ public class ImageFile
         {
             var image = new Bitmap(_imageFilePath);
 
-            resizedImage = _imageResizer.CreateResizedImage(image, imageSize);
+            resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
         }
         catch
         {

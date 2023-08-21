@@ -40,25 +40,25 @@ namespace ImageFanReloaded
 
             InvalidImage = Resources.InvalidImage.ConvertToImageSource();
             InvalidImageThumbnail = imageResizer
-                                        .CreateResizedImage(Resources.InvalidImage, ThumbnailSize)
-                                        .ConvertToImageSource();
+                                .CreateResizedImage(Resources.InvalidImage, ThumbnailSize)
+                                .ConvertToImageSource();
 
             LoadingImageThumbnail = imageResizer
-                                        .CreateResizedImage(Resources.LoadingImage, ThumbnailSize)
-                                        .ConvertToImageSource();
+                                .CreateResizedImage(Resources.LoadingImage, ThumbnailSize)
+                                .ConvertToImageSource();
 
             using (var driveIconBitmap = Resources.DriveIcon)
             {
                 DriveIcon = imageResizer
-                                        .CreateResizedImage(driveIconBitmap, IconSize)
-                                        .ConvertToImageSource();
+                                .CreateResizedImage(driveIconBitmap, IconSize)
+                                .ConvertToImageSource();
             }
 
             using (var folderIconBitmap = Resources.FolderIcon)
             {
                 FolderIcon = imageResizer
-                                        .CreateResizedImage(folderIconBitmap, IconSize)
-                                        .ConvertToImageSource();
+                                .CreateResizedImage(folderIconBitmap, IconSize)
+                                .ConvertToImageSource();
             }
 
             ProcessorCount = Environment.ProcessorCount;

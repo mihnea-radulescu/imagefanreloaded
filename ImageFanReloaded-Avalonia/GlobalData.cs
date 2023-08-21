@@ -32,19 +32,25 @@ namespace ImageFanReloaded
             IconSize = new ImageSize(IconSizeSquareLength);
 
 			IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
-            IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
+			IImageEncoderFactory imageEncoderFactory = new ImageEncoderFactory();
+			IImageResizer imageResizer = new ImageResizer(
+                imageResizeCalculator, imageEncoderFactory);
 
             InvalidImage = GetImageFromResource(Resources.InvalidImage);
-            InvalidImageThumbnail = imageResizer.CreateResizedImage(InvalidImage, ThumbnailSize);
+            InvalidImageThumbnail = imageResizer
+                .CreateResizedImage(InvalidImage, ThumbnailSize);
 
             var loadingImage = GetImageFromResource(Resources.LoadingImage);
-            LoadingImageThumbnail = imageResizer.CreateResizedImage(loadingImage, ThumbnailSize);
+            LoadingImageThumbnail = imageResizer
+                .CreateResizedImage(loadingImage, ThumbnailSize);
 
             var driveImage = GetImageFromResource(Resources.DriveIcon);
-            DriveIcon = imageResizer.CreateResizedImage(driveImage, IconSize);
+            DriveIcon = imageResizer
+                .CreateResizedImage(driveImage, IconSize, ImageFormat.Png);
 
 			var folderImage = GetImageFromResource(Resources.FolderIcon);
-			FolderIcon = imageResizer.CreateResizedImage(folderImage, IconSize);
+			FolderIcon = imageResizer
+                .CreateResizedImage(folderImage, IconSize, ImageFormat.Png);
 
 			ProcessorCount = Environment.ProcessorCount;
 

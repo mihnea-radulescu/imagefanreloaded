@@ -108,37 +108,37 @@ public partial class ImageWindow
 
 	private void GoFullScreen()
 	{
+		var screenBounds = Screens.ScreenFromWindow(this).Bounds;
+		var screenSize = new ImageSize(screenBounds.Width, screenBounds.Height);
+		var image = _imageFile.GetResizedImage(screenSize);
+
 		BeginInit();
 
+		_image.Source = image;
+
+		_imageViewState = ImageViewState.FullScreen;
 		WindowState = WindowState.FullScreen;
 
 		_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-
-		_imageViewState = ImageViewState.FullScreen;
-
-		var screenSize = Screens.ScreenFromWindow(this).Bounds;
-		var imageSize = new ImageSize(screenSize.Width, screenSize.Height);
-
-		_image.Source = _imageFile.GetResizedImage(imageSize);
 
 		EndInit();
 	}
 
 	private void GoDetailed()
 	{
+		var image = _imageFile.GetImage();
+
 		BeginInit();
 
-		WindowState = WindowState.Maximized;
+		_image.Source = image;
 
-		_imageScrollViewer.Offset = new Vector(0, 0);
+		_imageViewState = ImageViewState.Detailed;
+		WindowState = WindowState.Maximized;
 
 		_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
 		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-
-		_imageViewState = ImageViewState.Detailed;
-
-		_image.Source = _imageFile.GetImage();
+		_imageScrollViewer.Offset = new Vector(0, 0);
 
 		EndInit();
 	}

@@ -112,40 +112,41 @@ namespace ImageFanReloaded.Views.Implementation
 
         private void GoFullScreen()
         {
-            BeginInit();
+			var screenSize = this.GetScreenSize();
+			var image = _imageFile.GetResizedImage(screenSize);
 
-            WindowState = WindowState.Maximized;
+			BeginInit();
+
+			_image.Source = image;
+
+			_imageViewState = ImageViewState.FullScreen;
+			WindowState = WindowState.Maximized;
             WindowStyle = WindowStyle.None;
 
             _imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
             _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-
-            _imageViewState = ImageViewState.FullScreen;
-
-            var screenSize = this.GetScreenSize();
-            _image.Source = _imageFile.GetResizedImage(screenSize);
 
             EndInit();
         }
 
         private void GoDetailed()
         {
-            BeginInit();
+			var image = _imageFile.GetImage();
 
-            WindowState = WindowState.Maximized;
+			BeginInit();
+
+			_image.Source = image;
+
+			_imageViewState = ImageViewState.Detailed;
+			WindowState = WindowState.Maximized;
             WindowStyle = WindowStyle.SingleBorderWindow;
-
-			_imageScrollViewer.ScrollToHorizontalOffset(0);
-			_imageScrollViewer.ScrollToVerticalOffset(0);
 
 			_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+			_imageScrollViewer.ScrollToHorizontalOffset(0);
+			_imageScrollViewer.ScrollToVerticalOffset(0);
 
-            _imageViewState = ImageViewState.Detailed;
-
-            _image.Source = _imageFile.GetImage();
-
-            EndInit();
+			EndInit();
         }
 
         #endregion
