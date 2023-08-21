@@ -119,14 +119,14 @@ namespace ImageFanReloaded.Views.Implementation
 
 			_image.Source = image;
 
-			_imageViewState = ImageViewState.FullScreen;
-			WindowState = WindowState.Maximized;
-            WindowStyle = WindowStyle.None;
-
             _imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
             _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 
-            EndInit();
+			_imageViewState = ImageViewState.FullScreen;
+			WindowState = WindowState.Maximized;
+			WindowStyle = WindowStyle.None;
+
+			EndInit();
         }
 
         private void GoDetailed()
@@ -137,14 +137,14 @@ namespace ImageFanReloaded.Views.Implementation
 
 			_image.Source = image;
 
-			_imageViewState = ImageViewState.Detailed;
-			WindowState = WindowState.Maximized;
-            WindowStyle = WindowStyle.SingleBorderWindow;
-
 			_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 			_imageScrollViewer.ScrollToHorizontalOffset(0);
 			_imageScrollViewer.ScrollToVerticalOffset(0);
+
+			_imageViewState = ImageViewState.Detailed;
+			WindowState = WindowState.Maximized;
+			WindowStyle = WindowStyle.SingleBorderWindow;
 
 			EndInit();
         }
