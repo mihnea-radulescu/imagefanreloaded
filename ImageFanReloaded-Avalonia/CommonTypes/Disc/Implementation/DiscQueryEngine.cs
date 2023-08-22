@@ -64,7 +64,7 @@ public class DiscQueryEngine
 
     public IReadOnlyCollection<IImageFile> GetImageFiles(string folderPath)
     {
-        ICollection<FileInfo> filesInformation;
+		IReadOnlyCollection<FileInfo> filesInformation;
         try
         {
             filesInformation = new DirectoryInfo(folderPath)
