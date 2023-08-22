@@ -3,7 +3,7 @@
   <PropertyGroup>
 	<IsPackable>false</IsPackable>
 	<IsTestProject>true</IsTestProject>
-	<TargetFramework>net8.0</TargetFramework>
+	<TargetFramework>net6.0</TargetFramework>
 	<ImplicitUsings>disable</ImplicitUsings>
 	<Nullable>disable</Nullable>
 	<Title>ImageFan Reloaded Avalonia Tests</Title>
