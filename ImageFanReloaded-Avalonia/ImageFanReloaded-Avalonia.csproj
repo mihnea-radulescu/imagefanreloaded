@@ -25,6 +25,9 @@
 	<Resource Include="ApplicationIcon.ico">
 		<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	</Resource>
+	<Resource Include="Avalonia-LICENSE.md">
+	  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	</Resource>
 	<Resource Include="Resources\Icons\DriveIcon.data">
 	  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	</Resource>
