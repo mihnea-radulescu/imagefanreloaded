@@ -11,7 +11,45 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation;
 public class DiscQueryEngine
     : IDiscQueryEngine
 {
-    public DiscQueryEngine(
+	static DiscQueryEngine()
+	{
+        UnixDrivePrefixes = new List<string>
+        {
+            "/home/",
+            "/media/",
+            "/mnt/"
+        };
+        
+        EmptyFileSystemEntryInfoCollection = Enumerable
+			.Empty<FileSystemEntryInfo>()
+			.ToArray();
+
+		EmptyImageFileCollection = Enumerable
+			.Empty<IImageFile>()
+			.ToArray();
+
+		UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+		SpecialFolders = new List<string>
+		{
+			"Desktop",
+			"Documents",
+			"Downloads",
+			"Pictures"
+		};
+
+		ImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
+		{
+			".bmp",
+			".gif",
+			".ico",
+			".jpg", ".jpe", ".jpeg",
+			".png",
+			".tif", ".tiff"
+		};
+	}
+
+	public DiscQueryEngine(
         IImageFileFactory imageFileFactory,
         IImageResizer imageResizer)
     {
@@ -22,9 +60,11 @@ public class DiscQueryEngine
     public IReadOnlyCollection<FileSystemEntryInfo> GetAllDrives()
     {
         return DriveInfo.GetDrives()
-                        .Select(aDriveInfo =>
-                            new FileSystemEntryInfo(aDriveInfo.Name,
-                                                    aDriveInfo.Name,
+                        .Select(aDriveInfo => aDriveInfo.Name)
+                        .Where(aDriveName => IsDrive(aDriveName))
+                        .Select(aDriveName =>
+                            new FileSystemEntryInfo(aDriveName,
+													aDriveName,
                                                     GlobalData.DriveIcon))
                         .OrderBy(aDriveInfo => aDriveInfo.Name)
                         .ToArray();
@@ -89,36 +129,8 @@ public class DiscQueryEngine
 
     #region Private
 
-	static DiscQueryEngine()
-	{
-        EmptyFileSystemEntryInfoCollection = Enumerable
-            .Empty<FileSystemEntryInfo>()
-            .ToArray();
-
-        EmptyImageFileCollection = Enumerable
-            .Empty<IImageFile>()
-            .ToArray();
-
-        UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
-		SpecialFolders = new List<string>
-        {
-            "Desktop",
-            "Documents",
-			"Downloads",
-            "Pictures"
-        };
-
-		ImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
-        {
-            ".bmp",
-            ".gif",
-            ".ico",
-            ".jpg", ".jpe", ".jpeg",
-            ".png",
-            ".tif", ".tiff"
-        };
-	}
+    private const string UnixDriveRootPath = "/";
+    private static readonly IReadOnlyCollection<string> UnixDrivePrefixes;
 
     private static readonly IReadOnlyCollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
     private static readonly IReadOnlyCollection<IImageFile> EmptyImageFileCollection;
@@ -132,5 +144,21 @@ public class DiscQueryEngine
     private readonly IImageFileFactory _imageFileFactory;
     private readonly IImageResizer _imageResizer;
 
-    #endregion
+    private static bool IsDrive(string driveName)
+    {
+        if (!driveName.StartsWith(UnixDriveRootPath))
+        {
+            return true;
+        }
+
+        if (driveName == UnixDriveRootPath)
+        {
+            return true;
+        }
+
+        var isDrive = UnixDrivePrefixes.Any(aUnixDrivePrefix => driveName.StartsWith(aUnixDrivePrefix));
+        return isDrive;
+    }
+
+	#endregion
 }

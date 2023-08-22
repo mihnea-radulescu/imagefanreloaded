@@ -11,7 +11,38 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
     public class DiscQueryEngine
         : IDiscQueryEngine
     {
-        public DiscQueryEngine(
+		static DiscQueryEngine()
+		{
+			EmptyFileSystemEntryInfoCollection = Enumerable
+				.Empty<FileSystemEntryInfo>()
+				.ToArray();
+
+			EmptyImageFileCollection = Enumerable
+				.Empty<IImageFile>()
+				.ToArray();
+
+			UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+			SpecialFolders = new List<string>
+			{
+				"Desktop",
+				"Documents",
+				"Downloads",
+				"Pictures"
+			};
+
+			ImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
+			{
+				".bmp",
+				".gif",
+				".ico",
+				".jpg", ".jpe", ".jpeg",
+				".png",
+				".tif", ".tiff"
+			};
+		}
+
+		public DiscQueryEngine(
             IImageFileFactory imageFileFactory,
             IImageResizer imageResizer,
             IFileSystemEntryComparer fileSystemEntryComparer)
@@ -24,11 +55,12 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
         public ICollection<FileSystemEntryInfo> GetAllDrives()
         {
             return DriveInfo.GetDrives()
-                            .Select(aDriveInfo =>
-                                new FileSystemEntryInfo(aDriveInfo.Name,
-                                                        aDriveInfo.Name,
-                                                        GlobalData.DriveIcon))
-                            .OrderBy(aDriveInfo => aDriveInfo.Name)
+							.Select(aDriveInfo => aDriveInfo.Name)
+						    .Select(aDriveName =>
+							    new FileSystemEntryInfo(aDriveName,
+													    aDriveName,
+													    GlobalData.DriveIcon))
+							.OrderBy(aDriveInfo => aDriveInfo.Name)
                             .ToArray();
         }
 
@@ -90,37 +122,6 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
         }
 
         #region Private
-
-		static DiscQueryEngine()
-		{
-            EmptyFileSystemEntryInfoCollection = Enumerable
-                .Empty<FileSystemEntryInfo>()
-                .ToArray();
-
-            EmptyImageFileCollection = Enumerable
-                .Empty<IImageFile>()
-                .ToArray();
-
-            UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
-			SpecialFolders = new List<string>
-            {
-                "Desktop",
-                "Documents",
-				"Downloads",
-                "Pictures"
-            };
-
-			ImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
-            {
-                ".bmp",
-                ".gif",
-                ".ico",
-                ".jpg", ".jpe", ".jpeg",
-                ".png",
-                ".tif", ".tiff"
-            };
-		}
 
         private static readonly ICollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
         private static readonly ICollection<IImageFile> EmptyImageFileCollection;
