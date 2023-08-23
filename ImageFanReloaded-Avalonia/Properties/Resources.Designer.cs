@@ -63,16 +63,6 @@ namespace ImageFanReloaded.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] Avalonia_LICENSE {
-            get {
-                object obj = ResourceManager.GetObject("Avalonia_LICENSE", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         internal static byte[] DriveIcon {
             get {
                 object obj = ResourceManager.GetObject("DriveIcon", resourceCulture);
