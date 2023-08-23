@@ -3,9 +3,9 @@
         x:Class="ImageFanReloaded.Views.Implementation.ImageWindow"
 		Icon="/Assets/MainWindowIcon.ico"
 		WindowStartupLocation="CenterScreen"
+		WindowState="FullScreen"
         FontSize="12"
         Background="Black"
-        Cursor="Hand"
         KeyUp="OnKeyPressed"
         PointerReleased="OnMouseClick"
 		PointerWheelChanged="OnMouseWheel">

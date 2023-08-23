@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using ImageFanReloaded.Controls.Implementation;
 using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.CommonTypes.Info;
+using ImageFanReloaded.Controls.Implementation;
 using ImageFanReloaded.Factories;
 
 namespace ImageFanReloaded.Views.Implementation;
@@ -16,7 +17,10 @@ public partial class MainWindow
     public MainWindow()
     {
         InitializeComponent();
-    }
+
+		var screenBounds = Screens.ScreenFromWindow(this).Bounds;
+		_screenSize = new ImageSize(screenBounds.Width, screenBounds.Height);
+	}
 
 	public IImageViewFactory ImageViewFactory { get; set; }
 
@@ -121,6 +125,8 @@ public partial class MainWindow
 
 	#region Private
 
+	private readonly ImageSize _screenSize;
+
 	private List<ThumbnailBox> _thumbnailBoxList;
 	private int _selectedThumbnailIndex;
 	private ThumbnailBox _selectedThumbnailBox;
@@ -205,13 +211,13 @@ public partial class MainWindow
 	private void DisplayImage()
 	{
 		var imageView = ImageViewFactory.ImageView;
-		imageView.SetImage(_selectedThumbnailBox.ImageFile);
+		imageView.SetImage(_screenSize, _selectedThumbnailBox.ImageFile);
 
 		imageView.ThumbnailChanged +=
 			(sender, e) =>
 			{
 				AdvanceToThumbnailIndex(e.Increment);
-				imageView.SetImage(_selectedThumbnailBox.ImageFile);
+				imageView.SetImage(_screenSize, _selectedThumbnailBox.ImageFile);
 			};
 
 		imageView.ShowDialog(this);

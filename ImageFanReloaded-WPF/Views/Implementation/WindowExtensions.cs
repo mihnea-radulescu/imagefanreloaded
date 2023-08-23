@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Windows.Interop;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 
-namespace ImageFanReloaded.Views
+namespace ImageFanReloaded.Views.Implementation
 {
     public static class WindowExtensions
     {

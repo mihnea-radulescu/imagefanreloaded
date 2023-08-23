@@ -6,10 +6,12 @@ public interface IImageFile
 {
     string FileName { get; }
 
-    IImage GetImage();
+	ImageSize ImageSize { get; }
+
+	IImage GetImage();
 	IImage GetResizedImage(ImageSize viewPortSize);
 
-    void ReadThumbnailInputFromDisc();
+    void ReadImageDataFromDisc();
 	IImage GetThumbnail();
-    void DisposeThumbnailInput();
+    void DisposeImageData();
 }

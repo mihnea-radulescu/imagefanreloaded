@@ -24,7 +24,7 @@ public class ThumbnailInfo
     public string ThumbnailText => ImageFile.FileName;
 
     public void ReadThumbnailInputFromDisc()
-        => ImageFile.ReadThumbnailInputFromDisc();
+        => ImageFile.ReadImageDataFromDisc();
 
     public void SaveThumbnail()
     {

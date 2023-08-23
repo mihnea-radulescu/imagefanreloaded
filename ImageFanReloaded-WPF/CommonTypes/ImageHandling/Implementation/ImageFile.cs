@@ -15,10 +15,14 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
             FileName = Path.GetFileName(imageFilePath);
 
-            _thumbnailGenerationLockObject = new object();
+			ImageSize = new ImageSize(int.MaxValue, int.MaxValue);
+
+			_thumbnailGenerationLockObject = new object();
         }
 
         public string FileName { get; }
+
+        public ImageSize ImageSize { get; private set; }
 
         public ImageSource GetImage()
         {
@@ -28,7 +32,10 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             try
             {
                 image = new Bitmap(_imageFilePath);
-                imageSource = image.ConvertToImageSource();
+
+				SetImageSize(image);
+
+				imageSource = image.ConvertToImageSource();
             }
             catch
             {
@@ -50,7 +57,10 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             try
             {
                 image = new Bitmap(_imageFilePath);
-                resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
+
+				SetImageSize(image);
+
+				resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
                 resizedImageSource = resizedImage.ConvertToImageSource();
             }
             catch
@@ -65,17 +75,19 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
             return resizedImageSource;
         }
 
-        public void ReadThumbnailInputFromDisc()
+        public void ReadImageDataFromDisc()
         {
             lock (_thumbnailGenerationLockObject)
             {
                 try
                 {
-                    _thumbnailInput = new Bitmap(_imageFilePath);
-                }
+                    _imageData = new Bitmap(_imageFilePath);
+
+					SetImageSize(_imageData);
+				}
                 catch
                 {
-                    _thumbnailInput = GlobalData.InvalidImageAsBitmap;
+                    _imageData = GlobalData.InvalidImageAsBitmap;
                 }
             }
         }
@@ -84,10 +96,10 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
         {
             lock (_thumbnailGenerationLockObject)
             {
-                if (_thumbnailInput == null)
+                if (_imageData == null)
                 {
                     throw new InvalidOperationException(
-                        $"The method {nameof(ReadThumbnailInputFromDisc)} must be executed prior to calling the method {nameof(GetThumbnail)}.");
+                        $"The method {nameof(ReadImageDataFromDisc)} must be executed prior to calling the method {nameof(GetThumbnail)}.");
                 }
 
                 Image thumbnail = null;
@@ -95,7 +107,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
                 try
                 {
-                    thumbnail = _imageResizer.CreateResizedImage(_thumbnailInput, GlobalData.ThumbnailSize);
+                    thumbnail = _imageResizer.CreateResizedImage(_imageData, GlobalData.ThumbnailSize);
                     thumbnailSource = thumbnail.ConvertToImageSource();
                 }
                 catch
@@ -105,22 +117,22 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
                 {
                     thumbnail?.Dispose();
 
-                    DisposeThumbnailInput();
+                    DisposeImageData();
                 }
 
                 return thumbnailSource;
             }
         }
 
-        public void DisposeThumbnailInput()
+        public void DisposeImageData()
         {
-            if (_thumbnailInput != null &&
-                _thumbnailInput != GlobalData.InvalidImageAsBitmap)
+            if (_imageData != null &&
+                _imageData != GlobalData.InvalidImageAsBitmap)
             {
-                _thumbnailInput.Dispose();
+                _imageData.Dispose();
             }
 
-			_thumbnailInput = null;
+			_imageData = null;
 		}
 
         #region Private
@@ -129,8 +141,13 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
         private readonly string _imageFilePath;
         private readonly object _thumbnailGenerationLockObject;
 
-        private Image _thumbnailInput;
+        private Image _imageData;
 
-        #endregion
-    }
+		private void SetImageSize(Image image)
+		{
+			ImageSize = new ImageSize(image.Width, image.Height);
+		}
+
+		#endregion
+	}
 }

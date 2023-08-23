@@ -2,6 +2,6 @@
 
 public enum ImageViewState
 {
-    FullScreen = 0,
-    Detailed = 1
+    ResizedToScreenSize = 0,
+    ZoomedToImageSize = 1
 }

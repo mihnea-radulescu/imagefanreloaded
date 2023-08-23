@@ -15,19 +15,25 @@ public class ImageFile
 
         FileName = Path.GetFileName(imageFilePath);
 
+        ImageSize = new ImageSize(int.MaxValue, int.MaxValue);
+
         _thumbnailGenerationLockObject = new object();
     }
 
     public string FileName { get; }
 
-    public IImage GetImage()
+	public ImageSize ImageSize { get; private set; }
+
+	public IImage GetImage()
     {
         IImage image;
 
         try
         {
             image = new Bitmap(_imageFilePath);
-        }
+
+			SetImageSize(image);
+		}
         catch
         {
             image = GlobalData.InvalidImage;
@@ -41,12 +47,14 @@ public class ImageFile
         IImage resizedImage;
 
         try
-        {
-            var image = new Bitmap(_imageFilePath);
+		{
+			var image = new Bitmap(_imageFilePath);
 
-            resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
-        }
-        catch
+			SetImageSize(image);
+
+			resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
+		}
+		catch
         {
             resizedImage = GlobalData.InvalidImage;
         }
@@ -54,17 +62,19 @@ public class ImageFile
         return resizedImage;
     }
 
-    public void ReadThumbnailInputFromDisc()
+	public void ReadImageDataFromDisc()
     {
         lock (_thumbnailGenerationLockObject)
         {
             try
             {
-                _thumbnailInput = new Bitmap(_imageFilePath);
-            }
+                _imageData = new Bitmap(_imageFilePath);
+
+                SetImageSize(_imageData);
+			}
             catch
             {
-                _thumbnailInput = GlobalData.InvalidImage;
+                _imageData = GlobalData.InvalidImage;
             }
         }
     }
@@ -73,10 +83,10 @@ public class ImageFile
     {
         lock (_thumbnailGenerationLockObject)
         {
-            if (_thumbnailInput == null)
+            if (_imageData == null)
             {
                 throw new InvalidOperationException(
-                    $"The method {nameof(ReadThumbnailInputFromDisc)} must be executed prior to calling the method {nameof(GetThumbnail)}.");
+                    $"The method {nameof(ReadImageDataFromDisc)} must be executed prior to calling the method {nameof(GetThumbnail)}.");
             }
 
             IImage thumbnail;
@@ -84,7 +94,7 @@ public class ImageFile
             try
             {
                 thumbnail = _imageResizer
-                    .CreateResizedImage(_thumbnailInput, GlobalData.ThumbnailSize);
+                    .CreateResizedImage(_imageData, GlobalData.ThumbnailSize);
             }
             catch
             {
@@ -92,16 +102,16 @@ public class ImageFile
             }
             finally
             {
-                DisposeThumbnailInput();
+                DisposeImageData();
             }
 
             return thumbnail;
         }
     }
 
-	public void DisposeThumbnailInput()
+	public void DisposeImageData()
 	{
-		_thumbnailInput = null;
+        _imageData = null;
 	}
 
 	#region Private
@@ -110,7 +120,12 @@ public class ImageFile
     private readonly string _imageFilePath;
     private readonly object _thumbnailGenerationLockObject;
 
-    private IImage _thumbnailInput;
+    private IImage _imageData;
 
-    #endregion
+	private void SetImageSize(IImage image)
+	{
+		ImageSize = new ImageSize(image.Size.Width, image.Size.Height);
+	}
+
+	#endregion
 }

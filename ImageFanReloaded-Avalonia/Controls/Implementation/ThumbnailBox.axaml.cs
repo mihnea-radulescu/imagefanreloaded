@@ -60,7 +60,7 @@ public partial class ThumbnailBox
 
 	public void DisposeThumbnail()
 	{
-		ImageFile.DisposeThumbnailInput();
+		ImageFile.DisposeImageData();
 	}
 
 	#region Private

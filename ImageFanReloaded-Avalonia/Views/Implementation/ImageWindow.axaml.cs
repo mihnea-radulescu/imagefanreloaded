@@ -11,6 +11,13 @@ namespace ImageFanReloaded.Views.Implementation;
 public partial class ImageWindow
 	: Window, IImageView
 {
+	static ImageWindow()
+	{
+		HandCursor = new Cursor(StandardCursorType.Hand);
+		NoneCursor = new Cursor(StandardCursorType.None);
+		SizeAllCursor = new Cursor(StandardCursorType.SizeAll);
+	}
+	
 	public event EventHandler<ThumbnailChangedEventArgs> ThumbnailChanged;
 
 	public ImageWindow()
@@ -18,24 +25,31 @@ public partial class ImageWindow
 		InitializeComponent();
 	}
 
-	public void SetImage(IImageFile imageFile)
+	public void SetImage(ImageSize screenSize, IImageFile imageFile)
 	{
+		_screenSize = screenSize;
 		_imageFile = imageFile;
+
 		Title = _imageFile.FileName;
 
-		if (_imageViewState == ImageViewState.FullScreen)
-		{
-			GoFullScreen();
-		}
-		else if (_imageViewState == ImageViewState.Detailed)
-		{
-			GoDetailed();
-		}
+		_canZoomToImageSize = CanZoomToImageSize();
+		_screenSizeCursor = GetScreenSizeCursor();
+
+		ResizeToScreenSize();
 	}
 
 	#region Private
 
+	private static readonly Cursor HandCursor;
+	private static readonly Cursor NoneCursor;
+	private static readonly Cursor SizeAllCursor;
+
+	private ImageSize _screenSize;
 	private IImageFile _imageFile;
+
+	private bool _canZoomToImageSize;
+	private Cursor _screenSizeCursor;
+
 	private ImageViewState _imageViewState;
 
 	private void OnKeyPressed(object sender, KeyEventArgs e)
@@ -52,29 +66,29 @@ public partial class ImageWindow
 		}
 		else if (keyPressed == Key.Enter)
 		{
-			ChangeImageMode();
+			UpdateViewState();
 		}
 		else if (keyPressed == Key.Escape)
 		{
-			if (_imageViewState == ImageViewState.FullScreen)
+			if (_imageViewState == ImageViewState.ResizedToScreenSize)
 			{
 				Close();
 			}
-			else if (_imageViewState == ImageViewState.Detailed)
+			else if (_imageViewState == ImageViewState.ZoomedToImageSize)
 			{
-				GoFullScreen();
+				ResizeToScreenSize();
 			}
 		}
 	}
 
 	private void OnMouseClick(object sender, PointerReleasedEventArgs e)
 	{
-		ChangeImageMode();
+		UpdateViewState();
 	}
 
 	private void OnMouseWheel(object sender, PointerWheelEventArgs e)
 	{
-		if (_imageViewState == ImageViewState.FullScreen)
+		if (_imageViewState == ImageViewState.ResizedToScreenSize)
 		{
 			var delta = e.Delta;
 
@@ -94,23 +108,47 @@ public partial class ImageWindow
 		ThumbnailChanged?.Invoke(this, new ThumbnailChangedEventArgs(increment));
 	}
 
-	private void ChangeImageMode()
+	private void UpdateViewState()
 	{
-		if (_imageViewState == ImageViewState.FullScreen)
+		if (_imageViewState == ImageViewState.ResizedToScreenSize &&
+			_canZoomToImageSize)
 		{
-			GoDetailed();
+			ZoomToImageSize();
 		}
-		else if (_imageViewState == ImageViewState.Detailed)
+		else if (_imageViewState == ImageViewState.ZoomedToImageSize)
 		{
-			GoFullScreen();
+			ResizeToScreenSize();
 		}
 	}
 
-	private void GoFullScreen()
+	private bool CanZoomToImageSize()
 	{
-		var screenBounds = Screens.ScreenFromWindow(this).Bounds;
-		var screenSize = new ImageSize(screenBounds.Width, screenBounds.Height);
-		var image = _imageFile.GetResizedImage(screenSize);
+		var shouldZoomToImageSize =
+			_imageFile.ImageSize.Width > _screenSize.Width ||
+			_imageFile.ImageSize.Height > _screenSize.Height;
+
+		return shouldZoomToImageSize;
+	}
+
+	private Cursor GetScreenSizeCursor()
+	{
+		Cursor screenSizeCursor;
+
+		if (_canZoomToImageSize)
+		{
+			screenSizeCursor = HandCursor;
+		}
+		else
+		{
+			screenSizeCursor = NoneCursor;
+		}
+
+		return screenSizeCursor;
+	}
+
+	private void ResizeToScreenSize()
+	{
+		var image = _imageFile.GetResizedImage(_screenSize);
 
 		BeginInit();
 
@@ -119,13 +157,14 @@ public partial class ImageWindow
 		_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 
-		_imageViewState = ImageViewState.FullScreen;
-		WindowState = WindowState.FullScreen;
+		Cursor = _screenSizeCursor;
+
+		_imageViewState = ImageViewState.ResizedToScreenSize;
 
 		EndInit();
 	}
 
-	private void GoDetailed()
+	private void ZoomToImageSize()
 	{
 		var image = _imageFile.GetImage();
 
@@ -137,8 +176,9 @@ public partial class ImageWindow
 		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 		_imageScrollViewer.Offset = new Vector(0, 0);
 
-		_imageViewState = ImageViewState.Detailed;
-		WindowState = WindowState.Maximized;
+		Cursor = SizeAllCursor;
+
+		_imageViewState = ImageViewState.ZoomedToImageSize;
 
 		EndInit();
 	}

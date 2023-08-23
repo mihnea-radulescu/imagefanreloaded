@@ -9,8 +9,8 @@ namespace ImageFanReloaded.Views;
 public interface IImageView
 {
     event EventHandler<ThumbnailChangedEventArgs> ThumbnailChanged;
-    
-    void SetImage(IImageFile imageFile);
+
+	void SetImage(ImageSize screenSize, IImageFile imageFile);
 
     Task ShowDialog(Window owner);
 }

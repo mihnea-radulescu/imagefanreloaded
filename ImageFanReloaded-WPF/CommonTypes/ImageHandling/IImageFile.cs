@@ -6,11 +6,13 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling
     {
         string FileName { get; }
 
-        ImageSource GetImage();
+		ImageSize ImageSize { get; }
+
+		ImageSource GetImage();
 		ImageSource GetResizedImage(ImageSize viewPortSize);
 
-        void ReadThumbnailInputFromDisc();
+        void ReadImageDataFromDisc();
         ImageSource GetThumbnail();
-        void DisposeThumbnailInput();
+        void DisposeImageData();
     }
 }

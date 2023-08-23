@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Icon="/ApplicationIcon.ico"
         WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        WindowStyle="None"
         FontSize="12"
         Background="Black"
-        Cursor="Hand"
         KeyUp="OnKeyPressed"
         MouseUp="OnMouseClick"
         PreviewMouseWheel="OnMouseWheel">

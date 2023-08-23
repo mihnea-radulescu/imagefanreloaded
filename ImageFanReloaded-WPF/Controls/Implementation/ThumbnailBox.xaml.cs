@@ -60,7 +60,7 @@ namespace ImageFanReloaded.Controls.Implementation
 
         public void DisposeThumbnail()
         {
-            ImageFile.DisposeThumbnailInput();
+            ImageFile.DisposeImageData();
         }
         
         #region Private

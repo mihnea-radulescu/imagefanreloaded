@@ -17,24 +17,27 @@ namespace ImageFanReloaded.Views.Implementation
             InitializeComponent();
         }
         
-        public void SetImage(IImageFile imageFile)
+        public void SetImage(ImageSize screenSize, IImageFile imageFile)
         {
+            _screenSize = screenSize; 
             _imageFile = imageFile;
+
             Title = _imageFile.FileName;
 
-            if (_imageViewState == ImageViewState.FullScreen)
-            {
-                GoFullScreen();
-            }
-            else if (_imageViewState == ImageViewState.Detailed)
-            {
-                GoDetailed();
-            }
+			_canZoomToImageSize = CanZoomToImageSize();
+            _screenSizeCursor = GetScreenSizeCursor();
+
+			ResizeToScreenSize();
         }
 
         #region Private
 
+        private ImageSize _screenSize;
         private IImageFile _imageFile;
+
+        private bool _canZoomToImageSize;
+        private Cursor _screenSizeCursor;
+
         private ImageViewState _imageViewState;
 
         private void OnKeyPressed(object sender, KeyEventArgs e)
@@ -51,17 +54,17 @@ namespace ImageFanReloaded.Views.Implementation
             }
             else if (keyPressed == Key.Enter)
             {
-                ChangeImageMode();
-            }
+                UpdateViewState();
+			}
             else if (keyPressed == Key.Escape)
             {
-                if (_imageViewState == ImageViewState.FullScreen)
+                if (_imageViewState == ImageViewState.ResizedToScreenSize)
                 {
                     Close();
                 }
-                else if (_imageViewState == ImageViewState.Detailed)
+                else if (_imageViewState == ImageViewState.ZoomedToImageSize)
                 {
-                    GoFullScreen();
+                    ResizeToScreenSize();
                 }
             }
         }
@@ -73,12 +76,12 @@ namespace ImageFanReloaded.Views.Implementation
 
         private void OnMouseClick(object sender, MouseButtonEventArgs e)
         {
-            ChangeImageMode();
-        }
+            UpdateViewState();
+		}
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (_imageViewState == ImageViewState.FullScreen)
+            if (_imageViewState == ImageViewState.ResizedToScreenSize)
             {
                 var delta = e.Delta;
 
@@ -98,22 +101,47 @@ namespace ImageFanReloaded.Views.Implementation
             ThumbnailChanged?.Invoke(this, new ThumbnailChangedEventArgs(increment));
         }
 
-        private void ChangeImageMode()
+		private void UpdateViewState()
+		{
+			if (_imageViewState == ImageViewState.ResizedToScreenSize &&
+			    _canZoomToImageSize)
+			{
+				ZoomToImageSize();
+			}
+			else if (_imageViewState == ImageViewState.ZoomedToImageSize)
+			{
+				ResizeToScreenSize();
+			}
+		}
+
+        private bool CanZoomToImageSize()
         {
-            if (_imageViewState == ImageViewState.FullScreen)
-            {
-                GoDetailed();
-            }
-            else if (_imageViewState == ImageViewState.Detailed)
-            {
-                GoFullScreen();
-            }
+            var shouldZoomToImageSize =
+                _imageFile.ImageSize.Width > _screenSize.Width ||
+				_imageFile.ImageSize.Height > _screenSize.Height;
+
+            return shouldZoomToImageSize;
         }
 
-        private void GoFullScreen()
+        private Cursor GetScreenSizeCursor()
         {
-			var screenSize = this.GetScreenSize();
-			var image = _imageFile.GetResizedImage(screenSize);
+            Cursor screenSizeCursor;
+            
+            if (_canZoomToImageSize)
+            {
+                screenSizeCursor = Cursors.Hand;
+            }
+            else
+            {
+                screenSizeCursor = Cursors.None;
+            }
+
+            return screenSizeCursor;
+        }
+
+		private void ResizeToScreenSize()
+        {
+			var image = _imageFile.GetResizedImage(_screenSize);
 
 			BeginInit();
 
@@ -122,16 +150,16 @@ namespace ImageFanReloaded.Views.Implementation
             _imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
             _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 
-			_imageViewState = ImageViewState.FullScreen;
-			WindowState = WindowState.Maximized;
-			WindowStyle = WindowStyle.None;
+            Cursor = _screenSizeCursor;
+
+			_imageViewState = ImageViewState.ResizedToScreenSize;
 
 			EndInit();
         }
 
-        private void GoDetailed()
+        private void ZoomToImageSize()
         {
-			var image = _imageFile.GetImage();
+            var image = _imageFile.GetImage();
 
 			BeginInit();
 
@@ -142,9 +170,9 @@ namespace ImageFanReloaded.Views.Implementation
 			_imageScrollViewer.ScrollToHorizontalOffset(0);
 			_imageScrollViewer.ScrollToVerticalOffset(0);
 
-			_imageViewState = ImageViewState.Detailed;
-			WindowState = WindowState.Maximized;
-			WindowStyle = WindowStyle.SingleBorderWindow;
+			Cursor = Cursors.SizeAll;
+
+			_imageViewState = ImageViewState.ZoomedToImageSize;
 
 			EndInit();
         }
