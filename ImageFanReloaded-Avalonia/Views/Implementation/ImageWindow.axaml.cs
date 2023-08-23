@@ -66,7 +66,13 @@ public partial class ImageWindow
 		}
 		else if (keyPressed == Key.Enter)
 		{
-			UpdateViewState();
+			if (!_canZoomToImageSize)
+			{
+				return;
+			}
+
+			UpdateViewState(getCoordinatesToImageSizeRatio:
+				() => CoordinatesToImageSizeRatio.ImageCenter);
 		}
 		else if (keyPressed == Key.Escape)
 		{
@@ -83,7 +89,32 @@ public partial class ImageWindow
 
 	private void OnMouseClick(object sender, PointerReleasedEventArgs e)
 	{
-		UpdateViewState();
+		if (!_canZoomToImageSize)
+		{
+			return;
+		}
+
+		UpdateViewState(getCoordinatesToImageSizeRatio: () =>
+		{
+			var mousePositionToImage = e.GetPosition(_image);
+			var imageSize = new ImageSize(
+				_image.Source.Size.Width, _image.Source.Size.Height);
+
+			CoordinatesToImageSizeRatio coordinatesToImageSizeRatio;
+
+			if (mousePositionToImage.X >= 0 &&
+				mousePositionToImage.Y >= 0)
+			{
+				coordinatesToImageSizeRatio =
+					new CoordinatesToImageSizeRatio(mousePositionToImage, imageSize);
+			}
+			else
+			{
+				coordinatesToImageSizeRatio = CoordinatesToImageSizeRatio.ImageCenter;
+			}
+
+			return coordinatesToImageSizeRatio;
+		});
 	}
 
 	private void OnMouseWheel(object sender, PointerWheelEventArgs e)
@@ -101,6 +132,10 @@ public partial class ImageWindow
 				RaiseThumbnailChanged(1);
 			}
 		}
+		else if (_imageViewState == ImageViewState.ZoomedToImageSize)
+		{
+			e.Handled = true;
+		}
 	}
 
 	private void RaiseThumbnailChanged(int increment)
@@ -108,12 +143,13 @@ public partial class ImageWindow
 		ThumbnailChanged?.Invoke(this, new ThumbnailChangedEventArgs(increment));
 	}
 
-	private void UpdateViewState()
+	private void UpdateViewState(
+		Func<CoordinatesToImageSizeRatio> getCoordinatesToImageSizeRatio)
 	{
-		if (_imageViewState == ImageViewState.ResizedToScreenSize &&
-			_canZoomToImageSize)
+		if (_imageViewState == ImageViewState.ResizedToScreenSize)
 		{
-			ZoomToImageSize();
+			var coordinatesToImageSizeRatio = getCoordinatesToImageSizeRatio();
+			ZoomToImageSize(coordinatesToImageSizeRatio);
 		}
 		else if (_imageViewState == ImageViewState.ZoomedToImageSize)
 		{
@@ -123,11 +159,11 @@ public partial class ImageWindow
 
 	private bool CanZoomToImageSize()
 	{
-		var shouldZoomToImageSize =
+		var canZoomToImageSize =
 			_imageFile.ImageSize.Width > _screenSize.Width ||
 			_imageFile.ImageSize.Height > _screenSize.Height;
 
-		return shouldZoomToImageSize;
+		return canZoomToImageSize;
 	}
 
 	private Cursor GetScreenSizeCursor()
@@ -164,7 +200,7 @@ public partial class ImageWindow
 		EndInit();
 	}
 
-	private void ZoomToImageSize()
+	private void ZoomToImageSize(CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
 	{
 		var image = _imageFile.GetImage();
 
@@ -172,9 +208,13 @@ public partial class ImageWindow
 
 		_image.Source = image;
 
-		_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
-		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-		_imageScrollViewer.Offset = new Vector(0, 0);
+		_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+
+		var horizontalOffset = image.Size.Width * coordinatesToImageSizeRatio.RatioX;
+		var verticalOffset = image.Size.Height * coordinatesToImageSizeRatio.RatioY;
+
+		_imageScrollViewer.Offset = new Vector(horizontalOffset, verticalOffset);
 
 		Cursor = SizeAllCursor;
 

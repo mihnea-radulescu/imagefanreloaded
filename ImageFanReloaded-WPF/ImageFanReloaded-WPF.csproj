@@ -76,6 +76,7 @@
     <Compile Include="Infrastructure\IFolderVisualState.cs" />
     <Compile Include="Infrastructure\IVisualActionDispatcher.cs" />
     <Compile Include="Infrastructure\Implementation\VisualActionDispatcher.cs" />
+    <Compile Include="Views\CoordinatesToImageSizeRatio.cs" />
     <Compile Include="Views\ImageViewState.cs" />
     <Compile Include="Views\Implementation\WindowExtensions.cs" />
     <Page Include="Controls\Implementation\FileSystemEntryItem.xaml">

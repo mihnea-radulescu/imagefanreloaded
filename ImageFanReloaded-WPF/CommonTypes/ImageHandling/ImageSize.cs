@@ -8,6 +8,12 @@
             Height = height;
         }
 
+		public ImageSize(double width, double height)
+		{
+			Width = (int)width;
+			Height = (int)height;
+		}
+
 		public ImageSize(int squareLength)
 		{
 			Width = squareLength;

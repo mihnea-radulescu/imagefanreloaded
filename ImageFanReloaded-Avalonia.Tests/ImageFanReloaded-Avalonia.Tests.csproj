@@ -9,9 +9,9 @@
 	<Title>ImageFan Reloaded Avalonia Tests</Title>
 	<Product>ImageFan Reloaded Avalonia Tests</Product>
 	<Copyright>Copyright © Mihnea Rădulescu 2023</Copyright>
-	<AssemblyVersion>1.2023.08.23</AssemblyVersion>
-	<Version>1.2023.08.23</Version>
-	<FileVersion>1.2023.08.23</FileVersion>
+	<AssemblyVersion>1.2023.08.24</AssemblyVersion>
+	<Version>1.2023.08.24</Version>
+	<FileVersion>1.2023.08.24</FileVersion>
 	<PublishSingleFile>true</PublishSingleFile>
 	<SelfContained>false</SelfContained>
 	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
