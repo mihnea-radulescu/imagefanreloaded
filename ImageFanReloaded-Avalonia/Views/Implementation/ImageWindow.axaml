@@ -10,6 +10,7 @@
         PointerReleased="OnMouseClick"
 		PointerWheelChanged="OnMouseWheel">
 	<ScrollViewer Name="_imageScrollViewer">
-		<Image Name="_image" Stretch="None"/>
+		<Image Name="_image"
+			   Stretch="None"/>
 	</ScrollViewer>
 </Window>

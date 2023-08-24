@@ -169,11 +169,6 @@ namespace ImageFanReloaded.Views.Implementation
             }
         }
 
-        private void OnScrollKeyPressed(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-
 		private void SelectThumbnailBox(ThumbnailBox thumbnailBox)
         {
             if (_selectedThumbnailBox != thumbnailBox)

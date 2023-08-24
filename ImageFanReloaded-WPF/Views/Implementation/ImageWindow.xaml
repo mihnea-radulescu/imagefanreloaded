@@ -10,9 +10,8 @@
         KeyUp="OnKeyPressed"
         MouseUp="OnMouseClick"
         PreviewMouseWheel="OnMouseWheel">
-    <ScrollViewer Name="_imageScrollViewer"
-                  FocusVisualStyle="{x:Null}"
-                  PreviewKeyDown="OnScrollKeyPressed">
-        <Image Name="_image" Stretch="None"/>
+    <ScrollViewer Name="_imageScrollViewer">
+        <Image Name="_image"
+               Stretch="None"/>
     </ScrollViewer>
 </Window>

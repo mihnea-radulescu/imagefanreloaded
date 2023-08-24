@@ -12,14 +12,16 @@
         WindowState="Maximized"
         FontSize="12"
         KeyUp="OnKeyPressed">
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="15*"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition MinWidth="600" Width="85*"/>
+            <ColumnDefinition MinWidth="600"
+                              Width="85*"/>
         </Grid.ColumnDefinitions>
         <TreeView Name="_folderTreeView"
                   SelectedItemChanged="OnFolderTreeViewSelectedItemChanged">
@@ -35,10 +37,9 @@
         <ScrollViewer Name="_thumbnailScrollViewer"
                       VerticalScrollBarVisibility="Auto"
                       Grid.Column="2"
-                      Margin="5"
-                      FocusVisualStyle="{x:Null}"
-                      PreviewKeyDown="OnScrollKeyPressed">
-            <WrapPanel Name="_thumbnailWrapPanel" Orientation="Horizontal"/>
+                      Margin="5">
+            <WrapPanel Name="_thumbnailWrapPanel"
+                       Orientation="Horizontal"/>
         </ScrollViewer>
     </Grid>
 </Window>
