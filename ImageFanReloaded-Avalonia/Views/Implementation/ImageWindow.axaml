@@ -7,10 +7,11 @@
         FontSize="12"
         Background="Black"
         KeyUp="OnKeyPressed"
-        PointerReleased="OnMouseClick"
+        PointerReleased="OnMouseUp"
 		PointerWheelChanged="OnMouseWheel">
 	<ScrollViewer Name="_imageScrollViewer">
 		<Image Name="_image"
-			   Stretch="None"/>
+			   Stretch="None"
+			   PointerPressed="OnMouseDown"/>
 	</ScrollViewer>
 </Window>

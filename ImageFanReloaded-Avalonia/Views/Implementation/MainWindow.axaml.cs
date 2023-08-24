@@ -189,7 +189,7 @@ public partial class MainWindow
 		}
 	}
 
-	private void AdvanceToThumbnailIndex(int increment)
+	private bool AdvanceToThumbnailIndex(int increment)
 	{
 		if (_selectedThumbnailBox != null)
 		{
@@ -204,8 +204,12 @@ public partial class MainWindow
 				_selectedThumbnailBox = _thumbnailBoxList[_selectedThumbnailIndex];
 
 				_selectedThumbnailBox.SelectThumbnail();
+
+				return true;
 			}
 		}
+
+		return false;
 	}
 
 	private void DisplayImage()
@@ -216,8 +220,10 @@ public partial class MainWindow
 		imageView.ThumbnailChanged +=
 			(sender, e) =>
 			{
-				AdvanceToThumbnailIndex(e.Increment);
-				imageView.SetImage(_screenSize, _selectedThumbnailBox.ImageFile);
+				if (AdvanceToThumbnailIndex(e.Increment))
+				{
+					imageView.SetImage(_screenSize, _selectedThumbnailBox.ImageFile);
+				}
 			};
 
 		imageView.ShowDialog(this);

@@ -19,10 +19,13 @@ namespace ImageFanReloaded.Views.Implementation
         
         public void SetImage(ImageSize screenSize, IImageFile imageFile)
         {
-            _screenSize = screenSize; 
+			_screenSize = screenSize; 
             _imageFile = imageFile;
 
             Title = _imageFile.FileName;
+
+            _negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
+			_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
 
 			_canZoomToImageSize = CanZoomToImageSize();
             _screenSizeCursor = GetScreenSizeCursor();
@@ -30,15 +33,23 @@ namespace ImageFanReloaded.Views.Implementation
 			ResizeToScreenSize();
         }
 
-        #region Private
+		#region Private
+
+		private const double NegligibleImageDragFactor = 0.05;
+		private const double DragRatioToImage = 0.10;
 
         private ImageSize _screenSize;
         private IImageFile _imageFile;
 
-        private bool _canZoomToImageSize;
+		private double _negligibleImageDragX, _negligibleImageDragY;
+
+		private bool _canZoomToImageSize;
         private Cursor _screenSizeCursor;
 
-        private ImageViewState _imageViewState;
+        private Point _mouseDownCoordinates, _mouseUpCoordinates;
+        private double _horizontalScrollOffset, _verticalScrollOffset;
+
+		private ImageViewState _imageViewState;
 
         private void OnKeyPressed(object sender, KeyEventArgs e)
         {
@@ -81,7 +92,18 @@ namespace ImageFanReloaded.Views.Implementation
             }
         }
 
-		private void OnMouseClick(object sender, MouseButtonEventArgs e)
+		private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+			if (!_canZoomToImageSize ||
+                _imageViewState == ImageViewState.ResizedToScreenSize)
+			{
+				return;
+			}
+
+            _mouseDownCoordinates = e.GetPosition(_image);
+		}
+
+		private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
 			if (!_canZoomToImageSize)
 			{
@@ -100,35 +122,93 @@ namespace ImageFanReloaded.Views.Implementation
 			}
 			else if (_imageViewState == ImageViewState.ZoomedToImageSize)
 			{
-				ResizeToScreenSize();
+				_mouseUpCoordinates = e.GetPosition(_image);
+
+                if (_mouseDownCoordinates == _mouseUpCoordinates)
+                {
+					ResizeToScreenSize();
+				}
+                else
+                {
+                    DragImage();
+                }
 			}
 		}
 
 		private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (_imageViewState == ImageViewState.ResizedToScreenSize)
-            {
-                var delta = e.Delta;
+			var delta = e.Delta;
 
-                if (delta > 0)
-                {
-                    RaiseThumbnailChanged(-1);
-                }
-                else if (delta < 0)
-                {
-                    RaiseThumbnailChanged(1);
-                }
-            }
-			else if (_imageViewState == ImageViewState.ZoomedToImageSize)
+			if (delta > 0)
 			{
-                e.Handled = true;
+				RaiseThumbnailChanged(-1);
 			}
+			else if (delta < 0)
+			{
+				RaiseThumbnailChanged(1);
+			}
+
+            e.Handled = true;
 		}
 
         private void RaiseThumbnailChanged(int increment)
         {
             ThumbnailChanged?.Invoke(this, new ThumbnailChangedEventArgs(increment));
         }
+
+        private void DragImage()
+        {
+            var dragX = _mouseUpCoordinates.X - _mouseDownCoordinates.X;
+			var dragY = _mouseUpCoordinates.Y - _mouseDownCoordinates.Y;
+
+            double normalizedDragX;
+			if (Math.Abs(dragX) < _negligibleImageDragX)
+            {
+                normalizedDragX = 0;
+            }
+            else
+            {
+				normalizedDragX = dragX >= 0 ? -1 : 1;
+			}
+
+			double normalizedDragY;
+			if (Math.Abs(dragY) < _negligibleImageDragY)
+			{
+				normalizedDragY = 0;
+			}
+			else
+			{
+				normalizedDragY = dragY >= 0 ? -1 : 1;
+			}
+
+			var newHorizontalScrollOffset = _horizontalScrollOffset +
+				normalizedDragX * DragRatioToImage * _image.Source.Width;
+			var newVerticalScrollOffset = _verticalScrollOffset +
+				normalizedDragY * DragRatioToImage * _image.Source.Height;
+
+            if (newHorizontalScrollOffset < 0)
+            {
+                newHorizontalScrollOffset = 0;
+            }
+            else if (newHorizontalScrollOffset > _image.Source.Width)
+            {
+                newHorizontalScrollOffset = _image.Source.Width;
+            }
+			if (newVerticalScrollOffset < 0)
+			{
+				newVerticalScrollOffset = 0;
+			}
+			else if (newVerticalScrollOffset > _image.Source.Height)
+			{
+				newVerticalScrollOffset = _image.Source.Height;
+			}
+
+            _horizontalScrollOffset = newHorizontalScrollOffset;
+            _verticalScrollOffset = newVerticalScrollOffset;
+
+			_imageScrollViewer.ScrollToHorizontalOffset(_horizontalScrollOffset);
+			_imageScrollViewer.ScrollToVerticalOffset(_verticalScrollOffset);
+		}
 
 		private CoordinatesToImageSizeRatio GetCoordinatesToImageSizeRatio(
 			Point mousePositionToImage, ImageSize imageSize)
@@ -206,11 +286,11 @@ namespace ImageFanReloaded.Views.Implementation
 			_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
             _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
 
-            var horizontalOffset = image.Width * coordinatesToImageSizeRatio.RatioX;
-			var verticalOffset = image.Height * coordinatesToImageSizeRatio.RatioY;
+            _horizontalScrollOffset = image.Width * coordinatesToImageSizeRatio.RatioX;
+			_verticalScrollOffset = image.Height * coordinatesToImageSizeRatio.RatioY;
 
-			_imageScrollViewer.ScrollToHorizontalOffset(horizontalOffset);
-			_imageScrollViewer.ScrollToVerticalOffset(verticalOffset);
+			_imageScrollViewer.ScrollToHorizontalOffset(_horizontalScrollOffset);
+			_imageScrollViewer.ScrollToVerticalOffset(_verticalScrollOffset);
 
 			Cursor = Cursors.SizeAll;
 

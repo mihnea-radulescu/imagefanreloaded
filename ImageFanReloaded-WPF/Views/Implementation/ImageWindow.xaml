@@ -8,10 +8,11 @@
         FontSize="12"
         Background="Black"
         KeyUp="OnKeyPressed"
-        MouseUp="OnMouseClick"
+        MouseUp="OnMouseUp"
         PreviewMouseWheel="OnMouseWheel">
     <ScrollViewer Name="_imageScrollViewer">
         <Image Name="_image"
-               Stretch="None"/>
+               Stretch="None"
+               MouseDown="OnMouseDown"/>
     </ScrollViewer>
 </Window>
