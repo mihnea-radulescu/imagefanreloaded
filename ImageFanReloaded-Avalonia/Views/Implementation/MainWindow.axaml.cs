@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using ImageFanReloaded.CommonTypes.CommonEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.CommonTypes.Info;
@@ -147,27 +146,6 @@ public partial class MainWindow
 
 			folderChangedHandler(this,
 								 new FolderChangedEventArgs(selectedFolderPath));
-		}
-	}
-
-	private void OnKeyPressed(object sender, KeyEventArgs e)
-	{
-		if (_selectedThumbnailBox != null)
-		{
-			var keyPressed = e.Key;
-
-			if (GlobalData.BackwardNavigationKeys.Contains(keyPressed))
-			{
-				AdvanceToThumbnailIndex(-1);
-			}
-			else if (GlobalData.ForwardNavigationKeys.Contains(keyPressed))
-			{
-				AdvanceToThumbnailIndex(1);
-			}
-			else if (keyPressed == Key.Enter)
-			{
-				DisplayImage();
-			}
 		}
 	}
 

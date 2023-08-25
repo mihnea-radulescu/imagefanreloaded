@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using ImageFanReloaded.CommonTypes.ImageHandling;
@@ -22,9 +20,6 @@ namespace ImageFanReloaded
         public static readonly IImage FolderIcon;
 
         public static readonly int ProcessorCount;
-
-        public static readonly HashSet<Key> BackwardNavigationKeys;
-        public static readonly HashSet<Key> ForwardNavigationKeys;
 
         static GlobalData()
         {
@@ -49,16 +44,6 @@ namespace ImageFanReloaded
 			FolderIcon = imageResizer.CreateResizedImage(folderImage, IconSize);
 
 			ProcessorCount = Environment.ProcessorCount;
-
-            BackwardNavigationKeys = new HashSet<Key>
-            { 
-                Key.W, Key.A, Key.Up, Key.Left, Key.Back, Key.PageUp
-            };
-
-            ForwardNavigationKeys = new HashSet<Key>
-            { 
-                Key.S, Key.D, Key.Down, Key.Right, Key.Space, Key.PageDown
-            };
         }
 
         #region Private

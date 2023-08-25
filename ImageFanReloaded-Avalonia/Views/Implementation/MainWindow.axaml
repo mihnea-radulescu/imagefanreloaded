@@ -10,8 +10,7 @@
         Height="450"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-		FontSize="12"
-		KeyUp="OnKeyPressed">
+		FontSize="12">
 	<Grid HorizontalAlignment="Stretch"
 		  VerticalAlignment="Stretch">
 		<Grid.RowDefinitions>

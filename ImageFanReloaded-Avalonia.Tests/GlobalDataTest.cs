@@ -9,7 +9,7 @@ public class GlobalDataTest
 	[Fact]
 	public void GlobalData_IsCorrectlyInitialized()
 	{
-		// Arange
+		// Arrange
 
 		// Act
 
@@ -23,9 +23,6 @@ public class GlobalDataTest
 		GlobalData.FolderIcon.Should().NotBeNull();
 
 		GlobalData.ProcessorCount.Should().NotBe(0);
-
-		GlobalData.BackwardNavigationKeys.Should().NotBeEmpty();
-		GlobalData.ForwardNavigationKeys.Should().NotBeEmpty();
 
 		SaveImageToDisc(
 			GlobalData.InvalidImage,
