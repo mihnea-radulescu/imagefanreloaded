@@ -2,10 +2,10 @@
 ImageFan Reloaded is a light-weight image viewer, supporting multi-core processing.
 
 ImageFan Reloaded features two versions:
-* _ImageFanReloaded-WPF_ - targets .NET Framework 4 Client Profile on Windows (requires .NET Framework 4 Client Profile, installed by default on Windows 8 and newer)
-* _ImageFanReloaded-Avalonia_ - targets .NET 6 on Windows, Linux and macOS (requires .NET 6 Runtime)
+* __ImageFanReloaded-WPF__ - targets .NET Framework 4 Client Profile on Windows (requires .NET Framework 4 Client Profile, installed by default on Windows 8 and newer)
+* __ImageFanReloaded-Avalonia__ - targets .NET 6 on Windows, Linux and macOS (requires .NET Runtime 6)
 
-How to use:
+__How to use__:
 * scroll the drives and folders section
 * click on a drive or folder to browse through its images in the thumbnails section
 * scroll the thumbnails section
