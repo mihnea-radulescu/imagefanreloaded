@@ -16,16 +16,21 @@ namespace ImageFanReloaded
 		public static readonly Image InvalidImageAsBitmap;
 
         public static readonly ImageSource InvalidImage;
-        public static readonly ImageSource InvalidImageThumbnail;
+		public static readonly ImageSize InvalidImageSize;
 
-        public static readonly ImageSource LoadingImageThumbnail;
+		public static readonly ImageSource InvalidImageThumbnail;
+
+		public static readonly ImageSource LoadingImageThumbnail;
 
         public static readonly ImageSource DriveIcon;
         public static readonly ImageSource FolderIcon;
 
         public static readonly int ProcessorCount;
 
-        public static readonly HashSet<Key> BackwardNavigationKeys;
+        public static readonly Key EscapeKey;
+		public static readonly Key EnterKey;
+
+		public static readonly HashSet<Key> BackwardNavigationKeys;
         public static readonly HashSet<Key> ForwardNavigationKeys;
 
         static GlobalData()
@@ -39,11 +44,13 @@ namespace ImageFanReloaded
             InvalidImageAsBitmap = Resources.InvalidImage;
 
             InvalidImage = Resources.InvalidImage.ConvertToImageSource();
-            InvalidImageThumbnail = imageResizer
+			InvalidImageSize = new ImageSize(InvalidImage.Width, InvalidImage.Height);
+
+			InvalidImageThumbnail = imageResizer
                                 .CreateResizedImage(Resources.InvalidImage, ThumbnailSize)
                                 .ConvertToImageSource();
 
-            LoadingImageThumbnail = imageResizer
+			LoadingImageThumbnail = imageResizer
                                 .CreateResizedImage(Resources.LoadingImage, ThumbnailSize)
                                 .ConvertToImageSource();
 
@@ -62,6 +69,9 @@ namespace ImageFanReloaded
             }
 
             ProcessorCount = Environment.ProcessorCount;
+
+            EscapeKey = Key.Escape;
+            EnterKey = Key.Enter;
 
             BackwardNavigationKeys = new HashSet<Key>
             { 

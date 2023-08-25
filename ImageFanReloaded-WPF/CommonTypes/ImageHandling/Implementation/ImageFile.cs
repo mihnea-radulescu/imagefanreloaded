@@ -15,7 +15,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
             FileName = Path.GetFileName(imageFilePath);
 
-			ImageSize = new ImageSize(int.MaxValue, int.MaxValue);
+            ImageSize = GlobalData.InvalidImageSize;
 
 			_thumbnailGenerationLockObject = new object();
         }
@@ -27,18 +27,19 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
         public ImageSource GetImage()
         {
             Image image = null;
-            var imageSource = GlobalData.InvalidImage;
+            ImageSource imageSource;
 
             try
             {
                 image = new Bitmap(_imageFilePath);
-
-				SetImageSize(image);
+				ImageSize = new ImageSize(image.Width, image.Height);
 
 				imageSource = image.ConvertToImageSource();
             }
             catch
             {
+				imageSource = GlobalData.InvalidImage;
+				ImageSize = GlobalData.InvalidImageSize;
             }
             finally
             {
@@ -52,20 +53,21 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
         {
             Image image = null;
             Image resizedImage = null;
-            var resizedImageSource = GlobalData.InvalidImage;
+            ImageSource resizedImageSource;
 
             try
             {
                 image = new Bitmap(_imageFilePath);
-
-				SetImageSize(image);
+				ImageSize = new ImageSize(image.Width, image.Height);
 
 				resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
                 resizedImageSource = resizedImage.ConvertToImageSource();
             }
             catch
             {
-            }
+				resizedImageSource = GlobalData.InvalidImage;
+				ImageSize = GlobalData.InvalidImageSize;
+			}
             finally
             {
                 image?.Dispose();
@@ -82,8 +84,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
                 try
                 {
                     _imageData = new Bitmap(_imageFilePath);
-
-					SetImageSize(_imageData);
+					ImageSize = new ImageSize(_imageData.Width, _imageData.Height);
 				}
                 catch
                 {
@@ -103,7 +104,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
                 }
 
                 Image thumbnail = null;
-                var thumbnailSource = GlobalData.InvalidImageThumbnail;
+                ImageSource thumbnailSource;
 
                 try
                 {
@@ -112,7 +113,8 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
                 }
                 catch
                 {
-                }
+                    thumbnailSource = GlobalData.InvalidImageThumbnail;
+				}
                 finally
                 {
                     thumbnail?.Dispose();
@@ -142,11 +144,6 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
         private readonly object _thumbnailGenerationLockObject;
 
         private Image _imageData;
-
-		private void SetImageSize(Image image)
-		{
-			ImageSize = new ImageSize(image.Width, image.Height);
-		}
 
 		#endregion
 	}

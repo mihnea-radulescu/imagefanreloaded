@@ -15,9 +15,9 @@ public class ImageFile
 
         FileName = Path.GetFileName(imageFilePath);
 
-        ImageSize = new ImageSize(int.MaxValue, int.MaxValue);
+		ImageSize = GlobalData.InvalidImageSize;
 
-        _thumbnailGenerationLockObject = new object();
+		_thumbnailGenerationLockObject = new object();
     }
 
     public string FileName { get; }
@@ -31,12 +31,12 @@ public class ImageFile
         try
         {
             image = new Bitmap(_imageFilePath);
-
-			SetImageSize(image);
+			ImageSize = new ImageSize(image.Size.Width, image.Size.Height);
 		}
         catch
         {
             image = GlobalData.InvalidImage;
+			ImageSize = GlobalData.InvalidImageSize;
 		}
 
         return image;
@@ -49,15 +49,15 @@ public class ImageFile
         try
 		{
 			var image = new Bitmap(_imageFilePath);
-
-			SetImageSize(image);
+			ImageSize = new ImageSize(image.Size.Width, image.Size.Height);
 
 			resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 		}
 		catch
         {
             resizedImage = GlobalData.InvalidImage;
-        }
+			ImageSize = GlobalData.InvalidImageSize;
+		}
 
         return resizedImage;
     }
@@ -69,8 +69,7 @@ public class ImageFile
             try
             {
                 _imageData = new Bitmap(_imageFilePath);
-
-                SetImageSize(_imageData);
+				ImageSize = new ImageSize(_imageData.Size.Width, _imageData.Size.Height);
 			}
             catch
             {
@@ -99,7 +98,7 @@ public class ImageFile
             catch
             {
                 thumbnail = GlobalData.InvalidImageThumbnail;
-            }
+			}
             finally
             {
                 DisposeImageData();
@@ -121,11 +120,6 @@ public class ImageFile
     private readonly object _thumbnailGenerationLockObject;
 
     private IImage _imageData;
-
-	private void SetImageSize(IImage image)
-	{
-		ImageSize = new ImageSize(image.Size.Width, image.Size.Height);
-	}
 
 	#endregion
 }

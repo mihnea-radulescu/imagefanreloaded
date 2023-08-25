@@ -162,7 +162,7 @@ namespace ImageFanReloaded.Views.Implementation
                 {
                     AdvanceToThumbnailIndex(1);
                 }
-                else if (keyPressed == Key.Enter)
+                else if (keyPressed == GlobalData.EnterKey)
                 {
                     DisplayImage();
                 }

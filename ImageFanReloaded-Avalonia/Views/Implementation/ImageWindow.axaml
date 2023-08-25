@@ -8,9 +8,11 @@
         Background="Black"
         PointerReleased="OnMouseUp"
 		PointerWheelChanged="OnMouseWheel">
-	<ScrollViewer Name="_imageScrollViewer">
+	<ScrollViewer Name="_imageScrollViewer"
+				  PointerWheelChanged="OnMouseWheel">
 		<Image Name="_image"
 			   Stretch="None"
-			   PointerPressed="OnMouseDown"/>
+			   PointerPressed="OnMouseDown"
+			   PointerWheelChanged="OnMouseWheel"/>
 	</ScrollViewer>
 </Window>

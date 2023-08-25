@@ -13,10 +13,13 @@ namespace ImageFanReloaded
         public static readonly ImageSize ThumbnailSize;
 
 		public static readonly IImage InvalidImage;
-        public static readonly IImage InvalidImageThumbnail;
-        public static readonly IImage LoadingImageThumbnail;
+		public static readonly ImageSize InvalidImageSize;
 
-        public static readonly IImage DriveIcon;
+		public static readonly IImage InvalidImageThumbnail;
+
+		public static readonly IImage LoadingImageThumbnail;
+
+		public static readonly IImage DriveIcon;
         public static readonly IImage FolderIcon;
 
         public static readonly int ProcessorCount;
@@ -30,10 +33,13 @@ namespace ImageFanReloaded
 			IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
             InvalidImage = GetImageFromResource(Resources.InvalidImage);
-            InvalidImageThumbnail = imageResizer
+			InvalidImageSize = new ImageSize(
+				InvalidImage.Size.Width, InvalidImage.Size.Height);
+
+			InvalidImageThumbnail = imageResizer
                 .CreateResizedImage(InvalidImage, ThumbnailSize);
 
-            var loadingImage = GetImageFromResource(Resources.LoadingImage);
+			var loadingImage = GetImageFromResource(Resources.LoadingImage);
             LoadingImageThumbnail = imageResizer
                 .CreateResizedImage(loadingImage, ThumbnailSize);
 

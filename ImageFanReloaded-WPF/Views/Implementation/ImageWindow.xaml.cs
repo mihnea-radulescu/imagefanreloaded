@@ -63,7 +63,7 @@ namespace ImageFanReloaded.Views.Implementation
             {
                 RaiseThumbnailChanged(1);
             }
-            else if (keyPressed == Key.Enter)
+            else if (keyPressed == GlobalData.EnterKey)
 			{
 				if (!_canZoomToImageSize)
                 {
@@ -79,17 +79,10 @@ namespace ImageFanReloaded.Views.Implementation
 					ResizeToScreenSize();
 				}
 			}
-			else if (keyPressed == Key.Escape)
+			else if (keyPressed == GlobalData.EscapeKey)
             {
-                if (_imageViewState == ImageViewState.ResizedToScreenSize)
-                {
-                    Close();
-                }
-                else if (_imageViewState == ImageViewState.ZoomedToImageSize)
-                {
-                    ResizeToScreenSize();
-                }
-            }
+				Close();
+			}
         }
 
 		private void OnMouseDown(object sender, MouseButtonEventArgs e)
