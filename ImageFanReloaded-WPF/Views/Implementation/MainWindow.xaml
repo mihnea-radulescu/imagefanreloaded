@@ -18,10 +18,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="12*"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition MinWidth="600"
-                              Width="85*"/>
+                              Width="88*"/>
         </Grid.ColumnDefinitions>
         <TreeView Name="_folderTreeView"
                   SelectedItemChanged="OnFolderTreeViewSelectedItemChanged">

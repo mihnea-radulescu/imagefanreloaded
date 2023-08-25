@@ -73,18 +73,12 @@ public partial class ThumbnailBox
 		_thumbnailImage.MaxHeight = GlobalData.ThumbnailSize.Height;
 	}
 
-	private void SetThumbnailInfo(ThumbnailInfo thumbnailInfo)
-	{
-		_thumbnailInfo = thumbnailInfo;
-		ImageFile = _thumbnailInfo.ImageFile;
-
-		_thumbnailImage.Source = _thumbnailInfo.ThumbnailImage;
-		_thumbnailTextBlock.Text = _thumbnailInfo.ThumbnailText;
-	}
-
 	private void OnMouseClick(object sender, PointerReleasedEventArgs e)
 	{
-		ThumbnailBoxClicked?.Invoke(this, EventArgs.Empty);
+		if (e.InitialPressMouseButton == MouseButton.Left)
+		{
+			ThumbnailBoxClicked?.Invoke(this, EventArgs.Empty);
+		}
 	}
 
 	#endregion

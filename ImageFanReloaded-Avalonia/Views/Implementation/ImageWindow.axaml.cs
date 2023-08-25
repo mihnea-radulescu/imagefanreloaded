@@ -117,33 +117,42 @@ public partial class ImageWindow
 
 	private void OnMouseUp(object sender, PointerReleasedEventArgs e)
 	{
-		if (!_canZoomToImageSize)
-		{
-			return;
-		}
-
 		if (_imageViewState == ImageViewState.ResizedToScreenSize)
 		{
-			var mousePositionToImage = e.GetPosition(_image);
-			var imageSize = new ImageSize(
-				_image.Source.Size.Width, _image.Source.Size.Height);
+			if (e.InitialPressMouseButton == MouseButton.Left && _canZoomToImageSize)
+			{
+				var mousePositionToImage = e.GetPosition(_image);
+				var imageSize = new ImageSize(
+					_image.Source.Size.Width, _image.Source.Size.Height);
 
-			var coordinatesToImageSizeRatio =
-				GetCoordinatesToImageSizeRatio(mousePositionToImage, imageSize);
+				var coordinatesToImageSizeRatio =
+					GetCoordinatesToImageSizeRatio(mousePositionToImage, imageSize);
 
-			ZoomToImageSize(coordinatesToImageSizeRatio);
+				ZoomToImageSize(coordinatesToImageSizeRatio);
+			}
+			else if (e.InitialPressMouseButton == MouseButton.Right)
+			{
+				Close();
+			}
 		}
 		else if (_imageViewState == ImageViewState.ZoomedToImageSize)
 		{
-			_mouseUpCoordinates = e.GetPosition(_image);
+			if (e.InitialPressMouseButton == MouseButton.Left)
+			{
+				_mouseUpCoordinates = e.GetPosition(_image);
 
-			if (_mouseDownCoordinates == _mouseUpCoordinates)
-			{
-				ResizeToScreenSize();
+				if (_mouseDownCoordinates == _mouseUpCoordinates)
+				{
+					ResizeToScreenSize();
+				}
+				else
+				{
+					DragImage();
+				}
 			}
-			else
+			else if (e.InitialPressMouseButton == MouseButton.Right)
 			{
-				DragImage();
+				Close();
 			}
 		}
 	}

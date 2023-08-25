@@ -75,7 +75,10 @@ namespace ImageFanReloaded.Controls.Implementation
 
         private void OnMouseClick(object sender, MouseButtonEventArgs e)
         {
-            ThumbnailBoxClicked?.Invoke(this, EventArgs.Empty);
+            if (e.ChangedButton == MouseButton.Left)
+            {
+				ThumbnailBoxClicked?.Invoke(this, EventArgs.Empty);
+			}
         }
 
         #endregion
