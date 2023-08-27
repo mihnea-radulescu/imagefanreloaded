@@ -43,8 +43,9 @@ public partial class ImageWindow
 
 	#region Private
 
+	private const double ImageZoomScalingFactor = 0.1;
+	private const double ImageScrollFactor = 0.1;
 	private const double NegligibleImageDragFactor = 0.05;
-	private const double DragRatioToImage = 0.10;
 
 	private static readonly Cursor HandCursor;
 	private static readonly Cursor NoneCursor;
@@ -59,7 +60,6 @@ public partial class ImageWindow
 	private Cursor _screenSizeCursor;
 
 	private Point _mouseDownCoordinates, _mouseUpCoordinates;
-	private double _horizontalScrollOffset, _verticalScrollOffset;
 
 	private ImageViewState _imageViewState;
 
@@ -162,33 +162,30 @@ public partial class ImageWindow
 			normalizedDragY = dragY >= 0 ? -1 : 1;
 		}
 
-		var newHorizontalScrollOffset = _horizontalScrollOffset +
-			normalizedDragX * DragRatioToImage * _image.Source.Size.Width;
-		var newVerticalScrollOffset = _verticalScrollOffset +
-			normalizedDragY * DragRatioToImage * _image.Source.Size.Height;
+		var newHorizontalScrollOffset = _imageScrollViewer.Offset.X +
+			normalizedDragX * ImageScrollFactor * _image.Source.Size.Width;
+		var newVerticalScrollOffset = _imageScrollViewer.Offset.Y +
+			normalizedDragY * ImageScrollFactor * _image.Source.Size.Height;
 
 		if (newHorizontalScrollOffset < 0)
 		{
 			newHorizontalScrollOffset = 0;
 		}
-		else if (newHorizontalScrollOffset > _image.Source.Size.Width)
+		else if (newHorizontalScrollOffset > _imageScrollViewer.ScrollBarMaximum.X)
 		{
-			newHorizontalScrollOffset = _image.Source.Size.Width;
+			newHorizontalScrollOffset = _imageScrollViewer.ScrollBarMaximum.X;
 		}
 		if (newVerticalScrollOffset < 0)
 		{
 			newVerticalScrollOffset = 0;
 		}
-		else if (newVerticalScrollOffset > _image.Source.Size.Height)
+		else if (newVerticalScrollOffset > _imageScrollViewer.ScrollBarMaximum.Y)
 		{
-			newVerticalScrollOffset = _image.Source.Size.Height;
+			newVerticalScrollOffset = _imageScrollViewer.ScrollBarMaximum.Y;
 		}
 
-		_horizontalScrollOffset = newHorizontalScrollOffset;
-		_verticalScrollOffset = newVerticalScrollOffset;
-
 		_imageScrollViewer.Offset = new Vector(
-			_horizontalScrollOffset, _verticalScrollOffset);
+			newHorizontalScrollOffset, newVerticalScrollOffset);
 	}
 
 	private CoordinatesToImageSizeRatio GetCoordinatesToImageSizeRatio(
@@ -241,6 +238,8 @@ public partial class ImageWindow
 	{
 		var image = _imageFile.GetResizedImage(_screenSize);
 
+		_imageViewState = ImageViewState.ResizedToScreenSize;
+
 		BeginInit();
 
 		_image.Source = image;
@@ -250,14 +249,23 @@ public partial class ImageWindow
 
 		Cursor = _screenSizeCursor;
 
-		_imageViewState = ImageViewState.ResizedToScreenSize;
-
 		EndInit();
 	}
 
 	private void ZoomToImageSize(CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
 	{
 		var image = _imageFile.GetImage();
+
+		var zoomToX = image.Size.Width * coordinatesToImageSizeRatio.RatioX;
+		var zoomToY = image.Size.Height * coordinatesToImageSizeRatio.RatioY;
+
+		var zoomRectangle = new Rect(
+			zoomToX - (ImageZoomScalingFactor * image.Size.Width),
+			zoomToY - (ImageZoomScalingFactor * image.Size.Height),
+			2 * (ImageZoomScalingFactor * image.Size.Width),
+			2 * (ImageZoomScalingFactor * image.Size.Height));
+
+		_imageViewState = ImageViewState.ZoomedToImageSize;
 
 		BeginInit();
 
@@ -266,15 +274,9 @@ public partial class ImageWindow
 		_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
 		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
 
-		_horizontalScrollOffset = image.Size.Width * coordinatesToImageSizeRatio.RatioX;
-		_verticalScrollOffset = image.Size.Height * coordinatesToImageSizeRatio.RatioY;
-
-		_imageScrollViewer.Offset = new Vector(
-			_horizontalScrollOffset, _verticalScrollOffset);
+		_image.BringIntoView(zoomRectangle);
 
 		Cursor = SizeAllCursor;
-
-		_imageViewState = ImageViewState.ZoomedToImageSize;
 
 		EndInit();
 	}
