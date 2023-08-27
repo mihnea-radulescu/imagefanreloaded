@@ -8,7 +8,7 @@ public class AppBuilderInitializer
 	{
 		get
 		{
-			lock (_locker)
+			lock (Locker)
 			{
 				if (_instance == null)
 				{
@@ -22,12 +22,12 @@ public class AppBuilderInitializer
 
 	static AppBuilderInitializer()
 	{
-		_locker = new object();
+		Locker = new object();
 	}
 
 	#region Private
 
-	private static readonly object _locker;
+	private static readonly object Locker;
 
 	private static AppBuilderInitializer _instance;
 

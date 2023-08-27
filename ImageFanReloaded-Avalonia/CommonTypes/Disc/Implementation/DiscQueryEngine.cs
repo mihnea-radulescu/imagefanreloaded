@@ -156,7 +156,9 @@ public class DiscQueryEngine
             return true;
         }
 
-        var isDrive = UnixDrivePrefixes.Any(aUnixDrivePrefix => driveName.StartsWith(aUnixDrivePrefix));
+        var isDrive = UnixDrivePrefixes.Any(
+            aUnixDrivePrefix => driveName.StartsWith(aUnixDrivePrefix));
+        
         return isDrive;
     }
 

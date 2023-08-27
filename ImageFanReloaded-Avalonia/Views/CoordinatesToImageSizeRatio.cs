@@ -7,7 +7,7 @@ public record class CoordinatesToImageSizeRatio
 {
 	static CoordinatesToImageSizeRatio()
 	{
-		_imageCenter = new CoordinatesToImageSizeRatio(0.5, 0.5);
+		ImageCenter = new CoordinatesToImageSizeRatio(0.5, 0.5);
 	}
 	
 	public CoordinatesToImageSizeRatio(Point coordinates, ImageSize imageSize)
@@ -25,11 +25,5 @@ public record class CoordinatesToImageSizeRatio
 	public double RatioX { get; }
 	public double RatioY { get; }
 
-	public static CoordinatesToImageSizeRatio ImageCenter => _imageCenter;
-
-	#region Private
-
-	private static readonly CoordinatesToImageSizeRatio _imageCenter;
-
-	#endregion
+	public static CoordinatesToImageSizeRatio ImageCenter { get; }
 }
