@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
@@ -82,12 +81,6 @@ public class ImageFile
     {
         lock (_thumbnailGenerationLockObject)
         {
-            if (_imageData == null)
-            {
-                throw new InvalidOperationException(
-                    $"The method {nameof(ReadImageDataFromDisc)} must be executed prior to calling the method {nameof(GetThumbnail)}.");
-            }
-
             IImage thumbnail;
 
             try

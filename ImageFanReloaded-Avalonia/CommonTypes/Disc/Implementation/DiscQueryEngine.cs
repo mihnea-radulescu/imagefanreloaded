@@ -45,7 +45,8 @@ public class DiscQueryEngine
 			".ico",
 			".jpg", ".jpe", ".jpeg",
 			".png",
-			".tif", ".tiff"
+			".tif", ".tiff",
+            ".webp"
 		};
 	}
 

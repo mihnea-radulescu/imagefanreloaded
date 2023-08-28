@@ -15,9 +15,9 @@
     <p>ImageFan Reloaded is a light-weight image viewer, supporting multi-core processing.</p>
 	<p>ImageFan Reloaded features mouse-only interaction, using the left and the right mouse buttons, and the mouse wheel:
 		<ul>
-			<li>the left mouse button for selecting, opening, zooming and dragging images</li>
+			<li>the left mouse button for selecting, opening, zooming in, zooming out, and dragging images</li>
 			<li>the right mouse button for returning to the main view</li>
-			<li>the mouse wheel for moving back and forward through images</li>
+			<li>the mouse wheel for moving back and forward through thumbnails and opened images</li>
 		</ul>
     </p>
   </description>
@@ -25,10 +25,10 @@
   <launchable type="desktop-id">com.github.imagefanreloaded.desktop</launchable>
   <screenshots>
     <screenshot type="default">
-      <image>to add</image>
+      <image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/master/Screenshot-Avalonia-Linux-Light.jpg</image>
     </screenshot>
     <screenshot>
-      <image>to add</image>
+      <image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/master/Screenshot-Avalonia-Linux-Dark.jpg</image>
     </screenshot>
   </screenshots>
 

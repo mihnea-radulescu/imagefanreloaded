@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
 using System.Windows.Media;
 
@@ -97,12 +96,6 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
         {
             lock (_thumbnailGenerationLockObject)
             {
-                if (_imageData == null)
-                {
-                    throw new InvalidOperationException(
-                        $"The method {nameof(ReadImageDataFromDisc)} must be executed prior to calling the method {nameof(GetThumbnail)}.");
-                }
-
                 Image thumbnail = null;
                 ImageSource thumbnailSource;
 
