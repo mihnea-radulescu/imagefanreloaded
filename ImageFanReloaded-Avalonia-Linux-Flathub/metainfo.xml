@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.github.imagefanreloaded</id>
+  <id>io.github.mihnearadulescu.imagefanreloaded</id>
   
   <name>ImageFan Reloaded</name>
   <summary>Light-weight image viewer, supporting multi-core processing</summary>
@@ -22,7 +22,7 @@
     </p>
   </description>
   
-  <launchable type="desktop-id">com.github.imagefanreloaded.desktop</launchable>
+  <launchable type="desktop-id">io.github.mihnearadulescu.imagefanreloaded.desktop</launchable>
   <screenshots>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/master/Screenshot-Avalonia-Linux-Light.jpg</image>
