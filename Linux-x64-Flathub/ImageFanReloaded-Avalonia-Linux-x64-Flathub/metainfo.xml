@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.imagefanreloaded</id>
+  
+  <name>ImageFan Reloaded</name>
+  <summary>Light-weight image viewer, supporting multi-core processing</summary>
+
+  <developer_name>Mihnea Rădulescu</developer_name>
+  <content_rating type="oars-1.0" />
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  
+  <description>
+    <p>ImageFan Reloaded is a light-weight image viewer, supporting multi-core processing.</p>
+	<p>ImageFan Reloaded features mouse-only interaction, using the left and the right mouse buttons, and the mouse wheel:
+		<ul>
+			<li>the left mouse button for selecting, opening, zooming and dragging images</li>
+			<li>the right mouse button for returning to the main view</li>
+			<li>the mouse wheel for moving back and forward through images</li>
+		</ul>
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">com.github.imagefanreloaded.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>to add</image>
+    </screenshot>
+    <screenshot>
+      <image>to add</image>
+    </screenshot>
+  </screenshots>
+
+  <url type="homepage">https://github.com/mihnea-radulescu/imagefanreloaded</url>
+  <url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
+
+  <releases>
+      <release version="1.2023.08.28" date="2023-08-28">
+      <description>
+        <p>Initial Flatpak release</p>
+      </description>
+    </release>
+  </releases>
+</component>
