@@ -1,5 +1,5 @@
 using FluentAssertions;
-using Moq;
+using NSubstitute;
 using Xunit;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -13,9 +13,9 @@ public class ImageResizerTest
 {
 	public ImageResizerTest()
     {
-		_imageResizeCalculatorMock = new Mock<IImageResizeCalculator>(MockBehavior.Strict);
+		_imageResizeCalculator = Substitute.For<IImageResizeCalculator>();
 
-        _imageResizer = new ImageResizer(_imageResizeCalculatorMock.Object);
+        _imageResizer = new ImageResizer(_imageResizeCalculator);
     }
 
 	[Theory]
@@ -32,10 +32,9 @@ public class ImageResizerTest
 		var viewPortSize = new ImageSize(viewPortWidth, viewPortHeight);
 		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
 
-		_imageResizeCalculatorMock
-			.Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageSize(
-				new ImageSize(image.Size.Width, image.Size.Height),
-				viewPortSize))
+		_imageResizeCalculator
+			.GetResizedImageSize(
+				new ImageSize(image.Size.Width, image.Size.Height), viewPortSize)
 			.Returns(referenceResizedImageSize);
 
 		// Act
@@ -64,10 +63,9 @@ public class ImageResizerTest
 		var viewPortSize = new ImageSize(viewPortWidth, viewPortHeight);
 		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
 
-		_imageResizeCalculatorMock
-			.Setup(imageResizeCalculator => imageResizeCalculator.GetResizedImageSize(
-				new ImageSize(image.Size.Width, image.Size.Height),
-				viewPortSize))
+		_imageResizeCalculator
+			.GetResizedImageSize(
+				new ImageSize(image.Size.Width, image.Size.Height), viewPortSize)
 			.Returns(referenceResizedImageSize);
 
 		// Act
@@ -89,7 +87,7 @@ public class ImageResizerTest
 
 	private const string InputFileExtension = ".jpg";
 
-	private readonly Mock<IImageResizeCalculator> _imageResizeCalculatorMock;
+	private readonly IImageResizeCalculator _imageResizeCalculator;
 
 	private readonly ImageResizer _imageResizer;
 
