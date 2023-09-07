@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using ImageFanReloaded.CommonTypes.CommonEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 
@@ -23,6 +24,8 @@ public partial class ImageWindow
 	public ImageWindow()
 	{
 		InitializeComponent();
+
+		AddHandler(PointerWheelChangedEvent, OnMouseWheel, RoutingStrategies.Tunnel);
 	}
 
 	public void SetImage(ImageSize screenSize, IImageFile imageFile)

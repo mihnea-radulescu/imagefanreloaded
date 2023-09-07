@@ -6,12 +6,10 @@
 		WindowState="FullScreen"
         FontSize="12"
         Background="Black"
-        PointerReleased="OnMouseUp"
-		PointerWheelChanged="OnMouseWheel">
+        PointerReleased="OnMouseUp">
 	<ScrollViewer Name="_imageScrollViewer">
 		<Image Name="_image"
 			   Stretch="None"
-			   PointerPressed="OnMouseDown"
-			   PointerWheelChanged="OnMouseWheel"/>
+			   PointerPressed="OnMouseDown"/>
 	</ScrollViewer>
 </Window>
