@@ -10,7 +10,7 @@ public interface IImageView
 {
     event EventHandler<ThumbnailChangedEventArgs> ThumbnailChanged;
 
-	void SetImage(ImageSize screenSize, IImageFile imageFile);
+	void SetImage(IImageFile imageFile);
 
     Task ShowDialog(Window owner);
 }

@@ -36,19 +36,18 @@ public partial class App
 		IDiscQueryEngine discQueryEngine =
 			new DiscQueryEngine(imageFileFactory, imageResizer);
 
-		IImageViewFactory imageViewFactory = new ImageViewFactory();
-		
+		var mainWindow = new MainWindow();
+		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
+		IImageViewFactory imageViewFactory = new ImageViewFactory(screenInformation);
+		mainWindow.ImageViewFactory = imageViewFactory;
+
 		var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime;
-		desktop.MainWindow = new MainWindow
-		{
-			ImageViewFactory = imageViewFactory
-		};
-		IMainView mainView = (IMainView)desktop.MainWindow;
+		desktop.MainWindow = mainWindow;
 
 		IVisualActionDispatcher visualActionDispatcher = new VisualActionDispatcher(Dispatcher.UIThread);
 		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory();
 
-		new MainPresenter(discQueryEngine, mainView, visualActionDispatcher, folderVisualStateFactory);
-		mainView.Show();
+		new MainPresenter(discQueryEngine, mainWindow, visualActionDispatcher, folderVisualStateFactory);
+		mainWindow.Show();
 	}
 }

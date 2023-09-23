@@ -30,17 +30,16 @@ namespace ImageFanReloaded
             IDiscQueryEngine discQueryEngine = 
                 new DiscQueryEngine(imageFileFactory, imageResizer, fileSystemEntryComparer);
 
-            IImageViewFactory imageViewFactory = new ImageViewFactory();
-            IMainView mainView = new MainWindow
-            {
-                ImageViewFactory = imageViewFactory
-            };
+            var mainWindow = new MainWindow();
+			IScreenInformation screenInformation = new ScreenInformation(mainWindow);
+            IImageViewFactory imageViewFactory = new ImageViewFactory(screenInformation);
+            mainWindow.ImageViewFactory = imageViewFactory;
 
             IVisualActionDispatcher visualActionDispatcher = new VisualActionDispatcher(Dispatcher);
             IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory();
 
-            new MainPresenter(discQueryEngine, mainView, visualActionDispatcher, folderVisualStateFactory);
-            mainView.Show();
+            new MainPresenter(discQueryEngine, mainWindow, visualActionDispatcher, folderVisualStateFactory);
+            mainWindow.Show();
         }
     }
 }

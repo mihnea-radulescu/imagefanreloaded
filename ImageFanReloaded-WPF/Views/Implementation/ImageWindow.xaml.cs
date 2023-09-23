@@ -16,16 +16,19 @@ namespace ImageFanReloaded.Views.Implementation
         {
             InitializeComponent();
         }
-        
-        public void SetImage(ImageSize screenSize, IImageFile imageFile)
+
+        public IScreenInformation ScreenInformation { private get; set; }
+
+        public void SetImage(IImageFile imageFile)
         {
-			_screenSize = screenSize; 
             _imageFile = imageFile;
 
             Title = _imageFile.FileName;
 
             _negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
 			_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
+
+			_screenSize = ScreenInformation.GetScreenSize();
 
 			_canZoomToImageSize = CanZoomToImageSize();
             _screenSizeCursor = GetScreenSizeCursor();
@@ -39,11 +42,11 @@ namespace ImageFanReloaded.Views.Implementation
 		private const double ImageScrollFactor = 0.1;
 		private const double NegligibleImageDragFactor = 0.05;
 
-        private ImageSize _screenSize;
         private IImageFile _imageFile;
 
 		private double _negligibleImageDragX, _negligibleImageDragY;
 
+		private ImageSize _screenSize;
 		private bool _canZoomToImageSize;
         private Cursor _screenSizeCursor;
 
@@ -232,7 +235,7 @@ namespace ImageFanReloaded.Views.Implementation
 
 		private bool CanZoomToImageSize()
         {
-            var canZoomToImageSize =
+			var canZoomToImageSize =
                 _imageFile.ImageSize.Width > _screenSize.Width ||
 				_imageFile.ImageSize.Height > _screenSize.Height;
 

@@ -78,7 +78,8 @@
     <Compile Include="Infrastructure\Implementation\VisualActionDispatcher.cs" />
     <Compile Include="Views\CoordinatesToImageSizeRatio.cs" />
     <Compile Include="Views\ImageViewState.cs" />
-    <Compile Include="Views\Implementation\WindowExtensions.cs" />
+    <Compile Include="Views\Implementation\ScreenInformation.cs" />
+    <Compile Include="Views\IScreenInformation.cs" />
     <Page Include="Controls\Implementation\FileSystemEntryItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

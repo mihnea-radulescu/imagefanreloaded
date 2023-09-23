@@ -4,5 +4,5 @@ namespace ImageFanReloaded.Factories;
 
 public interface IImageViewFactory
 {
-    IImageView ImageView { get; }
+    IImageView GetImageView();
 }

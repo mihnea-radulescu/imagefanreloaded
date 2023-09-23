@@ -15,6 +15,4 @@ public interface IMainView
     void ClearThumbnailBoxes();
     void PopulateThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
     void RefreshThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
-
-    void Show();
 }

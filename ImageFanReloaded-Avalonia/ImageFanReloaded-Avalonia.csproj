@@ -7,7 +7,7 @@
 	<Title>ImageFan Reloaded</Title>
 	<Product>ImageFan Reloaded</Product>
 	<Copyright>Copyright © Mihnea Rădulescu 2023</Copyright>
-	<AssemblyVersion>1.2023.09.07</AssemblyVersion>
+	<AssemblyVersion>1.2023.09.24</AssemblyVersion>
 	<Version>$(AssemblyVersion)</Version>
 	<PublishSingleFile>true</PublishSingleFile>
 	<SelfContained>false</SelfContained>

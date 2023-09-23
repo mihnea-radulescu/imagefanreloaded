@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ImageFanReloaded.CommonTypes.CommonEventArgs;
-using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.CommonTypes.Info;
 using ImageFanReloaded.Controls.Implementation;
 using ImageFanReloaded.Factories;
@@ -17,11 +16,9 @@ namespace ImageFanReloaded.Views.Implementation
         public MainWindow()
         {
             InitializeComponent();
-
-            _screenSize = this.GetScreenSize();
         }
 
-        public IImageViewFactory ImageViewFactory { get; set; }
+        public IImageViewFactory ImageViewFactory { private get; set; }
 
         public event EventHandler<FolderChangedEventArgs> FolderChanged;
 
@@ -123,8 +120,6 @@ namespace ImageFanReloaded.Views.Implementation
 
         #region Private
 
-        private readonly ImageSize _screenSize;
-
         private List<ThumbnailBox> _thumbnailBoxList;
         private int _selectedThumbnailIndex;
         private ThumbnailBox _selectedThumbnailBox;
@@ -212,15 +207,15 @@ namespace ImageFanReloaded.Views.Implementation
 
         private void DisplayImage()
         {
-            var imageView = ImageViewFactory.ImageView;
-            imageView.SetImage(_screenSize, _selectedThumbnailBox.ImageFile);
+            var imageView = ImageViewFactory.GetImageView();
+            imageView.SetImage(_selectedThumbnailBox.ImageFile);
 
             imageView.ThumbnailChanged +=
                 (sender, e) =>
                 {
                     if (AdvanceToThumbnailIndex(e.Increment))
                     {
-						imageView.SetImage(_screenSize, _selectedThumbnailBox.ImageFile);
+						imageView.SetImage(_selectedThumbnailBox.ImageFile);
 					}
                 };
             

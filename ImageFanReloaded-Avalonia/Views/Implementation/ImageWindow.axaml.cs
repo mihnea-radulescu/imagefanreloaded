@@ -28,15 +28,18 @@ public partial class ImageWindow
 		AddHandler(PointerWheelChangedEvent, OnMouseWheel, RoutingStrategies.Tunnel);
 	}
 
-	public void SetImage(ImageSize screenSize, IImageFile imageFile)
+	public IScreenInformation ScreenInformation { private get; set; }
+
+	public void SetImage(IImageFile imageFile)
 	{
-		_screenSize = screenSize;
 		_imageFile = imageFile;
 
 		Title = _imageFile.FileName;
 
 		_negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
 		_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
+
+		_screenSize = ScreenInformation.GetScreenSize();
 
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
