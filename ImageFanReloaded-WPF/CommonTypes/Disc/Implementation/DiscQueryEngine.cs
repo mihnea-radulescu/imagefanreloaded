@@ -44,11 +44,9 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
 
 		public DiscQueryEngine(
             IImageFileFactory imageFileFactory,
-            IImageResizer imageResizer,
             IFileSystemEntryComparer fileSystemEntryComparer)
         {
             _imageFileFactory = imageFileFactory;
-            _imageResizer = imageResizer;
             _fileSystemEntryComparer = fileSystemEntryComparer;
         }
 
@@ -114,7 +112,7 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
                                 .Where(aFileInfo =>
                                        ImageFileExtensions.Contains(aFileInfo.Extension))
                                 .OrderBy(aFileInfo => aFileInfo.Name)
-                                .Select(aFileInfo => _imageFileFactory.GetImageFile(_imageResizer, aFileInfo.FullName))
+                                .Select(aFileInfo => _imageFileFactory.GetImageFile(aFileInfo.FullName))
                                 .OrderBy(aFileInfo => aFileInfo.FileName, _fileSystemEntryComparer)
                                 .ToArray();
 
@@ -133,7 +131,6 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
 		private static readonly HashSet<string> ImageFileExtensions;
 
         private readonly IImageFileFactory _imageFileFactory;
-        private readonly IImageResizer _imageResizer;
         private readonly IFileSystemEntryComparer _fileSystemEntryComparer;
 
         #endregion

@@ -28,13 +28,11 @@ public partial class App
     {
         base.OnFrameworkInitializationCompleted();
 
-		IImageFileFactory imageFileFactory = new ImageFileFactory();
-
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		IDiscQueryEngine discQueryEngine =
-			new DiscQueryEngine(imageFileFactory, imageResizer);
+		IImageFileFactory imageFileFactory = new ImageFileFactory(imageResizer);
+		IDiscQueryEngine discQueryEngine = new DiscQueryEngine(imageFileFactory);
 
 		var mainWindow = new MainWindow();
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);

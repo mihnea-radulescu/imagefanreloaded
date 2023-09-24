@@ -50,12 +50,9 @@ public class DiscQueryEngine
 		};
 	}
 
-	public DiscQueryEngine(
-        IImageFileFactory imageFileFactory,
-        IImageResizer imageResizer)
+	public DiscQueryEngine(IImageFileFactory imageFileFactory)
     {
         _imageFileFactory = imageFileFactory;
-        _imageResizer = imageResizer;
     }
 
     public IReadOnlyCollection<FileSystemEntryInfo> GetAllDrives()
@@ -121,7 +118,7 @@ public class DiscQueryEngine
                             .Where(aFileInfo =>
                                    ImageFileExtensions.Contains(aFileInfo.Extension))
                             .OrderBy(aFileInfo => aFileInfo.Name)
-                            .Select(aFileInfo => _imageFileFactory.GetImageFile(_imageResizer, aFileInfo.FullName))
+                            .Select(aFileInfo => _imageFileFactory.GetImageFile(aFileInfo.FullName))
                             .OrderBy(aFileInfo => aFileInfo.FileName)
                             .ToArray();
 
@@ -143,7 +140,6 @@ public class DiscQueryEngine
 	private static readonly HashSet<string> ImageFileExtensions;
 
     private readonly IImageFileFactory _imageFileFactory;
-    private readonly IImageResizer _imageResizer;
 
     private static bool IsDrive(string driveName)
     {

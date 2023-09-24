@@ -20,15 +20,12 @@ namespace ImageFanReloaded
         {
             base.OnStartup(e);
 
-            IImageFileFactory imageFileFactory = new ImageFileFactory();
-
             IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
             IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-            IFileSystemEntryComparer fileSystemEntryComparer =
-                new FileSystemEntryComparer();
-            IDiscQueryEngine discQueryEngine = 
-                new DiscQueryEngine(imageFileFactory, imageResizer, fileSystemEntryComparer);
+			IImageFileFactory imageFileFactory = new ImageFileFactory(imageResizer);
+			IFileSystemEntryComparer fileSystemEntryComparer = new FileSystemEntryComparer();
+            IDiscQueryEngine discQueryEngine = new DiscQueryEngine(imageFileFactory, fileSystemEntryComparer);
 
             var mainWindow = new MainWindow();
 			IScreenInformation screenInformation = new ScreenInformation(mainWindow);

@@ -4,6 +4,6 @@ namespace ImageFanReloaded.Factories
 {
     public interface IImageFileFactory
     {
-        IImageFile GetImageFile(IImageResizer imageResizer, string filePath);
+        IImageFile GetImageFile(string filePath);
     }
 }
