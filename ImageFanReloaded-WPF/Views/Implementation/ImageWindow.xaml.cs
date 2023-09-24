@@ -40,13 +40,14 @@ namespace ImageFanReloaded.Views.Implementation
 
 		private const double ImageZoomScalingFactor = 0.1;
 		private const double ImageScrollFactor = 0.1;
-		private const double NegligibleImageDragFactor = 0.05;
+		private const double NegligibleImageDragFactor = 0.025;
 
         private IImageFile _imageFile;
 
 		private double _negligibleImageDragX, _negligibleImageDragY;
 
 		private ImageSize _screenSize;
+
 		private bool _canZoomToImageSize;
         private Cursor _screenSizeCursor;
 
