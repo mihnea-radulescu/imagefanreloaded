@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 
 namespace ImageFanReloaded.Views;

@@ -1,4 +1,4 @@
-﻿using ImageFanReloaded.CommonTypes.CommonEventArgs;
+﻿using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.Disc;
 using ImageFanReloaded.Factories;
 using ImageFanReloaded.Infrastructure;

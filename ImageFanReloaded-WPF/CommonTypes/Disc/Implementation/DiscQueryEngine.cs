@@ -50,31 +50,41 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
             _fileSystemEntryComparer = fileSystemEntryComparer;
         }
 
-        public ICollection<FileSystemEntryInfo> GetAllDrives()
+        public ICollection<FileSystemEntryInfo> GetSpecialFoldersWithPaths()
         {
-            return DriveInfo.GetDrives()
+            if (_specialFoldersWithPaths == null)
+            {
+				_specialFoldersWithPaths = SpecialFolders
+							                .Select(aSpecialFolder =>
+								                new FileSystemEntryInfo(
+									                aSpecialFolder,
+									                Path.Combine(UserProfilePath, aSpecialFolder),
+									                GlobalData.FolderIcon))
+							                .OrderBy(aSpecialFolder => aSpecialFolder.Name)
+							                .ToArray();
+			}
+
+            return _specialFoldersWithPaths;
+        }
+
+		public ICollection<FileSystemEntryInfo> GetDrives()
+		{
+			if (_drives == null)
+			{
+				_drives = DriveInfo.GetDrives()
 							.Select(aDriveInfo => aDriveInfo.Name)
-						    .Select(aDriveName =>
-							    new FileSystemEntryInfo(aDriveName,
-													    aDriveName,
-													    GlobalData.DriveIcon))
+							.Select(aDriveName =>
+								new FileSystemEntryInfo(aDriveName,
+														aDriveName,
+														GlobalData.DriveIcon))
 							.OrderBy(aDriveInfo => aDriveInfo.Name)
-                            .ToArray();
-        }
+							.ToArray();
+			}
 
-        public ICollection<FileSystemEntryInfo> GetSpecialFolders()
-        {
-            return SpecialFolders
-                            .Select(aSpecialFolder =>
-                                new FileSystemEntryInfo(
-                                    aSpecialFolder,
-                                    Path.Combine(UserProfilePath, aSpecialFolder),
-                                    GlobalData.FolderIcon))
-                            .OrderBy(aSpecialFolder => aSpecialFolder.Name)
-                            .ToArray();
-        }
+			return _drives;
+		}
 
-        public ICollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
+		public ICollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
         {
             try
             {
@@ -130,9 +140,12 @@ namespace ImageFanReloaded.CommonTypes.Disc.Implementation
 
 		private static readonly HashSet<string> ImageFileExtensions;
 
-        private readonly IImageFileFactory _imageFileFactory;
+		private readonly IImageFileFactory _imageFileFactory;
         private readonly IFileSystemEntryComparer _fileSystemEntryComparer;
 
-        #endregion
-    }
+        private ICollection<FileSystemEntryInfo> _specialFoldersWithPaths;
+		private ICollection<FileSystemEntryInfo> _drives;
+
+		#endregion
+	}
 }

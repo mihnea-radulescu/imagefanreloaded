@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ImageFanReloaded.CommonTypes.Disc;
 using ImageFanReloaded.CommonTypes.Info;
-using ImageFanReloaded.Views;
+using ImageFanReloaded.Controls;
 
 namespace ImageFanReloaded.Infrastructure.Implementation
 {
@@ -14,15 +14,16 @@ namespace ImageFanReloaded.Infrastructure.Implementation
 	{
 		public FolderVisualState(
 			IDiscQueryEngine discQueryEngine,
-			IMainView mainView,
 			IVisualActionDispatcher dispatcher,
-			object generateThumbnailsLockObject,
+			IContentTabItem contentTabItem,
 			string folderPath)
 		{
 			_discQueryEngine = discQueryEngine;
-			_mainView = mainView;
 			_dispatcher = dispatcher;
-			_generateThumbnailsLockObject = generateThumbnailsLockObject;
+
+			_contentTabItem = contentTabItem;
+			_generateThumbnailsLockObject = _contentTabItem.GenerateThumbnailsLockObject;
+
 			_folderPath = folderPath;
 
 			_thumbnailGeneration = new CancellationTokenSource();
@@ -39,22 +40,23 @@ namespace ImageFanReloaded.Infrastructure.Implementation
 		#region Private
 
 		private readonly IDiscQueryEngine _discQueryEngine;
-		private readonly IMainView _mainView;
 		private readonly IVisualActionDispatcher _dispatcher;
-		private readonly object _generateThumbnailsLockObject;
+		private readonly IContentTabItem _contentTabItem;
 
 		private readonly string _folderPath;
 
+		private readonly object _generateThumbnailsLockObject;
 		private readonly CancellationTokenSource _thumbnailGeneration;
 
 		private void UpdateVisualStateHelper()
 		{
 			lock (_generateThumbnailsLockObject)
 			{
-				_dispatcher.Invoke(() => _mainView.ClearThumbnailBoxes());
+				_dispatcher.Invoke(() => _contentTabItem.ClearThumbnailBoxes());
+				_dispatcher.Invoke(() => _contentTabItem.Title = _folderPath);
 
 				var subFolders = _discQueryEngine.GetSubFolders(_folderPath);
-				_dispatcher.Invoke(() => _mainView.PopulateSubFoldersTree(subFolders, false));
+				_dispatcher.Invoke(() => _contentTabItem.PopulateSubFoldersTree(subFolders, false));
 
 				var thumbnails = GetImageFiles(_folderPath);
 
@@ -67,10 +69,10 @@ namespace ImageFanReloaded.Infrastructure.Implementation
 						.ToArray();
 
 					ReadThumbnailInput(currentThumbnails);
-					_dispatcher.Invoke(() => _mainView.PopulateThumbnailBoxes(currentThumbnails));
+					_dispatcher.Invoke(() => _contentTabItem.PopulateThumbnailBoxes(currentThumbnails));
 
 					GetThumbnails(currentThumbnails);
-					_dispatcher.Invoke(() => _mainView.RefreshThumbnailBoxes(currentThumbnails));
+					_dispatcher.Invoke(() => _contentTabItem.RefreshThumbnailBoxes(currentThumbnails));
 				}
 			}
 		}

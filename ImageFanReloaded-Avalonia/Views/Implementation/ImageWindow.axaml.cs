@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 
 namespace ImageFanReloaded.Views.Implementation;

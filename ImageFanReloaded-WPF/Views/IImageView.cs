@@ -1,5 +1,5 @@
 ﻿using System;
-using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 
 namespace ImageFanReloaded.Views
@@ -7,6 +7,8 @@ namespace ImageFanReloaded.Views
     public interface IImageView
     {
         event EventHandler<ThumbnailChangedEventArgs> ThumbnailChanged;
+
+		IScreenInformation ScreenInformation { get; set; }
 
 		void SetImage(IImageFile imageFile);
 

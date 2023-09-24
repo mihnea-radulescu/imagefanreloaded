@@ -1,7 +1,7 @@
 ﻿using ImageFanReloaded.CommonTypes.Disc;
+using ImageFanReloaded.Controls;
 using ImageFanReloaded.Infrastructure;
 using ImageFanReloaded.Infrastructure.Implementation;
-using ImageFanReloaded.Views;
 
 namespace ImageFanReloaded.Factories.Implementation
 {
@@ -9,17 +9,15 @@ namespace ImageFanReloaded.Factories.Implementation
         : IFolderVisualStateFactory
     {
         public IFolderVisualState GetFolderVisualState(
-            IDiscQueryEngine discQueryEngine,
-            IMainView mainView,
-            IVisualActionDispatcher dispatcher,
-            object generateThumbnailsLockObject,
-            string folderPath)
+			IDiscQueryEngine discQueryEngine,
+			IVisualActionDispatcher dispatcher,
+			IContentTabItem contentTabItem,
+			string folderPath)
         {
             IFolderVisualState folderVisualState = new FolderVisualState(
                 discQueryEngine,
-                mainView,
                 dispatcher,
-                generateThumbnailsLockObject,
+                contentTabItem,
                 folderPath);
 
             return folderVisualState;

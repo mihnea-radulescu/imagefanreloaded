@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.Info;
 
 namespace ImageFanReloaded.Views;

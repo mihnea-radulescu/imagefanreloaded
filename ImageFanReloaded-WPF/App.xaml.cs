@@ -30,13 +30,21 @@ namespace ImageFanReloaded
             var mainWindow = new MainWindow();
 			IScreenInformation screenInformation = new ScreenInformation(mainWindow);
             IImageViewFactory imageViewFactory = new ImageViewFactory(screenInformation);
-            mainWindow.ImageViewFactory = imageViewFactory;
 
             IVisualActionDispatcher visualActionDispatcher = new VisualActionDispatcher(Dispatcher);
             IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory();
 
-            new MainPresenter(discQueryEngine, mainWindow, visualActionDispatcher, folderVisualStateFactory);
-            mainWindow.Show();
-        }
+            new MainPresenter(
+                discQueryEngine,
+                visualActionDispatcher,
+                folderVisualStateFactory,
+                imageViewFactory,
+                mainWindow);
+
+			mainWindow.Show();
+
+			mainWindow.AddFakeTabItem();
+			mainWindow.AddContentTabItem();
+		}
     }
 }

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 
 namespace ImageFanReloaded.Views.Implementation
@@ -17,7 +17,7 @@ namespace ImageFanReloaded.Views.Implementation
             InitializeComponent();
         }
 
-        public IScreenInformation ScreenInformation { private get; set; }
+        public IScreenInformation ScreenInformation { get; set; }
 
         public void SetImage(IImageFile imageFile)
         {

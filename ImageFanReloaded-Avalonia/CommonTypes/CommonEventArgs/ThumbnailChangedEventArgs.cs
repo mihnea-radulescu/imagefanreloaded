@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ImageFanReloaded.CommonTypes.CommonEventArgs;
+namespace ImageFanReloaded.CommonTypes.CustomEventArgs;
 
 public class ThumbnailChangedEventArgs
     : EventArgs

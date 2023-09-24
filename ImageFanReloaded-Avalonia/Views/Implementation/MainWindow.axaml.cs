@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
-using ImageFanReloaded.CommonTypes.CommonEventArgs;
+using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.Info;
 using ImageFanReloaded.Controls.Implementation;
 using ImageFanReloaded.Factories;

@@ -12,34 +12,33 @@
         WindowState="Maximized"
         FontSize="12"
         KeyUp="OnKeyPressed">
-    <Grid HorizontalAlignment="Stretch"
-          VerticalAlignment="Stretch">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="12*"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition MinWidth="600"
-                              Width="88*"/>
-        </Grid.ColumnDefinitions>
-        <TreeView Name="_folderTreeView"
-                  SelectedItemChanged="OnFolderTreeViewSelectedItemChanged">
-            <TreeView.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                 Color="LightBlue"/>
-            </TreeView.Resources>
-        </TreeView>
-        <GridSplitter Grid.Column="1"
-                      ResizeBehavior="PreviousAndNext"
-                      Width="5"
-                      Background="#FFBCBCBC"/>
-        <ScrollViewer Name="_thumbnailScrollViewer"
-                      VerticalScrollBarVisibility="Auto"
-                      Grid.Column="2"
-                      Margin="5">
-            <WrapPanel Name="_thumbnailWrapPanel"
-                       Orientation="Horizontal"/>
-        </ScrollViewer>
-    </Grid>
+    <TabControl x:Name="_tabControl"
+                PreviewKeyDown="OnKeyPressing"
+                SelectionChanged="OnSelectionChanged">
+		<TabControl.Resources>
+			<Style TargetType="TabItem">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="TabItem">
+							<Border Name="Border" BorderThickness="1,1,1,0" BorderBrush="Gainsboro" CornerRadius="8,8,0,0" Margin="2,0">
+								<ContentPresenter x:Name="ContentSite"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Center"
+									ContentSource="Header"
+									Margin="10,2"/>
+							</Border>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsSelected" Value="True">
+									<Setter TargetName="Border" Property="Background" Value="LightSkyBlue" />
+								</Trigger>
+								<Trigger Property="IsSelected" Value="False">
+									<Setter TargetName="Border" Property="Background" Value="GhostWhite" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+        </TabControl.Resources>
+	</TabControl>
 </Window>
