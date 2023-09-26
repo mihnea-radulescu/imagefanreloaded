@@ -37,7 +37,6 @@ public partial class App
 		var mainWindow = new MainWindow();
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
 		IImageViewFactory imageViewFactory = new ImageViewFactory(screenInformation);
-		mainWindow.ImageViewFactory = imageViewFactory;
 
 		var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime;
 		desktop.MainWindow = mainWindow;
@@ -45,7 +44,15 @@ public partial class App
 		IVisualActionDispatcher visualActionDispatcher = new VisualActionDispatcher(Dispatcher.UIThread);
 		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory();
 
-		new MainPresenter(discQueryEngine, mainWindow, visualActionDispatcher, folderVisualStateFactory);
+		new MainPresenter(
+			discQueryEngine,
+			visualActionDispatcher,
+			folderVisualStateFactory,
+			imageViewFactory,
+			mainWindow);
+
+		mainWindow.AddFakeTabItem();
+
 		mainWindow.Show();
 	}
 }

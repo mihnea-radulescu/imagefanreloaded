@@ -1,4 +1,4 @@
-<Window x:Name="_mainView"
+<Window Name="_mainView"
 		x:Class="ImageFanReloaded.Views.Implementation.MainWindow"
 	    xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,31 +11,7 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
 		FontSize="12">
-	<Grid HorizontalAlignment="Stretch"
-		  VerticalAlignment="Stretch">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="12*"/>
-			<ColumnDefinition Width="Auto"/>
-			<ColumnDefinition MinWidth="600"
-							  Width="88*"/>
-		</Grid.ColumnDefinitions>
-		<TreeView Name="_folderTreeView"
-                  SelectionChanged="OnFolderTreeViewSelectedItemChanged"
-				  SelectionMode="Single">
-		</TreeView>
-		<GridSplitter Grid.Column="1"
-                      ResizeBehavior="PreviousAndNext"
-                      Width="5"
-                      Background="#FFBCBCBC"/>
-		<ScrollViewer Name="_thumbnailScrollViewer"
-                      VerticalScrollBarVisibility="Auto"
-                      Grid.Column="2"
-                      Margin="5">
-			<WrapPanel Name="_thumbnailWrapPanel"
-					   Orientation="Horizontal"/>
-		</ScrollViewer>
-	</Grid>
+	<TabControl Name="_tabControl"
+                SelectionChanged="OnSelectionChanged">
+	</TabControl>
 </Window>

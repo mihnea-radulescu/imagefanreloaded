@@ -1,5 +1,6 @@
 ﻿using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.Disc;
+using ImageFanReloaded.Controls;
 using ImageFanReloaded.Factories;
 using ImageFanReloaded.Infrastructure;
 using ImageFanReloaded.Views;
@@ -8,66 +9,75 @@ namespace ImageFanReloaded.Presenters;
 
 public class MainPresenter
 {
-    public MainPresenter(
-        IDiscQueryEngine discQueryEngine,
-        IMainView mainView,
-        IVisualActionDispatcher dispatcher,
-        IFolderVisualStateFactory folderVisualStateFactory)
-    {
-        _discQueryEngine = discQueryEngine;
+	public MainPresenter(
+		IDiscQueryEngine discQueryEngine,
+		IVisualActionDispatcher dispatcher,
+		IFolderVisualStateFactory folderVisualStateFactory,
+		IImageViewFactory imageViewFactory,
+		IMainView mainView)
+	{
+		_discQueryEngine = discQueryEngine;
+		_dispatcher = dispatcher;
+		_folderVisualStateFactory = folderVisualStateFactory;
+		_imageViewFactory = imageViewFactory;
 
-        _mainView = mainView;
-        _mainView.FolderChanged += OnFolderChanged;
+		_mainView = mainView;
+		_mainView.ContentTabItemAdded += OnContentTabItemAdded;
+	}
 
-        _dispatcher = dispatcher;
-        _folderVisualStateFactory = folderVisualStateFactory;
+	#region Private
 
-        _generateThumbnailsLockObject = new object();
+	private readonly IDiscQueryEngine _discQueryEngine;
+	private readonly IVisualActionDispatcher _dispatcher;
+	private readonly IFolderVisualStateFactory _folderVisualStateFactory;
+	private readonly IImageViewFactory _imageViewFactory;
 
-        PopulateDrivesAndSpecialFolders();
-    }
+	private readonly IMainView _mainView;
 
-    #region Private
+	private void OnContentTabItemAdded(object sender, TabItemEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
 
-    private readonly IDiscQueryEngine _discQueryEngine;
-    private readonly IMainView _mainView;
-    private readonly IVisualActionDispatcher _dispatcher;
-    private readonly IFolderVisualStateFactory _folderVisualStateFactory;
+		contentTabItem.ImageViewFactory = _imageViewFactory;
+		contentTabItem.GenerateThumbnailsLockObject = new object();
 
-		private readonly object _generateThumbnailsLockObject;
+		contentTabItem.FolderChanged += OnFolderChanged;
 
-		private IFolderVisualState _folderVisualState;
+		PopulateDrivesAndSpecialFolders(contentTabItem);
+	}
 
-    private void PopulateDrivesAndSpecialFolders()
-    {
-        var specialFolders = _discQueryEngine.GetSpecialFolders();
-        _mainView.PopulateSubFoldersTree(specialFolders, true);
+	private void PopulateDrivesAndSpecialFolders(IContentTabItem contentTabItem)
+	{
+		var specialFolders = _discQueryEngine.GetSpecialFoldersWithPaths();
+		var drives = _discQueryEngine.GetDrives();
 
-        var drives = _discQueryEngine.GetAllDrives();
-        _mainView.PopulateSubFoldersTree(drives, true);
-    }
+		contentTabItem.PopulateSubFoldersTree(specialFolders, true);
+		contentTabItem.PopulateSubFoldersTree(drives, true);
+	}
 
-    private void OnFolderChanged(object sender, FolderChangedEventArgs e)
-    {
-        UpdateUserInterface(e.Path);
-    }
+	private void OnFolderChanged(object sender, FolderChangedEventArgs e)
+	{
+		var contentTabItem = (IContentTabItem)sender;
+		var path = e.Path;
 
-    private void UpdateUserInterface(string folderPath)
-    {
-        if (_folderVisualState != null)
-        {
-            _folderVisualState.NotifyStopThumbnailGeneration();
-        }
+		UpdateUserInterface(contentTabItem, path);
+	}
 
-        _folderVisualState = _folderVisualStateFactory.GetFolderVisualState(
-            _discQueryEngine,
-            _mainView,
-            _dispatcher,
-            _generateThumbnailsLockObject,
-            folderPath);
+	private void UpdateUserInterface(IContentTabItem contentTabItem, string folderPath)
+	{
+		if (contentTabItem.FolderVisualState != null)
+		{
+			contentTabItem.FolderVisualState.NotifyStopThumbnailGeneration();
+		}
 
-        _folderVisualState.UpdateVisualState();
-    }
+		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
+			_discQueryEngine,
+			_dispatcher,
+			contentTabItem,
+			folderPath);
 
-    #endregion
+		contentTabItem.FolderVisualState.UpdateVisualState();
+	}
+
+	#endregion
 }

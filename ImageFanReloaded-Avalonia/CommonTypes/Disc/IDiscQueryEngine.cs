@@ -6,8 +6,9 @@ namespace ImageFanReloaded.CommonTypes.Disc;
 
 public interface IDiscQueryEngine
 {
-    IReadOnlyCollection<FileSystemEntryInfo> GetAllDrives();
-	IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFolders();
+	IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFoldersWithPaths();
+	IReadOnlyCollection<FileSystemEntryInfo> GetDrives();
+
 	IReadOnlyCollection<FileSystemEntryInfo> GetSubFolders(string folderPath);
 
 	IReadOnlyCollection<IImageFile> GetImageFiles(string folderPath);

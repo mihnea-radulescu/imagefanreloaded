@@ -9,7 +9,7 @@
 	<Title>ImageFan Reloaded Avalonia Tests</Title>
 	<Product>ImageFan Reloaded Avalonia Tests</Product>
 	<Copyright>Copyright © Mihnea Rădulescu 2023</Copyright>
-	<AssemblyVersion>1.2023.09.24</AssemblyVersion>
+	<AssemblyVersion>1.2023.09.27</AssemblyVersion>
 	<Version>$(AssemblyVersion)</Version>
 	<PublishSingleFile>true</PublishSingleFile>
 	<SelfContained>false</SelfContained>

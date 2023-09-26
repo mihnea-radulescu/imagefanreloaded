@@ -1,4 +1,4 @@
-﻿<Window x:Name="_mainView"
+﻿<Window Name="_mainView"
         x:Class="ImageFanReloaded.Views.Implementation.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -12,7 +12,7 @@
         WindowState="Maximized"
         FontSize="12"
         KeyUp="OnKeyPressed">
-    <TabControl x:Name="_tabControl"
+    <TabControl Name="_tabControl"
                 PreviewKeyDown="OnKeyPressing"
                 SelectionChanged="OnSelectionChanged">
 		<TabControl.Resources>
@@ -21,7 +21,7 @@
 					<Setter.Value>
 						<ControlTemplate TargetType="TabItem">
 							<Border Name="Border" BorderThickness="1,1,1,0" BorderBrush="Gainsboro" CornerRadius="8,8,0,0" Margin="2,0">
-								<ContentPresenter x:Name="ContentSite"
+								<ContentPresenter Name="ContentSite"
 									VerticalAlignment="Center"
 									HorizontalAlignment="Center"
 									ContentSource="Header"

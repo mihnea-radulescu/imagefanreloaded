@@ -41,10 +41,10 @@ namespace ImageFanReloaded
                 imageViewFactory,
                 mainWindow);
 
-			mainWindow.Show();
-
 			mainWindow.AddFakeTabItem();
 			mainWindow.AddContentTabItem();
+
+			mainWindow.Show();
 		}
     }
 }

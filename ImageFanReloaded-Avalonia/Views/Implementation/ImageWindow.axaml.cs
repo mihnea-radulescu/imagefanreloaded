@@ -28,7 +28,7 @@ public partial class ImageWindow
 		AddHandler(PointerWheelChangedEvent, OnMouseWheel, RoutingStrategies.Tunnel);
 	}
 
-	public IScreenInformation ScreenInformation { private get; set; }
+	public IScreenInformation ScreenInformation { get; set; }
 
 	public void SetImage(IImageFile imageFile)
 	{

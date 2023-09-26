@@ -10,6 +10,8 @@ public interface IImageView
 {
     event EventHandler<ThumbnailChangedEventArgs> ThumbnailChanged;
 
+	IScreenInformation ScreenInformation { get; set; }
+
 	void SetImage(IImageFile imageFile);
 
     Task ShowDialog(Window owner);

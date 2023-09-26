@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
-using ImageFanReloaded.CommonTypes.Info;
 
 namespace ImageFanReloaded.Views;
 
 public interface IMainView
 {
-    event EventHandler<FolderChangedEventArgs> FolderChanged;
+	event EventHandler<TabItemEventArgs> ContentTabItemAdded;
 
-    void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
-                                bool rootNodes);
+	void AddFakeTabItem();
 
-    void ClearThumbnailBoxes();
-    void PopulateThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
-    void RefreshThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
+	void Show();
 }

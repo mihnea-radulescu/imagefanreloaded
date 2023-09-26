@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using Avalonia;
 using Avalonia.Controls;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
-using ImageFanReloaded.CommonTypes.Info;
 using ImageFanReloaded.Controls.Implementation;
-using ImageFanReloaded.Factories;
 
 namespace ImageFanReloaded.Views.Implementation;
 
@@ -17,204 +13,64 @@ public partial class MainWindow
         InitializeComponent();
 	}
 
-	public IImageViewFactory ImageViewFactory { private get; set; }
+	public event EventHandler<TabItemEventArgs> ContentTabItemAdded;
 
-	public event EventHandler<FolderChangedEventArgs> FolderChanged;
-
-	public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
-									   bool rootNodes)
+	public void AddFakeTabItem()
 	{
-		if (rootNodes)
+		var tabItem = new TabItem
 		{
-			foreach (var aSubFolder in subFolders)
-			{
-				var treeViewItem = GetTreeViewItem(aSubFolder);
+			Header = "+",
+			FontSize = TabItemFontSize
+		};
 
-				_folderTreeView.Items.Add(treeViewItem);
-			}
-		}
-		else if (_folderTreeView.SelectedItem != null)
-		{
-			var selectedItem = (TreeViewItem)_folderTreeView.SelectedItem;
-
-			if (selectedItem.Items.Count == 0)
-			{
-				foreach (var aSubFolder in subFolders)
-				{
-					var treeViewItem = GetTreeViewItem(aSubFolder);
-
-					selectedItem.Items.Add(treeViewItem);
-				}
-			}
-		}
-	}
-
-	public void ClearThumbnailBoxes()
-	{
-		if (_thumbnailBoxList != null)
-		{
-			foreach (var aThumbnailBox in _thumbnailBoxList)
-			{
-				aThumbnailBox.DisposeThumbnail();
-			}
-		}
-
-		_thumbnailBoxList = new List<ThumbnailBox>();
-		_selectedThumbnailIndex = -1;
-		_selectedThumbnailBox = null;
-
-		_thumbnailWrapPanel.Children.Clear();
-		_thumbnailScrollViewer.Offset = new Vector(
-			_thumbnailScrollViewer.Offset.X, 0);
-	}
-
-	public void PopulateThumbnailBoxes(
-		IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection)
-	{
-		foreach (var thumbnailInfo in thumbnailInfoCollection)
-		{
-			var aThumbnailBox = new ThumbnailBox
-			{
-				ThumbnailInfo = thumbnailInfo
-			};
-
-			thumbnailInfo.ThumbnailBox = aThumbnailBox;
-
-			aThumbnailBox.ThumbnailBoxClicked +=
-				(sender, e) =>
-				{
-					var thumbnailBox = (ThumbnailBox)sender;
-
-					if (thumbnailBox.IsSelected)
-					{
-						DisplayImage();
-					}
-					else
-					{
-						SelectThumbnailBox(thumbnailBox);
-					}
-				};
-
-			_thumbnailBoxList.Add(aThumbnailBox);
-
-			if (_thumbnailBoxList.Count == 1)
-			{
-				SelectThumbnailBox(aThumbnailBox);
-				_thumbnailScrollViewer.Focus();
-			}
-
-			var aSurroundingStackPanel = new StackPanel();
-			aSurroundingStackPanel.Children.Add(aThumbnailBox);
-			_thumbnailWrapPanel.Children.Add(aSurroundingStackPanel);
-		}
-	}
-
-	public void RefreshThumbnailBoxes(
-		IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection)
-	{
-		foreach (var thumbnailInfo in thumbnailInfoCollection)
-		{
-			thumbnailInfo.RefreshThumbnail();
-		}
+		_tabControl.Items.Add(tabItem);
 	}
 
 	#region Private
 
-	private List<ThumbnailBox> _thumbnailBoxList;
-	private int _selectedThumbnailIndex;
-	private ThumbnailBox _selectedThumbnailBox;
+	private const int TabItemFontSize = 12;
 
-	private void OnFolderTreeViewSelectedItemChanged(object sender,
-													 SelectionChangedEventArgs e)
+	private int _imagesTabCounter;
+
+	private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 	{
-		var folderChangedHandler = FolderChanged;
+		var tabControl = (TabControl)sender;
+		var tabItem = (TabItem)tabControl.SelectedItem;
 
-		if (folderChangedHandler != null)
+		if (tabItem.Content == null)
 		{
-			var selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0];
-			var fileSystemEntryItem = (FileSystemEntryItem)
-				selectedFolderTreeViewItem.Header;
-
-			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo;
-			var selectedFolderPath = fileSystemEntryInfo.Path;
-
-			folderChangedHandler(this,
-								 new FolderChangedEventArgs(selectedFolderPath));
+			AddContentTabItem();
 		}
 	}
 
-	private void SelectThumbnailBox(ThumbnailBox thumbnailBox)
+	private void AddContentTabItem()
 	{
-		if (_selectedThumbnailBox != thumbnailBox)
+		var contentTabItem = new ContentTabItem();
+
+		var tabItem = new TabItem
 		{
-			if (_selectedThumbnailBox != null)
-			{
-				_selectedThumbnailBox.UnselectThumbnail();
-			}
-
-			_selectedThumbnailBox = thumbnailBox;
-			_selectedThumbnailIndex = _thumbnailBoxList
-										.FindIndex(aThumbnailBox =>
-												   aThumbnailBox == _selectedThumbnailBox);
-
-			_selectedThumbnailBox.SelectThumbnail();
-		}
-	}
-
-	private bool AdvanceToThumbnailIndex(int increment)
-	{
-		if (_selectedThumbnailBox != null)
-		{
-			var newSelectedThumbnailIndex = _selectedThumbnailIndex + increment;
-
-			if ((newSelectedThumbnailIndex >= 0) &&
-				(newSelectedThumbnailIndex < _thumbnailBoxList.Count))
-			{
-				_selectedThumbnailBox.UnselectThumbnail();
-
-				_selectedThumbnailIndex = newSelectedThumbnailIndex;
-				_selectedThumbnailBox = _thumbnailBoxList[_selectedThumbnailIndex];
-
-				_selectedThumbnailBox.SelectThumbnail();
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private void DisplayImage()
-	{
-		var imageView = ImageViewFactory.GetImageView();
-		imageView.SetImage(_selectedThumbnailBox.ImageFile);
-
-		imageView.ThumbnailChanged +=
-			(sender, e) =>
-			{
-				if (AdvanceToThumbnailIndex(e.Increment))
-				{
-					imageView.SetImage(_selectedThumbnailBox.ImageFile);
-				}
-			};
-
-		imageView.ShowDialog(this);
-	}
-
-	private static TreeViewItem GetTreeViewItem(
-		FileSystemEntryInfo fileSystemEntryInfo)
-	{
-		var fileSystemEntryItem = new FileSystemEntryItem
-		{
-			FileSystemEntryInfo = fileSystemEntryInfo
+			Content = contentTabItem,
+			FontSize = TabItemFontSize
 		};
 
-		var treeViewItem = new TreeViewItem
-		{
-			Header = fileSystemEntryItem
-		};
+		contentTabItem.TabItem = tabItem;
+		contentTabItem.Window = this;
 
-		return treeViewItem;
+		_imagesTabCounter++;
+		contentTabItem.Title = $"Images Tab {_imagesTabCounter}";
+
+		var tabItemsCount = _tabControl.Items.Count;
+
+		if (tabItemsCount == 0)
+		{
+			_tabControl.Items.Add(tabItem);
+		}
+		else
+		{
+			_tabControl.Items.Insert(tabItemsCount - 1, tabItem);
+		}
+
+		ContentTabItemAdded?.Invoke(this, new TabItemEventArgs(contentTabItem));
 	}
 
 	#endregion

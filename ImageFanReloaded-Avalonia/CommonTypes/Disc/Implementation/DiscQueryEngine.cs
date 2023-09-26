@@ -17,7 +17,8 @@ public class DiscQueryEngine
         {
             "/home/",
             "/media/",
-            "/mnt/"
+            "/mnt/",
+            "/run/"
         };
         
         EmptyFileSystemEntryInfoCollection = Enumerable
@@ -55,29 +56,39 @@ public class DiscQueryEngine
         _imageFileFactory = imageFileFactory;
     }
 
-    public IReadOnlyCollection<FileSystemEntryInfo> GetAllDrives()
-    {
-        return DriveInfo.GetDrives()
-                        .Select(aDriveInfo => aDriveInfo.Name)
-                        .Where(aDriveName => IsDrive(aDriveName))
-                        .Select(aDriveName =>
-                            new FileSystemEntryInfo(aDriveName,
-													aDriveName,
-                                                    GlobalData.DriveIcon))
-                        .OrderBy(aDriveInfo => aDriveInfo.Name)
-                        .ToArray();
-    }
+	public IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFoldersWithPaths()
+	{
+	    if (_specialFoldersWithPaths == null)
+        {
+			_specialFoldersWithPaths = SpecialFolders
+									    .Select(aSpecialFolder =>
+										    new FileSystemEntryInfo(
+											    aSpecialFolder,
+											    Path.Combine(UserProfilePath, aSpecialFolder),
+											    GlobalData.FolderIcon))
+									    .OrderBy(aSpecialFolder => aSpecialFolder.Name)
+									    .ToArray();
+		}
 
-    public IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFolders()
+        return _specialFoldersWithPaths;
+	}
+
+	public IReadOnlyCollection<FileSystemEntryInfo> GetDrives()
     {
-        return SpecialFolders
-                        .Select(aSpecialFolder =>
-                            new FileSystemEntryInfo(
-                                aSpecialFolder,
-                                Path.Combine(UserProfilePath, aSpecialFolder),
-                                GlobalData.FolderIcon))
-                        .OrderBy(aSpecialFolder => aSpecialFolder.Name)
-                        .ToArray();
+        if (_drives == null)
+        {
+			_drives = DriveInfo.GetDrives()
+						.Select(aDriveInfo => aDriveInfo.Name)
+						.Where(aDriveName => IsDrive(aDriveName))
+						.Select(aDriveName =>
+							new FileSystemEntryInfo(aDriveName,
+													aDriveName,
+													GlobalData.DriveIcon))
+						.OrderBy(aDriveInfo => aDriveInfo.Name)
+						.ToArray();
+		}
+
+        return _drives;
     }
 
     public IReadOnlyCollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
@@ -141,7 +152,10 @@ public class DiscQueryEngine
 
     private readonly IImageFileFactory _imageFileFactory;
 
-    private static bool IsDrive(string driveName)
+	private IReadOnlyCollection<FileSystemEntryInfo> _specialFoldersWithPaths;
+	private IReadOnlyCollection<FileSystemEntryInfo> _drives;
+
+	private static bool IsDrive(string driveName)
     {
         if (!driveName.StartsWith(UnixDriveRootPath))
         {
