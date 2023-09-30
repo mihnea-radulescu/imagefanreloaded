@@ -49,14 +49,13 @@ public partial class ContentTabItem
 		{
 			var selectedItem = (TreeViewItem)_folderTreeView.SelectedItem;
 
-			if (selectedItem.Items.Count == 0)
-			{
-				foreach (var aSubFolder in subFolders)
-				{
-					var treeViewItem = GetTreeViewItem(aSubFolder);
+			selectedItem.Items.Clear();
 
-					selectedItem.Items.Add(treeViewItem);
-				}
+			foreach (var aSubFolder in subFolders)
+			{
+				var treeViewItem = GetTreeViewItem(aSubFolder);
+
+				selectedItem.Items.Add(treeViewItem);
 			}
 		}
 	}
