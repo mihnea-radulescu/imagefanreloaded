@@ -17,8 +17,7 @@ public class DiscQueryEngine
         {
             "/home/",
             "/media/",
-            "/mnt/",
-            "/run/"
+            "/mnt/"
         };
         
         EmptyFileSystemEntryInfoCollection = Enumerable

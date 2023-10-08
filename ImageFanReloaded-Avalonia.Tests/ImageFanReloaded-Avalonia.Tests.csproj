@@ -9,7 +9,7 @@
 	<Title>ImageFan Reloaded Avalonia Tests</Title>
 	<Product>ImageFan Reloaded Avalonia Tests</Product>
 	<Copyright>Copyright © Mihnea Rădulescu 2023</Copyright>
-	<AssemblyVersion>1.2023.10.08</AssemblyVersion>
+	<AssemblyVersion>1.2023.10.09</AssemblyVersion>
 	<Version>$(AssemblyVersion)</Version>
 	<PublishSingleFile>true</PublishSingleFile>
 	<SelfContained>false</SelfContained>
@@ -17,7 +17,6 @@
 	<DebugType>embedded</DebugType>
 	<RootNamespace>ImageFanReloaded.Avalonia.Tests</RootNamespace>
 	<AssemblyName>ImageFanReloaded-Avalonia.Tests</AssemblyName>
-	<AvaloniaVersion>11.0.4</AvaloniaVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,15 +29,15 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
-	<PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
-	<PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
-	<PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+	<PackageReference Include="Avalonia.Desktop" Version="11.0.5-rc1" />
+	<PackageReference Include="Avalonia" Version="11.0.5-rc1" />
+	<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5-rc1" />
+	<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.5-rc1" />
+    <PackageReference Include="FluentAssertions" Version="7.0.0-alpha.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0-release-23468-02" />
     <PackageReference Include="NSubstitute" Version="5.1.0" />
-    <PackageReference Include="xunit" Version="2.5.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.1">
+    <PackageReference Include="xunit" Version="2.5.2-pre.6" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.2-pre.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

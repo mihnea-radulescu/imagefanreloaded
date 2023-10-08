@@ -7,13 +7,12 @@
 	<Title>ImageFan Reloaded</Title>
 	<Product>ImageFan Reloaded</Product>
 	<Copyright>Copyright © Mihnea Rădulescu 2023</Copyright>
-	<AssemblyVersion>1.2023.10.08</AssemblyVersion>
+	<AssemblyVersion>1.2023.10.09</AssemblyVersion>
 	<Version>$(AssemblyVersion)</Version>
 	<PublishSingleFile>true</PublishSingleFile>
 	<SelfContained>false</SelfContained>
 	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 	<DebugType>embedded</DebugType>
-	<AvaloniaVersion>11.0.4</AvaloniaVersion>
 	<ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
 	<RootNamespace>ImageFanReloaded</RootNamespace>
 	<AssemblyName>ImageFanReloaded-Avalonia</AssemblyName>
@@ -39,12 +38,12 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
+	<PackageReference Include="Avalonia.Desktop" Version="11.0.5-rc1" />
+    <PackageReference Include="Avalonia" Version="11.0.5-rc1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5-rc1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.5-rc1" />
 
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.5-rc1" />
   </ItemGroup>
 
   <ItemGroup>
