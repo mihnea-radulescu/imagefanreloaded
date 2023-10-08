@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 
@@ -262,26 +262,28 @@ namespace ImageFanReloaded.Views.Implementation
 		private void ResizeToScreenSize()
         {
 			var image = _imageFile.GetResizedImage(_screenSize);
-
-			_imageViewState = ImageViewState.ResizedToScreenSize;
-
-			BeginInit();
-
 			_image.Source = image;
 
-            _imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-
-            Cursor = _screenSizeCursor;
-
-			EndInit();
+			_imageViewState = ImageViewState.ResizedToScreenSize;
+			Cursor = _screenSizeCursor;
         }
 
         private void ZoomToImageSize(
             CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
-        {
-            var image = _imageFile.GetImage();
+		{
+			var image = _imageFile.GetImage();
+			_image.Source = image;
 
+			_imageViewState = ImageViewState.ZoomedToImageSize;
+			Cursor = Cursors.SizeAll;
+
+			var zoomRectangle = GetZoomRectangle(coordinatesToImageSizeRatio, image);
+			_image.BringIntoView(zoomRectangle);
+		}
+
+		private static Rect GetZoomRectangle(
+			CoordinatesToImageSizeRatio coordinatesToImageSizeRatio, ImageSource image)
+		{
 			var zoomToX = image.Width * coordinatesToImageSizeRatio.RatioX;
 			var zoomToY = image.Height * coordinatesToImageSizeRatio.RatioY;
 
@@ -291,22 +293,9 @@ namespace ImageFanReloaded.Views.Implementation
 				2 * (ImageZoomScalingFactor * image.Width),
 				2 * (ImageZoomScalingFactor * image.Height));
 
-			_imageViewState = ImageViewState.ZoomedToImageSize;
+			return zoomRectangle;
+		}
 
-			BeginInit();
-
-			_image.Source = image;
-
-			_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            _imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-
-			_image.BringIntoView(zoomRectangle);
-
-			Cursor = Cursors.SizeAll;
-
-			EndInit();
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 }

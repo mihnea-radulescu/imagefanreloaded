@@ -1,9 +1,9 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 
@@ -244,25 +244,27 @@ public partial class ImageWindow
 	private void ResizeToScreenSize()
 	{
 		var image = _imageFile.GetResizedImage(_screenSize);
-
-		_imageViewState = ImageViewState.ResizedToScreenSize;
-
-		BeginInit();
-
 		_image.Source = image;
 
-		_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-
+		_imageViewState = ImageViewState.ResizedToScreenSize;
 		Cursor = _screenSizeCursor;
-
-		EndInit();
 	}
 
 	private void ZoomToImageSize(CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
 	{
 		var image = _imageFile.GetImage();
+		_image.Source = image;
 
+		_imageViewState = ImageViewState.ZoomedToImageSize;
+		Cursor = SizeAllCursor;
+
+		var zoomRectangle = GetZoomRectangle(coordinatesToImageSizeRatio, image);
+		_image.BringIntoView(zoomRectangle);
+	}
+
+	private static Rect GetZoomRectangle(
+		CoordinatesToImageSizeRatio coordinatesToImageSizeRatio, IImage image)
+	{
 		var zoomToX = image.Size.Width * coordinatesToImageSizeRatio.RatioX;
 		var zoomToY = image.Size.Height * coordinatesToImageSizeRatio.RatioY;
 
@@ -272,20 +274,7 @@ public partial class ImageWindow
 			2 * (ImageZoomScalingFactor * image.Size.Width),
 			2 * (ImageZoomScalingFactor * image.Size.Height));
 
-		_imageViewState = ImageViewState.ZoomedToImageSize;
-
-		BeginInit();
-
-		_image.Source = image;
-
-		_imageScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-		_imageScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-
-		_image.BringIntoView(zoomRectangle);
-
-		Cursor = SizeAllCursor;
-
-		EndInit();
+		return zoomRectangle;
 	}
 
 	#endregion

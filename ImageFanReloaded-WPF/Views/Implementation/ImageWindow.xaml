@@ -10,7 +10,9 @@
         KeyUp="OnKeyPressed"
         MouseUp="OnMouseUp"
         PreviewMouseWheel="OnMouseWheel">
-    <ScrollViewer Name="_imageScrollViewer">
+    <ScrollViewer Name="_imageScrollViewer"
+                  HorizontalScrollBarVisibility="Hidden"
+                  VerticalScrollBarVisibility="Hidden">
         <Image Name="_image"
                Stretch="None"
                MouseDown="OnMouseDown"/>
