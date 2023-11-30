@@ -2,7 +2,7 @@
 ImageFan Reloaded is a light-weight tab-based image viewer, supporting multi-core processing.
 
 ImageFan Reloaded is available in two versions:
-* __ImageFanReloaded-Avalonia__ - targets .NET 6 on Windows, Linux and macOS (requires .NET Runtime 6)
+* __ImageFanReloaded-Avalonia__ - targets .NET 8 on Windows, Linux and macOS (requires .NET Runtime 8)
 * __ImageFanReloaded-WPF__ - targets .NET Framework 4 Client Profile on Windows (requires .NET Framework 4 Client Profile, installed by default on Windows 8 and newer)
 
 __ImageFanReloaded-Avalonia__ features mouse-only interaction, using the left and the right mouse buttons, and the mouse wheel:
