@@ -10,15 +10,11 @@ public abstract class TestBase
 		var appBuilderInitializerInstance = AppBuilderInitializer.Instance;
 	}
 
-	#region Protected
-
 	protected const string OutputFileExtension = ".png";
 
-	protected void SaveImageToDisc(IImage image, string imagePath)
+	protected static void SaveImageToDisc(IImage image, string imagePath)
 	{
 		var bitmap = (Bitmap)image;
 		bitmap.Save(imagePath);
 	}
-
-	#endregion
 }

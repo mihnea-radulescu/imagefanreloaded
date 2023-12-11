@@ -3,7 +3,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using ImageFanReloaded.CommonTypes.Disc;
-using ImageFanReloaded.CommonTypes.Disc.Implementation;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 using ImageFanReloaded.Factories;
@@ -32,7 +31,9 @@ public partial class App
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
 		IImageFileFactory imageFileFactory = new ImageFileFactory(imageResizer);
-		IDiscQueryEngine discQueryEngine = new DiscQueryEngine(imageFileFactory);
+		IDiscQueryEngineFactory discQueryEngineFactory =
+			new DiscQueryEngineFactory(imageFileFactory);
+		IDiscQueryEngine discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 
 		var mainWindow = new MainWindow();
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
