@@ -20,7 +20,7 @@ public abstract class UnixDiscQueryEngineBase
 		}
 
 		var isSupportedDrive = SupportedDrivePrefixes.Any(
-			aDrivePrefix => driveName.StartsWith(aDrivePrefix));
+			aSupportedDrivePrefix => driveName.StartsWith(aSupportedDrivePrefix));
 
 		return isSupportedDrive;
 	}
