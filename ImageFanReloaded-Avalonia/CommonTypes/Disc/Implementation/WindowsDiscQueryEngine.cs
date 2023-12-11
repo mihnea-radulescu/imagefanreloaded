@@ -10,6 +10,6 @@ public class WindowsDiscQueryEngine
 	{
 	}
 
-	protected override bool IsDrive(string driveName)
+	protected override bool IsSupportedDrive(string driveName)
 		=> true;
 }

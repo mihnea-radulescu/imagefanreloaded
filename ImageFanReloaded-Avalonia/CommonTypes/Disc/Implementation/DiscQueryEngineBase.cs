@@ -71,7 +71,7 @@ public abstract class DiscQueryEngineBase
         {
 			_drives = DriveInfo.GetDrives()
 						.Select(aDriveInfo => aDriveInfo.Name)
-						.Where(IsDrive)
+						.Where(IsSupportedDrive)
 						.Select(aDriveName =>
 							new FileSystemEntryInfo(aDriveName,
 													aDriveName,
@@ -128,7 +128,7 @@ public abstract class DiscQueryEngineBase
         return imageFiles;
     }
 
-	protected abstract bool IsDrive(string driveName);
+	protected abstract bool IsSupportedDrive(string driveName);
 
 	#region Private
 
