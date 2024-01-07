@@ -5,7 +5,6 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         WindowStyle="None"
-        FontSize="12"
         Background="Black"
         KeyUp="OnKeyPressed"
         MouseUp="OnMouseUp"

@@ -9,10 +9,11 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="12*"/>
 			<ColumnDefinition Width="Auto"/>
-			<ColumnDefinition MinWidth="600"
-							  Width="88*"/>
+			<ColumnDefinition Width="88*"
+							  MinWidth="600"/>
 		</Grid.ColumnDefinitions>
 		<TreeView Name="_folderTreeView"
+				  Grid.Column="0"
                   SelectionChanged="OnFolderTreeViewSelectedItemChanged"
 				  SelectionMode="Single">
 		</TreeView>
@@ -21,8 +22,8 @@
                       Width="5"
                       Background="#FFBCBCBC"/>
 		<ScrollViewer Name="_thumbnailScrollViewer"
+					  Grid.Column="2"
                       VerticalScrollBarVisibility="Auto"
-                      Grid.Column="2"
                       Margin="5">
 			<WrapPanel Name="_thumbnailWrapPanel"
 					   Orientation="Horizontal"/>

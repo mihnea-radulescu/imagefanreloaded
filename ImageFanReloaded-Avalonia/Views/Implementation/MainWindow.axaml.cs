@@ -19,6 +19,8 @@ public partial class MainWindow
     {
         InitializeComponent();
 
+		_windowFontSize = FontSize;
+
 		_imagesTabCounter = 0;
 	}
 
@@ -37,9 +39,10 @@ public partial class MainWindow
 
 	private const int MaxContentTabs = 10;
 	private const string FakeTabItemTitle = "+";
-	private const int TabItemFontSize = 12;
 
 	private static readonly FieldInfo TabItemTabStripPlacementField;
+
+	private readonly double _windowFontSize;
 
 	private TabItem _fakeTabItem;
 	private int _imagesTabCounter;
@@ -83,9 +86,9 @@ public partial class MainWindow
 		tabItem = new TabItem
 		{
 			Content = contentTabItem,
-			FontSize = TabItemFontSize
+			FontSize = _windowFontSize
 		};
-
+		
 		SetTabStripPlacementOfContainer(tabItem);
 
 		contentTabItem.TabItem = tabItem;

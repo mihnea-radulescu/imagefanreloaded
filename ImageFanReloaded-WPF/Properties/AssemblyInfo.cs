@@ -4,7 +4,7 @@ using System.Windows;
 
 [assembly: AssemblyTitle("ImageFan Reloaded")]
 [assembly: AssemblyProduct("ImageFan Reloaded")]
-[assembly: AssemblyCopyright("Copyright © Mihnea Rădulescu 2015 - 2023")]
+[assembly: AssemblyCopyright("Copyright © Mihnea Rădulescu 2015 - 2024")]
 
 [assembly: ComVisible(false)]
 
@@ -13,4 +13,4 @@ using System.Windows;
 	ResourceDictionaryLocation.SourceAssembly
 )]
 
-[assembly: AssemblyVersion("1.2023.12.12")]
+[assembly: AssemblyVersion("1.2024.01.07")]

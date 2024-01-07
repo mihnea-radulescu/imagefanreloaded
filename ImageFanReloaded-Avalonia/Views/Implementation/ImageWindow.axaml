@@ -4,7 +4,6 @@
 		Icon="/Assets/MainWindowIcon.ico"
 		WindowStartupLocation="CenterScreen"
 		WindowState="FullScreen"
-        FontSize="12"
         Background="Black"
         PointerReleased="OnMouseUp">
 	<ScrollViewer Name="_imageScrollViewer"

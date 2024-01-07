@@ -10,7 +10,6 @@
         Height="450"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        FontSize="12"
         KeyUp="OnKeyPressed">
     <TabControl Name="_tabControl"
                 PreviewKeyDown="OnKeyPressing"

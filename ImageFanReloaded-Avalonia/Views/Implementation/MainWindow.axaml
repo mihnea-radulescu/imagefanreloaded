@@ -9,8 +9,7 @@
 		Width="800"
         Height="450"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized"
-		FontSize="12">
+        WindowState="Maximized">
 	<TabControl Name="_tabControl"
                 SelectionChanged="OnSelectionChanged">
 	</TabControl>
