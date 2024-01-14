@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
@@ -23,9 +22,9 @@ public class ImageFile
 
 	public ImageSize ImageSize { get; private set; }
 
-	public IImage GetImage()
+	public Bitmap GetImage()
     {
-        IImage image;
+        Bitmap image;
 
         try
         {
@@ -41,13 +40,14 @@ public class ImageFile
         return image;
     }
 
-    public IImage GetResizedImage(ImageSize viewPortSize)
+    public Bitmap GetResizedImage(ImageSize viewPortSize)
     {
-        IImage resizedImage;
+        Bitmap image = null;
+        Bitmap resizedImage;
 
         try
 		{
-			var image = new Bitmap(_imageFilePath);
+			image = new Bitmap(_imageFilePath);
 			ImageSize = new ImageSize(image.Size.Width, image.Size.Height);
 
 			resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
@@ -57,6 +57,10 @@ public class ImageFile
             resizedImage = GlobalData.InvalidImage;
 			ImageSize = GlobalData.InvalidImageSize;
 		}
+        finally
+        {
+            image?.Dispose();
+        }
 
         return resizedImage;
     }
@@ -77,11 +81,11 @@ public class ImageFile
         }
     }
 
-    public IImage GetThumbnail()
+    public Bitmap GetThumbnail()
     {
         lock (_thumbnailGenerationLockObject)
         {
-            IImage thumbnail;
+            Bitmap thumbnail;
 
             try
             {
@@ -103,7 +107,13 @@ public class ImageFile
 
 	public void DisposeImageData()
 	{
-        _imageData = null;
+		if (_imageData != null &&
+			_imageData != GlobalData.InvalidImage)
+		{
+			_imageData.Dispose();
+		}
+
+		_imageData = null;
 	}
 
 	#region Private
@@ -112,7 +122,7 @@ public class ImageFile
     private readonly string _imageFilePath;
     private readonly object _thumbnailGenerationLockObject;
 
-    private IImage _imageData;
+    private Bitmap _imageData;
 
 	#endregion
 }

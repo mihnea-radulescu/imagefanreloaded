@@ -1,5 +1,5 @@
 ﻿using System;
-using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.Controls;
 using ImageFanReloaded.Infrastructure;
@@ -20,7 +20,7 @@ public class ThumbnailInfo
 
     public IImageFile ImageFile { get; private set; }
 
-    public IImage ThumbnailImage { get; set; }
+    public Bitmap ThumbnailImage { get; set; }
     public string ThumbnailText => ImageFile.FileName;
 
     public void ReadThumbnailInputFromDisc()

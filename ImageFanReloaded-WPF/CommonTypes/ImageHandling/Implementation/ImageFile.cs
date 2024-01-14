@@ -25,7 +25,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
         public ImageSource GetImage()
         {
-            Image image = null;
+            Bitmap image = null;
             ImageSource imageSource;
 
             try
@@ -50,8 +50,8 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
         public ImageSource GetResizedImage(ImageSize viewPortSize)
         {
-            Image image = null;
-            Image resizedImage = null;
+            Bitmap image = null;
+            Bitmap resizedImage = null;
             ImageSource resizedImageSource;
 
             try
@@ -96,7 +96,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
         {
             lock (_thumbnailGenerationLockObject)
             {
-                Image thumbnail = null;
+                Bitmap thumbnail = null;
                 ImageSource thumbnailSource;
 
                 try
@@ -136,7 +136,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
         private readonly string _imageFilePath;
         private readonly object _thumbnailGenerationLockObject;
 
-        private Image _imageData;
+        private Bitmap _imageData;
 
 		#endregion
 	}

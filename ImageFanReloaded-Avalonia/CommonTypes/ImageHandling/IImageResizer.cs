@@ -1,8 +1,8 @@
-﻿using Avalonia.Media;
+﻿using Avalonia.Media.Imaging;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling;
 
 public interface IImageResizer
 {
-	IImage CreateResizedImage(IImage image, ImageSize viewPortSize);
+	Bitmap CreateResizedImage(Bitmap image, ImageSize viewPortSize);
 }

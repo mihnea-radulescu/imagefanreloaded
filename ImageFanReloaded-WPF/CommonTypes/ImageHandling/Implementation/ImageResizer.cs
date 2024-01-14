@@ -10,7 +10,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 			_imageResizeCalculator = imageResizeCalculator;
 		}
 
-        public Image CreateResizedImage(Image image, ImageSize viewPortSize)
+        public Bitmap CreateResizedImage(Image image, ImageSize viewPortSize)
 		{
             var resizedImage = GetResizedImage(image, viewPortSize);
 
@@ -36,7 +36,7 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 
 		private readonly IImageResizeCalculator _imageResizeCalculator;
 
-		private Image GetResizedImage(Image image, ImageSize viewPortSize)
+		private Bitmap GetResizedImage(Image image, ImageSize viewPortSize)
 		{
 			var imageSize = new ImageSize(image.Width, image.Height);
 

@@ -13,7 +13,7 @@ namespace ImageFanReloaded
     {
 		public static readonly ImageSize ThumbnailSize;
 
-		public static readonly Image InvalidImageAsBitmap;
+		public static readonly Bitmap InvalidImageAsBitmap;
 
         public static readonly ImageSource InvalidImage;
 		public static readonly ImageSize InvalidImageSize;
@@ -48,29 +48,31 @@ namespace ImageFanReloaded
             InvalidImage = Resources.InvalidImage.ConvertToImageSource();
 			InvalidImageSize = new ImageSize(InvalidImage.Width, InvalidImage.Height);
 
-			InvalidImageThumbnail = imageResizer
-                                .CreateResizedImage(Resources.InvalidImage, ThumbnailSize)
-                                .ConvertToImageSource();
+			using (var resizedInvalidImage = imageResizer
+					.CreateResizedImage(Resources.InvalidImage, ThumbnailSize))
+			{
+				InvalidImageThumbnail = resizedInvalidImage.ConvertToImageSource();
+			}
 
-			LoadingImageThumbnail = imageResizer
-                                .CreateResizedImage(Resources.LoadingImage, ThumbnailSize)
-                                .ConvertToImageSource();
+			using (var resizedLoadingImage = imageResizer
+					.CreateResizedImage(Resources.LoadingImage, ThumbnailSize))
+			{
+				LoadingImageThumbnail = resizedLoadingImage.ConvertToImageSource();
+			}
 
-            using (var driveIconBitmap = Resources.DriveIcon)
-            {
-                DriveIcon = imageResizer
-                                .CreateResizedImage(driveIconBitmap, IconSize)
-                                .ConvertToImageSource();
-            }
+			using (var residedDriveIcon = imageResizer
+					.CreateResizedImage(Resources.DriveIcon, IconSize))
+			{
+				DriveIcon = residedDriveIcon.ConvertToImageSource();
+			}
 
-            using (var folderIconBitmap = Resources.FolderIcon)
-            {
-                FolderIcon = imageResizer
-                                .CreateResizedImage(folderIconBitmap, IconSize)
-                                .ConvertToImageSource();
-            }
+			using (var resizedFolderIcon = imageResizer
+				.CreateResizedImage(Resources.FolderIcon, IconSize))
+			{
+				FolderIcon = resizedFolderIcon.ConvertToImageSource();
+			}
 
-            ProcessorCount = Environment.ProcessorCount;
+			ProcessorCount = Environment.ProcessorCount;
 
             TabSwitchKey = Key.Tab;
 

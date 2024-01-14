@@ -1,7 +1,6 @@
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
@@ -27,7 +26,7 @@ public class ImageResizerTest
 		int viewPortWidth, int viewPortHeight, int resizedImageWidth, int resizedImageHeight)
 	{
 		// Arrange
-		IImage image = new Bitmap($"{LandscapeImageFileName}{InputFileExtension}");
+		var image = new Bitmap($"{LandscapeImageFileName}{InputFileExtension}");
 
 		var viewPortSize = new ImageSize(viewPortWidth, viewPortHeight);
 		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
@@ -58,7 +57,7 @@ public class ImageResizerTest
 		int viewPortWidth, int viewPortHeight, int resizedImageWidth, int resizedImageHeight)
 	{
 		// Arrange
-		IImage image = new Bitmap($"{PortraitImageFileName}{InputFileExtension}");
+		var image = new Bitmap($"{PortraitImageFileName}{InputFileExtension}");
 
 		var viewPortSize = new ImageSize(viewPortWidth, viewPortHeight);
 		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);

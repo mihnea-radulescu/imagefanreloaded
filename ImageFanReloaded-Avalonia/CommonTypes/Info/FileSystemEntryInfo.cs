@@ -1,10 +1,10 @@
-﻿using Avalonia.Media;
+﻿using Avalonia.Media.Imaging;
 
 namespace ImageFanReloaded.CommonTypes.Info;
 
 public class FileSystemEntryInfo
 {
-    public FileSystemEntryInfo(string name, string path, IImage icon)
+    public FileSystemEntryInfo(string name, string path, Bitmap icon)
     {
         Name = name;
         Path = path;
@@ -15,5 +15,5 @@ public class FileSystemEntryInfo
     public string Name { get; }
     public string Path { get; }
 
-    public IImage Icon { get; }
+    public Bitmap Icon { get; }
 }

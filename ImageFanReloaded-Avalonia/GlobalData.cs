@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
@@ -12,15 +11,15 @@ namespace ImageFanReloaded
     {
         public static readonly ImageSize ThumbnailSize;
 
-		public static readonly IImage InvalidImage;
+		public static readonly Bitmap InvalidImage;
 		public static readonly ImageSize InvalidImageSize;
 
-		public static readonly IImage InvalidImageThumbnail;
+		public static readonly Bitmap InvalidImageThumbnail;
 
-		public static readonly IImage LoadingImageThumbnail;
+		public static readonly Bitmap LoadingImageThumbnail;
 
-		public static readonly IImage DriveIcon;
-        public static readonly IImage FolderIcon;
+		public static readonly Bitmap DriveIcon;
+        public static readonly Bitmap FolderIcon;
 
         public static readonly int ProcessorCount;
 
@@ -39,15 +38,21 @@ namespace ImageFanReloaded
 			InvalidImageThumbnail = imageResizer
                 .CreateResizedImage(InvalidImage, ThumbnailSize);
 
-			var loadingImage = GetImageFromResource(Resources.LoadingImage);
-            LoadingImageThumbnail = imageResizer
-                .CreateResizedImage(loadingImage, ThumbnailSize);
+            using (var loadingImage = GetImageFromResource(Resources.LoadingImage))
+            {
+				LoadingImageThumbnail = imageResizer
+					.CreateResizedImage(loadingImage, ThumbnailSize);
+			}
 
-            var driveImage = GetImageFromResource(Resources.DriveIcon);
-            DriveIcon = imageResizer.CreateResizedImage(driveImage, IconSize);
+            using (var driveImage = GetImageFromResource(Resources.DriveIcon))
+            {
+				DriveIcon = imageResizer.CreateResizedImage(driveImage, IconSize);
+			}
 
-			var folderImage = GetImageFromResource(Resources.FolderIcon);
-			FolderIcon = imageResizer.CreateResizedImage(folderImage, IconSize);
+			using (var folderImage = GetImageFromResource(Resources.FolderIcon))
+			{
+				FolderIcon = imageResizer.CreateResizedImage(folderImage, IconSize);
+			}
 
 			ProcessorCount = Environment.ProcessorCount;
         }
@@ -59,7 +64,7 @@ namespace ImageFanReloaded
 
 		private static readonly ImageSize IconSize;
 
-		private static IImage GetImageFromResource(byte[] resourceData)
+		private static Bitmap GetImageFromResource(byte[] resourceData)
 		{
             using (Stream stream = new MemoryStream(resourceData))
             {

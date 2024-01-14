@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
@@ -13,8 +12,8 @@ public class ImageResizer
         _imageResizeCalculator = imageResizeCalculator;
 	}
 
-    public IImage CreateResizedImage(
-        IImage image, ImageSize viewPortSize)
+    public Bitmap CreateResizedImage(
+        Bitmap image, ImageSize viewPortSize)
 	{
 		var imageSize = new ImageSize(image.Size.Width, image.Size.Height);
 
@@ -29,13 +28,12 @@ public class ImageResizer
 
     private readonly IImageResizeCalculator _imageResizeCalculator;
 
-	private static IImage BuildResizedImage(IImage image, ImageSize resizedImageSize)
+	private static Bitmap BuildResizedImage(Bitmap image, ImageSize resizedImageSize)
     {
-        var bitmap = (Bitmap)image;
         var destinationSize = new PixelSize(
             resizedImageSize.Width, resizedImageSize.Height);
 
-        var resizedImage = bitmap.CreateScaledBitmap(destinationSize);
+        var resizedImage = image.CreateScaledBitmap(destinationSize);
         return resizedImage;
 	}
 

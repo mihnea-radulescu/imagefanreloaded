@@ -1,4 +1,4 @@
-﻿using Avalonia.Media;
+﻿using Avalonia.Media.Imaging;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling;
 
@@ -8,10 +8,10 @@ public interface IImageFile
 
 	ImageSize ImageSize { get; }
 
-	IImage GetImage();
-	IImage GetResizedImage(ImageSize viewPortSize);
+	Bitmap GetImage();
+	Bitmap GetResizedImage(ImageSize viewPortSize);
 
     void ReadImageDataFromDisc();
-	IImage GetThumbnail();
+	Bitmap GetThumbnail();
     void DisposeImageData();
 }

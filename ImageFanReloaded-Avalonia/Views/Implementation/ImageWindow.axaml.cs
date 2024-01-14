@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 
@@ -263,7 +263,7 @@ public partial class ImageWindow
 	}
 
 	private static Rect GetZoomRectangle(
-		CoordinatesToImageSizeRatio coordinatesToImageSizeRatio, IImage image)
+		CoordinatesToImageSizeRatio coordinatesToImageSizeRatio, Bitmap image)
 	{
 		var zoomToX = image.Size.Width * coordinatesToImageSizeRatio.RatioX;
 		var zoomToY = image.Size.Height * coordinatesToImageSizeRatio.RatioY;

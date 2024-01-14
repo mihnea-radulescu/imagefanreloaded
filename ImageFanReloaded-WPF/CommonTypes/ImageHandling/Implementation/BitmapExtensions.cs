@@ -10,15 +10,13 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
 {
     public static class BitmapExtensions
     {
-        public static ImageSource ConvertToImageSource(this Image inputImage)
+        public static ImageSource ConvertToImageSource(this Bitmap inputImage)
         {
-            var inputBitmap = (Bitmap)inputImage;
-
             IntPtr hBitmap = IntPtr.Zero;
 
             try
             {
-                hBitmap = inputBitmap.GetHbitmap();
+                hBitmap = inputImage.GetHbitmap();
                 
                 return Imaging.CreateBitmapSourceFromHBitmap(
                              hBitmap,
