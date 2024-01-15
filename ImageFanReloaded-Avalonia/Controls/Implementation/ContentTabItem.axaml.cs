@@ -62,6 +62,8 @@ public partial class ContentTabItem
 
 	public void ClearThumbnailBoxes()
 	{
+		_thumbnailWrapPanel.Children.Clear();
+
 		if (_thumbnailBoxList != null)
 		{
 			foreach (var aThumbnailBox in _thumbnailBoxList)
@@ -74,7 +76,6 @@ public partial class ContentTabItem
 		_selectedThumbnailIndex = -1;
 		_selectedThumbnailBox = null;
 
-		_thumbnailWrapPanel.Children.Clear();
 		_thumbnailScrollViewer.Offset = new Vector(
 			_thumbnailScrollViewer.Offset.X, 0);
 	}

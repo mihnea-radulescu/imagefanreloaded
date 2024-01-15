@@ -23,8 +23,7 @@ namespace ImageFanReloaded.CommonTypes.Info
         public ImageSource ThumbnailImage { get; set; }
         public string ThumbnailText => ImageFile.FileName;
 
-        public void ReadThumbnailInputFromDisc()
-            => ImageFile.ReadImageDataFromDisc();
+        public void ReadThumbnailInputFromDisc() => ImageFile.ReadImageDataFromDisc();
 
         public void SaveThumbnail()
         {
@@ -38,8 +37,7 @@ namespace ImageFanReloaded.CommonTypes.Info
             }
         }
 
-        public void RefreshThumbnail()
-            => ThumbnailBox.Refresh();
+        public void RefreshThumbnail() => ThumbnailBox.Refresh();
 
         #region Private
 

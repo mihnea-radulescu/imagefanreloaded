@@ -112,7 +112,7 @@
     <Compile Include="CommonTypes\CustomEventArgs\FolderChangedEventArgs.cs" />
     <Compile Include="CommonTypes\ImageHandling\IImageFile.cs" />
     <Compile Include="CommonTypes\ImageHandling\IImageResizer.cs" />
-    <Compile Include="CommonTypes\Info\ThumbnaiInfo.cs" />
+    <Compile Include="CommonTypes\Info\ThumbnailInfo.cs" />
     <Compile Include="Controls\Implementation\ThumbnailBox.xaml.cs">
       <DependentUpon>ThumbnailBox.xaml</DependentUpon>
     </Compile>

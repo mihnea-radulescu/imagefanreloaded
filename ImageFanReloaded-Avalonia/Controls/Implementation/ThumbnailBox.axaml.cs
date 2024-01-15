@@ -60,6 +60,7 @@ public partial class ThumbnailBox
 
 	public void DisposeThumbnail()
 	{
+		_thumbnailInfo.DisposeThumbnail();
 		ImageFile.DisposeImageData();
 	}
 

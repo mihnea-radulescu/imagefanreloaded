@@ -98,7 +98,7 @@ public partial class ImageWindow
 			}
 			else if (e.InitialPressMouseButton == MouseButton.Right)
 			{
-				Close();
+				CloseWindow();
 			}
 		}
 		else if (_imageViewState == ImageViewState.ZoomedToImageSize)
@@ -118,7 +118,7 @@ public partial class ImageWindow
 			}
 			else if (e.InitialPressMouseButton == MouseButton.Right)
 			{
-				Close();
+				CloseWindow();
 			}
 		}
 	}
@@ -244,7 +244,7 @@ public partial class ImageWindow
 	private void ResizeToScreenSize()
 	{
 		var image = _imageFile.GetResizedImage(_screenSize);
-		_image.Source = image;
+		SetImageSource(image);
 
 		_imageViewState = ImageViewState.ResizedToScreenSize;
 		Cursor = _screenSizeCursor;
@@ -253,7 +253,7 @@ public partial class ImageWindow
 	private void ZoomToImageSize(CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
 	{
 		var image = _imageFile.GetImage();
-		_image.Source = image;
+		SetImageSource(image);
 
 		_imageViewState = ImageViewState.ZoomedToImageSize;
 		Cursor = SizeAllCursor;
@@ -275,6 +275,24 @@ public partial class ImageWindow
 			2 * (ImageZoomScalingFactor * image.Size.Height));
 
 		return zoomRectangle;
+	}
+
+	private void CloseWindow()
+	{
+		Close();
+
+		SetImageSource(null);
+	}
+
+	private void SetImageSource(Bitmap image)
+	{
+		if (_image.Source != null)
+		{
+			var imageSourceAsBitmap = (Bitmap)_image.Source;
+			imageSourceAsBitmap.Dispose();
+		}
+
+		_image.Source = image;
 	}
 
 	#endregion

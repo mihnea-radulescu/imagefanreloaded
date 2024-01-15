@@ -19,10 +19,10 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation
                 hBitmap = inputImage.GetHbitmap();
                 
                 return Imaging.CreateBitmapSourceFromHBitmap(
-                             hBitmap,
-                             IntPtr.Zero,
-                             Int32Rect.Empty,
-                             BitmapSizeOptions.FromEmptyOptions());
+                    hBitmap,
+                    IntPtr.Zero,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
             }
             finally
             {
