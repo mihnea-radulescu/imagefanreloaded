@@ -290,7 +290,11 @@ public partial class ImageWindow
 
 		_image.Source = image;
 
-		previousImageSource?.Dispose();
+		if (previousImageSource != null &&
+			previousImageSource != GlobalData.InvalidImage)
+		{
+			previousImageSource.Dispose();
+		}
 	}
 
 	#endregion
