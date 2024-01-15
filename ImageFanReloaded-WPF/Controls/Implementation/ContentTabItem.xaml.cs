@@ -71,6 +71,8 @@ namespace ImageFanReloaded.Controls.Implementation
 
 		public void ClearThumbnailBoxes()
 		{
+			_thumbnailWrapPanel.Children.Clear();
+
 			if (_thumbnailBoxList != null)
 			{
 				foreach (var aThumbnailBox in _thumbnailBoxList)
@@ -83,7 +85,6 @@ namespace ImageFanReloaded.Controls.Implementation
 			_selectedThumbnailIndex = -1;
 			_selectedThumbnailBox = null;
 
-			_thumbnailWrapPanel.Children.Clear();
 			_thumbnailScrollViewer.ScrollToVerticalOffset(0);
 		}
 
