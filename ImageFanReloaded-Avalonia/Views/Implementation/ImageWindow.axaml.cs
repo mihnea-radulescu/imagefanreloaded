@@ -286,13 +286,11 @@ public partial class ImageWindow
 
 	private void SetImageSource(Bitmap image)
 	{
-		if (_image.Source != null)
-		{
-			var imageSourceAsBitmap = (Bitmap)_image.Source;
-			imageSourceAsBitmap.Dispose();
-		}
+		var previousImageSource = _image.Source as Bitmap;
 
 		_image.Source = image;
+
+		previousImageSource?.Dispose();
 	}
 
 	#endregion
