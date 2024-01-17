@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using Avalonia.Controls;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.Controls.Implementation;
@@ -9,12 +8,6 @@ namespace ImageFanReloaded.Views.Implementation;
 public partial class MainWindow
     : Window, IMainView
 {
-	static MainWindow()
-	{
-		TabItemTabStripPlacementField = typeof(TabItem)
-			.GetField("_tabStripPlacement", BindingFlags.Instance | BindingFlags.NonPublic);
-	}
-
 	public MainWindow()
     {
         InitializeComponent();
@@ -39,8 +32,6 @@ public partial class MainWindow
 
 	private const int MaxContentTabs = 10;
 	private const string FakeTabItemTitle = "+";
-
-	private static readonly FieldInfo TabItemTabStripPlacementField;
 
 	private readonly double _windowFontSize;
 
@@ -88,18 +79,10 @@ public partial class MainWindow
 			Content = contentTabItem,
 			FontSize = _windowFontSize
 		};
-		
-		SetTabStripPlacementOfContainer(tabItem);
 
 		contentTabItem.TabItem = tabItem;
 		contentTabItem.Title = title;
 		contentTabItem.Window = this;
-	}
-
-	// Work-around, until the bug is fixed in the Avalonia framework.
-	private void SetTabStripPlacementOfContainer(TabItem tabItem)
-	{
-		TabItemTabStripPlacementField.SetValue(tabItem, _tabControl.TabStripPlacement);
 	}
 
 	#endregion

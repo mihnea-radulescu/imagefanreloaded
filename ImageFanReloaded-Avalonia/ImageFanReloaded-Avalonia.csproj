@@ -7,7 +7,7 @@
 		<Title>ImageFan Reloaded</Title>
 		<Product>ImageFan Reloaded</Product>
 		<Copyright>Copyright © Mihnea Rădulescu 2023 - 2024</Copyright>
-		<AssemblyVersion>1.2024.01.16</AssemblyVersion>
+		<AssemblyVersion>1.2024.01.17</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 		<PublishSingleFile>true</PublishSingleFile>
 		<SelfContained>true</SelfContained>
@@ -38,12 +38,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia.Desktop" Version="11.0.6" />
-		<PackageReference Include="Avalonia" Version="11.0.6" />
-		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.6" />
-		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.6" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.0.7" />
+		<PackageReference Include="Avalonia" Version="11.0.7" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.7" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.7" />
 
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.6" />
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.7" />
 	</ItemGroup>
 
 	<ItemGroup>
