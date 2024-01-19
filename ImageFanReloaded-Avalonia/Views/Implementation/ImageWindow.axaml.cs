@@ -70,7 +70,41 @@ public partial class ImageWindow
 
 	private ImageViewState _imageViewState;
 
-	private void OnMouseDown(object sender, PointerPressedEventArgs e)
+    private void OnKeyPressed(object sender, KeyEventArgs e)
+    {
+        var keyPressed = e.Key;
+
+        if (GlobalData.BackwardNavigationKeys.Contains(keyPressed))
+        {
+            RaiseThumbnailChanged(-1);
+        }
+        else if (GlobalData.ForwardNavigationKeys.Contains(keyPressed))
+        {
+            RaiseThumbnailChanged(1);
+        }
+        else if (keyPressed == GlobalData.EnterKey)
+        {
+            if (!_canZoomToImageSize)
+            {
+                return;
+            }
+
+            if (_imageViewState == ImageViewState.ResizedToScreenSize)
+            {
+                ZoomToImageSize(CoordinatesToImageSizeRatio.ImageCenter);
+            }
+            else if (_imageViewState == ImageViewState.ZoomedToImageSize)
+            {
+                ResizeToScreenSize();
+            }
+        }
+        else if (keyPressed == GlobalData.EscapeKey)
+        {
+            Close();
+        }
+    }
+
+    private void OnMouseDown(object sender, PointerPressedEventArgs e)
 	{
 		if (!_canZoomToImageSize ||
 			_imageViewState == ImageViewState.ResizedToScreenSize)

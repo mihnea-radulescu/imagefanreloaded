@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Avalonia.Input;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.Info;
 using ImageFanReloaded.Factories;
@@ -24,4 +25,6 @@ public interface IContentTabItem
 	void ClearThumbnailBoxes();
 	void PopulateThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
 	void RefreshThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
+
+	void OnKeyPressed(object sender, KeyEventArgs e);
 }

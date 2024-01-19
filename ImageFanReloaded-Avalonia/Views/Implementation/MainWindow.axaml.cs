@@ -1,5 +1,7 @@
 ﻿using System;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.Controls.Implementation;
 
@@ -15,7 +17,9 @@ public partial class MainWindow
 		_windowFontSize = FontSize;
 
 		_imagesTabCounter = 0;
-	}
+
+		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
+    }
 
 	public event EventHandler<TabItemEventArgs> ContentTabItemAdded;
 
@@ -38,7 +42,31 @@ public partial class MainWindow
 	private TabItem _fakeTabItem;
 	private int _imagesTabCounter;
 
-	private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void OnKeyPressed(object sender, KeyEventArgs e)
+    {
+        var keyPressed = e.Key;
+
+        if (keyPressed == GlobalData.TabSwitchKey)
+        {
+            var contentTabItemCount = GetContentTabItemCount();
+            var canNavigateAcrossTabs = contentTabItemCount > 1;
+
+            if (canNavigateAcrossTabs)
+            {
+                var selectedTabItemIndex = _tabControl.SelectedIndex;
+
+                var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
+                _tabControl.SelectedIndex = nextSelectedTabItemIndex;
+
+				var nextSelectedTabItem = (TabItem)_tabControl.SelectedItem;
+                nextSelectedTabItem.Focus();
+            }
+
+            e.Handled = true;
+        }
+    }
+
+    private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 	{
 		var tabControl = (TabControl)sender;
 		var tabItem = (TabItem)tabControl.SelectedItem;
@@ -80,10 +108,25 @@ public partial class MainWindow
 			FontSize = _windowFontSize
 		};
 
-		contentTabItem.TabItem = tabItem;
+        tabItem.AddHandler(KeyUpEvent, contentTabItem.OnKeyPressed, RoutingStrategies.Tunnel);
+
+        contentTabItem.TabItem = tabItem;
 		contentTabItem.Title = title;
 		contentTabItem.Window = this;
 	}
 
-	#endregion
+    private int GetContentTabItemCount()
+    {
+        var contentTabItemCount = _tabControl.Items.Count;
+
+        var isFakeTabPresent = _tabControl.Items.Contains(_fakeTabItem);
+        if (isFakeTabPresent)
+        {
+            contentTabItemCount--;
+        }
+
+        return contentTabItemCount;
+    }
+
+    #endregion
 }

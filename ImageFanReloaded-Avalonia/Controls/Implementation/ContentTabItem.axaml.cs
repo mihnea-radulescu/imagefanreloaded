@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.Info;
 using ImageFanReloaded.Factories;
@@ -15,10 +17,13 @@ public partial class ContentTabItem
 	public ContentTabItem()
 	{
 		InitializeComponent();
-	}
 
-	public TabItem TabItem { get; set; }
-	public Window Window { get; set; }
+		_folderTreeView.AddHandler(KeyDownEvent, OnTreeViewKeyPressing, RoutingStrategies.Tunnel);
+        AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
+    }
+
+    public TabItem TabItem { get; set; }
+    public Window Window { get; set; }
 
 	public IImageViewFactory ImageViewFactory { get; set; }
 	public object GenerateThumbnailsLockObject { get; set; }
@@ -130,13 +135,41 @@ public partial class ContentTabItem
 		}
 	}
 
-	#region Private
+    public void OnKeyPressed(object sender, KeyEventArgs e)
+    {
+        if (_selectedThumbnailBox != null)
+        {
+            var keyPressed = e.Key;
 
-	private List<ThumbnailBox> _thumbnailBoxList;
+            if (GlobalData.BackwardNavigationKeys.Contains(keyPressed))
+            {
+                AdvanceToThumbnailIndex(-1);
+            }
+            else if (GlobalData.ForwardNavigationKeys.Contains(keyPressed))
+            {
+                AdvanceToThumbnailIndex(1);
+            }
+            else if (keyPressed == GlobalData.EnterKey)
+            {
+                DisplayImage();
+            }
+        }
+
+        e.Handled = true;
+    }
+
+    #region Private
+
+    private List<ThumbnailBox> _thumbnailBoxList;
 	private int _selectedThumbnailIndex;
 	private ThumbnailBox _selectedThumbnailBox;
 
-	private void OnFolderTreeViewSelectedItemChanged(object sender,
+    private void OnTreeViewKeyPressing(object sender, KeyEventArgs e)
+    {
+        e.Handled = true;
+    }
+
+    private void OnFolderTreeViewSelectedItemChanged(object sender,
 													 SelectionChangedEventArgs e)
 	{
 		var folderChangedHandler = FolderChanged;
@@ -155,7 +188,7 @@ public partial class ContentTabItem
 		}
 	}
 
-	private void SelectThumbnailBox(ThumbnailBox thumbnailBox)
+    private void SelectThumbnailBox(ThumbnailBox thumbnailBox)
 	{
 		if (_selectedThumbnailBox != thumbnailBox)
 		{
@@ -173,7 +206,7 @@ public partial class ContentTabItem
 		}
 	}
 
-	private bool AdvanceToThumbnailIndex(int increment)
+    private bool AdvanceToThumbnailIndex(int increment)
 	{
 		if (_selectedThumbnailBox != null)
 		{
