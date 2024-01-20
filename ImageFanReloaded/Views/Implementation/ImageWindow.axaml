@@ -6,12 +6,12 @@
 		WindowState="FullScreen"
         Background="Black"
 		KeyUp="OnKeyPressed"
-        PointerReleased="OnMouseUp">
+		PointerPressed="OnMouseDown"
+		PointerReleased="OnMouseUp">
 	<ScrollViewer Name="_imageScrollViewer"
 				  HorizontalScrollBarVisibility="Hidden"
 				  VerticalScrollBarVisibility="Hidden">
 		<Image Name="_image"
-			   Stretch="None"
-			   PointerPressed="OnMouseDown"/>
+			   Stretch="None" />
 	</ScrollViewer>
 </Window>
