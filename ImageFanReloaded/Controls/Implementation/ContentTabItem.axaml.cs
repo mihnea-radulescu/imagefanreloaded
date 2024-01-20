@@ -240,7 +240,7 @@ public partial class ContentTabItem
 		return false;
 	}
 
-	private void DisplayImage()
+	private async void DisplayImage()
 	{
 		var imageView = ImageViewFactory.GetImageView();
 		imageView.SetImage(_selectedThumbnailBox.ImageFile);
@@ -254,7 +254,7 @@ public partial class ContentTabItem
 				}
 			};
 
-		imageView.ShowDialog(Window);
+		await imageView.ShowDialog(Window);
 	}
 
 	private static TreeViewItem GetTreeViewItem(
