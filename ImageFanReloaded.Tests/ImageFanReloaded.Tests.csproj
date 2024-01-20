@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Title>ImageFan Reloaded Avalonia Tests</Title>
+		<Product>ImageFan Reloaded Avalonia Tests</Product>
+		<Copyright>Copyright © Mihnea Rădulescu 2023 - 2024</Copyright>
+		<AssemblyVersion>1.2024.01.20</AssemblyVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<DebugType>embedded</DebugType>
+		<RootNamespace>ImageFanReloaded.Tests</RootNamespace>
+		<AssemblyName>ImageFanReloaded.Tests</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="Landscape.jpg">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Portrait.jpg">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia.Desktop" Version="11.0.7" />
+		<PackageReference Include="Avalonia" Version="11.0.7" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.7" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.7" />
+		
+		<PackageReference Include="FluentAssertions" Version="6.12.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+		<PackageReference Include="NSubstitute" Version="5.1.0" />
+		<PackageReference Include="xunit" Version="2.6.6" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.6">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.collector" Version="6.0.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ImageFanReloaded\ImageFanReloaded.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="TestApp.axaml.cs">
+			<DependentUpon>TestApp.axaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+</Project>
