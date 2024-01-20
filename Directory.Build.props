@@ -1,0 +1,15 @@
+﻿<Project>
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Copyright>Copyright © Mihnea Rădulescu 2023 - 2024</Copyright>
+		<AssemblyVersion>1.2024.01.20</AssemblyVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+
+</Project>

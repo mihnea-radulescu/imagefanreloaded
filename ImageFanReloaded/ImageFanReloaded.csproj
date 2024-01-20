@@ -1,21 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>disable</Nullable>
+		<ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
 		<Title>ImageFan Reloaded</Title>
 		<Product>ImageFan Reloaded</Product>
-		<Copyright>Copyright © Mihnea Rădulescu 2023 - 2024</Copyright>
-		<AssemblyVersion>1.2024.01.20</AssemblyVersion>
-		<Version>$(AssemblyVersion)</Version>
-		<PublishSingleFile>true</PublishSingleFile>
-		<SelfContained>true</SelfContained>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
-		<DebugType>embedded</DebugType>
-		<ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
-		<RootNamespace>ImageFanReloaded</RootNamespace>
-		<AssemblyName>ImageFanReloaded</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -3,20 +3,9 @@
 	<PropertyGroup>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>disable</Nullable>
-		<Title>ImageFan Reloaded Avalonia Tests</Title>
-		<Product>ImageFan Reloaded Avalonia Tests</Product>
-		<Copyright>Copyright © Mihnea Rădulescu 2023 - 2024</Copyright>
-		<AssemblyVersion>1.2024.01.20</AssemblyVersion>
-		<Version>$(AssemblyVersion)</Version>
-		<PublishSingleFile>true</PublishSingleFile>
-		<SelfContained>true</SelfContained>
+		<Title>ImageFan Reloaded Tests</Title>
+		<Product>ImageFan Reloaded Tests</Product>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
-		<DebugType>embedded</DebugType>
-		<RootNamespace>ImageFanReloaded.Tests</RootNamespace>
-		<AssemblyName>ImageFanReloaded.Tests</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>
