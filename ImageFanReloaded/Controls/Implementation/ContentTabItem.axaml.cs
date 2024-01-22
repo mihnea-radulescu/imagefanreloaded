@@ -120,7 +120,10 @@ public partial class ContentTabItem
 				_thumbnailScrollViewer.Focus();
 			}
 
-			var aSurroundingStackPanel = new StackPanel();
+			var aSurroundingStackPanel = new StackPanel
+			{
+				Focusable = true
+			};
 			aSurroundingStackPanel.Children.Add(aThumbnailBox);
 			_thumbnailWrapPanel.Children.Add(aSurroundingStackPanel);
 		}
