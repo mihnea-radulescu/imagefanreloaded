@@ -24,7 +24,8 @@
 		<ScrollViewer Name="_thumbnailScrollViewer"
 					  Grid.Column="2"
                       VerticalScrollBarVisibility="Auto"
-                      Margin="5">
+                      Margin="5"
+					  Focusable="True">
 			<WrapPanel Name="_thumbnailWrapPanel"
 					   Orientation="Horizontal"/>
 		</ScrollViewer>
