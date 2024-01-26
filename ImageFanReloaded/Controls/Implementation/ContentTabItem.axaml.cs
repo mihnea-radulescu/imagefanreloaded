@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.Info;
 using ImageFanReloaded.Factories;
@@ -17,9 +16,6 @@ public partial class ContentTabItem
 	public ContentTabItem()
 	{
 		InitializeComponent();
-
-		_folderTreeView.AddHandler(KeyDownEvent, OnTreeViewKeyPressing, RoutingStrategies.Tunnel);
-        AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
     }
 
     public TabItem TabItem { get; set; }
@@ -138,24 +134,13 @@ public partial class ContentTabItem
 		}
 	}
 
-    public void OnKeyPressing(object sender, KeyEventArgs e)
-    {
-        var keyPressed = e.Key;
-
-        if (GlobalData.BackwardNavigationKeys.Contains(keyPressed) ||
-            GlobalData.ForwardNavigationKeys.Contains(keyPressed))
-		{
-			e.Handled = true;
-		}
-    }
-
     public void OnKeyPressed(object sender, KeyEventArgs e)
     {
-        if (_selectedThumbnailBox != null)
+	    if (_selectedThumbnailBox != null)
         {
-            var keyPressed = e.Key;
-
-            if (GlobalData.BackwardNavigationKeys.Contains(keyPressed))
+	        var keyPressed = e.Key;
+	        
+	        if (GlobalData.BackwardNavigationKeys.Contains(keyPressed))
             {
                 AdvanceToThumbnailIndex(-1);
             }
@@ -168,8 +153,6 @@ public partial class ContentTabItem
                 DisplayImage();
             }
         }
-
-        e.Handled = true;
     }
 
     #region Private
@@ -177,11 +160,6 @@ public partial class ContentTabItem
     private List<ThumbnailBox> _thumbnailBoxList;
 	private int _selectedThumbnailIndex;
 	private ThumbnailBox _selectedThumbnailBox;
-
-    private void OnTreeViewKeyPressing(object sender, KeyEventArgs e)
-    {
-        e.Handled = true;
-    }
 
     private void OnFolderTreeViewSelectedItemChanged(object sender,
 													 SelectionChangedEventArgs e)

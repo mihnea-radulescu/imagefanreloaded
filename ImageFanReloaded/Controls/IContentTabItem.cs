@@ -25,7 +25,6 @@ public interface IContentTabItem
 	void ClearThumbnailBoxes();
 	void PopulateThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
 	void RefreshThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
-
-	void OnKeyPressing(object sender, KeyEventArgs e);
-    void OnKeyPressed(object sender, KeyEventArgs e);
+	
+	void OnKeyPressed(object sender, KeyEventArgs e);
 }

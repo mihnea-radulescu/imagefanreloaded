@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using ImageFanReloaded.CommonTypes.CustomEventArgs;
+using ImageFanReloaded.Controls;
 using ImageFanReloaded.Controls.Implementation;
 
 namespace ImageFanReloaded.Views.Implementation;
@@ -19,6 +20,7 @@ public partial class MainWindow
 		_imagesTabCounter = 0;
 
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
+		_tabControl.AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
     }
 
 	public event EventHandler<TabItemEventArgs> ContentTabItemAdded;
@@ -58,21 +60,25 @@ public partial class MainWindow
                 var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
                 _tabControl.SelectedIndex = nextSelectedTabItemIndex;
             }
-
-			var selectedTabItem = (TabItem)_tabControl.SelectedItem;
-			selectedTabItem.Focus();
-
-			e.Handled = true;
         }
+        else
+        {
+	        var contentTabItem = GetActiveContentTabItem();
+	        contentTabItem.OnKeyPressed(sender, e);
+        }
+        
+        e.Handled = true;
+    }
+    
+    private void OnKeyPressing(object sender, KeyEventArgs e)
+    {
+	    e.Handled = true;
     }
 
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 	{
-		var tabControl = (TabControl)sender;
-		var tabItem = (TabItem)tabControl.SelectedItem;
-
-		var tabItemContent = (ContentTabItem)tabItem.Content;
-		var isFakeTabItem = tabItemContent.Title == FakeTabItemTitle;
+		var contentTabItem = GetActiveContentTabItem();
+		var isFakeTabItem = contentTabItem.Title == FakeTabItemTitle;
 
 		if (isFakeTabItem)
 		{
@@ -108,9 +114,6 @@ public partial class MainWindow
 			FontSize = _windowFontSize
 		};
 
-        tabItem.AddHandler(KeyDownEvent, contentTabItem.OnKeyPressing, RoutingStrategies.Tunnel);
-        tabItem.AddHandler(KeyUpEvent, contentTabItem.OnKeyPressed, RoutingStrategies.Tunnel);
-
         contentTabItem.TabItem = tabItem;
 		contentTabItem.Title = title;
 		contentTabItem.Window = this;
@@ -127,6 +130,14 @@ public partial class MainWindow
         }
 
         return contentTabItemCount;
+    }
+
+    private IContentTabItem GetActiveContentTabItem()
+    {
+	    var tabItem = (TabItem)_tabControl.SelectedItem;
+	    var contentTabItem = (IContentTabItem)tabItem.Content;
+
+	    return contentTabItem;
     }
 
     #endregion
