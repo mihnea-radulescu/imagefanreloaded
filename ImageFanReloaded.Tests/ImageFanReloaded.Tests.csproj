@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
-		<Title>ImageFan Reloaded Tests</Title>
-		<Product>ImageFan Reloaded Tests</Product>
+		<Title>ImageFan Reloaded - Tests</Title>
+		<Product>ImageFan Reloaded - Tests</Product>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 	</PropertyGroup>
 
