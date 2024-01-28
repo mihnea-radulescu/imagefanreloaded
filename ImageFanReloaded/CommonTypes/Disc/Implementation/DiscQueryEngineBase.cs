@@ -48,42 +48,52 @@ public abstract class DiscQueryEngineBase
         _imageFileFactory = imageFileFactory;
     }
 
-	public IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFoldersWithPaths()
+	public IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFolders()
 	{
-		var specialFoldersWithPaths = SpecialFolders
-			.Select(aSpecialFolder =>
-				new
-				{
-					Name = aSpecialFolder,
-					Path = Path.Combine(UserProfilePath, aSpecialFolder)
-				})
-			.Select(aSpecialFolderWithPath =>
-				new FileSystemEntryInfo(
-					aSpecialFolderWithPath.Name,
-					aSpecialFolderWithPath.Path,
-					HasSubFolders(aSpecialFolderWithPath.Path),
-					GlobalData.FolderIcon))
-			.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name)
-			.ToArray();
-
-        return specialFoldersWithPaths;
+		try
+		{
+			return SpecialFolders
+				.Select(aSpecialFolder =>
+					new
+					{
+						Name = aSpecialFolder,
+						Path = Path.Combine(UserProfilePath, aSpecialFolder)
+					})
+				.Select(aSpecialFolderWithPath =>
+					new FileSystemEntryInfo(
+						aSpecialFolderWithPath.Name,
+						aSpecialFolderWithPath.Path,
+						HasSubFolders(aSpecialFolderWithPath.Path),
+						GlobalData.FolderIcon))
+				.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name)
+				.ToArray();
+		}
+		catch
+		{
+			return EmptyFileSystemEntryInfoCollection;
+		}
 	}
 
 	public IReadOnlyCollection<FileSystemEntryInfo> GetDrives()
     {
-	    var drives = DriveInfo.GetDrives()
-		    .Select(aDriveInfo => aDriveInfo.Name)
-		    .Where(IsSupportedDrive)
-		    .Select(aDriveName =>
-			    new FileSystemEntryInfo(
-				    aDriveName,
-				    aDriveName,
-				    HasSubFolders(aDriveName),
-				    GlobalData.DriveIcon))
-		    .OrderBy(aDriveInfo => aDriveInfo.Name)
-		    .ToArray();
-
-        return drives;
+	    try
+		{
+			return DriveInfo.GetDrives()
+				.Select(aDriveInfo => aDriveInfo.Name)
+				.Where(IsSupportedDrive)
+				.Select(aDriveName =>
+					new FileSystemEntryInfo(
+						aDriveName,
+						aDriveName,
+						HasSubFolders(aDriveName),
+						GlobalData.DriveIcon))
+				.OrderBy(aDriveInfo => aDriveInfo.Name)
+				.ToArray();
+		}
+		catch
+		{
+			return EmptyFileSystemEntryInfoCollection;
+		}
     }
 
     public IReadOnlyCollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
@@ -109,27 +119,26 @@ public abstract class DiscQueryEngineBase
 
     public IReadOnlyCollection<IImageFile> GetImageFiles(string folderPath)
     {
-		IReadOnlyCollection<FileInfo> filesInformation;
         try
         {
-            filesInformation = new DirectoryInfo(folderPath)
+            var filesInformation = new DirectoryInfo(folderPath)
                 .GetFiles("*", SearchOption.TopDirectoryOnly)
                 .ToArray();
-        }
+
+			var imageFiles = filesInformation
+				.Where(aFileInfo =>
+					   ImageFileExtensions.Contains(aFileInfo.Extension))
+				.OrderBy(aFileInfo => aFileInfo.Name)
+				.Select(aFileInfo => _imageFileFactory.GetImageFile(aFileInfo.FullName))
+				.OrderBy(aFileInfo => aFileInfo.FileName)
+				.ToArray();
+
+			return imageFiles;
+		}
         catch
         {
             return EmptyImageFileCollection;
         }
-
-        var imageFiles = filesInformation
-            .Where(aFileInfo =>
-                   ImageFileExtensions.Contains(aFileInfo.Extension))
-            .OrderBy(aFileInfo => aFileInfo.Name)
-            .Select(aFileInfo => _imageFileFactory.GetImageFile(aFileInfo.FullName))
-            .OrderBy(aFileInfo => aFileInfo.FileName)
-            .ToArray();
-
-        return imageFiles;
     }
 
 	protected abstract bool IsSupportedDrive(string driveName);
@@ -140,7 +149,6 @@ public abstract class DiscQueryEngineBase
     private static readonly IReadOnlyCollection<IImageFile> EmptyImageFileCollection;
 
     private static readonly string UserProfilePath;
-
     private static readonly IReadOnlyCollection<string> SpecialFolders;
 
 	private static readonly HashSet<string> ImageFileExtensions;
