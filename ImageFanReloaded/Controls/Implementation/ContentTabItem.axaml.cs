@@ -157,6 +157,8 @@ public partial class ContentTabItem
 
     #region Private
 
+    private const string FakeTreeViewItemChild = "Loading...";
+
     private List<ThumbnailBox> _thumbnailBoxList;
 	private int _selectedThumbnailIndex;
 	private ThumbnailBox _selectedThumbnailBox;
@@ -238,8 +240,7 @@ public partial class ContentTabItem
 		await imageView.ShowDialog(Window);
 	}
 
-	private static TreeViewItem GetTreeViewItem(
-		FileSystemEntryInfo fileSystemEntryInfo)
+	private static TreeViewItem GetTreeViewItem(FileSystemEntryInfo fileSystemEntryInfo)
 	{
 		var fileSystemEntryItem = new FileSystemEntryItem
 		{
@@ -250,6 +251,11 @@ public partial class ContentTabItem
 		{
 			Header = fileSystemEntryItem
 		};
+
+		if (fileSystemEntryInfo.HasSubFolders)
+		{
+			treeViewItem.Items.Add(FakeTreeViewItemChild);
+		}
 
 		return treeViewItem;
 	}

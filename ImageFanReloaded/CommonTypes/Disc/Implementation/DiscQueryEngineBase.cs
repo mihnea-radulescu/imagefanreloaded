@@ -50,37 +50,40 @@ public abstract class DiscQueryEngineBase
 
 	public IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFoldersWithPaths()
 	{
-	    if (_specialFoldersWithPaths == null)
-        {
-			_specialFoldersWithPaths = SpecialFolders
-									    .Select(aSpecialFolder =>
-										    new FileSystemEntryInfo(
-											    aSpecialFolder,
-											    Path.Combine(UserProfilePath, aSpecialFolder),
-											    GlobalData.FolderIcon))
-									    .OrderBy(aSpecialFolder => aSpecialFolder.Name)
-									    .ToArray();
-		}
+		var specialFoldersWithPaths = SpecialFolders
+			.Select(aSpecialFolder =>
+				new
+				{
+					Name = aSpecialFolder,
+					Path = Path.Combine(UserProfilePath, aSpecialFolder)
+				})
+			.Select(aSpecialFolderWithPath =>
+				new FileSystemEntryInfo(
+					aSpecialFolderWithPath.Name,
+					aSpecialFolderWithPath.Path,
+					HasSubFolders(aSpecialFolderWithPath.Path),
+					GlobalData.FolderIcon))
+			.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name)
+			.ToArray();
 
-        return _specialFoldersWithPaths;
+        return specialFoldersWithPaths;
 	}
 
 	public IReadOnlyCollection<FileSystemEntryInfo> GetDrives()
     {
-        if (_drives == null)
-        {
-			_drives = DriveInfo.GetDrives()
-						.Select(aDriveInfo => aDriveInfo.Name)
-						.Where(IsSupportedDrive)
-						.Select(aDriveName =>
-							new FileSystemEntryInfo(aDriveName,
-													aDriveName,
-													GlobalData.DriveIcon))
-						.OrderBy(aDriveInfo => aDriveInfo.Name)
-						.ToArray();
-		}
+	    var drives = DriveInfo.GetDrives()
+		    .Select(aDriveInfo => aDriveInfo.Name)
+		    .Where(IsSupportedDrive)
+		    .Select(aDriveName =>
+			    new FileSystemEntryInfo(
+				    aDriveName,
+				    aDriveName,
+				    HasSubFolders(aDriveName),
+				    GlobalData.DriveIcon))
+		    .OrderBy(aDriveInfo => aDriveInfo.Name)
+		    .ToArray();
 
-        return _drives;
+        return drives;
     }
 
     public IReadOnlyCollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
@@ -88,14 +91,15 @@ public abstract class DiscQueryEngineBase
         try
         {
             return new DirectoryInfo(folderPath)
-                                        .GetDirectories()
-                                        .Select(aDirectory =>
-                                            new FileSystemEntryInfo(
-                                                aDirectory.Name,
-                                                aDirectory.FullName,
-                                                GlobalData.FolderIcon))
-                                        .OrderBy(aDirectory => aDirectory.Name)
-                                        .ToArray();
+                .GetDirectories()
+                .Select(aDirectory =>
+                    new FileSystemEntryInfo(
+                        aDirectory.Name,
+                        aDirectory.FullName,
+                        HasSubFolders(aDirectory.FullName),
+                        GlobalData.FolderIcon))
+                .OrderBy(aDirectory => aDirectory.Name)
+                .ToArray();
         }
         catch
         {
@@ -109,8 +113,8 @@ public abstract class DiscQueryEngineBase
         try
         {
             filesInformation = new DirectoryInfo(folderPath)
-                                        .GetFiles("*", SearchOption.TopDirectoryOnly)
-                                        .ToArray();
+                .GetFiles("*", SearchOption.TopDirectoryOnly)
+                .ToArray();
         }
         catch
         {
@@ -118,12 +122,12 @@ public abstract class DiscQueryEngineBase
         }
 
         var imageFiles = filesInformation
-                            .Where(aFileInfo =>
-                                   ImageFileExtensions.Contains(aFileInfo.Extension))
-                            .OrderBy(aFileInfo => aFileInfo.Name)
-                            .Select(aFileInfo => _imageFileFactory.GetImageFile(aFileInfo.FullName))
-                            .OrderBy(aFileInfo => aFileInfo.FileName)
-                            .ToArray();
+            .Where(aFileInfo =>
+                   ImageFileExtensions.Contains(aFileInfo.Extension))
+            .OrderBy(aFileInfo => aFileInfo.Name)
+            .Select(aFileInfo => _imageFileFactory.GetImageFile(aFileInfo.FullName))
+            .OrderBy(aFileInfo => aFileInfo.FileName)
+            .ToArray();
 
         return imageFiles;
     }
@@ -142,9 +146,23 @@ public abstract class DiscQueryEngineBase
 	private static readonly HashSet<string> ImageFileExtensions;
 
     private readonly IImageFileFactory _imageFileFactory;
-
-	private IReadOnlyCollection<FileSystemEntryInfo> _specialFoldersWithPaths;
-	private IReadOnlyCollection<FileSystemEntryInfo> _drives;
+    
+    private static bool HasSubFolders(string folderPath)
+    {
+	    try
+	    {
+		    var subFoldersAsEnumerable = Directory.EnumerateDirectories(folderPath);
+		    
+		    using (var subFoldersEnumerator = subFoldersAsEnumerable.GetEnumerator())
+		    {
+			    return subFoldersEnumerator.MoveNext();
+		    }
+	    }
+	    catch
+	    {
+		    return false;
+	    }
+    }
 
 	#endregion
 }

@@ -65,10 +65,7 @@ public class MainPresenter
 
 	private void UpdateUserInterface(IContentTabItem contentTabItem, string folderPath)
 	{
-		if (contentTabItem.FolderVisualState != null)
-		{
-			contentTabItem.FolderVisualState.NotifyStopThumbnailGeneration();
-		}
+		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
 
 		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
 			_discQueryEngine,
