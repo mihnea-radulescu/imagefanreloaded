@@ -60,6 +60,8 @@ public partial class MainWindow
                 var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
                 _tabControl.SelectedIndex = nextSelectedTabItemIndex;
             }
+
+			_tabControl.Focus();
         }
         else
         {
