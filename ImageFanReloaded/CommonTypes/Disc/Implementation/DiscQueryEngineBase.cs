@@ -8,8 +8,7 @@ using ImageFanReloaded.Factories;
 
 namespace ImageFanReloaded.CommonTypes.Disc.Implementation;
 
-public abstract class DiscQueryEngineBase
-    : IDiscQueryEngine
+public abstract class DiscQueryEngineBase : IDiscQueryEngine
 {
 	static DiscQueryEngineBase()
 	{
@@ -50,11 +49,17 @@ public abstract class DiscQueryEngineBase
         _imageFileFactory = imageFileFactory;
     }
 
-	public IReadOnlyCollection<FileSystemEntryInfo> GetSpecialFolders()
+	public IReadOnlyCollection<FileSystemEntryInfo> GetUserFolders()
 	{
 		try
 		{
-			return SpecialFolders
+			var homeFolder = new FileSystemEntryInfo(
+				"Home",
+				UserProfilePath,
+				HasSubFolders(UserProfilePath),
+				GlobalData.FolderIcon);
+
+			var specialFolders = SpecialFolders
 				.Select(aSpecialFolder =>
 					new
 					{
@@ -69,6 +74,9 @@ public abstract class DiscQueryEngineBase
 						GlobalData.FolderIcon))
 				.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name, NameComparer)
 				.ToArray();
+
+			FileSystemEntryInfo[] userFolders = [homeFolder, ..specialFolders];
+			return userFolders;
 		}
 		catch
 		{

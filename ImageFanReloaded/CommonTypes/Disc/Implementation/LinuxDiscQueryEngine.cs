@@ -3,8 +3,7 @@ using ImageFanReloaded.Factories;
 
 namespace ImageFanReloaded.CommonTypes.Disc.Implementation;
 
-public class LinuxDiscQueryEngine
-	: UnixDiscQueryEngineBase
+public class LinuxDiscQueryEngine : UnixDiscQueryEngineBase
 {
 	public LinuxDiscQueryEngine(IImageFileFactory imageFileFactory)
 		: base(imageFileFactory)

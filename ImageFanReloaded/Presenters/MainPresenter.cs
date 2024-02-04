@@ -48,7 +48,7 @@ public class MainPresenter
 
 	private void PopulateDrivesAndSpecialFolders(IContentTabItem contentTabItem)
 	{
-		var specialFolders = _discQueryEngine.GetSpecialFolders();
+		var specialFolders = _discQueryEngine.GetUserFolders();
 		var drives = _discQueryEngine.GetDrives();
 
 		contentTabItem.PopulateSubFoldersTree(specialFolders, true);

@@ -3,8 +3,7 @@ using ImageFanReloaded.Factories;
 
 namespace ImageFanReloaded.CommonTypes.Disc.Implementation;
 
-public class MacOSDiscQueryEngine
-	: UnixDiscQueryEngineBase
+public class MacOSDiscQueryEngine : UnixDiscQueryEngineBase
 {
 	public MacOSDiscQueryEngine(IImageFileFactory imageFileFactory)
 		: base(imageFileFactory)
