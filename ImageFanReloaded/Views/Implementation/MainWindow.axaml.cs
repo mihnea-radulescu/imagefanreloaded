@@ -19,8 +19,10 @@ public partial class MainWindow
 
 		_imagesTabCounter = 0;
 
+		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
-		_tabControl.AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
+
+		_tabControl.AddHandler(KeyDownEvent, OnTabControlKeyPressing, RoutingStrategies.Tunnel);
     }
 
 	public event EventHandler<TabItemEventArgs> ContentTabItemAdded;
@@ -44,25 +46,34 @@ public partial class MainWindow
 	private TabItem _fakeTabItem;
 	private int _imagesTabCounter;
 
-    private void OnKeyPressed(object sender, KeyEventArgs e)
+	private void OnKeyPressing(object sender, KeyEventArgs e)
+	{
+		var keyPressing = e.Key;
+
+		if (keyPressing == GlobalData.TabSwitchKey)
+		{
+			var canNavigateAcrossTabs = CanNavigateAcrossTabs();
+
+			if (!canNavigateAcrossTabs)
+			{
+				e.Handled = true;
+			}
+		}
+	}
+
+	private void OnKeyPressed(object sender, KeyEventArgs e)
     {
         var keyPressed = e.Key;
 
         if (keyPressed == GlobalData.TabSwitchKey)
         {
-            var contentTabItemCount = GetContentTabItemCount();
-            var canNavigateAcrossTabs = contentTabItemCount > 1;
+			var selectedTabItemIndex = _tabControl.SelectedIndex;
 
-            if (canNavigateAcrossTabs)
-            {
-                var selectedTabItemIndex = _tabControl.SelectedIndex;
+			var contentTabItemCount = GetContentTabItemCount();
+			var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
 
-                var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
-                _tabControl.SelectedIndex = nextSelectedTabItemIndex;
-            }
-
-			_tabControl.Focus();
-        }
+			_tabControl.SelectedIndex = nextSelectedTabItemIndex;
+		}
         else
         {
 	        var contentTabItem = GetActiveContentTabItem();
@@ -71,13 +82,13 @@ public partial class MainWindow
         
         e.Handled = true;
     }
-    
-    private void OnKeyPressing(object sender, KeyEventArgs e)
-    {
-	    e.Handled = true;
-    }
 
-    private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+	private void OnTabControlKeyPressing(object sender, KeyEventArgs e)
+	{
+		e.Handled = true;
+	}
+
+	private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 	{
 		var contentTabItem = GetActiveContentTabItem();
 		var isFakeTabItem = contentTabItem.Title == FakeTabItemTitle;
@@ -103,6 +114,7 @@ public partial class MainWindow
 		if (_imagesTabCounter == MaxContentTabs)
 		{
 			_tabControl.Items.Remove(_fakeTabItem);
+			_tabControl.Focus();
 		}
 	}
 
@@ -134,7 +146,9 @@ public partial class MainWindow
         return contentTabItemCount;
     }
 
-    private IContentTabItem GetActiveContentTabItem()
+	private bool CanNavigateAcrossTabs() => GetContentTabItemCount() > 1;
+
+	private IContentTabItem GetActiveContentTabItem()
     {
 	    var tabItem = (TabItem)_tabControl.SelectedItem;
 	    var contentTabItem = (IContentTabItem)tabItem.Content;
