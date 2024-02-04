@@ -85,6 +85,8 @@ public partial class MainWindow
 
 	private void OnTabControlKeyPressing(object sender, KeyEventArgs e)
 	{
+		_tabControl.Focus();
+
 		e.Handled = true;
 	}
 

@@ -13,7 +13,9 @@ public abstract class DiscQueryEngineBase
 {
 	static DiscQueryEngineBase()
 	{
-        EmptyFileSystemEntryInfoCollection = Enumerable
+		NameComparer = new NaturalSortingComparer();
+		
+		EmptyFileSystemEntryInfoCollection = Enumerable
 			.Empty<FileSystemEntryInfo>()
 			.ToArray();
 
@@ -65,7 +67,7 @@ public abstract class DiscQueryEngineBase
 						aSpecialFolderWithPath.Path,
 						HasSubFolders(aSpecialFolderWithPath.Path),
 						GlobalData.FolderIcon))
-				.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name)
+				.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name, NameComparer)
 				.ToArray();
 		}
 		catch
@@ -87,7 +89,7 @@ public abstract class DiscQueryEngineBase
 						aDriveName,
 						HasSubFolders(aDriveName),
 						GlobalData.DriveIcon))
-				.OrderBy(aDriveInfo => aDriveInfo.Name)
+				.OrderBy(aDriveInfo => aDriveInfo.Name, NameComparer)
 				.ToArray();
 		}
 		catch
@@ -108,7 +110,7 @@ public abstract class DiscQueryEngineBase
                         aDirectory.FullName,
                         HasSubFolders(aDirectory.FullName),
                         GlobalData.FolderIcon))
-                .OrderBy(aDirectory => aDirectory.Name)
+                .OrderBy(aDirectory => aDirectory.Name, NameComparer)
                 .ToArray();
         }
         catch
@@ -130,7 +132,7 @@ public abstract class DiscQueryEngineBase
 					   ImageFileExtensions.Contains(aFileInfo.Extension))
 				.OrderBy(aFileInfo => aFileInfo.Name)
 				.Select(aFileInfo => _imageFileFactory.GetImageFile(aFileInfo.FullName))
-				.OrderBy(aFileInfo => aFileInfo.FileName)
+				.OrderBy(aFileInfo => aFileInfo.FileName, NameComparer)
 				.ToArray();
 
 			return imageFiles;
@@ -144,6 +146,8 @@ public abstract class DiscQueryEngineBase
 	protected abstract bool IsSupportedDrive(string driveName);
 
 	#region Private
+
+	private static readonly IComparer<string> NameComparer;
 
     private static readonly IReadOnlyCollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
     private static readonly IReadOnlyCollection<IImageFile> EmptyImageFileCollection;

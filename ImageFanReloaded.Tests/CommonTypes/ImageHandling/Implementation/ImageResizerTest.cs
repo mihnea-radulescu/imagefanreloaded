@@ -7,8 +7,7 @@ using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 
 namespace ImageFanReloaded.Tests.CommonTypes.ImageHandling.Implementation;
 
-public class ImageResizerTest
-	: TestBase
+public class ImageResizerTest : TestBase
 {
 	public ImageResizerTest()
     {

@@ -3,8 +3,7 @@ using Xunit;
 
 namespace ImageFanReloaded.Tests;
 
-public class GlobalDataTest
-	: TestBase
+public class GlobalDataTest : TestBase
 {
 	[Fact]
 	public void GlobalData_IsCorrectlyInitialized()

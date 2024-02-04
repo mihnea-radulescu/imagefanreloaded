@@ -6,7 +6,6 @@ using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 namespace ImageFanReloaded.Tests.CommonTypes.ImageHandling.Implementation;
 
 public class ImageResizeCalculatorTest
-	: TestBase
 {
 	public ImageResizeCalculatorTest()
 	{
