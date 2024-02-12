@@ -5,7 +5,7 @@
 		<ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
 		<Title>ImageFan Reloaded</Title>
 		<Product>ImageFan Reloaded</Product>
-		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -28,12 +28,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia.Desktop" Version="11.0.7" />
-		<PackageReference Include="Avalonia" Version="11.0.7" />
-		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.7" />
-		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.7" />
-
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.7" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.0.9" />
+		<PackageReference Include="Avalonia" Version="11.0.9" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.9" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.9" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,7 +1,7 @@
 # imagefanreloaded
 ImageFan Reloaded is a light-weight tab-based image viewer, supporting multi-core processing.
 
-ImageFan Reloaded targets .NET 8 on Windows, Linux and macOS.
+ImageFan Reloaded targets .NET 8 on Linux, Windows and macOS.
 
 ImageFan Reloaded features mouse and key-based interaction using:
 * the left mouse button for selecting tabs, folders and images, and for opening, zooming in and out, and dragging images

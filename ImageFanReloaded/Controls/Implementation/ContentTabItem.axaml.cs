@@ -186,15 +186,11 @@ public partial class ContentTabItem
 	{
 		if (_selectedThumbnailBox != thumbnailBox)
 		{
-			if (_selectedThumbnailBox != null)
-			{
-				_selectedThumbnailBox.UnselectThumbnail();
-			}
-
+			_selectedThumbnailBox?.UnselectThumbnail();
+			
 			_selectedThumbnailBox = thumbnailBox;
 			_selectedThumbnailIndex = _thumbnailBoxList
-										.FindIndex(aThumbnailBox =>
-												   aThumbnailBox == _selectedThumbnailBox);
+				.FindIndex(aThumbnailBox => aThumbnailBox == _selectedThumbnailBox);
 
 			_selectedThumbnailBox.SelectThumbnail();
 		}
@@ -206,8 +202,8 @@ public partial class ContentTabItem
 		{
 			var newSelectedThumbnailIndex = _selectedThumbnailIndex + increment;
 
-			if ((newSelectedThumbnailIndex >= 0) &&
-				(newSelectedThumbnailIndex < _thumbnailBoxList.Count))
+			if (newSelectedThumbnailIndex >= 0 &&
+				newSelectedThumbnailIndex < _thumbnailBoxList.Count)
 			{
 				_selectedThumbnailBox.UnselectThumbnail();
 
@@ -238,6 +234,8 @@ public partial class ContentTabItem
 			};
 
 		await imageView.ShowDialog(Window);
+
+		_selectedThumbnailBox?.Focus();
 	}
 
 	private static TreeViewItem GetTreeViewItem(FileSystemEntryInfo fileSystemEntryInfo)
