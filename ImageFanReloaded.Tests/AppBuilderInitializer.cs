@@ -10,10 +10,7 @@ public class AppBuilderInitializer
 		{
 			lock (Locker)
 			{
-				if (_instance == null)
-				{
-					_instance = new AppBuilderInitializer();
-				}
+				_instance ??= new AppBuilderInitializer();
 			}
 
 			return _instance;
@@ -29,7 +26,7 @@ public class AppBuilderInitializer
 
 	private static readonly object Locker;
 
-	private static AppBuilderInitializer _instance;
+	private static AppBuilderInitializer? _instance;
 
     private AppBuilderInitializer()
     {

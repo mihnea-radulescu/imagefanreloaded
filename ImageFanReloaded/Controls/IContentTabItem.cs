@@ -10,14 +10,16 @@ namespace ImageFanReloaded.Controls;
 
 public interface IContentTabItem
 {
-	IImageViewFactory ImageViewFactory { get; set; }
-	object GenerateThumbnailsLockObject { get; set; }
+	IImageViewFactory? ImageViewFactory { get; set; }
+	object? GenerateThumbnailsLockObject { get; set; }
 
 	string Title { get; set; }
+	
+	IFolderVisualState? FolderVisualState { get; set; }
 
-	event EventHandler<FolderChangedEventArgs> FolderChanged;
-
-	IFolderVisualState FolderVisualState { get; set; }
+	event EventHandler<FolderChangedEventArgs>? FolderChanged;
+	
+	void OnKeyPressed(object? sender, KeyEventArgs e);
 
 	void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
 								bool rootNodes);
@@ -25,6 +27,4 @@ public interface IContentTabItem
 	void ClearThumbnailBoxes();
 	void PopulateThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
 	void RefreshThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
-	
-	void OnKeyPressed(object sender, KeyEventArgs e);
 }

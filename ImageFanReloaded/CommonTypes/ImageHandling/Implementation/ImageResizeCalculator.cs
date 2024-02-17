@@ -1,13 +1,12 @@
 ﻿namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 
-public class ImageResizeCalculator
-	: IImageResizeCalculator
+public class ImageResizeCalculator : IImageResizeCalculator
 {
 	public ImageSize GetResizedImageSize(
 		ImageSize imageSize, ImageSize viewPortSize)
 	{
-		if ((imageSize.Width <= viewPortSize.Width) &&
-			(imageSize.Height <= viewPortSize.Height))
+		if (imageSize.Width <= viewPortSize.Width &&
+			imageSize.Height <= viewPortSize.Height)
 		{
 			return imageSize;
 		}

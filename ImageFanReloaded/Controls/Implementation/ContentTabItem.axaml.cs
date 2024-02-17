@@ -10,29 +10,49 @@ using ImageFanReloaded.Infrastructure;
 
 namespace ImageFanReloaded.Controls.Implementation;
 
-public partial class ContentTabItem
-	: UserControl, IContentTabItem
+public partial class ContentTabItem : UserControl, IContentTabItem
 {
 	public ContentTabItem()
 	{
 		InitializeComponent();
     }
 
-    public TabItem TabItem { get; set; }
-    public Window Window { get; set; }
+    public TabItem? TabItem { get; set; }
+    public Window? Window { get; set; }
 
-	public IImageViewFactory ImageViewFactory { get; set; }
-	public object GenerateThumbnailsLockObject { get; set; }
+	public IImageViewFactory? ImageViewFactory { get; set; }
+	public object? GenerateThumbnailsLockObject { get; set; }
 
 	public string Title
 	{
-		get => (string)TabItem.Header;
-		set => TabItem.Header = value;
+		get => (string)TabItem!.Header!;
+		set => TabItem!.Header = value;
 	}
+	
+	public IFolderVisualState? FolderVisualState { get; set; }
 
-	public event EventHandler<FolderChangedEventArgs> FolderChanged;
-
-	public IFolderVisualState FolderVisualState { get; set; }
+	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
+	
+	public void OnKeyPressed(object? sender, KeyEventArgs e)
+	{
+		if (_selectedThumbnailBox is not null)
+		{
+			var keyPressed = e.Key;
+	        
+			if (GlobalData.BackwardNavigationKeys.Contains(keyPressed))
+			{
+				AdvanceToThumbnailIndex(-1);
+			}
+			else if (GlobalData.ForwardNavigationKeys.Contains(keyPressed))
+			{
+				AdvanceToThumbnailIndex(1);
+			}
+			else if (keyPressed == GlobalData.EnterKey)
+			{
+				DisplayImage();
+			}
+		}
+	}
 
 	public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
 									   bool rootNodes)
@@ -46,7 +66,7 @@ public partial class ContentTabItem
 				_folderTreeView.Items.Add(treeViewItem);
 			}
 		}
-		else if (_folderTreeView.SelectedItem != null)
+		else if (_folderTreeView.SelectedItem is not null)
 		{
 			var selectedItem = (TreeViewItem)_folderTreeView.SelectedItem;
 
@@ -65,7 +85,7 @@ public partial class ContentTabItem
 	{
 		_thumbnailWrapPanel.Children.Clear();
 
-		if (_thumbnailBoxList != null)
+		if (_thumbnailBoxList is not null)
 		{
 			foreach (var aThumbnailBox in _thumbnailBoxList)
 			{
@@ -96,7 +116,7 @@ public partial class ContentTabItem
 			aThumbnailBox.ThumbnailBoxClicked +=
 				(sender, e) =>
 				{
-					var thumbnailBox = (ThumbnailBox)sender;
+					var thumbnailBox = (ThumbnailBox)sender!;
 
 					if (thumbnailBox.IsSelected)
 					{
@@ -108,7 +128,7 @@ public partial class ContentTabItem
 					}
 				};
 
-			_thumbnailBoxList.Add(aThumbnailBox);
+			_thumbnailBoxList!.Add(aThumbnailBox);
 
 			if (_thumbnailBoxList.Count == 1)
 			{
@@ -133,46 +153,25 @@ public partial class ContentTabItem
 			thumbnailInfo.RefreshThumbnail();
 		}
 	}
-
-    public void OnKeyPressed(object sender, KeyEventArgs e)
-    {
-	    if (_selectedThumbnailBox != null)
-        {
-	        var keyPressed = e.Key;
-	        
-	        if (GlobalData.BackwardNavigationKeys.Contains(keyPressed))
-            {
-                AdvanceToThumbnailIndex(-1);
-            }
-            else if (GlobalData.ForwardNavigationKeys.Contains(keyPressed))
-            {
-                AdvanceToThumbnailIndex(1);
-            }
-            else if (keyPressed == GlobalData.EnterKey)
-            {
-                DisplayImage();
-            }
-        }
-    }
-
+	
     #region Private
 
     private const string FakeTreeViewItemChild = "Loading...";
 
-    private List<ThumbnailBox> _thumbnailBoxList;
+    private List<ThumbnailBox>? _thumbnailBoxList;
 	private int _selectedThumbnailIndex;
-	private ThumbnailBox _selectedThumbnailBox;
+	private ThumbnailBox? _selectedThumbnailBox;
 
-    private void OnFolderTreeViewSelectedItemChanged(object sender,
+    private void OnFolderTreeViewSelectedItemChanged(object? sender,
 													 SelectionChangedEventArgs e)
 	{
 		var folderChangedHandler = FolderChanged;
 
-		if (folderChangedHandler != null)
+		if (folderChangedHandler is not null)
 		{
-			var selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0];
-			var fileSystemEntryItem = (FileSystemEntryItem)
-				selectedFolderTreeViewItem.Header;
+			var selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
+			var fileSystemEntryItem = (IFileSystemEntryItem)
+				selectedFolderTreeViewItem.Header!;
 
 			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo;
 			var selectedFolderPath = fileSystemEntryInfo.Path;
@@ -190,7 +189,7 @@ public partial class ContentTabItem
 			
 			_selectedThumbnailBox = thumbnailBox;
 			_selectedThumbnailIndex = _thumbnailBoxList
-				.FindIndex(aThumbnailBox => aThumbnailBox == _selectedThumbnailBox);
+				!.FindIndex(aThumbnailBox => aThumbnailBox == _selectedThumbnailBox);
 
 			_selectedThumbnailBox.SelectThumbnail();
 		}
@@ -198,12 +197,12 @@ public partial class ContentTabItem
 
     private bool AdvanceToThumbnailIndex(int increment)
 	{
-		if (_selectedThumbnailBox != null)
+		if (_selectedThumbnailBox is not null)
 		{
 			var newSelectedThumbnailIndex = _selectedThumbnailIndex + increment;
 
 			if (newSelectedThumbnailIndex >= 0 &&
-				newSelectedThumbnailIndex < _thumbnailBoxList.Count)
+				newSelectedThumbnailIndex < _thumbnailBoxList!.Count)
 			{
 				_selectedThumbnailBox.UnselectThumbnail();
 
@@ -221,26 +220,26 @@ public partial class ContentTabItem
 
 	private async void DisplayImage()
 	{
-		var imageView = ImageViewFactory.GetImageView();
-		imageView.SetImage(_selectedThumbnailBox.ImageFile);
+		var imageView = ImageViewFactory!.GetImageView();
+		imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
 
 		imageView.ThumbnailChanged +=
 			(sender, e) =>
 			{
 				if (AdvanceToThumbnailIndex(e.Increment))
 				{
-					imageView.SetImage(_selectedThumbnailBox.ImageFile);
+					imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
 				}
 			};
 
-		await imageView.ShowDialog(Window);
+		await imageView.ShowDialog(Window!);
 
 		_selectedThumbnailBox?.Focus();
 	}
 
 	private static TreeViewItem GetTreeViewItem(FileSystemEntryInfo fileSystemEntryInfo)
 	{
-		var fileSystemEntryItem = new FileSystemEntryItem
+		IFileSystemEntryItem fileSystemEntryItem = new FileSystemEntryItem
 		{
 			FileSystemEntryInfo = fileSystemEntryInfo
 		};

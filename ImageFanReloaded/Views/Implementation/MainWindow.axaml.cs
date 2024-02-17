@@ -8,8 +8,7 @@ using ImageFanReloaded.Controls.Implementation;
 
 namespace ImageFanReloaded.Views.Implementation;
 
-public partial class MainWindow
-    : Window, IMainView
+public partial class MainWindow : Window, IMainView
 {
 	public MainWindow()
     {
@@ -25,15 +24,17 @@ public partial class MainWindow
 		_tabControl.AddHandler(KeyDownEvent, OnTabControlKeyPressing, RoutingStrategies.Tunnel);
     }
 
-	public event EventHandler<TabItemEventArgs> ContentTabItemAdded;
+	public event EventHandler<TabItemEventArgs>? ContentTabItemAdded;
 
 	public void AddFakeTabItem()
 	{
-		SetTabItem(FakeTabItemTitle, out ContentTabItem contentTabItem, out TabItem tabItem);
+		_fakeTabItem = new TabItem
+		{
+			Header = FakeTabItemTitle,
+			FontSize = _windowFontSize
+		};
 
-		_tabControl.Items.Add(tabItem);
-
-		_fakeTabItem = tabItem;
+		_tabControl.Items.Add(_fakeTabItem);
 	}
 
 	#region Private
@@ -43,10 +44,10 @@ public partial class MainWindow
 
 	private readonly double _windowFontSize;
 
-	private TabItem _fakeTabItem;
+	private TabItem? _fakeTabItem;
 	private int _imagesTabCounter;
 
-	private void OnKeyPressing(object sender, KeyEventArgs e)
+	private void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
 		var keyPressing = e.Key;
 
@@ -61,7 +62,7 @@ public partial class MainWindow
 		}
 	}
 
-	private void OnKeyPressed(object sender, KeyEventArgs e)
+	private void OnKeyPressed(object? sender, KeyEventArgs e)
     {
         var keyPressed = e.Key;
 
@@ -77,23 +78,23 @@ public partial class MainWindow
         else
         {
 	        var contentTabItem = GetActiveContentTabItem();
-	        contentTabItem.OnKeyPressed(sender, e);
+	        contentTabItem!.OnKeyPressed(sender, e);
         }
         
         e.Handled = true;
     }
 
-	private void OnTabControlKeyPressing(object sender, KeyEventArgs e)
+	private void OnTabControlKeyPressing(object? sender, KeyEventArgs e)
 	{
 		_tabControl.Focus();
 
 		e.Handled = true;
 	}
 
-	private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+	private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
 		var contentTabItem = GetActiveContentTabItem();
-		var isFakeTabItem = contentTabItem.Title == FakeTabItemTitle;
+		var isFakeTabItem = contentTabItem is null;
 
 		if (isFakeTabItem)
 		{
@@ -104,7 +105,7 @@ public partial class MainWindow
 	private void AddContentTabItem()
 	{
 		_imagesTabCounter++;
-		var title = $"Images Tab {_imagesTabCounter}";
+		var title = $"Folder Tab {_imagesTabCounter}";
 
 		SetTabItem(title, out ContentTabItem contentTabItem, out TabItem tabItem);
 
@@ -150,10 +151,10 @@ public partial class MainWindow
 
 	private bool CanNavigateAcrossTabs() => GetContentTabItemCount() > 1;
 
-	private IContentTabItem GetActiveContentTabItem()
+	private IContentTabItem? GetActiveContentTabItem()
     {
-	    var tabItem = (TabItem)_tabControl.SelectedItem;
-	    var contentTabItem = (IContentTabItem)tabItem.Content;
+	    var tabItem = (TabItem)_tabControl.SelectedItem!;
+	    var contentTabItem = tabItem.Content as IContentTabItem;
 
 	    return contentTabItem;
     }

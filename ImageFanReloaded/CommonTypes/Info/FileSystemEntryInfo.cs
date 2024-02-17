@@ -2,7 +2,7 @@
 
 namespace ImageFanReloaded.CommonTypes.Info;
 
-public record class FileSystemEntryInfo
+public record FileSystemEntryInfo
 {
     public FileSystemEntryInfo(string name, string path, bool hasSubFolders, Bitmap icon)
     {

@@ -15,8 +15,7 @@ using ImageFanReloaded.Views.Implementation;
 
 namespace ImageFanReloaded;
 
-public partial class App
-    : Application
+public class App : Application
 {
     public override void Initialize()
     {
@@ -25,35 +24,32 @@ public partial class App
 
     public override void OnFrameworkInitializationCompleted()
     {
-        base.OnFrameworkInitializationCompleted();
-
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
 		IImageFileFactory imageFileFactory = new ImageFileFactory(imageResizer);
-		IDiscQueryEngineFactory discQueryEngineFactory =
-			new DiscQueryEngineFactory(imageFileFactory);
+		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(imageFileFactory);
 		IDiscQueryEngine discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 
 		var mainWindow = new MainWindow();
-		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
-		IImageViewFactory imageViewFactory = new ImageViewFactory(screenInformation);
-
-		var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime;
+		IMainView mainView = mainWindow;
+		
+		var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
 		desktop.MainWindow = mainWindow;
-
+		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
+		
+		IImageViewFactory imageViewFactory = new ImageViewFactory(screenInformation);
 		IVisualActionDispatcher visualActionDispatcher = new VisualActionDispatcher(Dispatcher.UIThread);
 		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory();
 
-		new MainPresenter(
+		var mainPresenter = new MainPresenter(
 			discQueryEngine,
 			visualActionDispatcher,
 			folderVisualStateFactory,
 			imageViewFactory,
-			mainWindow);
+			mainView);
 
-		mainWindow.AddFakeTabItem();
-
-		mainWindow.Show();
+		mainView.AddFakeTabItem();
+		mainView.Show();
 	}
 }

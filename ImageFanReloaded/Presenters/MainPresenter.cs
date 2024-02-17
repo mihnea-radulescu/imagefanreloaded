@@ -34,7 +34,7 @@ public class MainPresenter
 
 	private readonly IMainView _mainView;
 
-	private void OnContentTabItemAdded(object sender, TabItemEventArgs e)
+	private void OnContentTabItemAdded(object? sender, TabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 
@@ -45,6 +45,14 @@ public class MainPresenter
 
 		PopulateDrivesAndSpecialFolders(contentTabItem);
 	}
+	
+	private void OnFolderChanged(object? sender, FolderChangedEventArgs e)
+	{
+		var contentTabItem = (IContentTabItem)sender!;
+		var path = e.Path;
+
+		UpdateUserInterface(contentTabItem, path);
+	}
 
 	private void PopulateDrivesAndSpecialFolders(IContentTabItem contentTabItem)
 	{
@@ -53,14 +61,6 @@ public class MainPresenter
 
 		contentTabItem.PopulateSubFoldersTree(specialFolders, true);
 		contentTabItem.PopulateSubFoldersTree(drives, true);
-	}
-
-	private void OnFolderChanged(object sender, FolderChangedEventArgs e)
-	{
-		var contentTabItem = (IContentTabItem)sender;
-		var path = e.Path;
-
-		UpdateUserInterface(contentTabItem, path);
 	}
 
 	private void UpdateUserInterface(IContentTabItem contentTabItem, string folderPath)

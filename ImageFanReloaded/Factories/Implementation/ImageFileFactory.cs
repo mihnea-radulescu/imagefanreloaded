@@ -3,8 +3,7 @@ using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 
 namespace ImageFanReloaded.Factories.Implementation;
 
-public class ImageFileFactory
-	: IImageFileFactory
+public class ImageFileFactory : IImageFileFactory
 {
 	public ImageFileFactory(IImageResizer imageResizer)
 	{

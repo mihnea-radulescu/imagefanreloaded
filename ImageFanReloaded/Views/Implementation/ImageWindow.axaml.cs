@@ -9,8 +9,7 @@ using ImageFanReloaded.CommonTypes.ImageHandling;
 
 namespace ImageFanReloaded.Views.Implementation;
 
-public partial class ImageWindow
-	: Window, IImageView
+public partial class ImageWindow : Window, IImageView
 {
 	static ImageWindow()
 	{
@@ -19,7 +18,7 @@ public partial class ImageWindow
 		SizeAllCursor = new Cursor(StandardCursorType.SizeAll);
 	}
 	
-	public event EventHandler<ThumbnailChangedEventArgs> ThumbnailChanged;
+	public event EventHandler<ThumbnailChangedEventArgs>? ThumbnailChanged;
 
 	public ImageWindow()
 	{
@@ -28,7 +27,7 @@ public partial class ImageWindow
 		AddHandler(PointerWheelChangedEvent, OnMouseWheel, RoutingStrategies.Tunnel);
 	}
 
-	public IScreenInformation ScreenInformation { get; set; }
+	public IScreenInformation? ScreenInformation { get; set; }
 
 	public void SetImage(IImageFile imageFile)
 	{
@@ -39,7 +38,7 @@ public partial class ImageWindow
 		_negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
 		_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
 
-		_screenSize = ScreenInformation.GetScreenSize();
+		_screenSize = ScreenInformation!.GetScreenSize();
 
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
@@ -57,20 +56,20 @@ public partial class ImageWindow
 	private static readonly Cursor NoneCursor;
 	private static readonly Cursor SizeAllCursor;
 
-	private IImageFile _imageFile;
+	private IImageFile? _imageFile;
 
 	private double _negligibleImageDragX, _negligibleImageDragY;
 
-	private ImageSize _screenSize;
+	private ImageSize? _screenSize;
 
 	private bool _canZoomToImageSize;
-	private Cursor _screenSizeCursor;
+	private Cursor? _screenSizeCursor;
 
 	private Point _mouseDownCoordinates, _mouseUpCoordinates;
 
 	private ImageViewState _imageViewState;
 
-    private void OnKeyPressed(object sender, KeyEventArgs e)
+    private void OnKeyPressed(object? sender, KeyEventArgs e)
     {
         var keyPressed = e.Key;
 
@@ -104,7 +103,7 @@ public partial class ImageWindow
         }
     }
 
-    private void OnMouseDown(object sender, PointerPressedEventArgs e)
+    private void OnMouseDown(object? sender, PointerPressedEventArgs e)
 	{
 		if (!_canZoomToImageSize ||
 			_imageViewState == ImageViewState.ResizedToScreenSize)
@@ -115,7 +114,7 @@ public partial class ImageWindow
 		_mouseDownCoordinates = e.GetPosition(_image);
 	}
 
-	private void OnMouseUp(object sender, PointerReleasedEventArgs e)
+	private void OnMouseUp(object? sender, PointerReleasedEventArgs e)
 	{
 		if (_imageViewState == ImageViewState.ResizedToScreenSize)
 		{
@@ -123,7 +122,7 @@ public partial class ImageWindow
 			{
 				var mousePositionToImage = e.GetPosition(_image);
 				var imageSize = new ImageSize(
-					_image.Source.Size.Width, _image.Source.Size.Height);
+					_image.Source!.Size.Width, _image.Source!.Size.Height);
 
 				var coordinatesToImageSizeRatio =
 					GetCoordinatesToImageSizeRatio(mousePositionToImage, imageSize);
@@ -157,7 +156,7 @@ public partial class ImageWindow
 		}
 	}
 
-	private void OnMouseWheel(object sender, PointerWheelEventArgs e)
+	private void OnMouseWheel(object? sender, PointerWheelEventArgs e)
 	{
 		var delta = e.Delta;
 
@@ -204,9 +203,9 @@ public partial class ImageWindow
 		}
 
 		var newHorizontalScrollOffset = _imageScrollViewer.Offset.X +
-			normalizedDragX * ImageScrollFactor * _image.Source.Size.Width;
+			normalizedDragX * ImageScrollFactor * _image.Source!.Size.Width;
 		var newVerticalScrollOffset = _imageScrollViewer.Offset.Y +
-			normalizedDragY * ImageScrollFactor * _image.Source.Size.Height;
+			normalizedDragY * ImageScrollFactor * _image.Source!.Size.Height;
 
 		if (newHorizontalScrollOffset < 0)
 		{
@@ -235,9 +234,9 @@ public partial class ImageWindow
 		CoordinatesToImageSizeRatio coordinatesToImageSizeRatio;
 
 		if (mousePositionToImage.X >= 0 &&
-			mousePositionToImage.X <= _image.Source.Size.Width &&
+			mousePositionToImage.X <= _image.Source!.Size.Width &&
 			mousePositionToImage.Y >= 0 &&
-			mousePositionToImage.Y <= _image.Source.Size.Height)
+			mousePositionToImage.Y <= _image.Source!.Size.Height)
 		{
 			coordinatesToImageSizeRatio =
 				new CoordinatesToImageSizeRatio(mousePositionToImage, imageSize);
@@ -253,31 +252,18 @@ public partial class ImageWindow
 	private bool CanZoomToImageSize()
 	{
 		var canZoomToImageSize =
-			_imageFile.ImageSize.Width > _screenSize.Width ||
-			_imageFile.ImageSize.Height > _screenSize.Height;
+			_imageFile!.ImageSize.Width > _screenSize!.Width ||
+			_imageFile!.ImageSize.Height > _screenSize!.Height;
 
 		return canZoomToImageSize;
 	}
 
-	private Cursor GetScreenSizeCursor()
-	{
-		Cursor screenSizeCursor;
-
-		if (_canZoomToImageSize)
-		{
-			screenSizeCursor = HandCursor;
-		}
-		else
-		{
-			screenSizeCursor = NoneCursor;
-		}
-
-		return screenSizeCursor;
-	}
+	private Cursor GetScreenSizeCursor() 
+		=> _canZoomToImageSize ? HandCursor : NoneCursor;
 
 	private void ResizeToScreenSize()
 	{
-		var image = _imageFile.GetResizedImage(_screenSize);
+		var image = _imageFile!.GetResizedImage(_screenSize!);
 		SetImageSource(image);
 
 		_imageViewState = ImageViewState.ResizedToScreenSize;
@@ -286,7 +272,7 @@ public partial class ImageWindow
 
 	private void ZoomToImageSize(CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
 	{
-		var image = _imageFile.GetImage();
+		var image = _imageFile!.GetImage();
 		SetImageSource(image);
 
 		_imageViewState = ImageViewState.ZoomedToImageSize;
@@ -318,13 +304,13 @@ public partial class ImageWindow
 		SetImageSource(null);
 	}
 
-	private void SetImageSource(Bitmap image)
+	private void SetImageSource(Bitmap? image)
 	{
 		var previousImageSource = _image.Source as Bitmap;
 
 		_image.Source = image;
 
-		if (previousImageSource != null &&
+		if (previousImageSource is not null &&
 			previousImageSource != GlobalData.InvalidImage)
 		{
 			previousImageSource.Dispose();

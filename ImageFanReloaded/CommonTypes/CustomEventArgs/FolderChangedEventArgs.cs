@@ -2,8 +2,7 @@
 
 namespace ImageFanReloaded.CommonTypes.CustomEventArgs;
 
-public class FolderChangedEventArgs
-    : EventArgs
+public class FolderChangedEventArgs : EventArgs
 {
     public FolderChangedEventArgs(string path)
     {

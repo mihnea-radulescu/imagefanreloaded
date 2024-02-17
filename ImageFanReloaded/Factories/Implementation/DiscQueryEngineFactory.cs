@@ -4,8 +4,7 @@ using ImageFanReloaded.CommonTypes.Disc.Implementation;
 
 namespace ImageFanReloaded.Factories.Implementation;
 
-public class DiscQueryEngineFactory
-	: IDiscQueryEngineFactory
+public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 {
 	public DiscQueryEngineFactory(IImageFileFactory imageFileFactory)
     {

@@ -1,6 +1,6 @@
 ﻿namespace ImageFanReloaded.CommonTypes.ImageHandling;
 
-public record class ImageSize
+public record ImageSize
 {
     public ImageSize(int width, int height)
     {

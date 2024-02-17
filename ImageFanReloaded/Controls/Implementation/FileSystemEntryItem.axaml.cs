@@ -3,8 +3,7 @@ using ImageFanReloaded.CommonTypes.Info;
 
 namespace ImageFanReloaded.Controls.Implementation;
 
-public partial class FileSystemEntryItem
-	: UserControl
+public partial class FileSystemEntryItem : UserControl, IFileSystemEntryItem
 {
 	public FileSystemEntryItem()
 	{
@@ -13,11 +12,8 @@ public partial class FileSystemEntryItem
 
 	public FileSystemEntryInfo FileSystemEntryInfo
 	{
-		get
-		{
-			return _fileSystemEntryInfo;
-		}
-		set
+		get => _fileSystemEntryInfo!;
+		init
 		{
 			_fileSystemEntryInfo = value;
 
@@ -28,7 +24,7 @@ public partial class FileSystemEntryItem
 
 	#region Private
 
-	private FileSystemEntryInfo _fileSystemEntryInfo;
+	private readonly FileSystemEntryInfo? _fileSystemEntryInfo;
 
 	#endregion
 }

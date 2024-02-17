@@ -16,11 +16,11 @@ public class ThumbnailInfo
         ThumbnailImage = GlobalData.LoadingImageThumbnail;
     }
 
-    public IRefreshableControl ThumbnailBox { get; set; }
+    public IRefreshableControl? ThumbnailBox { get; set; }
 
-    public IImageFile ImageFile { get; private set; }
+    public IImageFile ImageFile { get; }
 
-    public Bitmap ThumbnailImage { get; set; }
+    public Bitmap? ThumbnailImage { get; private set; }
     public string ThumbnailText => ImageFile.FileName;
 
     public void ReadThumbnailInputFromDisc() => ImageFile.ReadImageDataFromDisc();
@@ -33,15 +33,15 @@ public class ThumbnailInfo
         }
         catch (InvalidOperationException)
         {
-            _dispatcher.Invoke(() => SaveThumbnailHelper());
+            _dispatcher.Invoke(SaveThumbnailHelper);
         }
     }
 
-    public void RefreshThumbnail() => ThumbnailBox.Refresh();
+    public void RefreshThumbnail() => ThumbnailBox!.Refresh();
 
     public void DisposeThumbnail()
     {
-        if (ThumbnailImage != null &&
+        if (ThumbnailImage is not null &&
             ThumbnailImage != GlobalData.InvalidImageThumbnail &&
             ThumbnailImage != GlobalData.LoadingImageThumbnail)
         {

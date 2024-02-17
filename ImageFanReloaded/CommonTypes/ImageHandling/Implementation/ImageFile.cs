@@ -42,7 +42,7 @@ public class ImageFile
 
     public Bitmap GetResizedImage(ImageSize viewPortSize)
     {
-        Bitmap image = null;
+        Bitmap? image = null;
         Bitmap resizedImage;
 
         try
@@ -66,20 +66,24 @@ public class ImageFile
     }
 
 	public void ReadImageDataFromDisc()
-    {
-        lock (_thumbnailGenerationLockObject)
-        {
-            try
-            {
-                _imageData = new Bitmap(_imageFilePath);
-				ImageSize = new ImageSize(_imageData.Size.Width, _imageData.Size.Height);
-			}
-            catch
-            {
-                _imageData = GlobalData.InvalidImage;
-            }
-        }
-    }
+	{
+		Bitmap imageData;
+
+		try
+		{
+			imageData = new Bitmap(_imageFilePath);
+		}
+		catch
+		{
+			imageData = GlobalData.InvalidImage;
+		}
+		
+		lock (_thumbnailGenerationLockObject)
+		{
+			_imageData = imageData;
+			ImageSize = new ImageSize(_imageData.Size.Width, _imageData.Size.Height);
+		}
+	}
 
     public Bitmap GetThumbnail()
     {
@@ -90,7 +94,7 @@ public class ImageFile
             try
             {
                 thumbnail = _imageResizer
-                    .CreateResizedImage(_imageData, GlobalData.ThumbnailSize);
+                    .CreateResizedImage(_imageData!, GlobalData.ThumbnailSize);
             }
             catch
             {
@@ -107,13 +111,16 @@ public class ImageFile
 
 	public void DisposeImageData()
 	{
-		if (_imageData != null &&
-			_imageData != GlobalData.InvalidImage)
+		lock (_thumbnailGenerationLockObject)
 		{
-			_imageData.Dispose();
-		}
+			if (_imageData is not null &&
+			    _imageData != GlobalData.InvalidImage)
+			{
+				_imageData.Dispose();
+			}
 
-		_imageData = null;
+			_imageData = null;
+		}
 	}
 
 	#region Private
@@ -122,7 +129,7 @@ public class ImageFile
     private readonly string _imageFilePath;
     private readonly object _thumbnailGenerationLockObject;
 
-    private Bitmap _imageData;
+    private Bitmap? _imageData;
 
 	#endregion
 }

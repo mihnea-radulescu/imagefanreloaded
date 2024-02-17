@@ -18,8 +18,7 @@ public abstract class UnixDiscQueryEngineBase : DiscQueryEngineBase
 			return true;
 		}
 
-		var isSupportedDrive = SupportedDrivePrefixes.Any(
-			aSupportedDrivePrefix => driveName.StartsWith(aSupportedDrivePrefix));
+		var isSupportedDrive = SupportedDrivePrefixes.Any(driveName.StartsWith);
 
 		return isSupportedDrive;
 	}

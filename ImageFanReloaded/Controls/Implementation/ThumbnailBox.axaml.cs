@@ -7,8 +7,7 @@ using ImageFanReloaded.CommonTypes.Info;
 
 namespace ImageFanReloaded.Controls.Implementation;
 
-public partial class ThumbnailBox
-	: UserControl, IRefreshableControl
+public partial class ThumbnailBox : UserControl, IRefreshableControl
 {
 	public ThumbnailBox()
 	{
@@ -17,15 +16,14 @@ public partial class ThumbnailBox
 		SetControlProperties();
 	}
 
-	public event EventHandler<EventArgs> ThumbnailBoxClicked;
+	public event EventHandler<EventArgs>? ThumbnailBoxClicked;
 
-	public IImageFile ImageFile { get; private set; }
+	public IImageFile? ImageFile { get; private set; }
 	public bool IsSelected { get; private set; }
 
 	public ThumbnailInfo ThumbnailInfo
 	{
-		get => _thumbnailInfo;
-
+		get => _thumbnailInfo!;
 		set
 		{
 			_thumbnailInfo = value;
@@ -55,18 +53,18 @@ public partial class ThumbnailBox
 
 	public void Refresh()
 	{
-		_thumbnailImage.Source = _thumbnailInfo.ThumbnailImage;
+		_thumbnailImage.Source = _thumbnailInfo!.ThumbnailImage;
 	}
 
 	public void DisposeThumbnail()
 	{
-		_thumbnailInfo.DisposeThumbnail();
-		ImageFile.DisposeImageData();
+		_thumbnailInfo!.DisposeThumbnail();
+		ImageFile!.DisposeImageData();
 	}
 
 	#region Private
 
-	private ThumbnailInfo _thumbnailInfo;
+	private ThumbnailInfo? _thumbnailInfo;
 
 	private void SetControlProperties()
 	{
@@ -74,7 +72,7 @@ public partial class ThumbnailBox
 		_thumbnailImage.MaxHeight = GlobalData.ThumbnailSize.Height;
 	}
 
-	private void OnMouseClick(object sender, PointerReleasedEventArgs e)
+	private void OnMouseClick(object? sender, PointerReleasedEventArgs e)
 	{
 		if (e.InitialPressMouseButton == MouseButton.Left)
 		{

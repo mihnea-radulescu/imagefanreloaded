@@ -3,8 +3,7 @@ using ImageFanReloaded.CommonTypes.ImageHandling;
 
 namespace ImageFanReloaded.Views.Implementation;
 
-public class ScreenInformation
-	: IScreenInformation
+public class ScreenInformation : IScreenInformation
 {
 	public ScreenInformation(Window mainWindow)
     {
@@ -13,7 +12,7 @@ public class ScreenInformation
 
     public ImageSize GetScreenSize()
 	{
-		var screenBounds = _mainWindow.Screens.ScreenFromWindow(_mainWindow).Bounds;
+		var screenBounds = _mainWindow.Screens.ScreenFromWindow(_mainWindow)!.Bounds;
 		var screenSize = new ImageSize(screenBounds.Width, screenBounds.Height);
 
 		return screenSize;

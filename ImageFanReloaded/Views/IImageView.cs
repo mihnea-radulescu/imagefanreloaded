@@ -8,9 +8,9 @@ namespace ImageFanReloaded.Views;
 
 public interface IImageView
 {
-    event EventHandler<ThumbnailChangedEventArgs> ThumbnailChanged;
+    event EventHandler<ThumbnailChangedEventArgs>? ThumbnailChanged;
 
-	IScreenInformation ScreenInformation { get; set; }
+	IScreenInformation? ScreenInformation { get; set; }
 
 	void SetImage(IImageFile imageFile);
 

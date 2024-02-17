@@ -5,8 +5,7 @@ using ImageFanReloaded.Infrastructure.Implementation;
 
 namespace ImageFanReloaded.Factories.Implementation;
 
-public class FolderVisualStateFactory
-    : IFolderVisualStateFactory
+public class FolderVisualStateFactory : IFolderVisualStateFactory
 {
     public IFolderVisualState GetFolderVisualState(
 		IDiscQueryEngine discQueryEngine,

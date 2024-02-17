@@ -12,8 +12,23 @@ public class NaturalSortingComparer : IComparer<string>
         ContiguousDigitBlockRegex = new Regex(@"\d+", RegexOptions.Compiled);
     }
 
-    public int Compare(string x, string y)
+    public int Compare(string? x, string? y)
     {
+        if (x is null && y is null)
+        {
+            return 0;
+        }
+
+        if (x is null)
+        {
+            return -1;
+        }
+
+        if (y is null)
+        {
+            return 1;
+        }
+        
         if (!ContainsDigits(x) || !ContainsDigits(y))
         {
             return x.CompareTo(y);
@@ -42,7 +57,6 @@ public class NaturalSortingComparer : IComparer<string>
         var maximumContiguousDigitBlockLength =
             ContiguousDigitBlockRegex
                 .Matches(text)
-                .Cast<Match>()
                 .Select(aMatch => aMatch.Value.Length)
                 .Max();
 

@@ -9,8 +9,7 @@ using ImageFanReloaded.Controls;
 
 namespace ImageFanReloaded.Infrastructure.Implementation;
 
-public class FolderVisualState
-	: IFolderVisualState
+public class FolderVisualState : IFolderVisualState
 {
 	public FolderVisualState(
 		IDiscQueryEngine discQueryEngine,
@@ -22,19 +21,18 @@ public class FolderVisualState
 		_dispatcher = dispatcher;
 
 		_contentTabItem = contentTabItem;
-		_generateThumbnailsLockObject = _contentTabItem.GenerateThumbnailsLockObject;
+		_generateThumbnailsLockObject = _contentTabItem.GenerateThumbnailsLockObject!;
 
 		_folderPath = folderPath;
 
 		_thumbnailGeneration = new CancellationTokenSource();
 	}
 
-	public void NotifyStopThumbnailGeneration()
-		=> _thumbnailGeneration.Cancel();
+	public void NotifyStopThumbnailGeneration() => _thumbnailGeneration.Cancel();
 
 	public void UpdateVisualState()
 	{
-		Task.Factory.StartNew(() => UpdateVisualStateHelper());
+		Task.Factory.StartNew(UpdateVisualStateHelper);
 	}
 
 	#region Private
@@ -110,11 +108,11 @@ public class FolderVisualState
 			thumbnailGenerationTasks[currentIndex] = aThumbnailGenerationTask;
 		}
 
-		for (var i = 0; i < thumbnailGenerationTasks.Length; i++)
+		foreach (var aThumbnailGenerationTask in thumbnailGenerationTasks)
 		{
 			if (!_thumbnailGeneration.IsCancellationRequested)
 			{
-				thumbnailGenerationTasks[i].Start();
+				aThumbnailGenerationTask.Start();
 			}
 		}
 

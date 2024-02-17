@@ -4,8 +4,7 @@ using Avalonia.Threading;
 
 namespace ImageFanReloaded.Infrastructure.Implementation;
 
-public class VisualActionDispatcher
-    : IVisualActionDispatcher
+public class VisualActionDispatcher : IVisualActionDispatcher
 {
     public VisualActionDispatcher(Dispatcher dispatcher)
     {

@@ -35,8 +35,7 @@ namespace ImageFanReloaded
 
         static GlobalData()
         {
-            ThumbnailSize = new ImageSize(ThumbnailSizeSquareLength);
-            IconSize = new ImageSize(IconSizeSquareLength);
+	        ThumbnailSize = new ImageSize(ThumbnailSizeSquareLength);
 
 			IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 			IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
@@ -53,15 +52,17 @@ namespace ImageFanReloaded
 				LoadingImageThumbnail = imageResizer
 					.CreateResizedImage(loadingImage, ThumbnailSize);
 			}
+            
+            var iconSize = new ImageSize(IconSizeSquareLength);
 
             using (var driveImage = GetImageFromResource(Resources.DriveIcon))
             {
-				DriveIcon = imageResizer.CreateResizedImage(driveImage, IconSize);
+				DriveIcon = imageResizer.CreateResizedImage(driveImage, iconSize);
 			}
 
 			using (var folderImage = GetImageFromResource(Resources.FolderIcon))
 			{
-				FolderIcon = imageResizer.CreateResizedImage(folderImage, IconSize);
+				FolderIcon = imageResizer.CreateResizedImage(folderImage, iconSize);
 			}
 
 			ProcessorCount = Environment.ProcessorCount;
@@ -71,23 +72,15 @@ namespace ImageFanReloaded
             EscapeKey = Key.Escape;
             EnterKey = Key.Enter;
 
-            BackwardNavigationKeys = new HashSet<Key>
-            {
-                Key.W, Key.A, Key.Up, Key.Left, Key.Back, Key.PageUp
-            };
+            BackwardNavigationKeys = [Key.W, Key.A, Key.Up, Key.Left, Key.Back, Key.PageUp];
 
-            ForwardNavigationKeys = new HashSet<Key>
-            {
-                Key.S, Key.D, Key.Down, Key.Right, Key.Space, Key.PageDown
-            };
+            ForwardNavigationKeys = [Key.S, Key.D, Key.Down, Key.Right, Key.Space, Key.PageDown];
         }
 
         #region Private
 
         private const int ThumbnailSizeSquareLength = 250;
 		private const int IconSizeSquareLength = 24;
-
-		private static readonly ImageSize IconSize;
 
 		private static Bitmap GetImageFromResource(byte[] resourceData)
 		{
