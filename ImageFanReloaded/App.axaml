@@ -3,6 +3,6 @@
              x:Class="ImageFanReloaded.App"
              RequestedThemeVariant="Default">
     <Application.Styles>
-        <FluentTheme />
+        <FluentTheme/>
     </Application.Styles>
 </Application>

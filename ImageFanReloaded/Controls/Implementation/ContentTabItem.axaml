@@ -22,13 +22,23 @@
                       ResizeBehavior="PreviousAndNext"
                       Width="5"
                       Background="#FFBCBCBC"/>
-		<ScrollViewer Name="_thumbnailScrollViewer"
-					  Grid.Column="2"
-                      VerticalScrollBarVisibility="Auto"
-                      Margin="5"
-					  Focusable="True">
-			<WrapPanel Name="_thumbnailWrapPanel"
-					   Orientation="Horizontal"/>
-		</ScrollViewer>
+		<Grid Grid.Column="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			<ScrollViewer Name="_thumbnailScrollViewer"
+			              Grid.Row="0"
+			              VerticalScrollBarVisibility="Auto"
+			              Focusable="True">
+				<WrapPanel Name="_thumbnailWrapPanel"
+				           Orientation="Horizontal"
+				           Margin="5 0 5 0"/>
+			</ScrollViewer>
+			<TextBlock Name="_textBlockInfo"
+			           Grid.Row="1"
+			           Margin="2"
+			           TextAlignment="Right"/>
+		</Grid>
 	</Grid>
 </UserControl>

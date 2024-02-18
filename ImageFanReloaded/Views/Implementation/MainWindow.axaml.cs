@@ -105,7 +105,7 @@ public partial class MainWindow : Window, IMainView
 	private void AddContentTabItem()
 	{
 		_imagesTabCounter++;
-		var title = $"Folder Tab {_imagesTabCounter}";
+		var title = $"Tab No. {_imagesTabCounter}";
 
 		SetTabItem(title, out ContentTabItem contentTabItem, out TabItem tabItem);
 
@@ -132,8 +132,8 @@ public partial class MainWindow : Window, IMainView
 		};
 
         contentTabItem.TabItem = tabItem;
-		contentTabItem.Title = title;
 		contentTabItem.Window = this;
+		contentTabItem.SetTitle(title);
 	}
 
     private int GetContentTabItemCount()

@@ -13,6 +13,6 @@
 				  HorizontalScrollBarVisibility="Hidden"
 				  VerticalScrollBarVisibility="Hidden">
 		<Image Name="_image"
-			   Stretch="None" />
+			   Stretch="None"/>
 	</ScrollViewer>
 </Window>

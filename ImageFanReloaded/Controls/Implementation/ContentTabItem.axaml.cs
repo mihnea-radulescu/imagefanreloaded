@@ -23,12 +23,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public IImageViewFactory? ImageViewFactory { get; set; }
 	public object? GenerateThumbnailsLockObject { get; set; }
 
-	public string Title
-	{
-		get => (string)TabItem!.Header!;
-		set => TabItem!.Header = value;
-	}
-	
 	public IFolderVisualState? FolderVisualState { get; set; }
 
 	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
@@ -53,6 +47,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			}
 		}
 	}
+	
+	public void SetTitle(string title) => TabItem!.Header = title;
 
 	public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
 									   bool rootNodes)
@@ -152,6 +148,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			thumbnailInfo.RefreshThumbnail();
 		}
+	}
+
+	public void SetStatusBarText(string statusBarText)
+	{
+		_textBlockInfo.Text = statusBarText;
 	}
 	
     #region Private

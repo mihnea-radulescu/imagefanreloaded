@@ -51,12 +51,15 @@ public class FolderVisualState : IFolderVisualState
 		lock (_generateThumbnailsLockObject)
 		{
 			_dispatcher.Invoke(() => _contentTabItem.ClearThumbnailBoxes());
-			_dispatcher.Invoke(() => _contentTabItem.Title = _folderPath);
+			_dispatcher.Invoke(() => _contentTabItem.SetTitle(_folderPath));
 
 			var subFolders = _discQueryEngine.GetSubFolders(_folderPath);
 			_dispatcher.Invoke(() => _contentTabItem.PopulateSubFoldersTree(subFolders, false));
 
 			var thumbnails = GetImageFiles(_folderPath);
+			
+			var statusBarText = $"{_folderPath} - {thumbnails.Count} images";
+			_dispatcher.Invoke(() => _contentTabItem.SetStatusBarText(statusBarText));
 
 			for (var thumbnailCollection = (IEnumerable<ThumbnailInfo>)thumbnails;
 				 !_thumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
