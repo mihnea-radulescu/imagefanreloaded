@@ -16,36 +16,33 @@ public partial class MainWindow : Window, IMainView
 
 		_windowFontSize = FontSize;
 
-		_imagesTabCounter = 0;
-
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
 
 		_tabControl.AddHandler(KeyDownEvent, OnTabControlKeyPressing, RoutingStrategies.Tunnel);
     }
 
-	public event EventHandler<TabItemEventArgs>? ContentTabItemAdded;
+	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
+	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
+	
+	public event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
 
 	public void AddFakeTabItem()
 	{
-		_fakeTabItem = new TabItem
+		var fakeTabItem = new TabItem
 		{
 			Header = FakeTabItemTitle,
 			FontSize = _windowFontSize
 		};
 
-		_tabControl.Items.Add(_fakeTabItem);
+		_tabControl.Items.Add(fakeTabItem);
 	}
-
 	#region Private
 
-	private const int MaxContentTabs = 10;
+	private const string DefaultTabItemTitle = "New Tab";
 	private const string FakeTabItemTitle = "+";
 
 	private readonly double _windowFontSize;
-
-	private TabItem? _fakeTabItem;
-	private int _imagesTabCounter;
 
 	private void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -53,7 +50,7 @@ public partial class MainWindow : Window, IMainView
 
 		if (keyPressing == GlobalData.TabSwitchKey)
 		{
-			var canNavigateAcrossTabs = CanNavigateAcrossTabs();
+			var canNavigateAcrossTabs = GetContentTabItemCount() > 1;
 
 			if (!canNavigateAcrossTabs)
 			{
@@ -104,52 +101,47 @@ public partial class MainWindow : Window, IMainView
 
 	private void AddContentTabItem()
 	{
-		_imagesTabCounter++;
-		var title = $"Tab No. {_imagesTabCounter}";
+		var (contentTabItem, tabItem) = GetTabItemData();
 
-		SetTabItem(title, out ContentTabItem contentTabItem, out TabItem tabItem);
+		var contentTabItemCount = GetContentTabItemCount();
+		_tabControl.Items.Insert(contentTabItemCount, tabItem);
 
-		var tabItemsCount = _tabControl.Items.Count;
-		_tabControl.Items.Insert(tabItemsCount - 1, tabItem);
-
-		ContentTabItemAdded?.Invoke(this, new TabItemEventArgs(contentTabItem));
-
-		if (_imagesTabCounter == MaxContentTabs)
-		{
-			_tabControl.Items.Remove(_fakeTabItem);
-			_tabControl.Focus();
-		}
+		ContentTabItemAdded?.Invoke(this, new ContentTabItemEventArgs(contentTabItem));
+		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
 	}
 
-	private void SetTabItem(string title, out ContentTabItem contentTabItem, out TabItem tabItem)
+	private (ContentTabItem contentTabItem, TabItem tabItem) GetTabItemData()
 	{
-		contentTabItem = new ContentTabItem();
-
-		tabItem = new TabItem
+		var contentTabItem = new ContentTabItem
 		{
-			Content = contentTabItem,
-			FontSize = _windowFontSize
+			Window = this
 		};
 
-        contentTabItem.TabItem = tabItem;
-		contentTabItem.Window = this;
-		contentTabItem.SetTitle(title);
+		var contentTabItemHeader = new ContentTabItemHeader
+		{
+			ContentTabItem = contentTabItem
+		};
+
+		contentTabItem.ContentTabItemHeader = contentTabItemHeader;
+		contentTabItem.ContentTabItemHeader.TabClosed += CloseContentTabItem;
+		
+		contentTabItem.SetTitle(DefaultTabItemTitle);
+		TabCountChanged += contentTabItem.OnTabCountChanged;
+		
+		var tabItem = new TabItem
+		{
+			FontSize = _windowFontSize,
+			Header = contentTabItem.ContentTabItemHeader,
+			Content = contentTabItem
+		};
+
+		contentTabItem.TabItem = tabItem;
+
+		return (contentTabItem, tabItem);
 	}
 
-    private int GetContentTabItemCount()
-    {
-        var contentTabItemCount = _tabControl.Items.Count;
-
-        var isFakeTabPresent = _tabControl.Items.Contains(_fakeTabItem);
-        if (isFakeTabPresent)
-        {
-            contentTabItemCount--;
-        }
-
-        return contentTabItemCount;
-    }
-
-	private bool CanNavigateAcrossTabs() => GetContentTabItemCount() > 1;
+	private int GetContentTabItemCount() => _tabControl.Items.Count - 1;
+	private bool ShouldAllowTabClose() => GetContentTabItemCount() > 1;
 
 	private IContentTabItem? GetActiveContentTabItem()
     {
@@ -158,6 +150,16 @@ public partial class MainWindow : Window, IMainView
 
 	    return contentTabItem;
     }
+
+	private void CloseContentTabItem(object? sender, ContentTabItemEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+		ContentTabItemClosed?.Invoke(this, new ContentTabItemEventArgs(contentTabItem));
+		
+		var tabItem = contentTabItem.TabItem;
+		_tabControl.Items.Remove(tabItem);
+		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
+	}
 
     #endregion
 }

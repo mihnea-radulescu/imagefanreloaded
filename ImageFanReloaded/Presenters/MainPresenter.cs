@@ -22,7 +22,9 @@ public class MainPresenter
 		_imageViewFactory = imageViewFactory;
 
 		_mainView = mainView;
+		
 		_mainView.ContentTabItemAdded += OnContentTabItemAdded;
+		_mainView.ContentTabItemClosed += OnContentTabItemClosed;
 	}
 
 	#region Private
@@ -34,7 +36,7 @@ public class MainPresenter
 
 	private readonly IMainView _mainView;
 
-	private void OnContentTabItemAdded(object? sender, TabItemEventArgs e)
+	private void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 
@@ -46,12 +48,20 @@ public class MainPresenter
 		PopulateDrivesAndSpecialFolders(contentTabItem);
 	}
 	
+	private static void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+
+		ClearContentTabItem(contentTabItem);
+	}
+	
 	private void OnFolderChanged(object? sender, FolderChangedEventArgs e)
 	{
 		var contentTabItem = (IContentTabItem)sender!;
+		var name = e.Name;
 		var path = e.Path;
 
-		UpdateUserInterface(contentTabItem, path);
+		UpdateContentTabItem(contentTabItem, name, path);
 	}
 
 	private void PopulateDrivesAndSpecialFolders(IContentTabItem contentTabItem)
@@ -63,7 +73,8 @@ public class MainPresenter
 		contentTabItem.PopulateSubFoldersTree(drives, true);
 	}
 
-	private void UpdateUserInterface(IContentTabItem contentTabItem, string folderPath)
+	private void UpdateContentTabItem(
+		IContentTabItem contentTabItem, string folderName, string folderPath)
 	{
 		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
 
@@ -71,9 +82,17 @@ public class MainPresenter
 			_discQueryEngine,
 			_dispatcher,
 			contentTabItem,
+			folderName,
 			folderPath);
 
 		contentTabItem.FolderVisualState.UpdateVisualState();
+	}
+	
+	private static void ClearContentTabItem(IContentTabItem contentTabItem)
+	{
+		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
+
+		contentTabItem.FolderVisualState?.ClearVisualState();
 	}
 
 	#endregion

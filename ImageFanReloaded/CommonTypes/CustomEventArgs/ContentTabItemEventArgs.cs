@@ -3,9 +3,9 @@ using ImageFanReloaded.Controls;
 
 namespace ImageFanReloaded.CommonTypes.CustomEventArgs;
 
-public class TabItemEventArgs : EventArgs
+public class ContentTabItemEventArgs : EventArgs
 {
-	public TabItemEventArgs(IContentTabItem contentTabItem)
+	public ContentTabItemEventArgs(IContentTabItem contentTabItem)
 	{
 		ContentTabItem = contentTabItem;
 	}

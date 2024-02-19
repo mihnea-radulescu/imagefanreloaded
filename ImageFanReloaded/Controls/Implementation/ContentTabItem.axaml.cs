@@ -16,9 +16,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		InitializeComponent();
     }
-
-    public TabItem? TabItem { get; set; }
+	
+	public TabItem? TabItem { get; set; }
     public Window? Window { get; set; }
+    
+    public IContentTabItemHeader? ContentTabItemHeader { get; set; }
 
 	public IImageViewFactory? ImageViewFactory { get; set; }
 	public object? GenerateThumbnailsLockObject { get; set; }
@@ -47,8 +49,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			}
 		}
 	}
-	
-	public void SetTitle(string title) => TabItem!.Header = title;
+
+	public void OnTabCountChanged(object? sender, TabCountChangedEventArgs e)
+		=> ShouldAllowClose(e.ShouldDisplayTabCloseButton);
+
+	public void SetTitle(string title)
+		=> ContentTabItemHeader!.SetTabTitle(title);
 
 	public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
 									   bool rootNodes)
@@ -77,7 +83,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void ClearThumbnailBoxes()
+	public void ClearThumbnailBoxes(bool resetContent)
 	{
 		_thumbnailWrapPanel.Children.Clear();
 
@@ -88,13 +94,15 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				aThumbnailBox.DisposeThumbnail();
 			}
 		}
-
-		_thumbnailBoxList = new List<ThumbnailBox>();
-		_selectedThumbnailIndex = -1;
-		_selectedThumbnailBox = null;
-
-		_thumbnailScrollViewer.Offset = new Vector(
-			_thumbnailScrollViewer.Offset.X, 0);
+		
+		if (resetContent)
+		{
+			_thumbnailBoxList = new List<ThumbnailBox>();
+			_selectedThumbnailIndex = -1;
+			_selectedThumbnailBox = null;
+			
+			_thumbnailScrollViewer.Offset = new Vector(_thumbnailScrollViewer.Offset.X, 0);
+		}
 	}
 
 	public void PopulateThumbnailBoxes(
@@ -175,10 +183,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				selectedFolderTreeViewItem.Header!;
 
 			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo;
+			var selectedFolderName = fileSystemEntryInfo.Name;
 			var selectedFolderPath = fileSystemEntryInfo.Path;
 
-			folderChangedHandler(this,
-								 new FolderChangedEventArgs(selectedFolderPath));
+			folderChangedHandler(
+				this, new FolderChangedEventArgs(selectedFolderName, selectedFolderPath));
 		}
 	}
 
@@ -257,6 +266,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		return treeViewItem;
 	}
+	
+	private void ShouldAllowClose(bool allowClose)
+		=> ContentTabItemHeader!.ShouldShowTabCloseButton(allowClose);
 
 	#endregion
 }

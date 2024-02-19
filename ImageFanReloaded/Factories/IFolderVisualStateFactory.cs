@@ -10,5 +10,6 @@ public interface IFolderVisualStateFactory
 		IDiscQueryEngine discQueryEngine,
 		IVisualActionDispatcher dispatcher,
 		IContentTabItem contentTabItem,
+		string folderName,
 		string folderPath);
 }

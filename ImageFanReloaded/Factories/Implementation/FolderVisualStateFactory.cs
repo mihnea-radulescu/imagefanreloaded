@@ -11,12 +11,14 @@ public class FolderVisualStateFactory : IFolderVisualStateFactory
 		IDiscQueryEngine discQueryEngine,
 			IVisualActionDispatcher dispatcher,
 			IContentTabItem contentTabItem,
+			string folderName,
 			string folderPath)
     {
 		IFolderVisualState folderVisualState = new FolderVisualState(
 			discQueryEngine,
 			dispatcher,
 			contentTabItem,
+			folderName,
 			folderPath);
 
 		return folderVisualState;

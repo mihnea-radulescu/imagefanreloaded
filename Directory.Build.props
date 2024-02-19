@@ -4,8 +4,8 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Copyright>Copyright © Mihnea Rădulescu 2023 - 2024</Copyright>
-		<AssemblyVersion>1.2024.02.18</AssemblyVersion>
+		<Copyright>Copyright © Mihnea Rădulescu 2017 - 2024</Copyright>
+		<AssemblyVersion>1.2024.02.19</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
 		<PublishReadyToRun>true</PublishReadyToRun>
 		<PublishSingleFile>true</PublishSingleFile>

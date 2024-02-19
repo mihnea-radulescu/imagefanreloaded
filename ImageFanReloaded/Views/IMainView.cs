@@ -5,7 +5,10 @@ namespace ImageFanReloaded.Views;
 
 public interface IMainView
 {
-	event EventHandler<TabItemEventArgs>? ContentTabItemAdded;
+	event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
+	event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
+	
+	event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
 
 	void AddFakeTabItem();
 

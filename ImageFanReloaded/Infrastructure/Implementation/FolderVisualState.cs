@@ -15,6 +15,7 @@ public class FolderVisualState : IFolderVisualState
 		IDiscQueryEngine discQueryEngine,
 		IVisualActionDispatcher dispatcher,
 		IContentTabItem contentTabItem,
+		string folderName,
 		string folderPath)
 	{
 		_discQueryEngine = discQueryEngine;
@@ -23,6 +24,7 @@ public class FolderVisualState : IFolderVisualState
 		_contentTabItem = contentTabItem;
 		_generateThumbnailsLockObject = _contentTabItem.GenerateThumbnailsLockObject!;
 
+		_folderName = folderName;
 		_folderPath = folderPath;
 
 		_thumbnailGeneration = new CancellationTokenSource();
@@ -35,12 +37,18 @@ public class FolderVisualState : IFolderVisualState
 		Task.Factory.StartNew(UpdateVisualStateHelper);
 	}
 
+	public void ClearVisualState()
+	{
+		Task.Factory.StartNew(ClearVisualStateHelper);
+	}
+
 	#region Private
 
 	private readonly IDiscQueryEngine _discQueryEngine;
 	private readonly IVisualActionDispatcher _dispatcher;
 	private readonly IContentTabItem _contentTabItem;
 
+	private readonly string _folderName;
 	private readonly string _folderPath;
 
 	private readonly object _generateThumbnailsLockObject;
@@ -50,8 +58,8 @@ public class FolderVisualState : IFolderVisualState
 	{
 		lock (_generateThumbnailsLockObject)
 		{
-			_dispatcher.Invoke(() => _contentTabItem.ClearThumbnailBoxes());
-			_dispatcher.Invoke(() => _contentTabItem.SetTitle(_folderPath));
+			_dispatcher.Invoke(() => _contentTabItem.ClearThumbnailBoxes(true));
+			_dispatcher.Invoke(() => _contentTabItem.SetTitle(_folderName));
 
 			var subFolders = _discQueryEngine.GetSubFolders(_folderPath);
 			_dispatcher.Invoke(() => _contentTabItem.PopulateSubFoldersTree(subFolders, false));
@@ -78,7 +86,15 @@ public class FolderVisualState : IFolderVisualState
 		}
 	}
 
-	private IList<ThumbnailInfo> GetImageFiles(string folderPath)
+	private void ClearVisualStateHelper()
+	{
+		lock (_generateThumbnailsLockObject)
+		{
+			_dispatcher.Invoke(() => _contentTabItem.ClearThumbnailBoxes(false));
+		}
+	}
+
+	private IReadOnlyList<ThumbnailInfo> GetImageFiles(string folderPath)
 	{
 		var imageFiles = _discQueryEngine.GetImageFiles(folderPath);
 
@@ -89,7 +105,7 @@ public class FolderVisualState : IFolderVisualState
 		return thumbnailInfoList;
 	}
 
-	private void ReadThumbnailInput(IList<ThumbnailInfo> currentThumbnails)
+	private void ReadThumbnailInput(IReadOnlyList<ThumbnailInfo> currentThumbnails)
 	{
 		for (var i = 0; !_thumbnailGeneration.IsCancellationRequested && i < currentThumbnails.Count; i++)
 		{
@@ -97,7 +113,7 @@ public class FolderVisualState : IFolderVisualState
 		}
 	}
 
-	private void GetThumbnails(IList<ThumbnailInfo> currentThumbnails)
+	private void GetThumbnails(IReadOnlyList<ThumbnailInfo> currentThumbnails)
 	{
 		var thumbnailGenerationTasks = new Task[currentThumbnails.Count];
 
