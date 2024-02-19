@@ -39,18 +39,19 @@ public class MainPresenter
 	private void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-
+		
 		contentTabItem.ImageViewFactory = _imageViewFactory;
 		contentTabItem.GenerateThumbnailsLockObject = new object();
-
 		contentTabItem.FolderChanged += OnFolderChanged;
 
 		PopulateDrivesAndSpecialFolders(contentTabItem);
 	}
 	
-	private static void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
+	private void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
+		
+		contentTabItem.FolderChanged -= OnFolderChanged;
 
 		ClearContentTabItem(contentTabItem);
 	}

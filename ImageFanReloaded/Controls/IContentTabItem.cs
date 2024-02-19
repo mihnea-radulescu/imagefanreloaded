@@ -6,6 +6,7 @@ using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.Info;
 using ImageFanReloaded.Factories;
 using ImageFanReloaded.Infrastructure;
+using ImageFanReloaded.Views;
 
 namespace ImageFanReloaded.Controls;
 
@@ -14,6 +15,7 @@ public interface IContentTabItem
 	TabItem? TabItem { get; set; }
 	Window? Window { get; set; }
 	
+	IMainView? MainView { get; set; }
 	IContentTabItemHeader? ContentTabItemHeader { get; set; }
 	
     IImageViewFactory? ImageViewFactory { get; set; }
@@ -24,9 +26,11 @@ public interface IContentTabItem
 	event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	
 	void OnKeyPressed(object? sender, KeyEventArgs e);
-	void OnTabCountChanged(object? sender, TabCountChangedEventArgs e);
 
 	void SetTitle(string title);
+
+	void RegisterMainViewEvents();
+	void UnregisterMainViewEvents();
 
 	void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
 								bool rootNodes);

@@ -101,7 +101,7 @@ public partial class MainWindow : Window, IMainView
 
 	private void AddContentTabItem()
 	{
-		var (contentTabItem, tabItem) = GetTabItemData();
+		var (contentTabItem, tabItem) = BuildTabItemData();
 
 		var contentTabItemCount = GetContentTabItemCount();
 		_tabControl.Items.Insert(contentTabItemCount, tabItem);
@@ -110,11 +110,12 @@ public partial class MainWindow : Window, IMainView
 		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
 	}
 
-	private (ContentTabItem contentTabItem, TabItem tabItem) GetTabItemData()
+	private (ContentTabItem contentTabItem, TabItem tabItem) BuildTabItemData()
 	{
 		var contentTabItem = new ContentTabItem
 		{
-			Window = this
+			Window = this,
+			MainView = this
 		};
 
 		var contentTabItemHeader = new ContentTabItemHeader
@@ -124,9 +125,9 @@ public partial class MainWindow : Window, IMainView
 
 		contentTabItem.ContentTabItemHeader = contentTabItemHeader;
 		contentTabItem.ContentTabItemHeader.TabClosed += CloseContentTabItem;
+		contentTabItem.RegisterMainViewEvents();
 		
 		contentTabItem.SetTitle(DefaultTabItemTitle);
-		TabCountChanged += contentTabItem.OnTabCountChanged;
 		
 		var tabItem = new TabItem
 		{
@@ -159,6 +160,9 @@ public partial class MainWindow : Window, IMainView
 		var tabItem = contentTabItem.TabItem;
 		_tabControl.Items.Remove(tabItem);
 		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
+		
+		contentTabItem.ContentTabItemHeader!.TabClosed -= CloseContentTabItem;
+		contentTabItem.UnregisterMainViewEvents();
 	}
 
     #endregion

@@ -19,7 +19,7 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 	public void SetTabTitle(string tabTitle)
 		=> _textBlockTabTitle.Text = tabTitle;
 
-	public void ShouldShowTabCloseButton(bool showTabCloseButton)
+	public void ShowTabCloseButton(bool showTabCloseButton)
 		=> _borderTabClose.IsVisible = showTabCloseButton;
 
 	#region Private

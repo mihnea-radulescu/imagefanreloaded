@@ -2,6 +2,7 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.ImageHandling;
 using ImageFanReloaded.CommonTypes.Info;
 
@@ -16,7 +17,7 @@ public partial class ThumbnailBox : UserControl, IRefreshableControl
 		SetControlProperties();
 	}
 
-	public event EventHandler<EventArgs>? ThumbnailBoxClicked;
+	public event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxClicked;
 
 	public IImageFile? ImageFile { get; private set; }
 	public bool IsSelected { get; private set; }
@@ -76,7 +77,7 @@ public partial class ThumbnailBox : UserControl, IRefreshableControl
 	{
 		if (e.InitialPressMouseButton == MouseButton.Left)
 		{
-			ThumbnailBoxClicked?.Invoke(this, EventArgs.Empty);
+			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxEventArgs(this));
 		}
 	}
 

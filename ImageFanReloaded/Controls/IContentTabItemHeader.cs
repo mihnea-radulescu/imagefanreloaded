@@ -11,5 +11,5 @@ public interface IContentTabItemHeader
 	
 	void SetTabTitle(string tabTitle);
 
-	void ShouldShowTabCloseButton(bool showTabCloseButton);
+	void ShowTabCloseButton(bool showTabCloseButton);
 }

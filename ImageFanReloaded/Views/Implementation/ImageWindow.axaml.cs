@@ -174,7 +174,8 @@ public partial class ImageWindow : Window, IImageView
 
 	private void RaiseThumbnailChanged(int increment)
 	{
-		ThumbnailChanged?.Invoke(this, new ThumbnailChangedEventArgs(increment));
+		ThumbnailChanged?.Invoke(
+			this, new ThumbnailChangedEventArgs(this, increment));
 	}
 
 	private void DragImage()

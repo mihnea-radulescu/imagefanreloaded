@@ -4,10 +4,10 @@ namespace ImageFanReloaded.CommonTypes.CustomEventArgs;
 
 public class TabCountChangedEventArgs : EventArgs
 {
-	public TabCountChangedEventArgs(bool shouldDisplayTabCloseButton)
+	public TabCountChangedEventArgs(bool showTabCloseButton)
 	{
-		ShouldDisplayTabCloseButton = shouldDisplayTabCloseButton;
+		ShowTabCloseButton = showTabCloseButton;
 	}
 
-	public bool ShouldDisplayTabCloseButton { get; }
+	public bool ShowTabCloseButton { get; }
 }

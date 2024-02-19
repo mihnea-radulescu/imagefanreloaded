@@ -7,6 +7,7 @@ using ImageFanReloaded.CommonTypes.CustomEventArgs;
 using ImageFanReloaded.CommonTypes.Info;
 using ImageFanReloaded.Factories;
 using ImageFanReloaded.Infrastructure;
+using ImageFanReloaded.Views;
 
 namespace ImageFanReloaded.Controls.Implementation;
 
@@ -20,6 +21,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public TabItem? TabItem { get; set; }
     public Window? Window { get; set; }
     
+    public IMainView? MainView { get; set; }
     public IContentTabItemHeader? ContentTabItemHeader { get; set; }
 
 	public IImageViewFactory? ImageViewFactory { get; set; }
@@ -50,11 +52,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void OnTabCountChanged(object? sender, TabCountChangedEventArgs e)
-		=> ShouldAllowClose(e.ShouldDisplayTabCloseButton);
+	public void SetTitle(string title) => ContentTabItemHeader!.SetTabTitle(title);
 
-	public void SetTitle(string title)
-		=> ContentTabItemHeader!.SetTabTitle(title);
+	public void RegisterMainViewEvents() => MainView!.TabCountChanged += OnTabCountChanged;
+	public void UnregisterMainViewEvents() => MainView!.TabCountChanged -= OnTabCountChanged;
 
 	public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
 									   bool rootNodes)
@@ -92,6 +93,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			foreach (var aThumbnailBox in _thumbnailBoxList)
 			{
 				aThumbnailBox.DisposeThumbnail();
+				aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
 			}
 		}
 		
@@ -116,21 +118,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			};
 
 			thumbnailInfo.ThumbnailBox = aThumbnailBox;
-
-			aThumbnailBox.ThumbnailBoxClicked +=
-				(sender, e) =>
-				{
-					var thumbnailBox = (ThumbnailBox)sender!;
-
-					if (thumbnailBox.IsSelected)
-					{
-						DisplayImage();
-					}
-					else
-					{
-						SelectThumbnailBox(thumbnailBox);
-					}
-				};
+			aThumbnailBox.ThumbnailBoxClicked += OnThumbnailBoxClicked;
 
 			_thumbnailBoxList!.Add(aThumbnailBox);
 
@@ -171,23 +159,45 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private int _selectedThumbnailIndex;
 	private ThumbnailBox? _selectedThumbnailBox;
 
+	private void OnThumbnailBoxClicked(object? sender, ThumbnailBoxEventArgs e)
+	{
+		var thumbnailBox = e.ThumbnailBox;
+
+		if (thumbnailBox.IsSelected)
+		{
+			DisplayImage();
+		}
+		else
+		{
+			SelectThumbnailBox(thumbnailBox);
+		}
+	}
+
     private void OnFolderTreeViewSelectedItemChanged(object? sender,
 													 SelectionChangedEventArgs e)
 	{
-		var folderChangedHandler = FolderChanged;
+		var selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
+		var fileSystemEntryItem = (IFileSystemEntryItem)selectedFolderTreeViewItem.Header!;
 
-		if (folderChangedHandler is not null)
+		var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo;
+		var selectedFolderName = fileSystemEntryInfo.Name;
+		var selectedFolderPath = fileSystemEntryInfo.Path;
+
+		FolderChanged?.Invoke(
+			this, new FolderChangedEventArgs(selectedFolderName, selectedFolderPath));
+	}
+    
+	private void OnTabCountChanged(object? sender, TabCountChangedEventArgs e)
+		=> ShowCloseButton(e.ShowTabCloseButton);
+
+	private void OnThumbnailChanged(object? sender, ThumbnailChangedEventArgs e)
+	{
+		var imageView = e.ImageView;
+		var increment = e.Increment;
+		
+		if (AdvanceToThumbnailIndex(increment))
 		{
-			var selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
-			var fileSystemEntryItem = (IFileSystemEntryItem)
-				selectedFolderTreeViewItem.Header!;
-
-			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo;
-			var selectedFolderName = fileSystemEntryInfo.Name;
-			var selectedFolderPath = fileSystemEntryInfo.Path;
-
-			folderChangedHandler(
-				this, new FolderChangedEventArgs(selectedFolderName, selectedFolderPath));
+			imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
 		}
 	}
 
@@ -233,16 +243,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		var imageView = ImageViewFactory!.GetImageView();
 		imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
 
-		imageView.ThumbnailChanged +=
-			(sender, e) =>
-			{
-				if (AdvanceToThumbnailIndex(e.Increment))
-				{
-					imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
-				}
-			};
-
+		imageView.ThumbnailChanged += OnThumbnailChanged;
 		await imageView.ShowDialog(Window!);
+		imageView.ThumbnailChanged -= OnThumbnailChanged;
 
 		_selectedThumbnailBox?.Focus();
 	}
@@ -267,8 +270,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return treeViewItem;
 	}
 	
-	private void ShouldAllowClose(bool allowClose)
-		=> ContentTabItemHeader!.ShouldShowTabCloseButton(allowClose);
+	private void ShowCloseButton(bool showTabCloseButton)
+		=> ContentTabItemHeader!.ShowTabCloseButton(showTabCloseButton);
 
 	#endregion
 }
