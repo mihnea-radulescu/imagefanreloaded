@@ -11,7 +11,7 @@ Features:
 * fast and seamless full-screen navigation across images
 
 User interface:
-* left mouse button for selecting tabs, folders and images, and for opening, zooming in and out, and dragging images
+* left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and dragging images
 * right mouse button for returning from the opened image to the main view
 * mouse wheel for scrolling through folders and thumbnails, and for navigating back and forward through opened images
 * key Tab for cycling though active tabs

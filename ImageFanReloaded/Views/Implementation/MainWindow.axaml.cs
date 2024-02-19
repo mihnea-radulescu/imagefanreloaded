@@ -37,6 +37,7 @@ public partial class MainWindow : Window, IMainView
 
 		_tabControl.Items.Add(fakeTabItem);
 	}
+	
 	#region Private
 
 	private const string DefaultTabItemTitle = "New Tab";
@@ -152,6 +153,13 @@ public partial class MainWindow : Window, IMainView
 	    return contentTabItem;
     }
 
+	private void SelectLastTabItem()
+	{
+		var lastTabItemIndex = GetContentTabItemCount() - 1;
+		var lastTabItem = (TabItem)_tabControl.Items[lastTabItemIndex]!;
+		lastTabItem.IsSelected = true;
+	}
+
 	private void CloseContentTabItem(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
@@ -163,6 +171,8 @@ public partial class MainWindow : Window, IMainView
 		
 		contentTabItem.ContentTabItemHeader!.TabClosed -= CloseContentTabItem;
 		contentTabItem.UnregisterMainViewEvents();
+
+		SelectLastTabItem();
 	}
 
     #endregion
