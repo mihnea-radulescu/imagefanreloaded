@@ -41,7 +41,7 @@ public partial class MainWindow : Window, IMainView
 	#region Private
 
 	private const string DefaultTabItemTitle = "New Tab";
-	private const string FakeTabItemTitle = "+";
+	private const string FakeTabItemTitle = "➕";
 
 	private readonly double _windowFontSize;
 
