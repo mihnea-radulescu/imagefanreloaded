@@ -87,6 +87,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public void ClearThumbnailBoxes(bool resetContent)
 	{
 		_thumbnailWrapPanel.Children.Clear();
+		_selectedThumbnailBox = null;
 
 		if (_thumbnailBoxList is not null)
 		{
@@ -95,13 +96,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				aThumbnailBox.DisposeThumbnail();
 				aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
 			}
+
+			_thumbnailBoxList = null;
 		}
 		
 		if (resetContent)
 		{
 			_thumbnailBoxList = new List<ThumbnailBox>();
 			_selectedThumbnailIndex = -1;
-			_selectedThumbnailBox = null;
 			
 			_thumbnailScrollViewer.Offset = new Vector(_thumbnailScrollViewer.Offset.X, 0);
 		}
