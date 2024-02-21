@@ -138,8 +138,10 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 			var imageFiles = filesInformation
 				.Where(aFileInfo =>
 					   ImageFileExtensions.Contains(aFileInfo.Extension))
-				.OrderBy(aFileInfo => aFileInfo.Name)
-				.Select(aFileInfo => _imageFileFactory.GetImageFile(aFileInfo.FullName))
+				.Select(aFileInfo => _imageFileFactory.GetImageFile(
+					aFileInfo.Name,
+					aFileInfo.FullName,
+					ConvertToSizeOnDiscInKilobytes(aFileInfo.Length)))
 				.OrderBy(aFileInfo => aFileInfo.FileName, NameComparer)
 				.ToArray();
 
@@ -154,7 +156,9 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	protected abstract bool IsSupportedDrive(string driveName);
 
 	#region Private
-
+	
+	private const int OneKilobyteInBytes = 1024;
+	
 	private static readonly IComparer<string> NameComparer;
 
     private static readonly IReadOnlyCollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
@@ -183,6 +187,9 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		    return false;
 	    }
     }
-
-	#endregion
+    
+    private static int ConvertToSizeOnDiscInKilobytes(long sizeOnDiscInBytes)
+	    => (int)sizeOnDiscInBytes / OneKilobyteInBytes;
+    
+    #endregion
 }

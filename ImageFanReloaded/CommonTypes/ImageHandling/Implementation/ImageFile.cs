@@ -1,25 +1,31 @@
-﻿using System.IO;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 
-public class ImageFile
-    : IImageFile
+public class ImageFile : IImageFile
 {
-    public ImageFile(IImageResizer imageResizer, string imageFilePath)
+    public ImageFile(
+	    IImageResizer imageResizer,
+	    string imageFileName,
+	    string imageFilePath,
+	    int sizeOnDiscInKilobytes)
     {
         _imageResizer = imageResizer;
+        
+        FileName = imageFileName;
         _imageFilePath = imageFilePath;
-
-        FileName = Path.GetFileName(imageFilePath);
-
-		ImageSize = GlobalData.InvalidImageSize;
+        
+        SizeOnDiscInKilobytes = sizeOnDiscInKilobytes;
+        ImageSize = GlobalData.InvalidImageSize;
 
 		_thumbnailGenerationLockObject = new object();
+
+		_hasReadImageError = false;
     }
 
     public string FileName { get; }
-
+    
+    public int SizeOnDiscInKilobytes { get; }
 	public ImageSize ImageSize { get; private set; }
 
 	public Bitmap GetImage()
@@ -29,12 +35,14 @@ public class ImageFile
         try
         {
             image = new Bitmap(_imageFilePath);
-			ImageSize = new ImageSize(image.Size.Width, image.Size.Height);
-		}
+            ImageSize = new ImageSize(image.Size.Width, image.Size.Height);
+        }
         catch
         {
             image = GlobalData.InvalidImage;
 			ImageSize = GlobalData.InvalidImageSize;
+			
+			_hasReadImageError = true;
 		}
 
         return image;
@@ -56,6 +64,8 @@ public class ImageFile
         {
             resizedImage = GlobalData.InvalidImage;
 			ImageSize = GlobalData.InvalidImageSize;
+			
+			_hasReadImageError = true;
 		}
         finally
         {
@@ -72,16 +82,19 @@ public class ImageFile
 		try
 		{
 			imageData = new Bitmap(_imageFilePath);
+			ImageSize = new ImageSize(imageData.Size.Width, imageData.Size.Height);
 		}
 		catch
 		{
 			imageData = GlobalData.InvalidImage;
+			ImageSize = GlobalData.InvalidImageSize;
+
+			_hasReadImageError = true;
 		}
 		
 		lock (_thumbnailGenerationLockObject)
 		{
 			_imageData = imageData;
-			ImageSize = new ImageSize(_imageData.Size.Width, _imageData.Size.Height);
 		}
 	}
 
@@ -123,6 +136,16 @@ public class ImageFile
 		}
 	}
 
+	public string GetImageInfo()
+	{
+		var imageSizeText = _hasReadImageError
+			? " - invalid image - "
+			: $" - {ImageSize!.Width}x{ImageSize!.Height} - ";
+
+		var imageInfo = $"{FileName}{imageSizeText}{SizeOnDiscInKilobytes} KB";
+		return imageInfo;
+	}
+
 	#region Private
 
 	private readonly IImageResizer _imageResizer;
@@ -130,6 +153,7 @@ public class ImageFile
     private readonly object _thumbnailGenerationLockObject;
 
     private Bitmap? _imageData;
+    private bool _hasReadImageError;
 
-	#endregion
+    #endregion
 }

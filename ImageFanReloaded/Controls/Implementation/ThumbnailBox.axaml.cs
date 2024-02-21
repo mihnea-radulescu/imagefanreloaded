@@ -17,6 +17,7 @@ public partial class ThumbnailBox : UserControl, IRefreshableControl
 		SetControlProperties();
 	}
 
+	public event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxSelected;
 	public event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxClicked;
 
 	public IImageFile? ImageFile { get; private set; }
@@ -43,6 +44,8 @@ public partial class ThumbnailBox : UserControl, IRefreshableControl
 		IsSelected = true;
 
 		this.BringIntoView();
+		
+		ThumbnailBoxSelected?.Invoke(this, new ThumbnailBoxEventArgs(this));
 	}
 
 	public void UnselectThumbnail()

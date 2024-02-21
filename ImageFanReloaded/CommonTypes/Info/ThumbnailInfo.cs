@@ -25,15 +25,15 @@ public class ThumbnailInfo
 
     public void ReadThumbnailInputFromDisc() => ImageFile.ReadImageDataFromDisc();
 
-    public void SaveThumbnail()
+    public void GetThumbnail()
     {
         try
         {
-            SaveThumbnailHelper();
+            GetThumbnailHelper();
         }
         catch (InvalidOperationException)
         {
-            _dispatcher.Invoke(SaveThumbnailHelper);
+            _dispatcher.Invoke(GetThumbnailHelper);
         }
     }
 
@@ -55,7 +55,7 @@ public class ThumbnailInfo
 
     private readonly IVisualActionDispatcher _dispatcher;
 
-    private void SaveThumbnailHelper()
+    private void GetThumbnailHelper()
     {
         ThumbnailImage = ImageFile.GetThumbnail();
 	}

@@ -35,10 +35,22 @@
 				           Orientation="Horizontal"
 				           Margin="5 0 5 0"/>
 			</ScrollViewer>
-			<TextBlock Name="_textBlockInfo"
-			           Grid.Row="1"
-			           Margin="2"
-			           TextAlignment="Right"/>
+			
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="50*"></ColumnDefinition>
+					<ColumnDefinition Width="50*"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<TextBlock Name="_textBlockImageInfo"
+				           Grid.Column="0"
+				           Margin="3"
+				           TextAlignment="Left"/>
+				<TextBlock Name="_textBlockFolderInfo"
+				           Grid.Column="1"
+				           Margin="3"
+				           TextAlignment="Right"/>
+			</Grid>
+			
 		</Grid>
 	</Grid>
 </UserControl>

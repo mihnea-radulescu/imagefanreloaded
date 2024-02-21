@@ -39,5 +39,6 @@ public interface IContentTabItem
 	void PopulateThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
 	void RefreshThumbnailBoxes(IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection);
 
-	void SetStatusBarText(string statusBarText);
+	void SetFolderStatusBarText(string folderStatusBarText);
+	void SetImageStatusBarText(string imageStatusBarText);
 }

@@ -5,7 +5,8 @@ namespace ImageFanReloaded.CommonTypes.ImageHandling;
 public interface IImageFile
 {
     string FileName { get; }
-
+    
+    int SizeOnDiscInKilobytes { get; }
 	ImageSize ImageSize { get; }
 
 	Bitmap GetImage();
@@ -14,4 +15,6 @@ public interface IImageFile
     void ReadImageDataFromDisc();
 	Bitmap GetThumbnail();
     void DisposeImageData();
+
+    string GetImageInfo();
 }

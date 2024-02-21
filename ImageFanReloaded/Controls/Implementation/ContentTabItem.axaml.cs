@@ -83,6 +83,38 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			}
 		}
 	}
+	
+	public void PopulateThumbnailBoxes(
+		IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection)
+	{
+		foreach (var thumbnailInfo in thumbnailInfoCollection)
+		{
+			var aThumbnailBox = new ThumbnailBox
+			{
+				ThumbnailInfo = thumbnailInfo
+			};
+
+			thumbnailInfo.ThumbnailBox = aThumbnailBox;
+			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
+			aThumbnailBox.ThumbnailBoxClicked += OnThumbnailBoxClicked;
+
+			_thumbnailBoxList!.Add(aThumbnailBox);
+
+			if (_thumbnailBoxList.Count == 1)
+			{
+				SelectThumbnailBox(aThumbnailBox);
+				_thumbnailScrollViewer.Focus();
+			}
+
+			var aSurroundingStackPanel = new StackPanel
+			{
+				Focusable = true
+			};
+			
+			aSurroundingStackPanel.Children.Add(aThumbnailBox);
+			_thumbnailWrapPanel.Children.Add(aSurroundingStackPanel);
+		}
+	}
 
 	public void ClearThumbnailBoxes(bool resetContent)
 	{
@@ -94,6 +126,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			foreach (var aThumbnailBox in _thumbnailBoxList)
 			{
 				aThumbnailBox.DisposeThumbnail();
+				aThumbnailBox.ThumbnailBoxSelected -= OnThumbnailBoxSelected;
 				aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
 			}
 
@@ -109,36 +142,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void PopulateThumbnailBoxes(
-		IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection)
-	{
-		foreach (var thumbnailInfo in thumbnailInfoCollection)
-		{
-			var aThumbnailBox = new ThumbnailBox
-			{
-				ThumbnailInfo = thumbnailInfo
-			};
-
-			thumbnailInfo.ThumbnailBox = aThumbnailBox;
-			aThumbnailBox.ThumbnailBoxClicked += OnThumbnailBoxClicked;
-
-			_thumbnailBoxList!.Add(aThumbnailBox);
-
-			if (_thumbnailBoxList.Count == 1)
-			{
-				SelectThumbnailBox(aThumbnailBox);
-				_thumbnailScrollViewer.Focus();
-			}
-
-			var aSurroundingStackPanel = new StackPanel
-			{
-				Focusable = true
-			};
-			aSurroundingStackPanel.Children.Add(aThumbnailBox);
-			_thumbnailWrapPanel.Children.Add(aSurroundingStackPanel);
-		}
-	}
-
 	public void RefreshThumbnailBoxes(
 		IReadOnlyCollection<ThumbnailInfo> thumbnailInfoCollection)
 	{
@@ -148,9 +151,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void SetStatusBarText(string statusBarText)
+	public void SetFolderStatusBarText(string folderStatusBarText)
 	{
-		_textBlockInfo.Text = statusBarText;
+		_textBlockFolderInfo.Text = folderStatusBarText;
+	}
+	
+	public void SetImageStatusBarText(string imageStatusBarText)
+	{
+		_textBlockImageInfo.Text = imageStatusBarText;
 	}
 	
     #region Private
@@ -160,6 +168,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     private List<ThumbnailBox>? _thumbnailBoxList;
 	private int _selectedThumbnailIndex;
 	private ThumbnailBox? _selectedThumbnailBox;
+	
+	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxEventArgs e)
+	{
+		var imageFile = e.ThumbnailBox.ImageFile!;
+		var imageInfo = imageFile.GetImageInfo();
+		
+		SetImageStatusBarText(imageInfo);
+	}
 
 	private void OnThumbnailBoxClicked(object? sender, ThumbnailBoxEventArgs e)
 	{
@@ -207,13 +223,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		if (_selectedThumbnailBox != thumbnailBox)
 		{
-			_selectedThumbnailBox?.UnselectThumbnail();
+			UnselectThumbnail();
 			
 			_selectedThumbnailBox = thumbnailBox;
 			_selectedThumbnailIndex = _thumbnailBoxList
 				!.FindIndex(aThumbnailBox => aThumbnailBox == _selectedThumbnailBox);
 
-			_selectedThumbnailBox.SelectThumbnail();
+			SelectThumbnail();
 		}
 	}
 
@@ -226,18 +242,28 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			if (newSelectedThumbnailIndex >= 0 &&
 				newSelectedThumbnailIndex < _thumbnailBoxList!.Count)
 			{
-				_selectedThumbnailBox.UnselectThumbnail();
+				UnselectThumbnail();
 
 				_selectedThumbnailIndex = newSelectedThumbnailIndex;
 				_selectedThumbnailBox = _thumbnailBoxList[_selectedThumbnailIndex];
 
-				_selectedThumbnailBox.SelectThumbnail();
+				SelectThumbnail();
 
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	private void SelectThumbnail()
+	{
+		_selectedThumbnailBox!.SelectThumbnail();
+	}
+	
+	private void UnselectThumbnail()
+	{
+		_selectedThumbnailBox?.UnselectThumbnail();
 	}
 
 	private async void DisplayImage()

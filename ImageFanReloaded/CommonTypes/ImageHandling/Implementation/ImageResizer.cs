@@ -3,11 +3,9 @@ using Avalonia.Media.Imaging;
 
 namespace ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
 
-public class ImageResizer
-    : IImageResizer
+public class ImageResizer : IImageResizer
 {
-	public ImageResizer(
-        IImageResizeCalculator imageResizeCalculator)
+	public ImageResizer(IImageResizeCalculator imageResizeCalculator)
     {
         _imageResizeCalculator = imageResizeCalculator;
 	}
