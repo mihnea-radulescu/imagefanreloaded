@@ -5,7 +5,6 @@
 		<IsTestProject>true</IsTestProject>
 		<Title>ImageFan Reloaded - Tests</Title>
 		<Product>ImageFan Reloaded - Tests</Product>
-		<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<ItemGroup>

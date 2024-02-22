@@ -5,12 +5,8 @@
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Copyright>Copyright © Mihnea Rădulescu 2017 - 2024</Copyright>
-		<AssemblyVersion>1.2024.02.21</AssemblyVersion>
+		<AssemblyVersion>1.2024.02.22</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
-		<PublishReadyToRun>true</PublishReadyToRun>
-		<PublishSingleFile>true</PublishSingleFile>
-		<PublishTrimmed>true</PublishTrimmed>
-		<SelfContained>true</SelfContained>
 		<DebugType>embedded</DebugType>
 	</PropertyGroup>
 

@@ -5,7 +5,6 @@
 		<ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
 		<Title>ImageFan Reloaded</Title>
 		<Product>ImageFan Reloaded</Product>
-		<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<ItemGroup>

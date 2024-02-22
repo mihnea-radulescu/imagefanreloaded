@@ -66,11 +66,10 @@ public partial class MainWindow : Window, IMainView
 
         if (keyPressed == GlobalData.TabSwitchKey)
         {
-			var selectedTabItemIndex = _tabControl.SelectedIndex;
-
-			var contentTabItemCount = GetContentTabItemCount();
+	        var contentTabItemCount = GetContentTabItemCount();
+	        
+	        var selectedTabItemIndex = _tabControl.SelectedIndex;
 			var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
-
 			_tabControl.SelectedIndex = nextSelectedTabItemIndex;
 		}
         else
