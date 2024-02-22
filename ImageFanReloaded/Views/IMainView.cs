@@ -7,7 +7,6 @@ public interface IMainView
 {
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
-	
 	event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
 
 	void AddFakeTabItem();

@@ -15,16 +15,12 @@ public partial class MainWindow : Window, IMainView
         InitializeComponent();
 
 		_windowFontSize = FontSize;
-
-		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
-		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
-
-		_tabControl.AddHandler(KeyDownEvent, OnTabControlKeyPressing, RoutingStrategies.Tunnel);
+		
+		AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
     }
 
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
-	
 	public event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
 
 	public void AddFakeTabItem()
@@ -45,48 +41,30 @@ public partial class MainWindow : Window, IMainView
 
 	private readonly double _windowFontSize;
 
-	private void OnKeyPressing(object? sender, KeyEventArgs e)
-	{
-		var keyPressing = e.Key;
-
-		if (keyPressing == GlobalData.TabSwitchKey)
-		{
-			var canNavigateAcrossTabs = GetContentTabItemCount() > 1;
-
-			if (!canNavigateAcrossTabs)
-			{
-				e.Handled = true;
-			}
-		}
-	}
-
-	private void OnKeyPressed(object? sender, KeyEventArgs e)
+	private void OnKeyDown(object? sender, KeyEventArgs e)
     {
         var keyPressed = e.Key;
 
         if (keyPressed == GlobalData.TabSwitchKey)
         {
 	        var contentTabItemCount = GetContentTabItemCount();
-	        
-	        var selectedTabItemIndex = _tabControl.SelectedIndex;
-			var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
-			_tabControl.SelectedIndex = nextSelectedTabItemIndex;
+	        var canNavigateAcrossTabs = contentTabItemCount > 1;
+
+	        if (canNavigateAcrossTabs)
+	        {
+		        var selectedTabItemIndex = _tabControl.SelectedIndex;
+		        var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
+		        _tabControl.SelectedIndex = nextSelectedTabItemIndex;
+	        }
 		}
         else
         {
 	        var contentTabItem = GetActiveContentTabItem();
-	        contentTabItem!.OnKeyPressed(sender, e);
+	        contentTabItem!.OnKeyDown(sender, e);
         }
         
         e.Handled = true;
     }
-
-	private void OnTabControlKeyPressing(object? sender, KeyEventArgs e)
-	{
-		_tabControl.Focus();
-
-		e.Handled = true;
-	}
 
 	private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
@@ -126,7 +104,6 @@ public partial class MainWindow : Window, IMainView
 		contentTabItem.ContentTabItemHeader = contentTabItemHeader;
 		contentTabItem.ContentTabItemHeader.TabClosed += CloseContentTabItem;
 		contentTabItem.RegisterMainViewEvents();
-		
 		contentTabItem.SetTitle(DefaultTabItemTitle);
 		
 		var tabItem = new TabItem

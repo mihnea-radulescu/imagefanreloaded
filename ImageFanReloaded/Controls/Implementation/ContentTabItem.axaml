@@ -15,8 +15,7 @@
 		<TreeView Name="_folderTreeView"
 				  Grid.Column="0"
                   SelectionChanged="OnFolderTreeViewSelectedItemChanged"
-				  SelectionMode="Single"
-				  Focusable="True">
+				  SelectionMode="Single">
 		</TreeView>
 		<GridSplitter Grid.Column="1"
                       ResizeBehavior="PreviousAndNext"
@@ -29,8 +28,7 @@
 			</Grid.RowDefinitions>
 			<ScrollViewer Name="_thumbnailScrollViewer"
 			              Grid.Row="0"
-			              VerticalScrollBarVisibility="Auto"
-			              Focusable="True">
+			              VerticalScrollBarVisibility="Auto">
 				<WrapPanel Name="_thumbnailWrapPanel"
 				           Orientation="Horizontal"
 				           Margin="5 0 5 0"/>

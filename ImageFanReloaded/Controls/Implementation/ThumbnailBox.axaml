@@ -3,7 +3,6 @@
              x:Class="ImageFanReloaded.Controls.Implementation.ThumbnailBox"
 			 Margin="5"
              Background="LightGray"
-             Focusable="True"
 			 PointerReleased="OnMouseClick">
 	<Border Name="_thumbnailBoxBorder"
             BorderThickness="5"

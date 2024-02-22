@@ -25,7 +25,7 @@ public interface IContentTabItem
 
 	event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	
-	void OnKeyPressed(object? sender, KeyEventArgs e);
+	void OnKeyDown(object? sender, KeyEventArgs e);
 
 	void SetTitle(string title);
 

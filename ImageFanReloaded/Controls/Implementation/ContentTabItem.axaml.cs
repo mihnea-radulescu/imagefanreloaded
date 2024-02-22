@@ -31,7 +31,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	
-	public void OnKeyPressed(object? sender, KeyEventArgs e)
+	public void OnKeyDown(object? sender, KeyEventArgs e)
 	{
 		if (_selectedThumbnailBox is not null)
 		{
@@ -100,17 +100,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 			_thumbnailBoxList!.Add(aThumbnailBox);
 
-			if (_thumbnailBoxList.Count == 1)
+			if (IsFirstThumbnail())
 			{
 				SelectThumbnailBox(aThumbnailBox);
-				_thumbnailScrollViewer.Focus();
 			}
 
-			var aSurroundingStackPanel = new StackPanel
-			{
-				Focusable = true
-			};
-			
+			var aSurroundingStackPanel = new StackPanel();
 			aSurroundingStackPanel.Children.Add(aThumbnailBox);
 			_thumbnailWrapPanel.Children.Add(aSurroundingStackPanel);
 		}
@@ -300,6 +295,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	private void ShowCloseButton(bool showTabCloseButton)
 		=> ContentTabItemHeader!.ShowTabCloseButton(showTabCloseButton);
+
+	private bool IsFirstThumbnail() => _thumbnailBoxList!.Count == 1;
 
 	#endregion
 }
