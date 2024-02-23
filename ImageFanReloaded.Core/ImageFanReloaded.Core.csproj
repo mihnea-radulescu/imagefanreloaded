@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Title>ImageFan Reloaded - Tests</Title>
+        <Product>ImageFan Reloaded - Tests</Product>
+    </PropertyGroup>
+
+</Project>

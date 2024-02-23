@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<AvaloniaResource Include="Assets\**" />
+		<AvaloniaResource Include="MainWindowIcon.ico" />
 		<Resource Include="ApplicationIcon.ico">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
@@ -24,6 +24,10 @@
 		<Resource Include="Resources\Images\LoadingImage.data">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -39,13 +43,34 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Resources.resx</DependentUpon>
 		</Compile>
+		<Compile Update="Controls\ContentTabItem.axaml.cs">
+		  <DependentUpon>ContentTabItem.axaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Controls\ContentTabItemHeader.axaml.cs">
+		  <DependentUpon>ContentTabItemHeader.axaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Controls\FileSystemEntryItem.axaml.cs">
+		  <DependentUpon>FileSystemEntryItem.axaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Controls\ThumbnailBox.axaml.cs">
+		  <DependentUpon>ThumbnailBox.axaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Controls\ImageWindow.axaml.cs">
+		  <DependentUpon>ImageWindow.axaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Controls\MainWindow.axaml.cs">
+		  <DependentUpon>MainWindow.axaml</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Update="Properties\Resources.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
+	  <ProjectReference Include="..\ImageFanReloaded.Core\ImageFanReloaded.Core.csproj" />
 	</ItemGroup>
 
 </Project>

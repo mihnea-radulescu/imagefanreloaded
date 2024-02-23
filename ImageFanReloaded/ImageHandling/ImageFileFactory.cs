@@ -1,0 +1,25 @@
+﻿using ImageFanReloaded.Core.Global;
+using ImageFanReloaded.Core.ImageHandling;
+
+namespace ImageFanReloaded.ImageHandling;
+
+public class ImageFileFactory : IImageFileFactory
+{
+	public ImageFileFactory(
+		IGlobalParameters globalParameters,
+		IImageResizer imageResizer)
+	{
+		_globalParameters = globalParameters;
+		_imageResizer = imageResizer;
+	}
+
+	public IImageFile GetImageFile(string fileName, string filePath, int sizeOnDiscInKilobytes)
+		=> new ImageFile(_globalParameters, _imageResizer, fileName, filePath, sizeOnDiscInKilobytes);
+
+	#region Private
+
+	private readonly IGlobalParameters _globalParameters;
+	private readonly IImageResizer _imageResizer;
+
+	#endregion
+}

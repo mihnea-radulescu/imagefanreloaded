@@ -1,17 +1,16 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Threading;
-using ImageFanReloaded.CommonTypes.Disc;
-using ImageFanReloaded.CommonTypes.ImageHandling;
-using ImageFanReloaded.CommonTypes.ImageHandling.Implementation;
-using ImageFanReloaded.Factories;
-using ImageFanReloaded.Factories.Implementation;
-using ImageFanReloaded.Infrastructure;
-using ImageFanReloaded.Infrastructure.Implementation;
-using ImageFanReloaded.Presenters;
-using ImageFanReloaded.Views;
-using ImageFanReloaded.Views.Implementation;
+using ImageFanReloaded.Controls;
+using ImageFanReloaded.Core;
+using ImageFanReloaded.Core.Controls;
+using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.Global;
+using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.Implementation;
+using ImageFanReloaded.Global;
+using ImageFanReloaded.ImageHandling;
 
 namespace ImageFanReloaded;
 
@@ -27,24 +26,30 @@ public class App : Application
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		IImageFileFactory imageFileFactory = new ImageFileFactory(imageResizer);
-		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(imageFileFactory);
-		IDiscQueryEngine discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
+		IGlobalParameters globalParameters = new GlobalParameters(
+			imageResizeCalculator, imageResizer);
 
+		IImageFileFactory imageFileFactory = new ImageFileFactory(globalParameters, imageResizer);
+		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
+			globalParameters, imageFileFactory);
+		IDiscQueryEngine discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
+		
 		var mainWindow = new MainWindow();
 		IMainView mainView = mainWindow;
+		mainView.GlobalParameters = globalParameters;
 		
 		var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
 		desktop.MainWindow = mainWindow;
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
 		
-		IImageViewFactory imageViewFactory = new ImageViewFactory(screenInformation);
-		IVisualActionDispatcher visualActionDispatcher = new VisualActionDispatcher(Dispatcher.UIThread);
-		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory();
+		IImageViewFactory imageViewFactory = new ImageViewFactory(globalParameters, screenInformation);
+		IDispatcher dispatcher = new Dispatcher(Avalonia.Threading.Dispatcher.UIThread);
+		IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(globalParameters, dispatcher);
+		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
+			globalParameters, thumbnailInfoFactory, discQueryEngine, dispatcher);
 
 		var mainPresenter = new MainPresenter(
 			discQueryEngine,
-			visualActionDispatcher,
 			folderVisualStateFactory,
 			imageViewFactory,
 			mainView);

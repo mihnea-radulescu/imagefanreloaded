@@ -1,0 +1,17 @@
+<Window Name="_mainView"
+	    xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Class="ImageFanReloaded.Controls.MainWindow"
+        Icon="/MainWindowIcon.ico"
+        Title="ImageFan Reloaded"
+        MinWidth="800"
+        MinHeight="450"
+		Width="800"
+        Height="450"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+		Focusable="True">
+	<TabControl Name="_tabControl"
+                SelectionChanged="OnSelectionChanged">
+	</TabControl>
+</Window>
