@@ -15,8 +15,7 @@
 		<TreeView Name="_folderTreeView"
 				  Grid.Column="0"
                   SelectionChanged="OnFolderTreeViewSelectedItemChanged"
-				  SelectionMode="Single">
-		</TreeView>
+				  SelectionMode="Single"/>
 		<GridSplitter Grid.Column="1"
                       ResizeBehavior="PreviousAndNext"
                       Width="5"

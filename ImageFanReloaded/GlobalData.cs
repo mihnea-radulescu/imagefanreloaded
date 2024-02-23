@@ -25,7 +25,7 @@ namespace ImageFanReloaded
 
         public static readonly int ProcessorCount;
 
-        public static readonly Key TabSwitchKey;
+        public static readonly Key TabKey;
 
         public static readonly Key EscapeKey;
         public static readonly Key EnterKey;
@@ -67,7 +67,7 @@ namespace ImageFanReloaded
 
 			ProcessorCount = Environment.ProcessorCount;
 
-            TabSwitchKey = Key.Tab;
+            TabKey = Key.Tab;
 
             EscapeKey = Key.Escape;
             EnterKey = Key.Enter;

@@ -16,7 +16,8 @@ public partial class MainWindow : Window, IMainView
 
 		_windowFontSize = FontSize;
 		
-		AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
+		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
+		_tabControl.AddHandler(KeyDownEvent, OnTabControlKeyPressing, RoutingStrategies.Tunnel);
     }
 
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
@@ -41,11 +42,11 @@ public partial class MainWindow : Window, IMainView
 
 	private readonly double _windowFontSize;
 
-	private void OnKeyDown(object? sender, KeyEventArgs e)
+	private void OnKeyPressed(object? sender, KeyEventArgs e)
     {
         var keyPressed = e.Key;
 
-        if (keyPressed == GlobalData.TabSwitchKey)
+        if (keyPressed == GlobalData.TabKey)
         {
 	        var contentTabItemCount = GetContentTabItemCount();
 	        var canNavigateAcrossTabs = contentTabItemCount > 1;
@@ -60,11 +61,16 @@ public partial class MainWindow : Window, IMainView
         else
         {
 	        var contentTabItem = GetActiveContentTabItem();
-	        contentTabItem!.OnKeyDown(sender, e);
+	        contentTabItem!.OnKeyPressed(sender, e);
         }
         
         e.Handled = true;
     }
+
+	private void OnTabControlKeyPressing(object? sender, KeyEventArgs e)
+	{
+		e.Handled = true;
+	}
 
 	private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{

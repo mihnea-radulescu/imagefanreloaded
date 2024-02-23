@@ -31,7 +31,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	
-	public void OnKeyDown(object? sender, KeyEventArgs e)
+	public void OnKeyPressed(object? sender, KeyEventArgs e)
 	{
 		if (_selectedThumbnailBox is not null)
 		{
@@ -269,8 +269,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		imageView.ThumbnailChanged += OnThumbnailChanged;
 		await imageView.ShowDialog(Window!);
 		imageView.ThumbnailChanged -= OnThumbnailChanged;
-
-		_selectedThumbnailBox?.Focus();
 	}
 
 	private static TreeViewItem GetTreeViewItem(FileSystemEntryInfo fileSystemEntryInfo)
@@ -295,7 +293,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	private void ShowCloseButton(bool showTabCloseButton)
 		=> ContentTabItemHeader!.ShowTabCloseButton(showTabCloseButton);
-
+	
 	private bool IsFirstThumbnail() => _thumbnailBoxList!.Count == 1;
 
 	#endregion
