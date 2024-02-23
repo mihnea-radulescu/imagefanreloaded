@@ -16,8 +16,8 @@ public partial class MainWindow : Window, IMainView
 
 		_windowFontSize = FontSize;
 		
+		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
-		_tabControl.AddHandler(KeyDownEvent, OnTabControlKeyPressing, RoutingStrategies.Tunnel);
     }
 
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
@@ -41,6 +41,11 @@ public partial class MainWindow : Window, IMainView
 	private const string FakeTabItemTitle = "➕";
 
 	private readonly double _windowFontSize;
+
+	private void OnKeyPressing(object? sender, KeyEventArgs e)
+	{
+		e.Handled = true;
+	}
 
 	private void OnKeyPressed(object? sender, KeyEventArgs e)
     {
@@ -66,11 +71,6 @@ public partial class MainWindow : Window, IMainView
         
         e.Handled = true;
     }
-
-	private void OnTabControlKeyPressing(object? sender, KeyEventArgs e)
-	{
-		e.Handled = true;
-	}
 
 	private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
