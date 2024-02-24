@@ -5,10 +5,10 @@ namespace ImageFanReloaded.Core.CustomEventArgs;
 
 public class KeyboardKeyEventArgs : EventArgs
 {
-	public KeyboardKeyEventArgs(IKeyboardKey keyboardKey)
+	public KeyboardKeyEventArgs(Key key)
 	{
-		KeyboardKey = keyboardKey;
+		Key = key;
 	}
 
-	public IKeyboardKey KeyboardKey { get; }
+	public Key Key { get; }
 }

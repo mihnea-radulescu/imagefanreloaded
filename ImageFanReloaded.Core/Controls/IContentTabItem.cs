@@ -10,7 +10,6 @@ namespace ImageFanReloaded.Core.Controls;
 public interface IContentTabItem
 {
 	IMainView? MainView { get; set; }
-	
 	IGlobalParameters? GlobalParameters { get; set; }
 
 	object? WrapperTabItem { get; set; }

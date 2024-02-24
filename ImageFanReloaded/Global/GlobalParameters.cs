@@ -1,12 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
-using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using ImageFanReloaded.Core.Global.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
-using ImageFanReloaded.Core.Keyboard;
-using ImageFanReloaded.Core.Keyboard.Implementation;
 using ImageFanReloaded.Properties;
 
 namespace ImageFanReloaded.Global;
@@ -57,28 +54,6 @@ public class GlobalParameters : GlobalParametersBase
             
 			FolderIcon = imageResizer.CreateResizedImage(folderImage, iconSize);
 		}
-
-        TabKey = new KeyboardKey(Key.Tab);
-        EscapeKey = new KeyboardKey(Key.Escape);
-        EnterKey = new KeyboardKey(Key.Enter);
-
-        BackwardNavigationKeys = [
-            new KeyboardKey(Key.W),
-            new KeyboardKey(Key.A),
-            new KeyboardKey(Key.Up),
-            new KeyboardKey(Key.Left),
-            new KeyboardKey(Key.Back),
-            new KeyboardKey(Key.PageUp)
-        ];
-
-        ForwardNavigationKeys = [
-            new KeyboardKey(Key.S),
-            new KeyboardKey(Key.D),
-            new KeyboardKey(Key.Down),
-            new KeyboardKey(Key.Right),
-            new KeyboardKey(Key.Space),
-            new KeyboardKey(Key.PageDown)
-        ];
 	}
 	
 	public override IImage InvalidImage { get; }
@@ -89,13 +64,6 @@ public class GlobalParameters : GlobalParametersBase
 	
 	public override IImage DriveIcon { get; }
 	public override IImage FolderIcon { get; }
-	
-	public override IKeyboardKey TabKey { get; }
-	public override IKeyboardKey EscapeKey { get; }
-	public override IKeyboardKey EnterKey { get; }
-	
-	public override IReadOnlyList<IKeyboardKey> BackwardNavigationKeys { get; }
-	public override IReadOnlyList<IKeyboardKey> ForwardNavigationKeys { get; }
 	
 	#region Private
 

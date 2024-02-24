@@ -8,6 +8,13 @@ public interface IGlobalParameters
 {
 	int ProcessorCount { get; }
 	ImageSize ThumbnailSize { get; }
+	
+	Key TabKey { get; }
+	Key EscapeKey { get; }
+	Key EnterKey { get; }
+
+	HashSet<Key> BackwardNavigationKeys { get; }
+	HashSet<Key> ForwardNavigationKeys { get; }
 
 	bool CanDisposeImage(IImage image);
 
@@ -19,11 +26,4 @@ public interface IGlobalParameters
 
 	IImage DriveIcon { get; }
 	IImage FolderIcon { get; }
-
-	IKeyboardKey TabKey { get; }
-	IKeyboardKey EscapeKey { get; }
-	IKeyboardKey EnterKey { get; }
-
-	IReadOnlyList<IKeyboardKey> BackwardNavigationKeys { get; }
-	IReadOnlyList<IKeyboardKey> ForwardNavigationKeys { get; }
 }

@@ -36,9 +36,7 @@ public partial class ImageWindow : Window, IImageView
 		set
 		{
 			_globalParameters = value;
-			
 			_invalidImage = _globalParameters!.InvalidImage.GetBitmap();
-			_keyboardKeys = new KeyboardKeys(_globalParameters!);
 		}
 	}
 	
@@ -76,9 +74,7 @@ public partial class ImageWindow : Window, IImageView
 	private static readonly Cursor SizeAllCursor;
 	
 	private IGlobalParameters? _globalParameters;
-	
 	private Bitmap? _invalidImage;
-	private KeyboardKeys? _keyboardKeys;
 
 	private IImageFile? _imageFile;
 
@@ -95,17 +91,17 @@ public partial class ImageWindow : Window, IImageView
 
     private void OnKeyPressed(object? sender, KeyEventArgs e)
     {
-        var keyPressed = e.Key;
+        var keyPressed = e.Key.ToCoreKey();
 
-        if (_keyboardKeys!.BackwardNavigationKeys.Contains(keyPressed))
+        if (_globalParameters!.BackwardNavigationKeys.Contains(keyPressed))
         {
             RaiseThumbnailChanged(-1);
         }
-        else if (_keyboardKeys!.ForwardNavigationKeys.Contains(keyPressed))
+        else if (_globalParameters!.ForwardNavigationKeys.Contains(keyPressed))
         {
             RaiseThumbnailChanged(1);
         }
-        else if (keyPressed == _keyboardKeys!.EnterKey)
+        else if (keyPressed == _globalParameters!.EnterKey)
         {
             if (!_canZoomToImageSize)
             {
@@ -121,7 +117,7 @@ public partial class ImageWindow : Window, IImageView
                 ResizeToScreenSize();
             }
         }
-        else if (keyPressed == _keyboardKeys!.EscapeKey)
+        else if (keyPressed == _globalParameters!.EscapeKey)
         {
             Close();
         }

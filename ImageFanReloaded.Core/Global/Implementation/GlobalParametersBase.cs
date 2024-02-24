@@ -16,10 +16,39 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		ProcessorCount = Environment.ProcessorCount;
 		ThumbnailSize = new ImageSize(ThumbnailSizeSquareLength);
+		
+		TabKey = Key.Tab;
+		EscapeKey = Key.Escape;
+		EnterKey = Key.Enter;
+
+		BackwardNavigationKeys = [
+			Key.W,
+			Key.A,
+			Key.Up,
+			Key.Left,
+			Key.Backspace,
+			Key.PageUp
+		];
+
+		ForwardNavigationKeys = [
+			Key.S,
+			Key.D,
+			Key.Down,
+			Key.Right,
+			Key.Space,
+			Key.PageDown
+		];
 	}
 	
 	public int ProcessorCount { get; }
 	public ImageSize ThumbnailSize { get; }
+	
+	public Key TabKey { get; }
+	public Key EscapeKey { get; }
+	public Key EnterKey { get; }
+	
+	public HashSet<Key> BackwardNavigationKeys { get; }
+	public HashSet<Key> ForwardNavigationKeys { get; }
 
 	public bool CanDisposeImage(IImage image)
 		=> !PersistentImages.Contains(image);
@@ -33,13 +62,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public abstract IImage DriveIcon { get; }
 	public abstract IImage FolderIcon { get; }
 
-	public abstract IKeyboardKey TabKey { get; }
-	public abstract IKeyboardKey EscapeKey { get; }
-	public abstract IKeyboardKey EnterKey { get; }
-	
-	public abstract IReadOnlyList<IKeyboardKey> BackwardNavigationKeys { get; }
-	public abstract IReadOnlyList<IKeyboardKey> ForwardNavigationKeys { get; }
-	
 	#region Protected
 	
 	protected const int IconSizeSquareLength = 24;

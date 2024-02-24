@@ -7,7 +7,6 @@ using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
-using ImageFanReloaded.Keyboard;
 
 namespace ImageFanReloaded.Controls;
 
@@ -19,16 +18,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     }
 	
     public IMainView? MainView { get; set; }
-
-    public IGlobalParameters? GlobalParameters
-    {
-	    get => _globalParameters;
-	    set
-	    {
-		    _globalParameters = value;
-		    _keyboardKeys = new KeyboardKeys(_globalParameters!);
-	    }
-    }
+    public IGlobalParameters? GlobalParameters { get; set; }
     
     public object? WrapperTabItem { get; set; }
     public IContentTabItemHeader? ContentTabItemHeader { get; set; }
@@ -44,17 +34,17 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		if (_selectedThumbnailBox is not null)
 		{
-			var keyPressed = e.KeyboardKey.GetKey();
+			var keyPressed = e.Key;
 	        
-			if (_keyboardKeys!.BackwardNavigationKeys.Contains(keyPressed))
+			if (GlobalParameters!.BackwardNavigationKeys.Contains(keyPressed))
 			{
 				AdvanceToThumbnailIndex(-1);
 			}
-			else if (_keyboardKeys!.ForwardNavigationKeys.Contains(keyPressed))
+			else if (GlobalParameters!.ForwardNavigationKeys.Contains(keyPressed))
 			{
 				AdvanceToThumbnailIndex(1);
 			}
-			else if (keyPressed == _keyboardKeys!.EnterKey)
+			else if (keyPressed == GlobalParameters!.EnterKey)
 			{
 				BringThumbnailIntoView();
 				DisplayImage();
@@ -169,13 +159,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
     private const string FakeTreeViewItemText = "Loading...";
 
-    private IGlobalParameters? _globalParameters;
-
     private List<IThumbnailBox>? _thumbnailBoxList;
 	private int _selectedThumbnailIndex;
 	private IThumbnailBox? _selectedThumbnailBox;
-
-	private KeyboardKeys? _keyboardKeys;
 	
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxEventArgs e)
 	{

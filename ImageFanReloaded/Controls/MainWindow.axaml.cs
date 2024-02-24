@@ -5,7 +5,6 @@ using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.Global;
-using ImageFanReloaded.Core.Keyboard.Implementation;
 using ImageFanReloaded.Keyboard;
 
 namespace ImageFanReloaded.Controls;
@@ -22,15 +21,7 @@ public partial class MainWindow : Window, IMainView
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
     }
 	
-	public IGlobalParameters? GlobalParameters
-	{
-		get => _globalParameters;
-		set
-		{
-			_globalParameters = value;
-			_keyboardKeys = new KeyboardKeys(_globalParameters!);
-		}
-	}
+	public IGlobalParameters? GlobalParameters { get; set; }
 
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
@@ -51,9 +42,6 @@ public partial class MainWindow : Window, IMainView
 
 	private const string DefaultTabItemTitle = "New Tab";
 	private const string FakeTabItemTitle = "➕";
-	
-	private IGlobalParameters? _globalParameters;
-	private KeyboardKeys? _keyboardKeys;
 
 	private readonly double _windowFontSize;
 
@@ -64,9 +52,9 @@ public partial class MainWindow : Window, IMainView
 
 	private void OnKeyPressed(object? sender, KeyEventArgs e)
     {
-        var keyPressed = e.Key;
+        var keyPressed = e.Key.ToCoreKey();
 
-        if (keyPressed == _keyboardKeys!.TabKey)
+        if (keyPressed == GlobalParameters!.TabKey)
         {
 	        var contentTabItemCount = GetContentTabItemCount();
 	        var canNavigateAcrossTabs = contentTabItemCount > 1;
@@ -81,7 +69,7 @@ public partial class MainWindow : Window, IMainView
         else
         {
 	        var contentTabItem = GetActiveContentTabItem();
-	        var keyboardKey = new KeyboardKey(e.Key);
+	        var keyboardKey = e.Key.ToCoreKey();
 	        contentTabItem!.OnKeyPressed(sender, new KeyboardKeyEventArgs(keyboardKey));
         }
         
