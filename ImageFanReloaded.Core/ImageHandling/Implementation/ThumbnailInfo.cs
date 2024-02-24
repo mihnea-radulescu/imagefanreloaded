@@ -22,7 +22,7 @@ public class ThumbnailInfo : IThumbnailInfo
     public IImage? ThumbnailImage { get; private set; }
     
     public IImageFile ImageFile { get; }
-    public string ThumbnailText => ImageFile.FileName;
+    public string ThumbnailText => ImageFile.ImageFileName;
 
     public void ReadThumbnailInputFromDisc() => ImageFile.ReadImageDataFromDisc();
 

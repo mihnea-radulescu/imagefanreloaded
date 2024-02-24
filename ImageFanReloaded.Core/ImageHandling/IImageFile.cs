@@ -2,7 +2,7 @@
 
 public interface IImageFile
 {
-    string FileName { get; }
+    string ImageFileName { get; }
     
     int SizeOnDiscInKilobytes { get; }
 	ImageSize ImageSize { get; }

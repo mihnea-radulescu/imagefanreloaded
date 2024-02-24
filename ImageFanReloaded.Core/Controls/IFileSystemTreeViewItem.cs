@@ -4,5 +4,5 @@ namespace ImageFanReloaded.Core.Controls;
 
 public interface IFileSystemTreeViewItem
 {
-	FileSystemEntryInfo FileSystemEntryInfo { get; }
+	FileSystemEntryInfo? FileSystemEntryInfo { get; set; }
 }

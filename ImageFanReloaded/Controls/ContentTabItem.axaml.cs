@@ -192,7 +192,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		if (selectedFolderTreeViewItem.Header is IFileSystemTreeViewItem fileSystemEntryItem)
 		{
-			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo;
+			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
 			var selectedFolderName = fileSystemEntryInfo.Name;
 			var selectedFolderPath = fileSystemEntryInfo.Path;
 

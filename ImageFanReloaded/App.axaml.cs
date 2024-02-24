@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using ImageFanReloaded.Controls;
 using ImageFanReloaded.Core;
 using ImageFanReloaded.Core.Controls;
+using ImageFanReloaded.Core.Controls.Implementation;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.Global;

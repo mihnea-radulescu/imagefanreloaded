@@ -144,7 +144,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 					aFileInfo.Name,
 					aFileInfo.FullName,
 					ConvertToSizeOnDiscInKilobytes(aFileInfo.Length)))
-				.OrderBy(aFileInfo => aFileInfo.FileName, NameComparer)
+				.OrderBy(aFileInfo => aFileInfo.ImageFileName, NameComparer)
 				.ToArray();
 
 			return imageFiles;

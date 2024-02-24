@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
 
-namespace ImageFanReloaded.Controls;
+namespace ImageFanReloaded.Core.Controls.Implementation;
 
 public class FolderVisualState : IFolderVisualState
 {

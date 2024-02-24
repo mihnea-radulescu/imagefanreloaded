@@ -12,12 +12,12 @@ public partial class FileSystemTreeViewItem : UserControl, IFileSystemTreeViewIt
 		InitializeComponent();
 	}
 
-	public FileSystemEntryInfo FileSystemEntryInfo
+	public FileSystemEntryInfo? FileSystemEntryInfo
 	{
-		get => _fileSystemEntryInfo!;
-		init
+		get => _fileSystemEntryInfo;
+		set
 		{
-			_fileSystemEntryInfo = value;
+			_fileSystemEntryInfo = value!;
 
 			_fileSystemEntryImage.Source = _fileSystemEntryInfo.Icon.GetBitmap();
 			_fileSystemEntryTextBlock.Text = _fileSystemEntryInfo.Name;
@@ -26,7 +26,7 @@ public partial class FileSystemTreeViewItem : UserControl, IFileSystemTreeViewIt
 
 	#region Private
 
-	private readonly FileSystemEntryInfo? _fileSystemEntryInfo;
+	private FileSystemEntryInfo? _fileSystemEntryInfo;
 
 	#endregion
 }
