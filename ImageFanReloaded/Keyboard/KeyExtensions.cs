@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace ImageFanReloaded.Keyboard;
 
 public static class KeyExtensions
@@ -25,6 +23,6 @@ public static class KeyExtensions
 			Avalonia.Input.Key.Space => ImageFanReloaded.Core.Keyboard.Key.Space,
 			Avalonia.Input.Key.PageDown => ImageFanReloaded.Core.Keyboard.Key.PageDown,
 
-			_ => throw new InvalidEnumArgumentException(key.ToString())
+			_ => ImageFanReloaded.Core.Keyboard.Key.None
 		};
 }
