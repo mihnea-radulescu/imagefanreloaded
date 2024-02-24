@@ -10,7 +10,7 @@
 			<ColumnDefinition Width="12*"/>
 			<ColumnDefinition Width="Auto"/>
 			<ColumnDefinition Width="88*"
-							  MinWidth="600"/>
+							  MinWidth="650"/>
 		</Grid.ColumnDefinitions>
 		<TreeView Name="_folderTreeView"
 				  Grid.Column="0"
@@ -35,8 +35,8 @@
 			
 			<Grid Grid.Row="1">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="50*"></ColumnDefinition>
-					<ColumnDefinition Width="50*"></ColumnDefinition>
+					<ColumnDefinition Width="Auto"></ColumnDefinition>
+					<ColumnDefinition Width="*"></ColumnDefinition>
 				</Grid.ColumnDefinitions>
 				<TextBlock Name="_textBlockImageInfo"
 				           Grid.Column="0"
