@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;

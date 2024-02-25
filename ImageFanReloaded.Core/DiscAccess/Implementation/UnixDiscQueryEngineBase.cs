@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;

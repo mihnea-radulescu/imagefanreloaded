@@ -6,7 +6,7 @@ using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.ImageHandling;
 
-namespace ImageFanReloaded.Tests;
+namespace ImageFanReloaded.Test;
 
 public class ImageResizerTest : TestBase
 {

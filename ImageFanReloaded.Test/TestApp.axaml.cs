@@ -1,7 +1,7 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Markup.Xaml;
 
-namespace ImageFanReloaded.Tests;
+namespace ImageFanReloaded.Test;
 
 public class TestApp
     : Application

@@ -1,4 +1,4 @@
-﻿namespace ImageFanReloaded.Core.ImageHandling.Implementation;
+namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
 public class ImageResizeCalculator : IImageResizeCalculator
 {

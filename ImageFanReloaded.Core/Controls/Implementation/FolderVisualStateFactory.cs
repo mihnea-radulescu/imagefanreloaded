@@ -1,4 +1,4 @@
-﻿using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
 

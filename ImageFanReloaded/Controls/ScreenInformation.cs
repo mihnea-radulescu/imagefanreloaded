@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.ImageHandling;
 

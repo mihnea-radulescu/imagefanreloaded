@@ -1,4 +1,4 @@
-﻿using ImageFanReloaded.Core.Controls;
+using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Global;
 
 namespace ImageFanReloaded.Controls;

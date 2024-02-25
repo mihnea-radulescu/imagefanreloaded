@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ImageFanReloaded.Core.Controls;
 
 namespace ImageFanReloaded.Core.CustomEventArgs;

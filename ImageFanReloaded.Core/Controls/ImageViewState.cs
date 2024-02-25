@@ -1,4 +1,4 @@
-﻿namespace ImageFanReloaded.Core.Controls;
+namespace ImageFanReloaded.Core.Controls;
 
 public enum ImageViewState
 {

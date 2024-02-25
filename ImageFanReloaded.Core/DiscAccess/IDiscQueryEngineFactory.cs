@@ -1,4 +1,4 @@
-﻿namespace ImageFanReloaded.Core.DiscAccess;
+namespace ImageFanReloaded.Core.DiscAccess;
 
 public interface IDiscQueryEngineFactory
 {

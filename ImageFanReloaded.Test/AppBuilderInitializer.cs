@@ -1,6 +1,6 @@
-﻿using Avalonia;
+using Avalonia;
 
-namespace ImageFanReloaded.Tests;
+namespace ImageFanReloaded.Test;
 
 public class AppBuilderInitializer
 {

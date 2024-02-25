@@ -1,4 +1,4 @@
-﻿namespace ImageFanReloaded.Core.ImageHandling;
+namespace ImageFanReloaded.Core.ImageHandling;
 
 public interface IImageResizer
 {

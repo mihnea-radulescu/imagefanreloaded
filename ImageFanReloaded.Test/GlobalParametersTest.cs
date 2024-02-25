@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Global;
 using ImageFanReloaded.ImageHandling;
 
-namespace ImageFanReloaded.Tests;
+namespace ImageFanReloaded.Test;
 
 public class GlobalParametersTest : TestBase
 {

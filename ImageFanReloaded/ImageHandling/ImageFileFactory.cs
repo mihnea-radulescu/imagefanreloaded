@@ -1,4 +1,4 @@
-﻿using ImageFanReloaded.Core.Global;
+using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.ImageHandling;

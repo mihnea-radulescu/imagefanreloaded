@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 
-namespace ImageFanReloaded.Tests;
+namespace ImageFanReloaded.Test;
 
 public class ImageResizeCalculatorTest
 {
