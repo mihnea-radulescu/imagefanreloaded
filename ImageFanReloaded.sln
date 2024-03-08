@@ -1,8 +1,5 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.7.34009.444
-MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageFanReloaded", "ImageFanReloaded\ImageFanReloaded.csproj", "{9847996D-3C8E-4408-B2C0-FC4749F4BAD4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageFanReloaded.Test", "ImageFanReloaded.Test\ImageFanReloaded.Test.csproj", "{50057196-8925-43C5-B217-E101B962A49C}"
@@ -32,11 +29,5 @@ Global
 		{497C6F6E-646A-4FC4-8CA6-5D5DE1C79AEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{497C6F6E-646A-4FC4-8CA6-5D5DE1C79AEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{497C6F6E-646A-4FC4-8CA6-5D5DE1C79AEC}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {73C31931-E5EB-49E1-AEA6-5A61A6B8C708}
 	EndGlobalSection
 EndGlobal
