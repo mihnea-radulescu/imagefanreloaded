@@ -1,18 +1,22 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace ImageFanReloaded.Core.DiscAccess.Implementation;
+namespace ImageFanReloaded.Core.TextHandling.Implementation;
 
-public class NaturalSortingComparer : IComparer<string>
+public class NaturalSortingComparer : StringComparer, IStringComparisonEnabled
 {
     static NaturalSortingComparer()
     {
         ContiguousDigitBlockRegex = new Regex(@"\d+", RegexOptions.Compiled);
     }
 
-    public int Compare(string? x, string? y)
+    public NaturalSortingComparer(StringComparer defaultStringComparer)
+    {
+        _defaultStringComparer = defaultStringComparer;
+    }
+
+    public override int Compare(string? x, string? y)
     {
         if (x is null && y is null)
         {
@@ -31,7 +35,7 @@ public class NaturalSortingComparer : IComparer<string>
         
         if (!ContainsDigits(x) || !ContainsDigits(y))
         {
-            return x.CompareTo(y);
+            return _defaultStringComparer.Compare(x, y);
         }
 
         var maximumContiguousDigitBlockLengthX = GetMaximumContiguousDigitBlockLength(x);
@@ -43,12 +47,39 @@ public class NaturalSortingComparer : IComparer<string>
         var paddedX = PadDigitBlocks(x, maximumContiguousDigitBlockLength);
         var paddedY = PadDigitBlocks(y, maximumContiguousDigitBlockLength);
 
-        return paddedX.CompareTo(paddedY);
+        return _defaultStringComparer.Compare(paddedX, paddedY);
+    }
+
+    public override bool Equals(string? x, string? y) => Compare(x, y) == 0;
+
+    public override int GetHashCode(string obj)
+    {
+        if (!ContainsDigits(obj))
+        {
+            return _defaultStringComparer.GetHashCode(obj);
+        }
+        
+        var maximumContiguousDigitBlockLengthObj = GetMaximumContiguousDigitBlockLength(obj);
+        var paddedObj = PadDigitBlocks(obj, maximumContiguousDigitBlockLengthObj);
+
+        return _defaultStringComparer.GetHashCode(paddedObj);
+    }
+    
+    public StringComparison GetStringComparison()
+    {
+        if (_defaultStringComparer == InvariantCultureIgnoreCase)
+        {
+            return StringComparison.InvariantCultureIgnoreCase;
+        }
+
+        return StringComparison.InvariantCulture;
     }
 
     #region Private
 
     private static readonly Regex ContiguousDigitBlockRegex;
+    
+    private readonly StringComparer _defaultStringComparer;
 
     private static bool ContainsDigits(string text) => ContiguousDigitBlockRegex.IsMatch(text);
 

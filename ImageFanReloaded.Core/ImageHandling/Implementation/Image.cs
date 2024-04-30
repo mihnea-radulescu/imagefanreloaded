@@ -37,6 +37,7 @@ public class Image : IImage
 			_imageImplementationInstance.Dispose();
 
 			_hasBeenDisposed = true;
+			GC.SuppressFinalize(this);
 		}
 	}
 	

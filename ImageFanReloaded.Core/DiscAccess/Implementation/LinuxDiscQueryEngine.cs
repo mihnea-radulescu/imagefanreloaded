@@ -19,8 +19,7 @@ public class LinuxDiscQueryEngine : UnixDiscQueryEngineBase
 		};
 	}
 
-	protected override IReadOnlyCollection<string> SupportedDrivePrefixes
-		=> _supportedDrivePrefixes;
+	protected override IReadOnlyCollection<string> SupportedDrivePrefixes => _supportedDrivePrefixes;
 
 	#region Private
 

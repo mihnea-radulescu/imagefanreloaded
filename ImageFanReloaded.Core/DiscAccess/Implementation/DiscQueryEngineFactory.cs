@@ -9,16 +9,16 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 	public DiscQueryEngineFactory(
 		IGlobalParameters globalParameters,
 		IImageFileFactory imageFileFactory)
-    {
-	    _globalParameters = globalParameters;
-	    _imageFileFactory = imageFileFactory;
+	{
+		_globalParameters = globalParameters;
+		_imageFileFactory = imageFileFactory;
 
 		_isWindows = OperatingSystem.IsWindows();
 		_isLinux = OperatingSystem.IsLinux();
 		_isMacOS = OperatingSystem.IsMacOS();
 	}
 
-    public IDiscQueryEngine GetDiscQueryEngine()
+	public IDiscQueryEngine GetDiscQueryEngine()
 	{
 		if (_isWindows)
 		{

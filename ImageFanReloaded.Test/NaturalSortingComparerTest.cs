@@ -1,5 +1,9 @@
+using System;
 using Xunit;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.Global;
+using ImageFanReloaded.Core.Global.Implementation;
+using ImageFanReloaded.Core.TextHandling.Implementation;
 
 namespace ImageFanReloaded.Test;
 
@@ -7,7 +11,7 @@ public class NaturalSortingComparerTest
 {
     public NaturalSortingComparerTest()
     {
-        _naturalSortingComparer = new NaturalSortingComparer();
+        _naturalSortingComparer = new NaturalSortingComparer(StringComparer.InvariantCulture);
     }
 
     [InlineData("a", "b", -1)]

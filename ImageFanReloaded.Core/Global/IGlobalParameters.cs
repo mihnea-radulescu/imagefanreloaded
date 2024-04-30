@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
@@ -15,6 +16,8 @@ public interface IGlobalParameters
 
 	HashSet<Key> BackwardNavigationKeys { get; }
 	HashSet<Key> ForwardNavigationKeys { get; }
+	
+	StringComparer NameComparer { get; }
 
 	bool CanDisposeImage(IImage image);
 

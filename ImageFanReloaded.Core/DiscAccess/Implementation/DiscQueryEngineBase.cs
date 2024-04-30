@@ -11,8 +11,6 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 {
 	static DiscQueryEngineBase()
 	{
-		NameComparer = new NaturalSortingComparer();
-		
 		EmptyFileSystemEntryInfoCollection = Enumerable
 			.Empty<FileSystemEntryInfo>()
 			.ToArray();
@@ -28,6 +26,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 			"Desktop",
 			"Documents",
 			"Downloads",
+			"Media",
 			"Pictures"
 		};
 
@@ -68,16 +67,17 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						Name = aSpecialFolder,
 						Path = Path.Combine(UserProfilePath, aSpecialFolder)
 					})
+				.Where(aSpecialFolderWithPath => Path.Exists(aSpecialFolderWithPath.Path))
 				.Select(aSpecialFolderWithPath =>
 					new FileSystemEntryInfo(
 						aSpecialFolderWithPath.Name,
 						aSpecialFolderWithPath.Path,
 						HasSubFolders(aSpecialFolderWithPath.Path),
 						_globalParameters.FolderIcon))
-				.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name, NameComparer)
+				.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name, _globalParameters.NameComparer)
 				.ToArray();
 
-			FileSystemEntryInfo[] userFolders = [homeFolder, ..specialFolders];
+			IReadOnlyCollection<FileSystemEntryInfo> userFolders = [homeFolder, ..specialFolders];
 			return userFolders;
 		}
 		catch
@@ -99,7 +99,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						aDriveName,
 						HasSubFolders(aDriveName),
 						_globalParameters.DriveIcon))
-				.OrderBy(aDriveInfo => aDriveInfo.Name, NameComparer)
+				.OrderBy(aDriveInfo => aDriveInfo.Name, _globalParameters.NameComparer)
 				.ToArray();
 		}
 		catch
@@ -120,7 +120,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
                         aDirectory.FullName,
                         HasSubFolders(aDirectory.FullName),
                         _globalParameters.FolderIcon))
-                .OrderBy(aDirectory => aDirectory.Name, NameComparer)
+                .OrderBy(aDirectory => aDirectory.Name, _globalParameters.NameComparer)
                 .ToArray();
         }
         catch
@@ -144,7 +144,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 					aFileInfo.Name,
 					aFileInfo.FullName,
 					ConvertToSizeOnDiscInKilobytes(aFileInfo.Length)))
-				.OrderBy(aFileInfo => aFileInfo.ImageFileName, NameComparer)
+				.OrderBy(aFileInfo => aFileInfo.ImageFileName, _globalParameters.NameComparer)
 				.ToArray();
 
 			return imageFiles;
@@ -160,8 +160,6 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	#region Private
 	
 	private const int OneKilobyteInBytes = 1024;
-	
-	private static readonly IComparer<string> NameComparer;
 
     private static readonly IReadOnlyCollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
     private static readonly IReadOnlyCollection<IImageFile> EmptyImageFileCollection;

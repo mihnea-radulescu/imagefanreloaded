@@ -10,16 +10,18 @@ public class MainPresenter
 		IDiscQueryEngine discQueryEngine,
 		IFolderVisualStateFactory folderVisualStateFactory,
 		IImageViewFactory imageViewFactory,
-		IMainView mainView)
+		IMainView mainView,
+		IInputPathContainer inputPathContainer)
 	{
 		_discQueryEngine = discQueryEngine;
 		_folderVisualStateFactory = folderVisualStateFactory;
 		_imageViewFactory = imageViewFactory;
 
 		_mainView = mainView;
-		
 		_mainView.ContentTabItemAdded += OnContentTabItemAdded;
 		_mainView.ContentTabItemClosed += OnContentTabItemClosed;
+
+		_inputPathContainer = inputPathContainer;
 	}
 
 	#region Private
@@ -30,6 +32,8 @@ public class MainPresenter
 
 	private readonly IMainView _mainView;
 
+	private readonly IInputPathContainer _inputPathContainer;
+
 	private void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
@@ -39,6 +43,7 @@ public class MainPresenter
 		contentTabItem.FolderChanged += OnFolderChanged;
 
 		PopulateDrivesAndSpecialFolders(contentTabItem);
+		PopulateInputPath();
 	}
 	
 	private void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
@@ -86,6 +91,18 @@ public class MainPresenter
 		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
 
 		contentTabItem.FolderVisualState?.ClearVisualState();
+	}
+
+	private void PopulateInputPath()
+	{
+		if (!_inputPathContainer.ShouldPopulateInputPath())
+		{
+			return;
+		}
+		
+		
+
+		_inputPathContainer.HasPopulatedInputPath = true;
 	}
 
 	#endregion

@@ -1,3 +1,4 @@
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -24,11 +25,13 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
+	    var args = ((IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!).Args!;
+	    using IInputPathContainer inputPathContainer = new InputPathContainer(args.Any() ? args[0] : null);
+
+	    IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		IGlobalParameters globalParameters = new GlobalParameters(
-			imageResizeCalculator, imageResizer);
+		IGlobalParameters globalParameters = new GlobalParameters(imageResizeCalculator, imageResizer);
 
 		IImageFileFactory imageFileFactory = new ImageFileFactory(globalParameters, imageResizer);
 		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
@@ -53,7 +56,8 @@ public class App : Application
 			discQueryEngine,
 			folderVisualStateFactory,
 			imageViewFactory,
-			mainView);
+			mainView,
+			inputPathContainer);
 
 		mainView.AddFakeTabItem();
 		mainView.Show();

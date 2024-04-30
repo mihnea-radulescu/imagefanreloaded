@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
+using ImageFanReloaded.Core.TextHandling.Implementation;
 
 namespace ImageFanReloaded.Core.Global.Implementation;
 
@@ -38,6 +40,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			Key.Space,
 			Key.PageDown
 		];
+		
+		NameComparer = OperatingSystem.IsWindows()
+			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)
+			: new NaturalSortingComparer(StringComparer.InvariantCulture);
 	}
 	
 	public int ProcessorCount { get; }
@@ -49,9 +55,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	public HashSet<Key> BackwardNavigationKeys { get; }
 	public HashSet<Key> ForwardNavigationKeys { get; }
+	
+	public StringComparer NameComparer { get; }
 
-	public bool CanDisposeImage(IImage image)
-		=> !PersistentImages.Contains(image);
+	public bool CanDisposeImage(IImage image) => !PersistentImages.Contains(image);
 
 	public abstract IImage InvalidImage { get; }
 	public abstract IImage InvalidImageThumbnail { get; }
