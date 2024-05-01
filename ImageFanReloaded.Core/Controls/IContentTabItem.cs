@@ -22,6 +22,8 @@ public interface IContentTabItem
 	IFolderVisualState? FolderVisualState { get; set; }
 
 	event EventHandler<FolderChangedEventArgs>? FolderChanged;
+
+	void EnableFolderTreeViewSelectedItemChanged();
 	
 	void OnKeyPressed(object? sender, KeyboardKeyEventArgs e);
 
@@ -30,8 +32,9 @@ public interface IContentTabItem
 	void RegisterMainViewEvents();
 	void UnregisterMainViewEvents();
 
-	void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
-								bool rootNodes);
+	void PopulateRootNodesSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> rootFolders);
+	void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders);
+	void PopulateSubFoldersTreeOfParentTreeViewItem(IReadOnlyCollection<FileSystemEntryInfo> subFolders);
 
 	void ClearThumbnailBoxes(bool resetContent);
 	void PopulateThumbnailBoxes(IReadOnlyCollection<IThumbnailInfo> thumbnailInfoCollection);
@@ -39,4 +42,6 @@ public interface IContentTabItem
 
 	void SetFolderStatusBarText(string folderStatusBarText);
 	void SetImageStatusBarText(string imageStatusBarText);
+
+	void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo);
 }

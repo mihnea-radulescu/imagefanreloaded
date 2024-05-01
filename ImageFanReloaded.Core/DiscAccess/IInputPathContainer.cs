@@ -1,14 +1,15 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ImageFanReloaded.Core.DiscAccess;
 
 public interface IInputPathContainer
 {
 	string? InputPath { get; }
-	
-	bool HasPopulatedInputPath { get; set; }
 
-	bool ShouldPopulateInputPath();
+	bool ShouldProcessInputPath();
+	void DisableProcessInputPath();
 
-	FileSystemEntryInfo? GetMatchingFileSystemEntryInfo(IReadOnlyCollection<FileSystemEntryInfo> folders);
+	Task<FileSystemEntryInfo> GetFileSystemEntryInfo();
+	Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(IReadOnlyCollection<FileSystemEntryInfo> folders);
 }

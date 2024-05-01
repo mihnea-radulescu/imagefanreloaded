@@ -35,12 +35,14 @@ public class App : Application
 
 		IGlobalParameters globalParameters = new GlobalParameters(imageResizeCalculator, imageResizer);
 		IFileSizeEngine fileSizeEngine = new FileSizeEngine();
-		IInputPathContainer inputPathContainer = new InputPathContainer(globalParameters, inputPath);
 
 		IImageFileFactory imageFileFactory = new ImageFileFactory(globalParameters, imageResizer);
 		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
 			globalParameters, fileSizeEngine, imageFileFactory);
 		IDiscQueryEngine discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
+		
+		IInputPathContainer inputPathContainer = new InputPathContainer(
+			globalParameters, discQueryEngine, inputPath);
 
 		IFolderChangedEventHandleFactory folderChangedEventHandleFactory = new FolderChangedEventHandleFactory();
 		

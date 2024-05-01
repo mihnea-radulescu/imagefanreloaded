@@ -11,4 +11,6 @@ public interface IDiscQueryEngine
 	Task<IReadOnlyCollection<FileSystemEntryInfo>> GetSubFolders(string folderPath);
 
 	Task<IReadOnlyCollection<IImageFile>> GetImageFiles(string folderPath);
+
+	Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath);
 }

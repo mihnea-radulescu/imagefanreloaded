@@ -47,7 +47,7 @@ public class FolderVisualState : IFolderVisualState
 		_contentTabItem.SetTitle(_folderName);
 
 		var subFolders = await _discQueryEngine.GetSubFolders(_folderPath);
-		_contentTabItem.PopulateSubFoldersTree(subFolders, false);
+		_contentTabItem.PopulateSubFoldersTree(subFolders);
 
 		var imageFiles = await _discQueryEngine.GetImageFiles(_folderPath);
 		var imageFilesCount = imageFiles.Count;
@@ -59,9 +59,7 @@ public class FolderVisualState : IFolderVisualState
 		_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
 		_contentTabItem.SetImageStatusBarText(string.Empty);
 
-		var thumbnails = imageFiles
-			.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(anImageFile))
-			.ToList();
+		var thumbnails = GetThumbnailInfoCollection(imageFiles);
 
 		await ProcessThumbnails(thumbnails);
 
@@ -82,6 +80,11 @@ public class FolderVisualState : IFolderVisualState
 	
 	private readonly IFolderChangedEventHandle _folderChangedEventHandle;
 	private readonly CancellationTokenSource _thumbnailGeneration;
+	
+	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(IReadOnlyCollection<IImageFile> imageFiles)
+		=> imageFiles
+			.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(anImageFile))
+			.ToList();
 	
 	private async Task ProcessThumbnails(IReadOnlyList<IThumbnailInfo> thumbnails)
 	{

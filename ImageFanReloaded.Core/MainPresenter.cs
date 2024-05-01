@@ -39,12 +39,18 @@ public class MainPresenter
 	private async void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		
 		contentTabItem.ImageViewFactory = _imageViewFactory;
-		contentTabItem.FolderChanged += OnFolderChanged;
 
 		var rootFolders = await PopulateRootFolders(contentTabItem);
-		PopulateInputPath(contentTabItem, rootFolders);
+		
+		if (_inputPathContainer.ShouldProcessInputPath())
+		{
+			await PopulateInputPath(contentTabItem, rootFolders);
+		}
+		else
+		{
+			EnableContentTabEventHandling(contentTabItem);
+		}
 	}
 	
 	private void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
@@ -69,7 +75,7 @@ public class MainPresenter
 	{
 		var rootFolders = await _discQueryEngine.GetRootFolders();
 		
-		contentTabItem.PopulateSubFoldersTree(rootFolders, true);
+		contentTabItem.PopulateRootNodesSubFoldersTree(rootFolders);
 
 		return rootFolders;
 	}
@@ -93,15 +99,55 @@ public class MainPresenter
 		contentTabItem.FolderVisualState?.ClearVisualState();
 	}
 
-	private void PopulateInputPath(
+	private async Task PopulateInputPath(
 		IContentTabItem contentTabItem, IReadOnlyCollection<FileSystemEntryInfo> rootFolders)
 	{
-		if (!_inputPathContainer.ShouldPopulateInputPath())
+		_inputPathContainer.DisableProcessInputPath();
+
+		await BuildInputFolderTreeView(contentTabItem, rootFolders);
+
+		EnableContentTabEventHandling(contentTabItem);
+
+		await RenderInputFolderImages(contentTabItem);
+	}
+	
+	private async Task BuildInputFolderTreeView(
+		IContentTabItem contentTabItem, IReadOnlyCollection<FileSystemEntryInfo> rootFolders)
+	{
+		FileSystemEntryInfo? matchingFileSystemEntryInfo;
+		var subFolders = rootFolders;
+
+		do
 		{
-			return;
-		}
+			matchingFileSystemEntryInfo = await _inputPathContainer.GetMatchingFileSystemEntryInfo(subFolders);
+
+			if (matchingFileSystemEntryInfo is not null)
+			{
+				contentTabItem.SaveMatchingTreeViewItem(matchingFileSystemEntryInfo);
+				
+				subFolders = await _discQueryEngine.GetSubFolders(matchingFileSystemEntryInfo.Path);
+				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(subFolders);
+			}
+		} while (matchingFileSystemEntryInfo is not null);
+	}
+
+	private void EnableContentTabEventHandling(IContentTabItem contentTabItem)
+	{
+		contentTabItem.EnableFolderTreeViewSelectedItemChanged();
 		
-		_inputPathContainer.HasPopulatedInputPath = true;
+		contentTabItem.FolderChanged += OnFolderChanged;
+	}
+	
+	private async Task RenderInputFolderImages(IContentTabItem contentTabItem)
+	{
+		var fileSystemEntryInfo = await _inputPathContainer.GetFileSystemEntryInfo();
+		
+		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
+			contentTabItem,
+			fileSystemEntryInfo.Name,
+			fileSystemEntryInfo.Path);
+
+		await contentTabItem.FolderVisualState.UpdateVisualState();
 	}
 
 	#endregion

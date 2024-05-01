@@ -30,6 +30,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public IFolderVisualState? FolderVisualState { get; set; }
 
 	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
+
+	public void EnableFolderTreeViewSelectedItemChanged()
+		=> _folderTreeView.SelectionChanged += OnFolderTreeViewSelectedItemChanged;
 	
 	public void OnKeyPressed(object? sender, KeyboardKeyEventArgs e)
 	{
@@ -58,29 +61,41 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public void RegisterMainViewEvents() => MainView!.TabCountChanged += OnTabCountChanged;
 	public void UnregisterMainViewEvents() => MainView!.TabCountChanged -= OnTabCountChanged;
 
-	public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders, bool rootNodes)
+	public void PopulateRootNodesSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> rootFolders)
 	{
-		if (rootNodes)
-		{
-			foreach (var aSubFolder in subFolders)
-			{
-				var treeViewItem = GetTreeViewItem(aSubFolder);
+		var itemCollection = _folderTreeView.Items;
+		
+		AddSubFoldersToTreeView(itemCollection, rootFolders);
+	}
 
-				_folderTreeView.Items.Add(treeViewItem);
-			}
-		}
-		else if (_folderTreeView.SelectedItem is not null)
+	public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders)
+	{
+		if (_folderTreeView.SelectedItem is not null)
 		{
 			var selectedItem = (TreeViewItem)_folderTreeView.SelectedItem;
+			var itemCollection = selectedItem.Items;
+			
+			itemCollection.Clear();
 
-			selectedItem.Items.Clear();
+			AddSubFoldersToTreeView(itemCollection, subFolders);
+		}
+	}
+	
+	public void PopulateSubFoldersTreeOfParentTreeViewItem(IReadOnlyCollection<FileSystemEntryInfo> subFolders)
+	{
+		if (_inputFolderTreeViewItem is not null)
+		{
+			var selectedItem = _inputFolderTreeViewItem;
+			var itemCollection = selectedItem.Items;
+			
+			itemCollection.Clear();
 
-			foreach (var aSubFolder in subFolders)
-			{
-				var treeViewItem = GetTreeViewItem(aSubFolder);
+			AddSubFoldersToTreeView(itemCollection, subFolders);
 
-				selectedItem.Items.Add(treeViewItem);
-			}
+			selectedItem.IsExpanded = true;
+			selectedItem.IsSelected = true;
+
+			_folderTreeView.SelectedItem = selectedItem;
 		}
 	}
 	
@@ -136,8 +151,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void RefreshThumbnailBoxes(
-		IReadOnlyCollection<IThumbnailInfo> thumbnailInfoCollection)
+	public void RefreshThumbnailBoxes(IReadOnlyCollection<IThumbnailInfo> thumbnailInfoCollection)
 	{
 		foreach (var thumbnailInfo in thumbnailInfoCollection)
 		{
@@ -155,6 +169,24 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_textBlockImageInfo.Text = imageStatusBarText;
 	}
 	
+	public void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo)
+	{
+		var subItems = _inputFolderTreeViewItem is null
+			? _folderTreeView.Items
+			: _inputFolderTreeViewItem.Items;
+
+		foreach (TreeViewItem? aSubItem in subItems)
+		{
+			if (aSubItem!.Header is IFileSystemTreeViewItem fileSystemTreeViewItem)
+			{
+				if (fileSystemTreeViewItem.FileSystemEntryInfo == selectedFileSystemEntryInfo)
+				{
+					_inputFolderTreeViewItem = aSubItem;
+				}
+			}
+		}
+	}
+	
     #region Private
 
     private const string FakeTreeViewItemText = "Loading...";
@@ -162,6 +194,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     private List<IThumbnailBox>? _thumbnailBoxList;
 	private int _selectedThumbnailIndex;
 	private IThumbnailBox? _selectedThumbnailBox;
+
+	private TreeViewItem? _inputFolderTreeViewItem;
 	
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxEventArgs e)
 	{
@@ -186,8 +220,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	}
 
     private void OnFolderTreeViewSelectedItemChanged(object? sender, SelectionChangedEventArgs e)
-	{
-		var selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
+    {
+	    var selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
 
 		if (selectedFolderTreeViewItem.Header is IFileSystemTreeViewItem fileSystemEntryItem)
 		{
@@ -263,6 +297,16 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		imageView.ThumbnailChanged += OnThumbnailChanged;
 		await imageView.ShowDialog(MainView!);
 		imageView.ThumbnailChanged -= OnThumbnailChanged;
+	}
+	
+	private static void AddSubFoldersToTreeView(
+		ItemCollection itemCollection, IReadOnlyCollection<FileSystemEntryInfo> subFolders)
+	{
+		foreach (var aSubFolder in subFolders)
+		{
+			var treeViewItem = GetTreeViewItem(aSubFolder);
+			itemCollection.Add(treeViewItem);
+		}
 	}
 
 	private static TreeViewItem GetTreeViewItem(FileSystemEntryInfo fileSystemEntryInfo)

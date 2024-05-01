@@ -69,7 +69,25 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	public async Task<IReadOnlyCollection<IImageFile>> GetImageFiles(string folderPath)
 		=> await Task.Run(() => GetImageFilesInternal(folderPath));
 
+	public async Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath)
+		=> await Task.Run(() =>
+			{
+				var folder = new DirectoryInfo(folderPath);
+				var folderName = folder.Name;
+
+				var hasSubFolders = HasSubFolders(folderPath);
+
+				var fileSystemEntryInfo = new FileSystemEntryInfo(
+					folderName, folderPath, hasSubFolders, _globalParameters.FolderIcon);
+
+				return fileSystemEntryInfo;
+			});
+	
+	#region Protected
+
 	protected abstract bool IsSupportedDrive(string driveName);
+	
+	#endregion
 
 	#region Private
 	
