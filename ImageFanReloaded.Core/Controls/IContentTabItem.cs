@@ -18,7 +18,6 @@ public interface IContentTabItem
 	IContentTabItemHeader? ContentTabItemHeader { get; set; }
 	
     IImageViewFactory? ImageViewFactory { get; set; }
-	object? GenerateThumbnailsLockObject { get; set; }
 	
 	IFolderVisualState? FolderVisualState { get; set; }
 

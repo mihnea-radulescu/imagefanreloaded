@@ -41,7 +41,6 @@ public class MainPresenter
 		var contentTabItem = e.ContentTabItem;
 		
 		contentTabItem.ImageViewFactory = _imageViewFactory;
-		contentTabItem.GenerateThumbnailsLockObject = new object();
 		contentTabItem.FolderChanged += OnFolderChanged;
 
 		var rootFolders = await PopulateRootFolders(contentTabItem);

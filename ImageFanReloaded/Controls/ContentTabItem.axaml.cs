@@ -26,7 +26,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     public IContentTabItemHeader? ContentTabItemHeader { get; set; }
 
 	public IImageViewFactory? ImageViewFactory { get; set; }
-	public object? GenerateThumbnailsLockObject { get; set; }
 
 	public IFolderVisualState? FolderVisualState { get; set; }
 
