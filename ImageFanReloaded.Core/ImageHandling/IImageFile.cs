@@ -4,7 +4,7 @@ public interface IImageFile
 {
     string ImageFileName { get; }
     
-    int SizeOnDiscInKilobytes { get; }
+    decimal SizeOnDiscInKilobytes { get; }
 	ImageSize ImageSize { get; }
 
 	IImage GetImage();

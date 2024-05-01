@@ -8,8 +8,9 @@ public class LinuxDiscQueryEngine : UnixDiscQueryEngineBase
 {
 	public LinuxDiscQueryEngine(
 		IGlobalParameters globalParameters,
+		IFileSizeEngine fileSizeEngine,
 		IImageFileFactory imageFileFactory)
-		: base(globalParameters, imageFileFactory)
+		: base(globalParameters, fileSizeEngine, imageFileFactory)
 	{
 		_supportedDrivePrefixes = new List<string>
 		{

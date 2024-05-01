@@ -1,7 +1,6 @@
 using System;
-using ImageFanReloaded.Core.TextHandling;
 
-namespace ImageFanReloaded.Core.Extensions;
+namespace ImageFanReloaded.Core.TextHandling.Implementation;
 
 public static class StringComparerExtensions
 {

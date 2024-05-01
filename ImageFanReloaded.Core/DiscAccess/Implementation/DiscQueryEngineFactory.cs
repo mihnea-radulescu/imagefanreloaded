@@ -8,9 +8,11 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 {
 	public DiscQueryEngineFactory(
 		IGlobalParameters globalParameters,
+		IFileSizeEngine fileSizeEngine,
 		IImageFileFactory imageFileFactory)
 	{
 		_globalParameters = globalParameters;
+		_fileSizeEngine = fileSizeEngine;
 		_imageFileFactory = imageFileFactory;
 
 		_isWindows = OperatingSystem.IsWindows();
@@ -22,17 +24,17 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 	{
 		if (_isWindows)
 		{
-			return new WindowsDiscQueryEngine(_globalParameters, _imageFileFactory);
+			return new WindowsDiscQueryEngine(_globalParameters, _fileSizeEngine, _imageFileFactory);
 		}
 
 		if (_isLinux)
 		{
-			return new LinuxDiscQueryEngine(_globalParameters, _imageFileFactory);
+			return new LinuxDiscQueryEngine(_globalParameters, _fileSizeEngine, _imageFileFactory);
 		}
 
 		if (_isMacOS)
 		{
-			return new MacOSDiscQueryEngine(_globalParameters, _imageFileFactory);
+			return new MacOSDiscQueryEngine(_globalParameters, _fileSizeEngine, _imageFileFactory);
 		}
 
 		throw new PlatformNotSupportedException("Operating system not supported!");
@@ -41,6 +43,7 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 	#region Private
 
 	private readonly IGlobalParameters _globalParameters;
+	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IImageFileFactory _imageFileFactory;
 
 	private readonly bool _isWindows;

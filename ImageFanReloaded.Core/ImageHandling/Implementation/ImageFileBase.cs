@@ -9,7 +9,7 @@ public abstract class ImageFileBase : IImageFile
 	    IImageResizer imageResizer,
 	    string imageFileName,
 	    string imageFilePath,
-	    int sizeOnDiscInKilobytes)
+	    decimal sizeOnDiscInKilobytes)
     {
 	    _globalParameters = globalParameters;
 	    _imageResizer = imageResizer;
@@ -27,7 +27,7 @@ public abstract class ImageFileBase : IImageFile
 
     public string ImageFileName { get; }
     
-    public int SizeOnDiscInKilobytes { get; }
+    public decimal SizeOnDiscInKilobytes { get; }
 	public ImageSize ImageSize { get; private set; }
 
 	public IImage GetImage()
@@ -142,7 +142,7 @@ public abstract class ImageFileBase : IImageFile
 			? " - invalid image - "
 			: $" - {ImageSize!.Width}x{ImageSize!.Height} - ";
 
-		var imageInfo = $"{ImageFileName}{imageSizeText}{SizeOnDiscInKilobytes} KB";
+		var imageInfo = $"{ImageFileName}{imageSizeText}{(int)SizeOnDiscInKilobytes} KB";
 		return imageInfo;
 	}
 	

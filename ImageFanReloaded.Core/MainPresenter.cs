@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
@@ -34,7 +36,7 @@ public class MainPresenter
 
 	private readonly IInputPathContainer _inputPathContainer;
 
-	private void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
+	private async void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 		
@@ -42,8 +44,8 @@ public class MainPresenter
 		contentTabItem.GenerateThumbnailsLockObject = new object();
 		contentTabItem.FolderChanged += OnFolderChanged;
 
-		PopulateDrivesAndSpecialFolders(contentTabItem);
-		PopulateInputPath();
+		var rootFolders = await PopulateRootFolders(contentTabItem);
+		PopulateInputPath(contentTabItem, rootFolders);
 	}
 	
 	private void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
@@ -55,26 +57,25 @@ public class MainPresenter
 		ClearContentTabItem(contentTabItem);
 	}
 	
-	private void OnFolderChanged(object? sender, FolderChangedEventArgs e)
+	private async void OnFolderChanged(object? sender, FolderChangedEventArgs e)
 	{
 		var contentTabItem = (IContentTabItem)sender!;
 		var name = e.Name;
 		var path = e.Path;
 
-		UpdateContentTabItem(contentTabItem, name, path);
+		await UpdateContentTabItem(contentTabItem, name, path);
 	}
 
-	private void PopulateDrivesAndSpecialFolders(IContentTabItem contentTabItem)
+	private async Task<IReadOnlyCollection<FileSystemEntryInfo>> PopulateRootFolders(IContentTabItem contentTabItem)
 	{
-		var specialFolders = _discQueryEngine.GetUserFolders();
-		var drives = _discQueryEngine.GetDrives();
+		var rootFolders = await _discQueryEngine.GetRootFolders();
+		
+		contentTabItem.PopulateSubFoldersTree(rootFolders, true);
 
-		contentTabItem.PopulateSubFoldersTree(specialFolders, true);
-		contentTabItem.PopulateSubFoldersTree(drives, true);
+		return rootFolders;
 	}
 
-	private void UpdateContentTabItem(
-		IContentTabItem contentTabItem, string folderName, string folderPath)
+	private async Task UpdateContentTabItem(IContentTabItem contentTabItem, string folderName, string folderPath)
 	{
 		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
 
@@ -83,7 +84,7 @@ public class MainPresenter
 			folderName,
 			folderPath);
 
-		contentTabItem.FolderVisualState.UpdateVisualState();
+		await contentTabItem.FolderVisualState.UpdateVisualState();
 	}
 	
 	private static void ClearContentTabItem(IContentTabItem contentTabItem)
@@ -93,15 +94,14 @@ public class MainPresenter
 		contentTabItem.FolderVisualState?.ClearVisualState();
 	}
 
-	private void PopulateInputPath()
+	private void PopulateInputPath(
+		IContentTabItem contentTabItem, IReadOnlyCollection<FileSystemEntryInfo> rootFolders)
 	{
 		if (!_inputPathContainer.ShouldPopulateInputPath())
 		{
 			return;
 		}
 		
-		
-
 		_inputPathContainer.HasPopulatedInputPath = true;
 	}
 

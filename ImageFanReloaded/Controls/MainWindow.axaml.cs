@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.Global;
+using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Keyboard;
 
 namespace ImageFanReloaded.Controls;
@@ -22,6 +23,7 @@ public partial class MainWindow : Window, IMainView
     }
 	
 	public IGlobalParameters? GlobalParameters { get; set; }
+	public IAsyncAutoResetEventFactory? AsyncAutoResetEventFactory { get; set; }
 
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
@@ -103,7 +105,8 @@ public partial class MainWindow : Window, IMainView
 		var contentTabItem = new ContentTabItem
 		{
 			MainView = this,
-			GlobalParameters = GlobalParameters
+			GlobalParameters = GlobalParameters,
+			AsyncAutoResetEvent = AsyncAutoResetEventFactory!.GetAsyncAutoResetEvent()
 		};
 
 		var contentTabItemHeader = new ContentTabItemHeader

@@ -13,7 +13,7 @@ public class ImageFileFactory : IImageFileFactory
 		_imageResizer = imageResizer;
 	}
 
-	public IImageFile GetImageFile(string fileName, string filePath, int sizeOnDiscInKilobytes)
+	public IImageFile GetImageFile(string fileName, string filePath, decimal sizeOnDiscInKilobytes)
 		=> new ImageFile(_globalParameters, _imageResizer, fileName, filePath, sizeOnDiscInKilobytes);
 
 	#region Private

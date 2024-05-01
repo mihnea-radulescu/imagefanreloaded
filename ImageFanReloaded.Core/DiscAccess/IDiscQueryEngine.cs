@@ -1,14 +1,14 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.Core.DiscAccess;
 
 public interface IDiscQueryEngine
 {
-	IReadOnlyCollection<FileSystemEntryInfo> GetUserFolders();
-	IReadOnlyCollection<FileSystemEntryInfo> GetDrives();
+	Task<IReadOnlyCollection<FileSystemEntryInfo>> GetRootFolders();
 
-	IReadOnlyCollection<FileSystemEntryInfo> GetSubFolders(string folderPath);
+	Task<IReadOnlyCollection<FileSystemEntryInfo>> GetSubFolders(string folderPath);
 
-	IReadOnlyCollection<IImageFile> GetImageFiles(string folderPath);
+	Task<IReadOnlyCollection<IImageFile>> GetImageFiles(string folderPath);
 }

@@ -9,8 +9,9 @@ public abstract class UnixDiscQueryEngineBase : DiscQueryEngineBase
 {
 	protected UnixDiscQueryEngineBase(
 		IGlobalParameters globalParameters,
+		IFileSizeEngine fileSizeEngine,
 		IImageFileFactory imageFileFactory)
-		: base(globalParameters, imageFileFactory)
+		: base(globalParameters, fileSizeEngine, imageFileFactory)
 	{
 	}
 

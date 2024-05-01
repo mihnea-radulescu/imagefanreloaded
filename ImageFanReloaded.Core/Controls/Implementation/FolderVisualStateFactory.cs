@@ -8,14 +8,14 @@ public class FolderVisualStateFactory : IFolderVisualStateFactory
 {
 	public FolderVisualStateFactory(
 		IGlobalParameters globalParameters,
+		IFileSizeEngine fileSizeEngine,
 		IThumbnailInfoFactory thumbnailInfoFactory,
-		IDiscQueryEngine discQueryEngine,
-		IDispatcher dispatcher)
+		IDiscQueryEngine discQueryEngine)
 	{
 		_globalParameters = globalParameters;
+		_fileSizeEngine = fileSizeEngine;
 		_thumbnailInfoFactory = thumbnailInfoFactory;
 		_discQueryEngine = discQueryEngine;
-		_dispatcher = dispatcher;
 	}
 	
 	public IFolderVisualState GetFolderVisualState(
@@ -25,9 +25,9 @@ public class FolderVisualStateFactory : IFolderVisualStateFactory
     {
 		IFolderVisualState folderVisualState = new FolderVisualState(
 			_globalParameters,
+			_fileSizeEngine,
 			_thumbnailInfoFactory,
 			_discQueryEngine,
-			_dispatcher,
 			contentTabItem,
 			folderName,
 			folderPath);
@@ -38,9 +38,9 @@ public class FolderVisualStateFactory : IFolderVisualStateFactory
 	#region Private
 	
 	private readonly IGlobalParameters _globalParameters;
+	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IThumbnailInfoFactory _thumbnailInfoFactory;
 	private readonly IDiscQueryEngine _discQueryEngine;
-	private readonly IDispatcher _dispatcher;
-	
+
 	#endregion
 }

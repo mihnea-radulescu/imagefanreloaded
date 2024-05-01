@@ -4,6 +4,7 @@ using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Synchronization;
 
 namespace ImageFanReloaded.Core.Controls;
 
@@ -11,6 +12,7 @@ public interface IContentTabItem
 {
 	IMainView? MainView { get; set; }
 	IGlobalParameters? GlobalParameters { get; set; }
+	IAsyncAutoResetEvent? AsyncAutoResetEvent { get; set; }
 
 	object? WrapperTabItem { get; set; }
 	IContentTabItemHeader? ContentTabItemHeader { get; set; }

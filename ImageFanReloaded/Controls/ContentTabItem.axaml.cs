@@ -7,6 +7,7 @@ using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Synchronization;
 
 namespace ImageFanReloaded.Controls;
 
@@ -15,10 +16,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public ContentTabItem()
 	{
 		InitializeComponent();
-    }
+	}
 	
     public IMainView? MainView { get; set; }
     public IGlobalParameters? GlobalParameters { get; set; }
+    public IAsyncAutoResetEvent? AsyncAutoResetEvent { get; set; }
     
     public object? WrapperTabItem { get; set; }
     public IContentTabItemHeader? ContentTabItemHeader { get; set; }
@@ -57,8 +59,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public void RegisterMainViewEvents() => MainView!.TabCountChanged += OnTabCountChanged;
 	public void UnregisterMainViewEvents() => MainView!.TabCountChanged -= OnTabCountChanged;
 
-	public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders,
-									   bool rootNodes)
+	public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders, bool rootNodes)
 	{
 		if (rootNodes)
 		{
@@ -185,8 +186,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-    private void OnFolderTreeViewSelectedItemChanged(object? sender,
-													 SelectionChangedEventArgs e)
+    private void OnFolderTreeViewSelectedItemChanged(object? sender, SelectionChangedEventArgs e)
 	{
 		var selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
 

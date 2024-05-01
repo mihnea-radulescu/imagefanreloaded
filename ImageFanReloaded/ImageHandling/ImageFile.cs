@@ -12,7 +12,7 @@ public class ImageFile : ImageFileBase
 	    IImageResizer imageResizer,
 	    string imageFileName,
 	    string imageFilePath,
-	    int sizeOnDiscInKilobytes)
+	    decimal sizeOnDiscInKilobytes)
 		: base(globalParameters, imageResizer, imageFileName, imageFilePath, sizeOnDiscInKilobytes)
     {
     }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Synchronization;
 
 namespace ImageFanReloaded.Core.Controls.Implementation;
 
@@ -13,101 +14,96 @@ public class FolderVisualState : IFolderVisualState
 {
 	public FolderVisualState(
 		IGlobalParameters globalParameters,
+		IFileSizeEngine fileSizeEngine,
 		IThumbnailInfoFactory thumbnailInfoFactory,
 		IDiscQueryEngine discQueryEngine,
-		IDispatcher dispatcher,
 		IContentTabItem contentTabItem,
 		string folderName,
 		string folderPath)
 	{
 		_globalParameters = globalParameters;
+		_fileSizeEngine = fileSizeEngine;
 		_thumbnailInfoFactory = thumbnailInfoFactory;
 		_discQueryEngine = discQueryEngine;
-		_dispatcher = dispatcher;
 
 		_contentTabItem = contentTabItem;
-		_generateThumbnailsLockObject = _contentTabItem.GenerateThumbnailsLockObject!;
-
+		
 		_folderName = folderName;
 		_folderPath = folderPath;
-
+		
+		_asyncAutoResetEvent = _contentTabItem.AsyncAutoResetEvent!;
 		_thumbnailGeneration = new CancellationTokenSource();
 	}
 
 	public void NotifyStopThumbnailGeneration() => _thumbnailGeneration.Cancel();
+	
+	public void ClearVisualState() => _contentTabItem.ClearThumbnailBoxes(false);
 
-	public void UpdateVisualState()
+	public async Task UpdateVisualState()
 	{
-		Task.Factory.StartNew(UpdateVisualStateHelper);
-	}
+		await _asyncAutoResetEvent.WaitOne();
+		
+		_contentTabItem.ClearThumbnailBoxes(true);
+		_contentTabItem.SetTitle(_folderName);
 
-	public void ClearVisualState()
-	{
-		Task.Factory.StartNew(ClearVisualStateHelper);
+		var subFolders = await _discQueryEngine.GetSubFolders(_folderPath);
+		_contentTabItem.PopulateSubFoldersTree(subFolders, false);
+
+		var imageFiles = await _discQueryEngine.GetImageFiles(_folderPath);
+		var imageFilesCount = imageFiles.Count;
+		
+		var imageFilesTotalSizeOnDiscInMegabytes = await GetImageFilesTotalSizeOnDiscInMegabytes(imageFiles);
+			
+		var folderStatusBarText =
+			$"{_folderPath} - {imageFilesCount} images - {imageFilesTotalSizeOnDiscInMegabytes} MB";
+		_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
+		_contentTabItem.SetImageStatusBarText(string.Empty);
+
+		var thumbnails = imageFiles
+			.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(anImageFile))
+			.ToList();
+
+		await ProcessThumbnails(thumbnails);
+
+		await _asyncAutoResetEvent.Set();
 	}
 
 	#region Private
-	
-	private const int OneMegabyteInKilobytes = 1024;
 
 	private readonly IGlobalParameters _globalParameters;
+	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IThumbnailInfoFactory _thumbnailInfoFactory;
 	private readonly IDiscQueryEngine _discQueryEngine;
-	private readonly IDispatcher _dispatcher;
+	
 	private readonly IContentTabItem _contentTabItem;
-
+	
 	private readonly string _folderName;
 	private readonly string _folderPath;
-
-	private readonly object _generateThumbnailsLockObject;
+	
+	private readonly IAsyncAutoResetEvent _asyncAutoResetEvent;
 	private readonly CancellationTokenSource _thumbnailGeneration;
-
-	private void UpdateVisualStateHelper()
+	
+	private async Task ProcessThumbnails(IReadOnlyList<IThumbnailInfo> thumbnails)
 	{
-		lock (_generateThumbnailsLockObject)
+		for (var thumbnailCollection = (IEnumerable<IThumbnailInfo>)thumbnails;
+		     !_thumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
+		     thumbnailCollection = thumbnailCollection.Skip(_globalParameters.ProcessorCount))
 		{
-			_dispatcher.Invoke(() => _contentTabItem.ClearThumbnailBoxes(true));
-			_dispatcher.Invoke(() => _contentTabItem.SetTitle(_folderName));
+			var currentThumbnails = thumbnailCollection
+				.Take(_globalParameters.ProcessorCount)
+				.ToArray();
 
-			var subFolders = _discQueryEngine.GetSubFolders(_folderPath);
-			_dispatcher.Invoke(() => _contentTabItem.PopulateSubFoldersTree(subFolders, false));
-
-			var imageFiles = _discQueryEngine.GetImageFiles(_folderPath);
-			var imageFilesCount = imageFiles.Count;
-			var imageFilesTotalSizeOnDiscInMegabytes = GetImageFilesTotalSizeOnDiscInMegabytes(
-				imageFiles);
-			
-			var folderStatusBarText =
-				$"{_folderPath} - {imageFilesCount} images - {imageFilesTotalSizeOnDiscInMegabytes} MB";
-			_dispatcher.Invoke(() => _contentTabItem.SetFolderStatusBarText(folderStatusBarText));
-			_dispatcher.Invoke(() => _contentTabItem.SetImageStatusBarText(string.Empty));
-			
-			var thumbnails = imageFiles
-				.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(anImageFile))
-				.ToList();
-
-			for (var thumbnailCollection = (IEnumerable<IThumbnailInfo>)thumbnails;
-				 !_thumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
-				 thumbnailCollection = thumbnailCollection.Skip(_globalParameters.ProcessorCount))
+			await Task.Run(() => ReadThumbnailInput(currentThumbnails));
+			if (!_thumbnailGeneration.IsCancellationRequested)
 			{
-				var currentThumbnails = thumbnailCollection
-					.Take(_globalParameters.ProcessorCount)
-					.ToArray();
-
-				ReadThumbnailInput(currentThumbnails);
-				_dispatcher.Invoke(() => _contentTabItem.PopulateThumbnailBoxes(currentThumbnails));
-
-				GetThumbnails(currentThumbnails);
-				_dispatcher.Invoke(() => _contentTabItem.RefreshThumbnailBoxes(currentThumbnails));
+				_contentTabItem.PopulateThumbnailBoxes(currentThumbnails);
 			}
-		}
-	}
-
-	private void ClearVisualStateHelper()
-	{
-		lock (_generateThumbnailsLockObject)
-		{
-			_dispatcher.Invoke(() => _contentTabItem.ClearThumbnailBoxes(false));
+			
+			await Task.Run(() => GetThumbnails(currentThumbnails));
+			if (!_thumbnailGeneration.IsCancellationRequested)
+			{
+				_contentTabItem.RefreshThumbnailBoxes(currentThumbnails);
+			}
 		}
 	}
 
@@ -150,20 +146,18 @@ public class FolderVisualState : IFolderVisualState
 		}
 	}
 
-	private static int GetImageFilesTotalSizeOnDiscInMegabytes(
+	private async Task<int> GetImageFilesTotalSizeOnDiscInMegabytes(
 		IReadOnlyCollection<IImageFile> imageFiles)
-	{
-		var imageFilesTotalSizeOnDiscInKilobytes = imageFiles
-			.Sum(anImageFile => anImageFile.SizeOnDiscInKilobytes);
+		=> await Task.Run(() =>
+		{
+			var imageFilesTotalSizeOnDiscInKilobytes = imageFiles
+				.Sum(anImageFile => anImageFile.SizeOnDiscInKilobytes);
 
-		var imageFilesTotalSizeOnDiscInMegabytes = ConvertToSizeOnDiscInMegabytes(
-			imageFilesTotalSizeOnDiscInKilobytes);
+			var imageFilesTotalSizeOnDiscInMegabytes = _fileSizeEngine.ConvertToMegabytes(
+				imageFilesTotalSizeOnDiscInKilobytes);
 
-		return imageFilesTotalSizeOnDiscInMegabytes;
-	}
-	
-	private static int ConvertToSizeOnDiscInMegabytes(int sizeOnDiscInKilobytes)
-		=> sizeOnDiscInKilobytes / OneMegabyteInKilobytes;
+			return imageFilesTotalSizeOnDiscInMegabytes;
+		});
 
 	#endregion
 }

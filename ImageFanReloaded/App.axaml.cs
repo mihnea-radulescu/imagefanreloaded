@@ -11,6 +11,8 @@ using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
+using ImageFanReloaded.Core.Synchronization;
+using ImageFanReloaded.Core.Synchronization.Implementation;
 using ImageFanReloaded.Global;
 using ImageFanReloaded.ImageHandling;
 
@@ -26,21 +28,26 @@ public class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
 	    var args = ((IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!).Args!;
-	    using IInputPathContainer inputPathContainer = new InputPathContainer(args.Any() ? args[0] : null);
-
+	    var inputPath = args.Any() ? args[0] : null;
+	    
 	    IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
 		IGlobalParameters globalParameters = new GlobalParameters(imageResizeCalculator, imageResizer);
+		IFileSizeEngine fileSizeEngine = new FileSizeEngine();
+		IInputPathContainer inputPathContainer = new InputPathContainer(globalParameters, inputPath);
 
 		IImageFileFactory imageFileFactory = new ImageFileFactory(globalParameters, imageResizer);
 		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
-			globalParameters, imageFileFactory);
+			globalParameters, fileSizeEngine, imageFileFactory);
 		IDiscQueryEngine discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
+
+		IAsyncAutoResetEventFactory asyncAutoResetEventFactory = new AsyncAutoResetEventFactory();
 		
 		var mainWindow = new MainWindow();
 		IMainView mainView = mainWindow;
 		mainView.GlobalParameters = globalParameters;
+		mainView.AsyncAutoResetEventFactory = asyncAutoResetEventFactory;
 		
 		var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
 		desktop.MainWindow = mainWindow;
@@ -50,7 +57,7 @@ public class App : Application
 		IDispatcher dispatcher = new Dispatcher(Avalonia.Threading.Dispatcher.UIThread);
 		IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(globalParameters, dispatcher);
 		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
-			globalParameters, thumbnailInfoFactory, discQueryEngine, dispatcher);
+			globalParameters, fileSizeEngine, thumbnailInfoFactory, discQueryEngine);
 
 		var mainPresenter = new MainPresenter(
 			discQueryEngine,

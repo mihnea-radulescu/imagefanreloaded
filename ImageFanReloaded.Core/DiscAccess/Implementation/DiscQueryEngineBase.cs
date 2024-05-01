@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
 
@@ -44,13 +45,47 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 	protected DiscQueryEngineBase(
 		IGlobalParameters globalParameters,
+		IFileSizeEngine fileSizeEngine,
 		IImageFileFactory imageFileFactory)
 	{
 		_globalParameters = globalParameters;
+		_fileSizeEngine = fileSizeEngine;
 		_imageFileFactory = imageFileFactory;
 	}
 
-	public IReadOnlyCollection<FileSystemEntryInfo> GetUserFolders()
+	public async Task<IReadOnlyCollection<FileSystemEntryInfo>> GetRootFolders()
+		=> await Task.Run(() =>
+			{
+				var userFolders = GetUserFolders();
+				var drives = GetDrives();
+			
+				IReadOnlyCollection<FileSystemEntryInfo> rootFolders = [..userFolders, ..drives];
+				return rootFolders;
+			});
+
+	public async Task<IReadOnlyCollection<FileSystemEntryInfo>> GetSubFolders(string folderPath)
+		=> await Task.Run(() => GetSubFoldersInternal(folderPath));
+	
+	public async Task<IReadOnlyCollection<IImageFile>> GetImageFiles(string folderPath)
+		=> await Task.Run(() => GetImageFilesInternal(folderPath));
+
+	protected abstract bool IsSupportedDrive(string driveName);
+
+	#region Private
+	
+    private static readonly IReadOnlyCollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
+    private static readonly IReadOnlyCollection<IImageFile> EmptyImageFileCollection;
+
+    private static readonly string UserProfilePath;
+    private static readonly IReadOnlyCollection<string> SpecialFolders;
+
+	private static readonly HashSet<string> ImageFileExtensions;
+
+	private readonly IGlobalParameters _globalParameters;
+	private readonly IFileSizeEngine _fileSizeEngine;
+	private readonly IImageFileFactory _imageFileFactory;
+	
+	private IReadOnlyCollection<FileSystemEntryInfo> GetUserFolders()
 	{
 		try
 		{
@@ -86,9 +121,9 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 	}
 
-	public IReadOnlyCollection<FileSystemEntryInfo> GetDrives()
-    {
-	    try
+	private IReadOnlyCollection<FileSystemEntryInfo> GetDrives()
+	{
+		try
 		{
 			return DriveInfo.GetDrives()
 				.Select(aDriveInfo => aDriveInfo.Name)
@@ -106,71 +141,54 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		{
 			return EmptyFileSystemEntryInfoCollection;
 		}
-    }
-
-    public IReadOnlyCollection<FileSystemEntryInfo> GetSubFolders(string folderPath)
-    {
-        try
-        {
-            return new DirectoryInfo(folderPath)
-                .GetDirectories()
-                .Select(aDirectory =>
-                    new FileSystemEntryInfo(
-                        aDirectory.Name,
-                        aDirectory.FullName,
-                        HasSubFolders(aDirectory.FullName),
-                        _globalParameters.FolderIcon))
-                .OrderBy(aDirectory => aDirectory.Name, _globalParameters.NameComparer)
-                .ToArray();
-        }
-        catch
-        {
-            return EmptyFileSystemEntryInfoCollection;
-        }
-    }
-
-    public IReadOnlyCollection<IImageFile> GetImageFiles(string folderPath)
-    {
-        try
-        {
-            var filesInformation = new DirectoryInfo(folderPath)
-                .GetFiles("*", SearchOption.TopDirectoryOnly)
-                .ToArray();
+	}
+	
+	private IReadOnlyCollection<FileSystemEntryInfo> GetSubFoldersInternal(string folderPath)
+	{
+		try
+		{
+			return new DirectoryInfo(folderPath)
+				.GetDirectories()
+				.Select(aDirectory =>
+					new FileSystemEntryInfo(
+						aDirectory.Name,
+						aDirectory.FullName,
+						HasSubFolders(aDirectory.FullName),
+						_globalParameters.FolderIcon))
+				.OrderBy(aDirectory => aDirectory.Name, _globalParameters.NameComparer)
+				.ToArray();
+		}
+		catch
+		{
+			return EmptyFileSystemEntryInfoCollection;
+		}
+	}
+	
+	private IReadOnlyCollection<IImageFile> GetImageFilesInternal(string folderPath)
+	{
+		try
+		{
+			var filesInformation = new DirectoryInfo(folderPath)
+				.GetFiles("*", SearchOption.TopDirectoryOnly)
+				.ToArray();
 
 			var imageFiles = filesInformation
 				.Where(aFileInfo =>
-					   ImageFileExtensions.Contains(aFileInfo.Extension))
+					ImageFileExtensions.Contains(aFileInfo.Extension))
 				.Select(aFileInfo => _imageFileFactory.GetImageFile(
 					aFileInfo.Name,
 					aFileInfo.FullName,
-					ConvertToSizeOnDiscInKilobytes(aFileInfo.Length)))
+					_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length)))
 				.OrderBy(aFileInfo => aFileInfo.ImageFileName, _globalParameters.NameComparer)
 				.ToArray();
 
 			return imageFiles;
 		}
-        catch
-        {
-            return EmptyImageFileCollection;
-        }
-    }
-
-	protected abstract bool IsSupportedDrive(string driveName);
-
-	#region Private
-	
-	private const int OneKilobyteInBytes = 1024;
-
-    private static readonly IReadOnlyCollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
-    private static readonly IReadOnlyCollection<IImageFile> EmptyImageFileCollection;
-
-    private static readonly string UserProfilePath;
-    private static readonly IReadOnlyCollection<string> SpecialFolders;
-
-	private static readonly HashSet<string> ImageFileExtensions;
-
-	private readonly IGlobalParameters _globalParameters;
-	private readonly IImageFileFactory _imageFileFactory;
+		catch
+		{
+			return EmptyImageFileCollection;
+		}
+	}
     
     private static bool HasSubFolders(string folderPath)
     {
@@ -188,9 +206,6 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		    return false;
 	    }
     }
-    
-    private static int ConvertToSizeOnDiscInKilobytes(long sizeOnDiscInBytes)
-	    => (int)sizeOnDiscInBytes / OneKilobyteInBytes;
     
     #endregion
 }

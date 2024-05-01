@@ -1,12 +1,14 @@
-using System;
+using System.Collections.Generic;
 
 namespace ImageFanReloaded.Core.DiscAccess;
 
-public interface IInputPathContainer : IDisposable
+public interface IInputPathContainer
 {
 	string? InputPath { get; }
 	
 	bool HasPopulatedInputPath { get; set; }
 
 	bool ShouldPopulateInputPath();
+
+	FileSystemEntryInfo? GetMatchingFileSystemEntryInfo(IReadOnlyCollection<FileSystemEntryInfo> folders);
 }

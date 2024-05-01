@@ -1,13 +1,20 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Threading;
+using System.Linq;
+using ImageFanReloaded.Core.Global;
+using ImageFanReloaded.Core.TextHandling.Implementation;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
 public class InputPathContainer : IInputPathContainer
 {
-	public InputPathContainer(string? inputPath)
+	public InputPathContainer(
+		IGlobalParameters globalParameters,
+		string? inputPath)
 	{
+		_nameComparison = globalParameters.NameComparer.ToStringComparison();
+		
 		InputPath = null;
 		
 		if (!string.IsNullOrEmpty(inputPath) && Path.Exists(inputPath))
@@ -15,73 +22,44 @@ public class InputPathContainer : IInputPathContainer
 			InputPath = Path.GetFullPath(inputPath);
 		}
 
-		_readerWriterLockSlim = new ReaderWriterLockSlim();
-
 		_hasPopulatedInputPath = false;
-		_hasBeenDisposed = false;
 	}
 	
 	public string? InputPath { get; }
 
 	public bool HasPopulatedInputPath
 	{
-		get
-		{
-			ThrowObjectDisposedExceptionIfNecessary();
-			
-			_readerWriterLockSlim.EnterReadLock();
-
-			var hasPopulatedInputPath = _hasPopulatedInputPath;
-			
-			_readerWriterLockSlim.ExitReadLock();
-
-			return hasPopulatedInputPath;
-		}
-		set
-		{
-			ThrowObjectDisposedExceptionIfNecessary();
-			
-			_readerWriterLockSlim.EnterWriteLock();
-			
-			_hasPopulatedInputPath = value;
-			
-			_readerWriterLockSlim.ExitWriteLock();
-		}
+		get => _hasPopulatedInputPath;
+		set => _hasPopulatedInputPath = value;
 	}
 
 	public bool ShouldPopulateInputPath()
 	{
-		ThrowObjectDisposedExceptionIfNecessary();
-		
 		var shouldPopulateInputPath = !HasPopulatedInputPath && InputPath is not null;
 		return shouldPopulateInputPath;
 	}
 
-	public void Dispose()
+	public FileSystemEntryInfo? GetMatchingFileSystemEntryInfo(IReadOnlyCollection<FileSystemEntryInfo> folders)
 	{
-		if (!_hasBeenDisposed)
-		{
-			_readerWriterLockSlim.Dispose();
+		var matchingFileSystemEntryInfo = folders
+			.Where(aFolder => InputPath!.Contains(aFolder.Path, _nameComparison))
+			.Select(aFolder => new
+			{ 
+				Folder = aFolder,
+				Length = aFolder.Path.Length
+			})
+			.OrderByDescending(aFolderWithLength => aFolderWithLength.Length)
+			.Select(aFolderWithLength => aFolderWithLength.Folder)
+			.FirstOrDefault();
 
-			_hasBeenDisposed = true;
-			GC.SuppressFinalize(this);
-		}
+		return matchingFileSystemEntryInfo;
 	}
 	
 	#region Private
-
-	private readonly ReaderWriterLockSlim _readerWriterLockSlim;
 	
-	private bool _hasPopulatedInputPath;
-	private bool _hasBeenDisposed;
-
-	private void ThrowObjectDisposedExceptionIfNecessary()
-	{
-		if (_hasBeenDisposed)
-		{
-			throw new ObjectDisposedException(nameof(InputPathContainer));
-		}
-	}
+	private readonly StringComparison _nameComparison;
+	
+	private volatile bool _hasPopulatedInputPath;
 
 	#endregion
 }
