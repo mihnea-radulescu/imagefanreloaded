@@ -42,20 +42,19 @@ public class App : Application
 			globalParameters, fileSizeEngine, imageFileFactory);
 		IDiscQueryEngine discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 
-		IAsyncAutoResetEventFactory asyncAutoResetEventFactory = new AsyncAutoResetEventFactory();
+		IFolderChangedEventHandleFactory folderChangedEventHandleFactory = new FolderChangedEventHandleFactory();
 		
 		var mainWindow = new MainWindow();
 		IMainView mainView = mainWindow;
 		mainView.GlobalParameters = globalParameters;
-		mainView.AsyncAutoResetEventFactory = asyncAutoResetEventFactory;
+		mainView.FolderChangedEventHandleFactory = folderChangedEventHandleFactory;
 		
 		var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
 		desktop.MainWindow = mainWindow;
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
 		
 		IImageViewFactory imageViewFactory = new ImageViewFactory(globalParameters, screenInformation);
-		IDispatcher dispatcher = new Dispatcher(Avalonia.Threading.Dispatcher.UIThread);
-		IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(globalParameters, dispatcher);
+		IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(globalParameters);
 		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
 			globalParameters, fileSizeEngine, thumbnailInfoFactory, discQueryEngine);
 

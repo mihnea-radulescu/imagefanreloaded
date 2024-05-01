@@ -8,7 +8,7 @@ namespace ImageFanReloaded.Core.Controls;
 public interface IMainView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
-	IAsyncAutoResetEventFactory? AsyncAutoResetEventFactory { get; set; }
+	IFolderChangedEventHandleFactory? FolderChangedEventHandleFactory { get; set; }
 	
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;

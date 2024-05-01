@@ -12,7 +12,7 @@ public interface IContentTabItem
 {
 	IMainView? MainView { get; set; }
 	IGlobalParameters? GlobalParameters { get; set; }
-	IAsyncAutoResetEvent? AsyncAutoResetEvent { get; set; }
+	IFolderChangedEventHandle? FolderChangedEventHandle { get; set; }
 
 	object? WrapperTabItem { get; set; }
 	IContentTabItemHeader? ContentTabItemHeader { get; set; }

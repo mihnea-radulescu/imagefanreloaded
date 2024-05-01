@@ -23,7 +23,7 @@ public partial class MainWindow : Window, IMainView
     }
 	
 	public IGlobalParameters? GlobalParameters { get; set; }
-	public IAsyncAutoResetEventFactory? AsyncAutoResetEventFactory { get; set; }
+	public IFolderChangedEventHandleFactory? FolderChangedEventHandleFactory { get; set; }
 
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
@@ -106,7 +106,7 @@ public partial class MainWindow : Window, IMainView
 		{
 			MainView = this,
 			GlobalParameters = GlobalParameters,
-			AsyncAutoResetEvent = AsyncAutoResetEventFactory!.GetAsyncAutoResetEvent()
+			FolderChangedEventHandle = FolderChangedEventHandleFactory!.GetFolderChangedEventHandle()
 		};
 
 		var contentTabItemHeader = new ContentTabItemHeader

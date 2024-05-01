@@ -1,4 +1,3 @@
-using System;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Global;
 
@@ -8,11 +7,9 @@ public class ThumbnailInfo : IThumbnailInfo
 {
     public ThumbnailInfo(
         IGlobalParameters globalParameters,
-        IDispatcher dispatcher,
         IImageFile imageFile)
     {
         _globalParameters = globalParameters;
-        _dispatcher = dispatcher;
         ImageFile = imageFile;
 
         ThumbnailImage = _globalParameters.LoadingImageThumbnail;
@@ -28,14 +25,7 @@ public class ThumbnailInfo : IThumbnailInfo
 
     public void GetThumbnail()
     {
-        try
-        {
-            GetThumbnailHelper();
-        }
-        catch (InvalidOperationException)
-        {
-            _dispatcher.Invoke(GetThumbnailHelper);
-        }
+        ThumbnailImage = ImageFile.GetThumbnail();
     }
 
     public void RefreshThumbnail() => ThumbnailBox!.RefreshThumbnail();
@@ -53,12 +43,6 @@ public class ThumbnailInfo : IThumbnailInfo
     #region Private
 
     private readonly IGlobalParameters _globalParameters;
-    private readonly IDispatcher _dispatcher;
-
-    private void GetThumbnailHelper()
-    {
-        ThumbnailImage = ImageFile.GetThumbnail();
-	}
 
     #endregion
 }

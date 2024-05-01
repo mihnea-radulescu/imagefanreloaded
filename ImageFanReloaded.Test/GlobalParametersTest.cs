@@ -32,6 +32,8 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.InvalidImage.GetBitmap().Should().NotBeNull();
 		_globalParameters.InvalidImageThumbnail.GetBitmap().Should().NotBeNull();
 		_globalParameters.LoadingImageThumbnail.GetBitmap().Should().NotBeNull();
+
+		_globalParameters.NameComparer.Should().NotBeNull();
 		
 		_globalParameters.PersistentImages.Count.Should().Be(3);
 

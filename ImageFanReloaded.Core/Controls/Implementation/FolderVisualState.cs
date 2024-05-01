@@ -31,7 +31,7 @@ public class FolderVisualState : IFolderVisualState
 		_folderName = folderName;
 		_folderPath = folderPath;
 		
-		_asyncAutoResetEvent = _contentTabItem.AsyncAutoResetEvent!;
+		_folderChangedEventHandle = _contentTabItem.FolderChangedEventHandle!;
 		_thumbnailGeneration = new CancellationTokenSource();
 	}
 
@@ -41,7 +41,7 @@ public class FolderVisualState : IFolderVisualState
 
 	public async Task UpdateVisualState()
 	{
-		await _asyncAutoResetEvent.WaitOne();
+		await _folderChangedEventHandle.WaitOne();
 		
 		_contentTabItem.ClearThumbnailBoxes(true);
 		_contentTabItem.SetTitle(_folderName);
@@ -53,7 +53,7 @@ public class FolderVisualState : IFolderVisualState
 		var imageFilesCount = imageFiles.Count;
 		
 		var imageFilesTotalSizeOnDiscInMegabytes = await GetImageFilesTotalSizeOnDiscInMegabytes(imageFiles);
-			
+		
 		var folderStatusBarText =
 			$"{_folderPath} - {imageFilesCount} images - {imageFilesTotalSizeOnDiscInMegabytes} MB";
 		_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
@@ -65,7 +65,7 @@ public class FolderVisualState : IFolderVisualState
 
 		await ProcessThumbnails(thumbnails);
 
-		await _asyncAutoResetEvent.Set();
+		await _folderChangedEventHandle.Set();
 	}
 
 	#region Private
@@ -80,7 +80,7 @@ public class FolderVisualState : IFolderVisualState
 	private readonly string _folderName;
 	private readonly string _folderPath;
 	
-	private readonly IAsyncAutoResetEvent _asyncAutoResetEvent;
+	private readonly IFolderChangedEventHandle _folderChangedEventHandle;
 	private readonly CancellationTokenSource _thumbnailGeneration;
 	
 	private async Task ProcessThumbnails(IReadOnlyList<IThumbnailInfo> thumbnails)
