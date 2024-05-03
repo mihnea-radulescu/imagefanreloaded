@@ -25,7 +25,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public HashSet<string> ImageFileExtensions { get; }
 	
 	public string UserProfilePath { get; }
-	public IReadOnlyCollection<string> SpecialFolders { get; }
+	public IReadOnlyList<string> SpecialFolders { get; }
 
 	public abstract IImage InvalidImage { get; }
 	public abstract IImage InvalidImageThumbnail { get; }

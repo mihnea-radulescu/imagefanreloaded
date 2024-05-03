@@ -6,11 +6,11 @@ namespace ImageFanReloaded.Core.DiscAccess;
 
 public interface IDiscQueryEngine
 {
-	Task<IReadOnlyCollection<FileSystemEntryInfo>> GetRootFolders();
+	Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders();
 
-	Task<IReadOnlyCollection<FileSystemEntryInfo>> GetSubFolders(string folderPath);
+	Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(string folderPath);
 
-	Task<IReadOnlyCollection<IImageFile>> GetImageFiles(string folderPath);
+	Task<IReadOnlyList<IImageFile>> GetImageFiles(string folderPath);
 
 	Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath);
 }

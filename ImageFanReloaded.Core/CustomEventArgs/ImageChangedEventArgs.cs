@@ -3,9 +3,9 @@ using ImageFanReloaded.Core.Controls;
 
 namespace ImageFanReloaded.Core.CustomEventArgs;
 
-public class ThumbnailChangedEventArgs : EventArgs
+public class ImageChangedEventArgs : EventArgs
 {
-    public ThumbnailChangedEventArgs(IImageView imageView, int increment)
+    public ImageChangedEventArgs(IImageView imageView, int increment)
     {
         ImageView = imageView;
         Increment = increment;

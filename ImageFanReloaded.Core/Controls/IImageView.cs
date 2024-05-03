@@ -11,9 +11,10 @@ public interface IImageView
 	IGlobalParameters? GlobalParameters { get; set; }
 	IScreenInformation? ScreenInformation { get; set; }
 	
-	event EventHandler<ThumbnailChangedEventArgs>? ThumbnailChanged;
+	event EventHandler<ImageChangedEventArgs>? ImageChanged;
 
 	void SetImage(IImageFile imageFile);
 
     Task ShowDialog(IMainView owner);
+    void Show();
 }

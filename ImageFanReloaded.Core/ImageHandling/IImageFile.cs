@@ -3,6 +3,7 @@ namespace ImageFanReloaded.Core.ImageHandling;
 public interface IImageFile
 {
     string ImageFileName { get; }
+    string ImageFilePath { get; }
     
     decimal SizeOnDiscInKilobytes { get; }
 	ImageSize ImageSize { get; }

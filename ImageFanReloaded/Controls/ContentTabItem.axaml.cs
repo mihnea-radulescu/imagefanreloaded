@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using ImageFanReloaded.Core.Collections.Implementation;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
@@ -61,14 +63,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public void RegisterMainViewEvents() => MainView!.TabCountChanged += OnTabCountChanged;
 	public void UnregisterMainViewEvents() => MainView!.TabCountChanged -= OnTabCountChanged;
 
-	public void PopulateRootNodesSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> rootFolders)
+	public void PopulateRootNodesSubFoldersTree(IReadOnlyList<FileSystemEntryInfo> rootFolders)
 	{
 		var itemCollection = _folderTreeView.Items;
 		
 		AddSubFoldersToTreeView(itemCollection, rootFolders);
 	}
 
-	public void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders)
+	public void PopulateSubFoldersTree(IReadOnlyList<FileSystemEntryInfo> subFolders)
 	{
 		if (_folderTreeView.SelectedItem is not null)
 		{
@@ -81,7 +83,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 	
-	public void PopulateSubFoldersTreeOfParentTreeViewItem(IReadOnlyCollection<FileSystemEntryInfo> subFolders)
+	public void PopulateSubFoldersTreeOfParentTreeViewItem(IReadOnlyList<FileSystemEntryInfo> subFolders)
 	{
 		if (_inputFolderTreeViewItem is not null)
 		{
@@ -99,8 +101,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 	
-	public void PopulateThumbnailBoxes(
-		IReadOnlyCollection<IThumbnailInfo> thumbnailInfoCollection)
+	public void PopulateThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection)
 	{
 		foreach (var thumbnailInfo in thumbnailInfoCollection)
 		{
@@ -112,11 +113,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
 			aThumbnailBox.ThumbnailBoxClicked += OnThumbnailBoxClicked;
 
-			_thumbnailBoxList!.Add(aThumbnailBox);
+			_thumbnailBoxCollection!.Add(aThumbnailBox);
 
 			if (IsFirstThumbnail())
 			{
-				SelectThumbnailBox(aThumbnailBox);
+				SelectThumbnailBox(aThumbnailBox, 0);
 			}
 
 			var aSurroundingStackPanel = new StackPanel();
@@ -130,28 +131,28 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_thumbnailWrapPanel.Children.Clear();
 		_selectedThumbnailBox = null;
 
-		if (_thumbnailBoxList is not null)
+		if (_thumbnailBoxCollection is not null)
 		{
-			foreach (var aThumbnailBox in _thumbnailBoxList)
+			foreach (var aThumbnailBox in _thumbnailBoxCollection)
 			{
 				aThumbnailBox.DisposeThumbnail();
 				aThumbnailBox.ThumbnailBoxSelected -= OnThumbnailBoxSelected;
 				aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
 			}
 
-			_thumbnailBoxList = null;
+			_thumbnailBoxCollection = null;
 		}
 		
 		if (resetContent)
 		{
-			_thumbnailBoxList = new List<IThumbnailBox>();
+			_thumbnailBoxCollection = new List<IThumbnailBox>();
 			_selectedThumbnailIndex = -1;
 			
 			_thumbnailScrollViewer.Offset = new Vector(_thumbnailScrollViewer.Offset.X, 0);
 		}
 	}
 
-	public void RefreshThumbnailBoxes(IReadOnlyCollection<IThumbnailInfo> thumbnailInfoCollection)
+	public void RefreshThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection)
 	{
 		foreach (var thumbnailInfo in thumbnailInfoCollection)
 		{
@@ -191,7 +192,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
     private const string FakeTreeViewItemText = "Loading...";
 
-    private List<IThumbnailBox>? _thumbnailBoxList;
+    private IList<IThumbnailBox>? _thumbnailBoxCollection;
 	private int _selectedThumbnailIndex;
 	private IThumbnailBox? _selectedThumbnailBox;
 
@@ -215,7 +216,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 		else
 		{
-			SelectThumbnailBox(thumbnailBox);
+			SelectThumbnailBox(thumbnailBox, null);
 		}
 	}
 
@@ -237,7 +238,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void OnTabCountChanged(object? sender, TabCountChangedEventArgs e)
 		=> ShowCloseButton(e.ShowTabCloseButton);
 
-	private void OnThumbnailChanged(object? sender, ThumbnailChangedEventArgs e)
+	private void OnImageChanged(object? sender, ImageChangedEventArgs e)
 	{
 		var imageView = e.ImageView;
 		var increment = e.Increment;
@@ -248,15 +249,25 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-    private void SelectThumbnailBox(IThumbnailBox thumbnailBox)
+    private void SelectThumbnailBox(IThumbnailBox thumbnailBox, int? indexToSelect)
 	{
 		if (_selectedThumbnailBox != thumbnailBox)
 		{
 			UnselectThumbnail();
 			
 			_selectedThumbnailBox = thumbnailBox;
-			_selectedThumbnailIndex = _thumbnailBoxList
-				!.FindIndex(aThumbnailBox => aThumbnailBox == _selectedThumbnailBox);
+
+			if (indexToSelect is null)
+			{
+				_selectedThumbnailIndex = _thumbnailBoxCollection!
+					.Select((aThumbnailBox, index) => (aThumbnailBox, index))
+					.Single(aThumbnailBoxWithIndex => aThumbnailBoxWithIndex.aThumbnailBox == _selectedThumbnailBox)
+					.index;
+			}
+			else
+			{
+				_selectedThumbnailIndex = indexToSelect.Value;
+			}
 
 			SelectThumbnail();
 		}
@@ -268,13 +279,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			var newSelectedThumbnailIndex = _selectedThumbnailIndex + increment;
 
-			if (newSelectedThumbnailIndex >= 0 &&
-				newSelectedThumbnailIndex < _thumbnailBoxList!.Count)
+			if (_thumbnailBoxCollection!.IsIndexWithinBounds(newSelectedThumbnailIndex))
 			{
 				UnselectThumbnail();
 
 				_selectedThumbnailIndex = newSelectedThumbnailIndex;
-				_selectedThumbnailBox = _thumbnailBoxList[_selectedThumbnailIndex];
+				_selectedThumbnailBox = _thumbnailBoxCollection![_selectedThumbnailIndex];
 
 				SelectThumbnail();
 
@@ -294,13 +304,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		var imageView = ImageViewFactory!.GetImageView();
 		imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
 
-		imageView.ThumbnailChanged += OnThumbnailChanged;
+		imageView.ImageChanged += OnImageChanged;
 		await imageView.ShowDialog(MainView!);
-		imageView.ThumbnailChanged -= OnThumbnailChanged;
+		imageView.ImageChanged -= OnImageChanged;
 	}
 	
 	private static void AddSubFoldersToTreeView(
-		ItemCollection itemCollection, IReadOnlyCollection<FileSystemEntryInfo> subFolders)
+		ItemCollection itemCollection, IReadOnlyList<FileSystemEntryInfo> subFolders)
 	{
 		foreach (var aSubFolder in subFolders)
 		{
@@ -337,7 +347,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void ShowCloseButton(bool showTabCloseButton)
 		=> ContentTabItemHeader!.ShowTabCloseButton(showTabCloseButton);
 	
-	private bool IsFirstThumbnail() => _thumbnailBoxList!.Count == 1;
+	private bool IsFirstThumbnail() => _thumbnailBoxCollection!.Count == 1;
 
 	#endregion
 }

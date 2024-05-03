@@ -27,7 +27,7 @@ public abstract class UnixDiscQueryEngineBase : DiscQueryEngineBase
 		return isSupportedDrive;
 	}
 
-	protected abstract IReadOnlyCollection<string> SupportedDrivePrefixes { get; }
+	protected abstract IReadOnlyList<string> SupportedDrivePrefixes { get; }
 
 	#region Private
 

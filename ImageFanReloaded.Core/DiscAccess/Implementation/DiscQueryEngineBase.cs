@@ -30,20 +30,20 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		_imageFileFactory = imageFileFactory;
 	}
 
-	public async Task<IReadOnlyCollection<FileSystemEntryInfo>> GetRootFolders()
+	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders()
 		=> await Task.Run(() =>
 			{
 				var userFolders = GetUserFolders();
 				var drives = GetDrives();
 			
-				IReadOnlyCollection<FileSystemEntryInfo> rootFolders = [..userFolders, ..drives];
+				IReadOnlyList<FileSystemEntryInfo> rootFolders = [..userFolders, ..drives];
 				return rootFolders;
 			});
 
-	public async Task<IReadOnlyCollection<FileSystemEntryInfo>> GetSubFolders(string folderPath)
+	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(string folderPath)
 		=> await Task.Run(() => GetSubFoldersInternal(folderPath));
 	
-	public async Task<IReadOnlyCollection<IImageFile>> GetImageFiles(string folderPath)
+	public async Task<IReadOnlyList<IImageFile>> GetImageFiles(string folderPath)
 		=> await Task.Run(() => GetImageFilesInternal(folderPath));
 
 	public async Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath)
@@ -68,14 +68,14 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 	#region Private
 	
-    private static readonly IReadOnlyCollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
-    private static readonly IReadOnlyCollection<IImageFile> EmptyImageFileCollection;
+    private static readonly IReadOnlyList<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
+    private static readonly IReadOnlyList<IImageFile> EmptyImageFileCollection;
 
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IImageFileFactory _imageFileFactory;
 	
-	private IReadOnlyCollection<FileSystemEntryInfo> GetUserFolders()
+	private IReadOnlyList<FileSystemEntryInfo> GetUserFolders()
 	{
 		try
 		{
@@ -102,7 +102,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 				.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name, _globalParameters.NameComparer)
 				.ToArray();
 
-			IReadOnlyCollection<FileSystemEntryInfo> userFolders = [homeFolder, ..specialFolders];
+			IReadOnlyList<FileSystemEntryInfo> userFolders = [homeFolder, ..specialFolders];
 			return userFolders;
 		}
 		catch
@@ -111,7 +111,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 	}
 
-	private IReadOnlyCollection<FileSystemEntryInfo> GetDrives()
+	private IReadOnlyList<FileSystemEntryInfo> GetDrives()
 	{
 		try
 		{
@@ -133,7 +133,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 	}
 	
-	private IReadOnlyCollection<FileSystemEntryInfo> GetSubFoldersInternal(string folderPath)
+	private IReadOnlyList<FileSystemEntryInfo> GetSubFoldersInternal(string folderPath)
 	{
 		try
 		{
@@ -154,7 +154,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 	}
 	
-	private IReadOnlyCollection<IImageFile> GetImageFilesInternal(string folderPath)
+	private IReadOnlyList<IImageFile> GetImageFilesInternal(string folderPath)
 	{
 		try
 		{

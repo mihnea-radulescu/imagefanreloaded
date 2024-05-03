@@ -14,5 +14,5 @@ public interface IInputPathContainer
 	void DisableProcessInputPath();
 
 	Task<FileSystemEntryInfo> GetFileSystemEntryInfo();
-	Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(IReadOnlyCollection<FileSystemEntryInfo> folders);
+	Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(IReadOnlyList<FileSystemEntryInfo> folders);
 }

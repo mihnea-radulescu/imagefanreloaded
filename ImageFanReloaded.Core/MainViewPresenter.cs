@@ -6,24 +6,24 @@ using ImageFanReloaded.Core.DiscAccess;
 
 namespace ImageFanReloaded.Core;
 
-public class MainPresenter
+public class MainViewPresenter
 {
-	public MainPresenter(
+	public MainViewPresenter(
 		IDiscQueryEngine discQueryEngine,
 		IFolderVisualStateFactory folderVisualStateFactory,
 		IImageViewFactory imageViewFactory,
-		IMainView mainView,
-		IInputPathContainer inputPathContainer)
+		IInputPathContainer inputPathContainer,
+		IMainView mainView)
 	{
 		_discQueryEngine = discQueryEngine;
 		_folderVisualStateFactory = folderVisualStateFactory;
 		_imageViewFactory = imageViewFactory;
 
+		_inputPathContainer = inputPathContainer;
+		
 		_mainView = mainView;
 		_mainView.ContentTabItemAdded += OnContentTabItemAdded;
 		_mainView.ContentTabItemClosed += OnContentTabItemClosed;
-
-		_inputPathContainer = inputPathContainer;
 	}
 
 	#region Private
@@ -31,10 +31,10 @@ public class MainPresenter
 	private readonly IDiscQueryEngine _discQueryEngine;
 	private readonly IFolderVisualStateFactory _folderVisualStateFactory;
 	private readonly IImageViewFactory _imageViewFactory;
+	
+	private readonly IInputPathContainer _inputPathContainer;
 
 	private readonly IMainView _mainView;
-
-	private readonly IInputPathContainer _inputPathContainer;
 
 	private async void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
 	{
@@ -71,7 +71,7 @@ public class MainPresenter
 		await UpdateContentTabItem(contentTabItem, name, path);
 	}
 
-	private async Task<IReadOnlyCollection<FileSystemEntryInfo>> PopulateRootFolders(IContentTabItem contentTabItem)
+	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(IContentTabItem contentTabItem)
 	{
 		var rootFolders = await _discQueryEngine.GetRootFolders();
 		
@@ -100,7 +100,7 @@ public class MainPresenter
 	}
 
 	private async Task PopulateInputPath(
-		IContentTabItem contentTabItem, IReadOnlyCollection<FileSystemEntryInfo> rootFolders)
+		IContentTabItem contentTabItem, IReadOnlyList<FileSystemEntryInfo> rootFolders)
 	{
 		_inputPathContainer.DisableProcessInputPath();
 
@@ -112,7 +112,7 @@ public class MainPresenter
 	}
 	
 	private async Task BuildInputFolderTreeView(
-		IContentTabItem contentTabItem, IReadOnlyCollection<FileSystemEntryInfo> rootFolders)
+		IContentTabItem contentTabItem, IReadOnlyList<FileSystemEntryInfo> rootFolders)
 	{
 		FileSystemEntryInfo? matchingFileSystemEntryInfo;
 		var subFolders = rootFolders;

@@ -32,13 +32,13 @@ public interface IContentTabItem
 	void RegisterMainViewEvents();
 	void UnregisterMainViewEvents();
 
-	void PopulateRootNodesSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> rootFolders);
-	void PopulateSubFoldersTree(IReadOnlyCollection<FileSystemEntryInfo> subFolders);
-	void PopulateSubFoldersTreeOfParentTreeViewItem(IReadOnlyCollection<FileSystemEntryInfo> subFolders);
+	void PopulateRootNodesSubFoldersTree(IReadOnlyList<FileSystemEntryInfo> rootFolders);
+	void PopulateSubFoldersTree(IReadOnlyList<FileSystemEntryInfo> subFolders);
+	void PopulateSubFoldersTreeOfParentTreeViewItem(IReadOnlyList<FileSystemEntryInfo> subFolders);
 
 	void ClearThumbnailBoxes(bool resetContent);
-	void PopulateThumbnailBoxes(IReadOnlyCollection<IThumbnailInfo> thumbnailInfoCollection);
-	void RefreshThumbnailBoxes(IReadOnlyCollection<IThumbnailInfo> thumbnailInfoCollection);
+	void PopulateThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
+	void RefreshThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
 
 	void SetFolderStatusBarText(string folderStatusBarText);
 	void SetImageStatusBarText(string imageStatusBarText);

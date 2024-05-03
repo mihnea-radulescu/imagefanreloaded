@@ -40,7 +40,7 @@ public class InputPathContainer : IInputPathContainer
 						InputPathType = InputPathType.File;
 
 						FolderPath = inputPathFileInfo.DirectoryName;
-						FilePath = Path.GetFullPath(inputPath);
+						FilePath = inputPathFileInfo.FullName;
 					}
 				}
 				catch
@@ -71,7 +71,7 @@ public class InputPathContainer : IInputPathContainer
 		=> await _discQueryEngine.GetFileSystemEntryInfo(FolderPath!);
 
 	public async Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(
-		IReadOnlyCollection<FileSystemEntryInfo> folders)
+		IReadOnlyList<FileSystemEntryInfo> folders)
 		=> await Task.Run(() =>
 			{
 				var matchingFileSystemEntryInfo = folders

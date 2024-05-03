@@ -26,6 +26,7 @@ public abstract class ImageFileBase : IImageFile
     }
 
     public string ImageFileName { get; }
+    public string ImageFilePath { get; }
     
     public decimal SizeOnDiscInKilobytes { get; }
 	public ImageSize ImageSize { get; private set; }
@@ -149,8 +150,6 @@ public abstract class ImageFileBase : IImageFile
 	#region Protected
 
 	protected abstract IImage GetImageFromDisc(string imageFilePath);
-	
-	protected readonly string ImageFilePath;
 	
 	#endregion
 

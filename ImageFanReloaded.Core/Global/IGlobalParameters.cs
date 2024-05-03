@@ -24,7 +24,7 @@ public interface IGlobalParameters
 	HashSet<string> ImageFileExtensions { get; }
 	
 	string UserProfilePath { get; }
-	IReadOnlyCollection<string> SpecialFolders { get; }
+	IReadOnlyList<string> SpecialFolders { get; }
 
 	IImage InvalidImage { get; }
 	IImage InvalidImageThumbnail { get; }

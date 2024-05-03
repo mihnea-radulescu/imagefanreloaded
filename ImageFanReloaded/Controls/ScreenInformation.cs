@@ -6,14 +6,14 @@ namespace ImageFanReloaded.Controls;
 
 public class ScreenInformation : IScreenInformation
 {
-	public ScreenInformation(Window mainWindow)
+	public ScreenInformation(Window currentWindow)
     {
-		_mainWindow = mainWindow;
+		_currentWindow = currentWindow;
 	}
 
     public ImageSize GetScreenSize()
 	{
-		var screenBounds = _mainWindow.Screens.ScreenFromWindow(_mainWindow)!.Bounds;
+		var screenBounds = _currentWindow.Screens.ScreenFromWindow(_currentWindow)!.Bounds;
 		var screenSize = new ImageSize(screenBounds.Width, screenBounds.Height);
 
 		return screenSize;
@@ -21,7 +21,7 @@ public class ScreenInformation : IScreenInformation
 
 	#region Private
 
-	private readonly Window _mainWindow;
+	private readonly Window _currentWindow;
 
 	#endregion
 }

@@ -42,7 +42,7 @@ public partial class ImageWindow : Window, IImageView
 	
 	public IScreenInformation? ScreenInformation { get; set; }
 	
-	public event EventHandler<ThumbnailChangedEventArgs>? ThumbnailChanged;
+	public event EventHandler<ImageChangedEventArgs>? ImageChanged;
 
 	public void SetImage(IImageFile imageFile)
 	{
@@ -95,11 +95,11 @@ public partial class ImageWindow : Window, IImageView
 
         if (_globalParameters!.BackwardNavigationKeys.Contains(keyPressed))
         {
-            RaiseThumbnailChanged(-1);
+            RaiseImageChanged(-1);
         }
         else if (_globalParameters!.ForwardNavigationKeys.Contains(keyPressed))
         {
-            RaiseThumbnailChanged(1);
+            RaiseImageChanged(1);
         }
         else if (keyPressed == _globalParameters!.EnterKey)
         {
@@ -125,8 +125,7 @@ public partial class ImageWindow : Window, IImageView
 
     private void OnMouseDown(object? sender, PointerPressedEventArgs e)
 	{
-		if (!_canZoomToImageSize ||
-			_imageViewState == ImageViewState.ResizedToScreenSize)
+		if (!_canZoomToImageSize || _imageViewState == ImageViewState.ResizedToScreenSize)
 		{
 			return;
 		}
@@ -182,20 +181,19 @@ public partial class ImageWindow : Window, IImageView
 
 		if (delta.Y > 0)
 		{
-			RaiseThumbnailChanged(-1);
+			RaiseImageChanged(-1);
 		}
 		else if (delta.Y < 0)
 		{
-			RaiseThumbnailChanged(1);
+			RaiseImageChanged(1);
 		}
 
 		e.Handled = true;
 	}
 
-	private void RaiseThumbnailChanged(int increment)
+	private void RaiseImageChanged(int increment)
 	{
-		ThumbnailChanged?.Invoke(
-			this, new ThumbnailChangedEventArgs(this, increment));
+		ImageChanged?.Invoke(this, new ImageChangedEventArgs(this, increment));
 	}
 
 	private void DragImage()
@@ -305,7 +303,7 @@ public partial class ImageWindow : Window, IImageView
 		Cursor = SizeAllCursor;
 
 		var zoomRectangle = GetZoomRectangle(coordinatesToImageSizeRatio, bitmap);
-		ControlExtensions.BringIntoView(_imageControl, zoomRectangle);
+		_imageControl.BringIntoView(zoomRectangle);
 	}
 
 	private static Rect GetZoomRectangle(

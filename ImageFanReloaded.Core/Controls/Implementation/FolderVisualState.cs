@@ -81,7 +81,7 @@ public class FolderVisualState : IFolderVisualState
 	private readonly IFolderChangedEventHandle _folderChangedEventHandle;
 	private readonly CancellationTokenSource _thumbnailGeneration;
 	
-	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(IReadOnlyCollection<IImageFile> imageFiles)
+	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(IReadOnlyList<IImageFile> imageFiles)
 		=> imageFiles
 			.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(anImageFile))
 			.ToList();
@@ -151,8 +151,7 @@ public class FolderVisualState : IFolderVisualState
 				}
 			});
 
-	private async Task<int> GetImageFilesTotalSizeOnDiscInMegabytes(
-		IReadOnlyCollection<IImageFile> imageFiles)
+	private async Task<int> GetImageFilesTotalSizeOnDiscInMegabytes(IReadOnlyList<IImageFile> imageFiles)
 		=> await Task.Run(() =>
 		{
 			var imageFilesTotalSizeOnDiscInKilobytes = imageFiles
