@@ -9,7 +9,7 @@ Features:
 * keyboard and mouse user interaction
 * targeted zoom and mouse-drag zoomed image control
 * fast and seamless full-screen navigation across images
-* command-line direct access to the specified folder
+* command-line direct access to the specified folder or image file
 
 User interface:
 * left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and dragging images

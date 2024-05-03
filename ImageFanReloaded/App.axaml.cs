@@ -113,10 +113,10 @@ public class App : Application
 		    inputPathContainer,
 		    globalParameters,
 		    imageView);
-			
-	    imageView.Show();
 
 	    await imageViewPresenter.SetUpAccess();
+	    
+	    imageView.Show();
     }
     
     #endregion

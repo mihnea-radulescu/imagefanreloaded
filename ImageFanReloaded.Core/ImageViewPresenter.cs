@@ -27,6 +27,8 @@ public class ImageViewPresenter
 		
 		_imageView = imageView;
 		_imageView.ImageChanged += OnImageChanged;
+
+		_imageFiles = new List<IImageFile>();
 	}
 	
 	public async Task SetUpAccess()
