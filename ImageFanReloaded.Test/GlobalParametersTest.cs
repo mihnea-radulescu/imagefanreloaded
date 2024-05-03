@@ -35,6 +35,11 @@ public class GlobalParametersTest : TestBase
 
 		_globalParameters.NameComparer.Should().NotBeNull();
 		
+		_globalParameters.ImageFileExtensions.Should().NotBeEmpty();
+		
+		_globalParameters.UserProfilePath.Should().NotBeNull();
+		_globalParameters.SpecialFolders.Should().NotBeEmpty();
+		
 		_globalParameters.PersistentImages.Count.Should().Be(3);
 
 		_globalParameters.DriveIcon.GetBitmap().Should().NotBeNull();

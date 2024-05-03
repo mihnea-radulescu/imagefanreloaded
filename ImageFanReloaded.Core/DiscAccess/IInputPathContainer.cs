@@ -5,7 +5,10 @@ namespace ImageFanReloaded.Core.DiscAccess;
 
 public interface IInputPathContainer
 {
-	string? InputPath { get; }
+	InputPathType InputPathType { get; }
+	
+	string? FolderPath { get; }
+	string? FilePath { get; }
 
 	bool ShouldProcessInputPath();
 	void DisableProcessInputPath();

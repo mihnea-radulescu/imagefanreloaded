@@ -13,7 +13,6 @@ public class GlobalParameters : GlobalParametersBase
 	public GlobalParameters(
 		IImageResizeCalculator imageResizeCalculator,
 		IImageResizer imageResizer)
-		: base(imageResizeCalculator, imageResizer)
 	{
 		var invalidBitmap = GetBitmapFromResource(Resources.InvalidImage);
 		var invalidBitmapSize = new ImageSize(

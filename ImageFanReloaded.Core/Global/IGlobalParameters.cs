@@ -20,6 +20,11 @@ public interface IGlobalParameters
 	StringComparer NameComparer { get; }
 
 	bool CanDisposeImage(IImage image);
+	
+	HashSet<string> ImageFileExtensions { get; }
+	
+	string UserProfilePath { get; }
+	IReadOnlyCollection<string> SpecialFolders { get; }
 
 	IImage InvalidImage { get; }
 	IImage InvalidImageThumbnail { get; }

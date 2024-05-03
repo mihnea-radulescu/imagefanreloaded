@@ -17,18 +17,48 @@ public class InputPathContainer : IInputPathContainer
 	{
 		_discQueryEngine = discQueryEngine;
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
-		
-		InputPath = null;
+
+		InputPathType = InputPathType.Invalid;
 		_shouldProcessInputPath = false;
-		
-		if (!string.IsNullOrEmpty(inputPath) && Path.Exists(inputPath) && Directory.Exists(inputPath))
+
+		if (!string.IsNullOrEmpty(inputPath) && Path.Exists(inputPath))
 		{
-			InputPath = Path.GetFullPath(inputPath);
+			if (Directory.Exists(inputPath))
+			{
+				InputPathType = InputPathType.Folder;
+				
+				FolderPath = Path.GetFullPath(inputPath);
+			}
+			else if (File.Exists(inputPath))
+			{
+				try
+				{
+					var inputPathFileInfo = new FileInfo(inputPath);
+
+					if (globalParameters.ImageFileExtensions.Contains(inputPathFileInfo.Extension))
+					{
+						InputPathType = InputPathType.File;
+
+						FolderPath = inputPathFileInfo.DirectoryName;
+						FilePath = Path.GetFullPath(inputPath);
+					}
+				}
+				catch
+				{
+				}
+			}
+		}
+
+		if (InputPathType != InputPathType.Invalid)
+		{
 			_shouldProcessInputPath = true;
 		}
 	}
 	
-	public string? InputPath { get; }
+	public InputPathType InputPathType { get; }
+	
+	public string? FolderPath { get; }
+	public string? FilePath { get; }
 
 	public bool ShouldProcessInputPath() => _shouldProcessInputPath;
 	
@@ -38,14 +68,14 @@ public class InputPathContainer : IInputPathContainer
 	}
 
 	public async Task<FileSystemEntryInfo> GetFileSystemEntryInfo()
-		=> await _discQueryEngine.GetFileSystemEntryInfo(InputPath!);
+		=> await _discQueryEngine.GetFileSystemEntryInfo(FolderPath!);
 
 	public async Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(
 		IReadOnlyCollection<FileSystemEntryInfo> folders)
 		=> await Task.Run(() =>
 			{
 				var matchingFileSystemEntryInfo = folders
-					.Where(aFolder => InputPath!.Contains(aFolder.Path, _nameComparison))
+					.Where(aFolder => FolderPath!.Contains(aFolder.Path, _nameComparison))
 					.Select(aFolder => new
 					{ 
 						Folder = aFolder,
@@ -63,7 +93,7 @@ public class InputPathContainer : IInputPathContainer
 	private readonly IDiscQueryEngine _discQueryEngine;
 	
 	private readonly StringComparison _nameComparison;
-	
+
 	private volatile bool _shouldProcessInputPath;
 
 	#endregion

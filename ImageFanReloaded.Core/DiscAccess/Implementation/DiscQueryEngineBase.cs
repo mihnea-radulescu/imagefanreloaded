@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,28 +18,6 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		EmptyImageFileCollection = Enumerable
 			.Empty<IImageFile>()
 			.ToArray();
-
-		UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
-		SpecialFolders = new List<string>
-		{
-			"Desktop",
-			"Documents",
-			"Downloads",
-			"Media",
-			"Pictures"
-		};
-
-		ImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
-		{
-			".bmp",
-			".gif",
-			".ico",
-			".jpg", ".jpe", ".jpeg",
-			".png",
-			".tif", ".tiff",
-            ".webp"
-		};
 	}
 
 	protected DiscQueryEngineBase(
@@ -94,11 +71,6 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
     private static readonly IReadOnlyCollection<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
     private static readonly IReadOnlyCollection<IImageFile> EmptyImageFileCollection;
 
-    private static readonly string UserProfilePath;
-    private static readonly IReadOnlyCollection<string> SpecialFolders;
-
-	private static readonly HashSet<string> ImageFileExtensions;
-
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IImageFileFactory _imageFileFactory;
@@ -109,16 +81,16 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		{
 			var homeFolder = new FileSystemEntryInfo(
 				"Home",
-				UserProfilePath,
-				HasSubFolders(UserProfilePath),
+				_globalParameters.UserProfilePath,
+				HasSubFolders(_globalParameters.UserProfilePath),
 				_globalParameters.FolderIcon);
 
-			var specialFolders = SpecialFolders
+			var specialFolders = _globalParameters.SpecialFolders
 				.Select(aSpecialFolder =>
 					new
 					{
 						Name = aSpecialFolder,
-						Path = Path.Combine(UserProfilePath, aSpecialFolder)
+						Path = Path.Combine(_globalParameters.UserProfilePath, aSpecialFolder)
 					})
 				.Where(aSpecialFolderWithPath => Path.Exists(aSpecialFolderWithPath.Path))
 				.Select(aSpecialFolderWithPath =>
@@ -192,7 +164,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 			var imageFiles = filesInformation
 				.Where(aFileInfo =>
-					ImageFileExtensions.Contains(aFileInfo.Extension))
+					_globalParameters.ImageFileExtensions.Contains(aFileInfo.Extension))
 				.Select(aFileInfo => _imageFileFactory.GetImageFile(
 					aFileInfo.Name,
 					aFileInfo.FullName,
