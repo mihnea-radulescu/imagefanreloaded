@@ -88,6 +88,7 @@ public class App : Application
 		    folderVisualStateFactory,
 		    imageViewFactory,
 		    inputPathContainer,
+		    globalParameters,
 		    mainView);
 
 	    mainView.AddFakeTabItem();

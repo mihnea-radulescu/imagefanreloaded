@@ -14,6 +14,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key TabKey { get; }
 	public Key EscapeKey { get; }
 	public Key EnterKey { get; }
+	public Key F1Key { get; }
 	
 	public HashSet<Key> BackwardNavigationKeys { get; }
 	public HashSet<Key> ForwardNavigationKeys { get; }
@@ -26,6 +27,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	public string UserProfilePath { get; }
 	public IReadOnlyList<string> SpecialFolders { get; }
+	
+	public string AboutTitle { get; }
+	public string AboutText { get; }
 
 	public abstract IImage InvalidImage { get; }
 	public abstract IImage InvalidImageThumbnail { get; }
@@ -48,6 +52,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		TabKey = Key.Tab;
 		EscapeKey = Key.Escape;
 		EnterKey = Key.Enter;
+		F1Key = Key.F1;
 
 		BackwardNavigationKeys = [
 			Key.W,
@@ -92,6 +97,16 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			"Media",
 			"Pictures"
 		};
+		
+		AboutTitle = "About ImageFan Reloaded";
+		
+		AboutText =
+@"Cross-platform, light-weight, tab-based image viewer, supporting multi-core processing
+
+Version 1.2024.05.04
+Copyright © Mihnea Rădulescu 2017 - 2024
+
+https://github.com/mihnea-radulescu/imagefanreloaded";
 	}
 	
 	#endregion

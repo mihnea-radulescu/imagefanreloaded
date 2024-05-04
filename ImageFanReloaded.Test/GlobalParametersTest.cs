@@ -2,6 +2,7 @@ using FluentAssertions;
 using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
+using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Global;
 using ImageFanReloaded.ImageHandling;
 
@@ -29,21 +30,32 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.ThumbnailSize.Width.Should().NotBe(0);
 		_globalParameters.ThumbnailSize.Height.Should().NotBe(0);
 		
-		_globalParameters.InvalidImage.GetBitmap().Should().NotBeNull();
-		_globalParameters.InvalidImageThumbnail.GetBitmap().Should().NotBeNull();
-		_globalParameters.LoadingImageThumbnail.GetBitmap().Should().NotBeNull();
-
+		_globalParameters.TabKey.Should().NotBe(Key.None);
+		_globalParameters.EscapeKey.Should().NotBe(Key.None);
+		_globalParameters.EnterKey.Should().NotBe(Key.None);
+		_globalParameters.F1Key.Should().NotBe(Key.None);
+		
+		_globalParameters.BackwardNavigationKeys.Should().NotBeEmpty();
+		_globalParameters.ForwardNavigationKeys.Should().NotBeEmpty();
+		
 		_globalParameters.NameComparer.Should().NotBeNull();
 		
 		_globalParameters.ImageFileExtensions.Should().NotBeEmpty();
 		
-		_globalParameters.UserProfilePath.Should().NotBeNull();
+		_globalParameters.UserProfilePath.Should().NotBeNullOrEmpty();
 		_globalParameters.SpecialFolders.Should().NotBeEmpty();
+		
+		_globalParameters.InvalidImage.GetBitmap().Should().NotBeNull();
+		_globalParameters.InvalidImageThumbnail.GetBitmap().Should().NotBeNull();
+		_globalParameters.LoadingImageThumbnail.GetBitmap().Should().NotBeNull();
 		
 		_globalParameters.PersistentImages.Count.Should().Be(3);
 
 		_globalParameters.DriveIcon.GetBitmap().Should().NotBeNull();
 		_globalParameters.FolderIcon.GetBitmap().Should().NotBeNull();
+		
+		_globalParameters.AboutTitle.Should().NotBeNullOrEmpty();
+		_globalParameters.AboutText.Should().NotBeNullOrEmpty();
 
 		SaveImageToDisc(
 			_globalParameters.InvalidImage.GetBitmap(),

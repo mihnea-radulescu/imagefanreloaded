@@ -13,6 +13,7 @@ public interface IGlobalParameters
 	Key TabKey { get; }
 	Key EscapeKey { get; }
 	Key EnterKey { get; }
+	Key F1Key { get; }
 
 	HashSet<Key> BackwardNavigationKeys { get; }
 	HashSet<Key> ForwardNavigationKeys { get; }
@@ -34,4 +35,7 @@ public interface IGlobalParameters
 
 	IImage DriveIcon { get; }
 	IImage FolderIcon { get; }
+	
+	string AboutTitle { get; }
+	string AboutText { get; }
 }

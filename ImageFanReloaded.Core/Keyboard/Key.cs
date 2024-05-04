@@ -20,5 +20,7 @@ public enum Key
 	Down,
 	Right,
 	Space,
-	PageDown
+	PageDown,
+	
+	F1
 }

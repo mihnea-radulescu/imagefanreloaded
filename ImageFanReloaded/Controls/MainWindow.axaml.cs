@@ -1,7 +1,9 @@
 using System;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using MsBox.Avalonia;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.Global;
@@ -28,6 +30,7 @@ public partial class MainWindow : Window, IMainView
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
 	public event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
+	public event EventHandler? HelpMenuRequested;
 
 	public void AddFakeTabItem()
 	{
@@ -38,6 +41,18 @@ public partial class MainWindow : Window, IMainView
 		};
 
 		_tabControl.Items.Add(fakeTabItem);
+	}
+	
+	public async Task ShowInfoMessage(string title, string text)
+	{
+		var infoMessageBox = MessageBoxManager.GetMessageBoxStandard(
+			title,
+			text,
+			MsBox.Avalonia.Enums.ButtonEnum.Ok,
+			MsBox.Avalonia.Enums.Icon.Info,
+			WindowStartupLocation.CenterOwner);
+
+		await infoMessageBox.ShowWindowDialogAsync(this);
 	}
 	
 	#region Private
@@ -68,6 +83,10 @@ public partial class MainWindow : Window, IMainView
 		        _tabControl.SelectedIndex = nextSelectedTabItemIndex;
 	        }
 		}
+        else if (keyPressed == GlobalParameters!.F1Key)
+        {
+	        HelpMenuRequested?.Invoke(this, EventArgs.Empty);
+        }
         else
         {
 	        var contentTabItem = GetActiveContentTabItem();

@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.Global;
 
 namespace ImageFanReloaded.Core;
 
@@ -13,6 +15,7 @@ public class MainViewPresenter
 		IFolderVisualStateFactory folderVisualStateFactory,
 		IImageViewFactory imageViewFactory,
 		IInputPathContainer inputPathContainer,
+		IGlobalParameters globalParameters,
 		IMainView mainView)
 	{
 		_discQueryEngine = discQueryEngine;
@@ -20,10 +23,12 @@ public class MainViewPresenter
 		_imageViewFactory = imageViewFactory;
 
 		_inputPathContainer = inputPathContainer;
-		
+		_globalParameters = globalParameters;
+
 		_mainView = mainView;
 		_mainView.ContentTabItemAdded += OnContentTabItemAdded;
 		_mainView.ContentTabItemClosed += OnContentTabItemClosed;
+		_mainView.HelpMenuRequested += OnHelpMenuRequested;
 	}
 
 	#region Private
@@ -33,6 +38,7 @@ public class MainViewPresenter
 	private readonly IImageViewFactory _imageViewFactory;
 	
 	private readonly IInputPathContainer _inputPathContainer;
+	private readonly IGlobalParameters _globalParameters;
 
 	private readonly IMainView _mainView;
 
@@ -60,6 +66,11 @@ public class MainViewPresenter
 		contentTabItem.FolderChanged -= OnFolderChanged;
 
 		ClearContentTabItem(contentTabItem);
+	}
+	
+	private async void OnHelpMenuRequested(object? sender, EventArgs e)
+	{
+		await _mainView.ShowInfoMessage(_globalParameters.AboutTitle, _globalParameters.AboutText);
 	}
 	
 	private async void OnFolderChanged(object? sender, FolderChangedEventArgs e)

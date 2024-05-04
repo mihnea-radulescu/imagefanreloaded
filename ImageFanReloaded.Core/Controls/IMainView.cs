@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.Synchronization;
@@ -13,8 +14,11 @@ public interface IMainView
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
 	event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
+	event EventHandler? HelpMenuRequested;
 
 	void AddFakeTabItem();
+	
+	Task ShowInfoMessage(string title, string text);
 
 	void Show();
 }
