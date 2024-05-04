@@ -119,7 +119,7 @@ public partial class ImageWindow : Window, IImageView
         }
         else if (keyPressed == _globalParameters!.EscapeKey)
         {
-            Close();
+            CloseWindow();
         }
     }
 

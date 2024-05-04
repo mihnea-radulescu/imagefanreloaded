@@ -8,6 +8,7 @@ public static class KeyExtensions
 			Avalonia.Input.Key.Tab => Core.Keyboard.Key.Tab,
 			Avalonia.Input.Key.Escape => Core.Keyboard.Key.Escape,
 			Avalonia.Input.Key.Enter => Core.Keyboard.Key.Enter,
+			Avalonia.Input.Key.F1 => Core.Keyboard.Key.F1,
 
 			Avalonia.Input.Key.W => Core.Keyboard.Key.W,
 			Avalonia.Input.Key.A => Core.Keyboard.Key.A,
@@ -22,8 +23,6 @@ public static class KeyExtensions
 			Avalonia.Input.Key.Right => Core.Keyboard.Key.Right,
 			Avalonia.Input.Key.Space => Core.Keyboard.Key.Space,
 			Avalonia.Input.Key.PageDown => Core.Keyboard.Key.PageDown,
-			
-			Avalonia.Input.Key.F1 => Core.Keyboard.Key.F1,
 
 			_ => Core.Keyboard.Key.None
 		};
