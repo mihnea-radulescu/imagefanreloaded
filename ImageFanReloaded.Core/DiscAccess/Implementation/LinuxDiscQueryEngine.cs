@@ -12,19 +12,21 @@ public class LinuxDiscQueryEngine : UnixDiscQueryEngineBase
 		IImageFileFactory imageFileFactory)
 		: base(globalParameters, fileSizeEngine, imageFileFactory)
 	{
-		_supportedDrivePrefixes = new List<string>
-		{
-			"/home/",
-			"/media/",
-			"/mnt/"
-		};
+		_allowedDrivePrefixes = ["/home/", "/media/", "/mnt/"];
+		_disallowedDriveFragments = ["/.local/share/flatpak", "/.var/app"];
 	}
 
-	protected override IReadOnlyList<string> SupportedDrivePrefixes => _supportedDrivePrefixes;
+	#region Protected
+
+	protected override IReadOnlyList<string> AllowedDrivePrefixes => _allowedDrivePrefixes;
+	protected override IReadOnlyList<string> DisallowedDriveFragments => _disallowedDriveFragments;
+	
+	#endregion
 
 	#region Private
 
-	private readonly IReadOnlyList<string> _supportedDrivePrefixes;
+	private readonly IReadOnlyList<string> _allowedDrivePrefixes;
+	private readonly IReadOnlyList<string> _disallowedDriveFragments;
 
 	#endregion
 }

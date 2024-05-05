@@ -12,17 +12,21 @@ public class MacOSDiscQueryEngine : UnixDiscQueryEngineBase
 		IImageFileFactory imageFileFactory)
 		: base(globalParameters, fileSizeEngine, imageFileFactory)
 	{
-		_supportedDrivePrefixes = new List<string>
-		{
-			"/Volumes/"
-		};
+		_allowedDrivePrefixes = ["/Volumes/"];
+		_disallowedDriveFragments = [];
 	}
+	
+	#region Protected
 
-	protected override IReadOnlyList<string> SupportedDrivePrefixes => _supportedDrivePrefixes;
+	protected override IReadOnlyList<string> AllowedDrivePrefixes => _allowedDrivePrefixes;
+	protected override IReadOnlyList<string> DisallowedDriveFragments => _disallowedDriveFragments;
+	
+	#endregion
 
 	#region Private
 
-	private readonly IReadOnlyList<string> _supportedDrivePrefixes;
+	private readonly IReadOnlyList<string> _allowedDrivePrefixes;
+	private readonly IReadOnlyList<string> _disallowedDriveFragments;
 
 	#endregion
 }
