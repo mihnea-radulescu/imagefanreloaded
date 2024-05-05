@@ -5,6 +5,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using ImageFanReloaded.Controls;
 using ImageFanReloaded.Core;
+using ImageFanReloaded.Core.AboutInformation;
+using ImageFanReloaded.Core.AboutInformation.Implementation;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Implementation;
 using ImageFanReloaded.Core.DiscAccess;
@@ -31,11 +33,13 @@ public class App : Application
 	    var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
 	    var args = desktop.Args!;
 	    var inputPath = args.Any() ? args.First() : null;
+
+	    IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
 	    
 	    IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		IGlobalParameters globalParameters = new GlobalParameters(imageResizeCalculator, imageResizer);
+		IGlobalParameters globalParameters = new GlobalParameters(aboutInformationProvider, imageResizer);
 		IFileSizeEngine fileSizeEngine = new FileSizeEngine();
 
 		IImageFileFactory imageFileFactory = new ImageFileFactory(globalParameters, imageResizer);

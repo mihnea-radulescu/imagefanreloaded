@@ -1,4 +1,6 @@
 using FluentAssertions;
+using ImageFanReloaded.Core.AboutInformation;
+using ImageFanReloaded.Core.AboutInformation.Implementation;
 using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -12,10 +14,12 @@ public class GlobalParametersTest : TestBase
 {
 	public GlobalParametersTest()
 	{
+		IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
+		
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		_globalParameters = new GlobalParameters(imageResizeCalculator, imageResizer);
+		_globalParameters = new GlobalParameters(aboutInformationProvider, imageResizer);
 	}
 	
 	[Fact]

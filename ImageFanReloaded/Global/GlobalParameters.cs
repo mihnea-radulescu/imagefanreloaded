@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Avalonia.Media.Imaging;
+using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.Global.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -11,8 +12,9 @@ namespace ImageFanReloaded.Global;
 public class GlobalParameters : GlobalParametersBase
 {
 	public GlobalParameters(
-		IImageResizeCalculator imageResizeCalculator,
+		IAboutInformationProvider aboutInformationProvider,
 		IImageResizer imageResizer)
+		: base(aboutInformationProvider)
 	{
 		var invalidBitmap = GetBitmapFromResource(Resources.InvalidImage);
 		var invalidBitmapSize = new ImageSize(

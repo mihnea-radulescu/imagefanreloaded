@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.TextHandling.Implementation;
@@ -42,9 +43,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 	#region Protected
 	
-	protected const int IconSizeSquareLength = 24;
-	
-	protected GlobalParametersBase()
+	protected GlobalParametersBase(IAboutInformationProvider aboutInformationProvider)
 	{
 		ProcessorCount = Environment.ProcessorCount;
 		ThumbnailSize = new ImageSize(ThumbnailSizeSquareLength);
@@ -101,13 +100,15 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		AboutTitle = "About ImageFan Reloaded";
 		
 		AboutText =
-@"Cross-platform, light-weight, tab-based image viewer, supporting multi-core processing
+@$"Cross-platform, light-weight, tab-based image viewer, supporting multi-core processing
 
-Version 1.2024.05.04
-Copyright © Mihnea Rădulescu 2017 - 2024
+Version {aboutInformationProvider.VersionString}
+Copyright © Mihnea Rădulescu 2017 - {aboutInformationProvider.CurrentYear}
 
 https://github.com/mihnea-radulescu/imagefanreloaded";
 	}
+	
+	protected const int IconSizeSquareLength = 24;
 	
 	#endregion
 	
