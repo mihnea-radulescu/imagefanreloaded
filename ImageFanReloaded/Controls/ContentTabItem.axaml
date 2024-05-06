@@ -10,7 +10,7 @@
 			<ColumnDefinition Width="13*"/>
 			<ColumnDefinition Width="Auto"/>
 			<ColumnDefinition Width="87*"
-							  MinWidth="650"/>
+							  MinWidth="565"/>
 		</Grid.ColumnDefinitions>
 		<TreeView Name="_folderTreeView"
 				  Grid.Column="0"
