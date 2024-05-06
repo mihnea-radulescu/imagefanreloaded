@@ -83,7 +83,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 				"Home",
 				_globalParameters.UserProfilePath,
 				HasSubFolders(_globalParameters.UserProfilePath),
-				_globalParameters.FolderIcon);
+				_globalParameters.HomeFolderIcon);
 
 			var specialFolders = _globalParameters.SpecialFolders
 				.Select(aSpecialFolder =>

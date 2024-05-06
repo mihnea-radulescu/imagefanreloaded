@@ -79,6 +79,16 @@ namespace ImageFanReloaded.Properties {
                 return ((byte[])(obj));
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] HomeFolderIcon {
+            get {
+                object obj = ResourceManager.GetObject("HomeFolderIcon", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].

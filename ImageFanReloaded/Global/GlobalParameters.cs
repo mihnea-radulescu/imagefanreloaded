@@ -55,6 +55,15 @@ public class GlobalParameters : GlobalParametersBase
             
 			FolderIcon = imageResizer.CreateResizedImage(folderImage, iconSize);
 		}
+		
+		using (var homeFolderBitmap = GetBitmapFromResource(Resources.HomeFolderIcon))
+		{
+			var homeFolderBitmapSize = new ImageSize(
+				homeFolderBitmap.Size.Width, homeFolderBitmap.Size.Height);
+			var homeFolderImage = new Image(homeFolderBitmap, homeFolderBitmapSize);
+            
+			HomeFolderIcon = imageResizer.CreateResizedImage(homeFolderImage, iconSize);
+		}
 	}
 	
 	public override IImage InvalidImage { get; }
@@ -65,6 +74,7 @@ public class GlobalParameters : GlobalParametersBase
 	
 	public override IImage DriveIcon { get; }
 	public override IImage FolderIcon { get; }
+	public override IImage HomeFolderIcon { get; }
 	
 	#region Private
 

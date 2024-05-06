@@ -35,6 +35,7 @@ public interface IGlobalParameters
 
 	IImage DriveIcon { get; }
 	IImage FolderIcon { get; }
+	IImage HomeFolderIcon { get; }
 	
 	string AboutTitle { get; }
 	string AboutText { get; }
