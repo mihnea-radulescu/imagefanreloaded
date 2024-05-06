@@ -28,6 +28,15 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		_globalParameters = globalParameters;
 		_fileSizeEngine = fileSizeEngine;
 		_imageFileFactory = imageFileFactory;
+		
+		_specialFolderToIconMapping = new Dictionary<string, IImage>
+		{
+			{ "Desktop", _globalParameters.DesktopFolderIcon },
+			{ "Documents", _globalParameters.DocumentsFolderIcon },
+			{ "Downloads", _globalParameters.DownloadsFolderIcon },
+			{ "Media", _globalParameters.MediaFolderIcon },
+			{ "Pictures", _globalParameters.PicturesFolderIcon },
+		};
 	}
 
 	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders()
@@ -75,6 +84,8 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IImageFileFactory _imageFileFactory;
 	
+	private readonly IReadOnlyDictionary<string, IImage> _specialFolderToIconMapping;
+	
 	private IReadOnlyList<FileSystemEntryInfo> GetUserFolders()
 	{
 		try
@@ -98,7 +109,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						aSpecialFolderWithPath.Name,
 						aSpecialFolderWithPath.Path,
 						HasSubFolders(aSpecialFolderWithPath.Path),
-						_globalParameters.FolderIcon))
+						GetIcon(aSpecialFolderWithPath.Name)))
 				.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name, _globalParameters.NameComparer)
 				.ToArray();
 
@@ -185,17 +196,17 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	    try
 	    {
 		    var subFoldersAsEnumerable = Directory.EnumerateDirectories(folderPath);
-		    
-		    using (var subFoldersEnumerator = subFoldersAsEnumerable.GetEnumerator())
-		    {
-			    return subFoldersEnumerator.MoveNext();
-		    }
+
+		    using var subFoldersEnumerator = subFoldersAsEnumerable.GetEnumerator();
+		    return subFoldersEnumerator.MoveNext();
 	    }
 	    catch
 	    {
 		    return false;
 	    }
     }
+    
+    private IImage GetIcon(string aSpecialFolderName) => _specialFolderToIconMapping[aSpecialFolderName];
     
     #endregion
 }

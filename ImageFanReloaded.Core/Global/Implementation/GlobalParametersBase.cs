@@ -38,9 +38,14 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	public abstract HashSet<IImage> PersistentImages { get; }
 	
+	public abstract IImage DesktopFolderIcon { get; }
+	public abstract IImage DocumentsFolderIcon { get; }
+	public abstract IImage DownloadsFolderIcon { get; }
 	public abstract IImage DriveIcon { get; }
 	public abstract IImage FolderIcon { get; }
 	public abstract IImage HomeFolderIcon { get; }
+	public abstract IImage MediaFolderIcon { get; }
+	public abstract IImage PicturesFolderIcon { get; }
 
 	#region Protected
 	
@@ -109,7 +114,7 @@ Copyright © Mihnea Rădulescu 2017 - {aboutInformationProvider.Year}
 https://github.com/mihnea-radulescu/imagefanreloaded";
 	}
 	
-	protected const int IconSizeSquareLength = 24;
+	protected const int IconSizeSquareLength = 36;
 	
 	#endregion
 	

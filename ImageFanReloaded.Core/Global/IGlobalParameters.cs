@@ -33,9 +33,14 @@ public interface IGlobalParameters
 	
 	HashSet<IImage> PersistentImages { get; }
 
+	IImage DesktopFolderIcon { get; }
+	IImage DocumentsFolderIcon { get; }
+	IImage DownloadsFolderIcon { get; }
 	IImage DriveIcon { get; }
 	IImage FolderIcon { get; }
 	IImage HomeFolderIcon { get; }
+	IImage MediaFolderIcon { get; }
+	IImage PicturesFolderIcon { get; }
 	
 	string AboutTitle { get; }
 	string AboutText { get; }

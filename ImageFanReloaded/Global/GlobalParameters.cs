@@ -16,6 +16,8 @@ public class GlobalParameters : GlobalParametersBase
 		IImageResizer imageResizer)
 		: base(aboutInformationProvider)
 	{
+		_imageResizer = imageResizer;
+		
 		var invalidBitmap = GetBitmapFromResource(Resources.InvalidImage);
 		var invalidBitmapSize = new ImageSize(
 			invalidBitmap.Size.Width, invalidBitmap.Size.Height);
@@ -38,32 +40,14 @@ public class GlobalParameters : GlobalParametersBase
         
         var iconSize = new ImageSize(IconSizeSquareLength);
 
-        using (var driveBitmap = GetBitmapFromResource(Resources.DriveIcon))
-        {
-            var driveBitmapSize = new ImageSize(
-	            driveBitmap.Size.Width, driveBitmap.Size.Height);
-            var driveImage = new Image(driveBitmap, driveBitmapSize);
-            
-            DriveIcon = imageResizer.CreateResizedImage(driveImage, iconSize);
-        }
-
-		using (var folderBitmap = GetBitmapFromResource(Resources.FolderIcon))
-		{
-			var folderBitmapSize = new ImageSize(
-				folderBitmap.Size.Width, folderBitmap.Size.Height);
-			var folderImage = new Image(folderBitmap, folderBitmapSize);
-            
-			FolderIcon = imageResizer.CreateResizedImage(folderImage, iconSize);
-		}
-		
-		using (var homeFolderBitmap = GetBitmapFromResource(Resources.HomeFolderIcon))
-		{
-			var homeFolderBitmapSize = new ImageSize(
-				homeFolderBitmap.Size.Width, homeFolderBitmap.Size.Height);
-			var homeFolderImage = new Image(homeFolderBitmap, homeFolderBitmapSize);
-            
-			HomeFolderIcon = imageResizer.CreateResizedImage(homeFolderImage, iconSize);
-		}
+        DesktopFolderIcon = GetResizedIcon(Resources.DesktopFolderIcon, iconSize);
+        DocumentsFolderIcon = GetResizedIcon(Resources.DocumentsFolderIcon, iconSize);
+        DownloadsFolderIcon = GetResizedIcon(Resources.DownloadsFolderIcon, iconSize);
+        DriveIcon = GetResizedIcon(Resources.DriveIcon, iconSize);
+        FolderIcon = GetResizedIcon(Resources.FolderIcon, iconSize);
+        HomeFolderIcon = GetResizedIcon(Resources.HomeFolderIcon, iconSize);
+        MediaFolderIcon = GetResizedIcon(Resources.MediaFolderIcon, iconSize);
+        PicturesFolderIcon = GetResizedIcon(Resources.PicturesFolderIcon, iconSize);
 	}
 	
 	public override IImage InvalidImage { get; }
@@ -72,21 +56,36 @@ public class GlobalParameters : GlobalParametersBase
 	
 	public override HashSet<IImage> PersistentImages { get; }
 	
+	public override IImage DesktopFolderIcon { get; }
+	public override IImage DocumentsFolderIcon { get; }
+	public override IImage DownloadsFolderIcon { get; }
 	public override IImage DriveIcon { get; }
 	public override IImage FolderIcon { get; }
 	public override IImage HomeFolderIcon { get; }
+	public override IImage MediaFolderIcon { get; }
+	public override IImage PicturesFolderIcon { get; }
 	
 	#region Private
+	
+	private readonly IImageResizer _imageResizer;
 
 	private static Bitmap GetBitmapFromResource(byte[] resourceData)
 	{
-		using (Stream stream = new MemoryStream(resourceData))
-		{
-			stream.Position = 0;
+		using Stream stream = new MemoryStream(resourceData);
+		stream.Position = 0;
 
-			var image = new Bitmap(stream);
-			return image;
-		}
+		var image = new Bitmap(stream);
+		return image;
+	}
+
+	private IImage GetResizedIcon(byte[] resourceData, ImageSize newIconSize)
+	{
+		using var icon = GetBitmapFromResource(resourceData);
+		var iconSize = new ImageSize(icon.Size.Width, icon.Size.Height);
+		var iconImage = new Image(icon, iconSize);
+            
+		var resizedIcon = _imageResizer.CreateResizedImage(iconImage, newIconSize);
+		return resizedIcon;
 	}
 
 	#endregion
