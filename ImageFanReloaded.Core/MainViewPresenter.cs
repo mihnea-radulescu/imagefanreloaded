@@ -110,8 +110,7 @@ public class MainViewPresenter
 		contentTabItem.FolderVisualState?.ClearVisualState();
 	}
 
-	private async Task PopulateInputPath(
-		IContentTabItem contentTabItem, IReadOnlyList<FileSystemEntryInfo> rootFolders)
+	private async Task PopulateInputPath(IContentTabItem contentTabItem, IReadOnlyList<FileSystemEntryInfo> rootFolders)
 	{
 		_inputPathContainer.DisableProcessInputPath();
 

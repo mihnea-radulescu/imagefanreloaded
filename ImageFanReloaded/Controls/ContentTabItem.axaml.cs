@@ -34,8 +34,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
 
 	public void EnableFolderTreeViewSelectedItemChanged()
-		=> _folderTreeView.SelectionChanged += OnFolderTreeViewSelectedItemChanged;
-	
+	{
+		_folderTreeView.SelectionChanged += OnFolderTreeViewSelectedItemChanged;
+	}
+
 	public void OnKeyPressed(object? sender, KeyboardKeyEventArgs e)
 	{
 		if (_selectedThumbnailBox is not null)
@@ -77,8 +79,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var selectedItem = (TreeViewItem)_folderTreeView.SelectedItem;
 			var itemCollection = selectedItem.Items;
 			
-			itemCollection.Clear();
-
+			ClearItemCollection(itemCollection);
 			AddSubFoldersToTreeView(itemCollection, subFolders);
 		}
 	}
@@ -90,13 +91,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var selectedItem = _inputFolderTreeViewItem;
 			var itemCollection = selectedItem.Items;
 			
-			itemCollection.Clear();
-
+			ClearItemCollection(itemCollection);
 			AddSubFoldersToTreeView(itemCollection, subFolders);
 
 			selectedItem.IsExpanded = true;
 			selectedItem.IsSelected = true;
-
 			_folderTreeView.SelectedItem = selectedItem;
 		}
 	}
@@ -224,19 +223,38 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     {
 	    var selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
 
-		if (selectedFolderTreeViewItem.Header is IFileSystemTreeViewItem fileSystemEntryItem)
-		{
-			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-			var selectedFolderName = fileSystemEntryInfo.Name;
-			var selectedFolderPath = fileSystemEntryInfo.Path;
+	    RaiseFolderChangedEvent(selectedFolderTreeViewItem);
+    }
 
-			FolderChanged?.Invoke(
-				this, new FolderChangedEventArgs(selectedFolderName, selectedFolderPath));
-		}
-	}
+    private void RaiseFolderChangedEvent(TreeViewItem selectedFolderTreeViewItem)
+    {
+	    if (selectedFolderTreeViewItem.Header is IFileSystemTreeViewItem fileSystemEntryItem)
+	    {
+		    var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
+		    var selectedFolderName = fileSystemEntryInfo.Name;
+		    var selectedFolderPath = fileSystemEntryInfo.Path;
+
+		    FolderChanged?.Invoke(this, new FolderChangedEventArgs(selectedFolderName, selectedFolderPath));
+	    }
+    }
     
-	private void OnTabCountChanged(object? sender, TabCountChangedEventArgs e)
-		=> ShowCloseButton(e.ShowTabCloseButton);
+    private void OnTreeViewItemPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+	    OnTreeViewItemIsExpanded(sender, e);
+    }
+
+    private void OnTreeViewItemIsExpanded(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+	    if (e.Property.Name == "IsExpanded" && (bool)e.OldValue! == false && (bool)e.NewValue! == true)
+	    {
+		    var selectedItem = (TreeViewItem)sender!;
+			
+		    selectedItem.IsSelected = true;
+		    _folderTreeView.SelectedItem = selectedItem;
+	    }
+    }
+
+    private void OnTabCountChanged(object? sender, TabCountChangedEventArgs e) => ShowCloseButton(e.ShowTabCloseButton);
 
 	private void OnImageChanged(object? sender, ImageChangedEventArgs e)
 	{
@@ -309,12 +327,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		imageView.ImageChanged -= OnImageChanged;
 	}
 	
-	private static void AddSubFoldersToTreeView(
-		ItemCollection itemCollection, IReadOnlyList<FileSystemEntryInfo> subFolders)
+	private void AddSubFoldersToTreeView(ItemCollection itemCollection, IReadOnlyList<FileSystemEntryInfo> subFolders)
 	{
 		foreach (var aSubFolder in subFolders)
 		{
 			var treeViewItem = GetTreeViewItem(aSubFolder);
+			treeViewItem.PropertyChanged += OnTreeViewItemPropertyChanged;
+			
 			itemCollection.Add(treeViewItem);
 		}
 	}
@@ -342,6 +361,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 
 		return treeViewItem;
+	}
+
+	private void ClearItemCollection(ItemCollection itemCollection)
+	{
+		var treeViewItems = itemCollection.Cast<TreeViewItem>().ToList();
+		
+		foreach (var aTreeViewItem in treeViewItems)
+		{
+			aTreeViewItem.PropertyChanged -= OnTreeViewItemPropertyChanged;
+		}
+		
+		itemCollection.Clear();
 	}
 	
 	private void ShowCloseButton(bool showTabCloseButton)
