@@ -14,11 +14,11 @@ public class AboutInformationProvider : IAboutInformationProvider
 		var revision = assemblyVersion.Revision.ToString().PadLeft(PaddingMinimumLength, PaddingCharacter);
 
 		VersionString = $"{major}.{minor}.{build}.{revision}";
-		CurrentYear = minor;
+		Year = minor;
 	}
 	
 	public string VersionString { get; }
-	public int CurrentYear { get; }
+	public int Year { get; }
 	
 	#region Private
 

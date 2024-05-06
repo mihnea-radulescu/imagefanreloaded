@@ -103,7 +103,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 @$"Cross-platform, light-weight, tab-based image viewer, supporting multi-core processing
 
 Version {aboutInformationProvider.VersionString}
-Copyright © Mihnea Rădulescu 2017 - {aboutInformationProvider.CurrentYear}
+Copyright © Mihnea Rădulescu 2017 - {aboutInformationProvider.Year}
 
 https://github.com/mihnea-radulescu/imagefanreloaded";
 	}

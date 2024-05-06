@@ -27,19 +27,13 @@ public abstract class UnixDiscQueryEngineBase : DiscQueryEngineBase
 			return true;
 		}
 
-		var isAllowedDrivePrefix = AllowedDrivePrefixes.Any(
+		var isSupportedDrive = SupportedDrivePrefixes.Any(
 			aSupportedDrivePrefix => driveName.StartsWith(aSupportedDrivePrefix, _nameComparison));
-
-		var isDisallowedDriveFragment = DisallowedDriveFragments.Any(
-			aDisallowedDriveFragment => driveName.Contains(aDisallowedDriveFragment, _nameComparison));
-
-		var isSupportedDrive = isAllowedDrivePrefix && !isDisallowedDriveFragment;
 
 		return isSupportedDrive;
 	}
 
-	protected abstract IReadOnlyList<string> AllowedDrivePrefixes { get; }
-	protected abstract IReadOnlyList<string> DisallowedDriveFragments { get; }
+	protected abstract IReadOnlyList<string> SupportedDrivePrefixes { get; }
 	
 	#endregion
 
