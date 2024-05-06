@@ -87,6 +87,10 @@ public partial class MainWindow : Window, IMainView
         {
 	        HelpMenuRequested?.Invoke(this, EventArgs.Empty);
         }
+        else if (keyPressed == GlobalParameters!.EscapeKey)
+        {
+	        Close();
+        }
         else
         {
 	        var contentTabItem = GetActiveContentTabItem();

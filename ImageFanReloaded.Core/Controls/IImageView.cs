@@ -16,5 +16,4 @@ public interface IImageView
 	void SetImage(IImageFile imageFile);
 
     Task ShowDialog(IMainView owner);
-    void Show();
 }

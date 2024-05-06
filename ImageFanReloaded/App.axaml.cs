@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -49,80 +48,54 @@ public class App : Application
 		
 		IInputPathContainer inputPathContainer = new InputPathContainer(
 			globalParameters, discQueryEngine, inputPath);
+		
+		IFolderChangedEventHandleFactory folderChangedEventHandleFactory = new FolderChangedEventHandleFactory();
+		
+		var mainWindow = new MainWindow();
+		desktop.MainWindow = mainWindow;
+		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
+			
+		IMainView mainView = mainWindow;
+		mainView.GlobalParameters = globalParameters;
+		mainView.FolderChangedEventHandleFactory = folderChangedEventHandleFactory;
+		
+		IImageViewFactory imageViewFactory = new ImageViewFactory(globalParameters, screenInformation);
+		IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(globalParameters);
+		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
+			globalParameters, fileSizeEngine, thumbnailInfoFactory, discQueryEngine);
 
-		if (IsMainViewAccess(inputPathContainer))
+		var mainViewPresenter = new MainViewPresenter(
+			discQueryEngine,
+			folderVisualStateFactory,
+			imageViewFactory,
+			inputPathContainer,
+			globalParameters,
+			mainView);
+
+		mainView.AddFakeTabItem();
+		mainView.Show();
+
+		if (IsImageViewAccess(inputPathContainer))
 		{
-			BootstrapMainViewAccess(desktop, globalParameters, fileSizeEngine, discQueryEngine, inputPathContainer);
-		}
-		else
-		{
-			await BootstrapImageViewAccess(desktop, globalParameters, discQueryEngine, inputPathContainer);
+			var imageWindow = new ImageWindow();
+			
+			IImageView imageView = imageWindow;
+			imageView.GlobalParameters = globalParameters;
+			imageView.ScreenInformation = screenInformation;
+
+			var imageViewPresenter = new ImageViewPresenter(
+				discQueryEngine, inputPathContainer, globalParameters, imageView);
+			
+			await imageViewPresenter.SetUpAccess();
+	    
+			await imageView.ShowDialog(mainView);
 		}
 	}
 
     #region Private
     
-    private static bool IsMainViewAccess(IInputPathContainer inputPathContainer)
-		=> inputPathContainer.InputPathType != InputPathType.File;
-    
-    private static void BootstrapMainViewAccess(
-	    IClassicDesktopStyleApplicationLifetime desktop,
-	    IGlobalParameters globalParameters,
-	    IFileSizeEngine fileSizeEngine,
-	    IDiscQueryEngine discQueryEngine,
-	    IInputPathContainer inputPathContainer)
-    {
-	    IFolderChangedEventHandleFactory folderChangedEventHandleFactory = new FolderChangedEventHandleFactory();
-		
-	    var mainWindow = new MainWindow();
-	    desktop.MainWindow = mainWindow;
-	    IScreenInformation screenInformation = new ScreenInformation(mainWindow);
-			
-	    IMainView mainView = mainWindow;
-	    mainView.GlobalParameters = globalParameters;
-	    mainView.FolderChangedEventHandleFactory = folderChangedEventHandleFactory;
-		
-	    IImageViewFactory imageViewFactory = new ImageViewFactory(globalParameters, screenInformation);
-	    IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(globalParameters);
-	    IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
-		    globalParameters, fileSizeEngine, thumbnailInfoFactory, discQueryEngine);
-
-	    var mainViewPresenter = new MainViewPresenter(
-		    discQueryEngine,
-		    folderVisualStateFactory,
-		    imageViewFactory,
-		    inputPathContainer,
-		    globalParameters,
-		    mainView);
-
-	    mainView.AddFakeTabItem();
-	    mainView.Show();
-    }
-    
-    private static async Task BootstrapImageViewAccess(
-	    IClassicDesktopStyleApplicationLifetime desktop,
-	    IGlobalParameters globalParameters,
-	    IDiscQueryEngine discQueryEngine,
-	    IInputPathContainer inputPathContainer)
-    {
-	    var imageWindow = new ImageWindow();
-	    desktop.MainWindow = imageWindow;
-	    IScreenInformation screenInformation = new ScreenInformation(imageWindow);
-			
-	    IImageView imageView = imageWindow;
-	    imageView.GlobalParameters = globalParameters;
-	    imageView.ScreenInformation = screenInformation;
-
-	    var imageViewPresenter = new ImageViewPresenter(
-		    discQueryEngine,
-		    inputPathContainer,
-		    globalParameters,
-		    imageView);
-
-	    await imageViewPresenter.SetUpAccess();
-	    
-	    imageView.Show();
-    }
+    private static bool IsImageViewAccess(IInputPathContainer inputPathContainer)
+		=> inputPathContainer.InputPathType == InputPathType.File;
     
     #endregion
 }

@@ -18,6 +18,7 @@ User interface:
 * key Tab for cycling though active tabs
 * keys W-A-S-D, Up-Down-Left-Right, Backspace-Space and PageUp-PageDown for back and forward navigation through thumbnails and opened images
 * keys Enter-Escape for entering into and exiting from image display modes
+* key Escape for quitting the application
 
 ![Screenshot 1](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-Dark.jpg "ImageFan Reloaded - Dark Screenshot")
 
