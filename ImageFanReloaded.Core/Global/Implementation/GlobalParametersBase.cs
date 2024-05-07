@@ -84,11 +84,21 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		ImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
 		{
 			".bmp",
+			".cr2",
+			".cur",
+			".dng",
 			".gif",
 			".ico",
-			".jpg", ".jpe", ".jpeg",
+			".jfif",
+			".jpe", ".jpeg", ".jpg",
+			".jps",
+			".nef",
+			".nrw",
+			".pef",
 			".png",
-			".tif", ".tiff",
+			".raf",
+			".rw2",
+			".wbmp",
 			".webp"
 		};
 		
