@@ -8,6 +8,7 @@ public enum Key
 	Escape,
 	Enter,
 	F1,
+	F4,
 	
 	W,
 	A,

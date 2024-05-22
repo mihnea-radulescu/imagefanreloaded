@@ -70,8 +70,13 @@ public partial class MainWindow : Window, IMainView
 	private void OnKeyPressed(object? sender, KeyEventArgs e)
     {
         var keyPressed = e.Key.ToCoreKey();
+        var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 
-        if (keyPressed == GlobalParameters!.TabKey)
+        if (ShouldCloseWindow(keyPressed, keyModifiers))
+        {
+	        CloseWindow();
+        }
+        else if (keyPressed == GlobalParameters!.TabKey)
         {
 	        var contentTabItemCount = GetContentTabItemCount();
 	        var canNavigateAcrossTabs = contentTabItemCount > 1;
@@ -86,10 +91,6 @@ public partial class MainWindow : Window, IMainView
         else if (keyPressed == GlobalParameters!.F1Key)
         {
 	        HelpMenuRequested?.Invoke(this, EventArgs.Empty);
-        }
-        else if (keyPressed == GlobalParameters!.EscapeKey)
-        {
-	        Close();
         }
         else
         {
@@ -187,5 +188,12 @@ public partial class MainWindow : Window, IMainView
 		SelectLastTabItem();
 	}
 
-    #endregion
+	private bool ShouldCloseWindow(
+		ImageFanReloaded.Core.Keyboard.Key keyPressed, ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
+		=> keyPressed == GlobalParameters!.EscapeKey || 
+		   (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressed == GlobalParameters!.F4Key);
+
+	private void CloseWindow() => Close();
+
+	#endregion
 }

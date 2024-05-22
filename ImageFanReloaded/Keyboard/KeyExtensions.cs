@@ -9,6 +9,7 @@ public static class KeyExtensions
 			Avalonia.Input.Key.Escape => Core.Keyboard.Key.Escape,
 			Avalonia.Input.Key.Enter => Core.Keyboard.Key.Enter,
 			Avalonia.Input.Key.F1 => Core.Keyboard.Key.F1,
+			Avalonia.Input.Key.F4 => Core.Keyboard.Key.F4,
 
 			Avalonia.Input.Key.W => Core.Keyboard.Key.W,
 			Avalonia.Input.Key.A => Core.Keyboard.Key.A,

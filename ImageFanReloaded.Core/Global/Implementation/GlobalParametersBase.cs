@@ -16,6 +16,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key EscapeKey { get; }
 	public Key EnterKey { get; }
 	public Key F1Key { get; }
+	public Key F4Key { get; }
+	
+	public KeyModifiers AltKeyModifier { get; }
 	
 	public HashSet<Key> BackwardNavigationKeys { get; }
 	public HashSet<Key> ForwardNavigationKeys { get; }
@@ -58,6 +61,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		EscapeKey = Key.Escape;
 		EnterKey = Key.Enter;
 		F1Key = Key.F1;
+		F4Key = Key.F4;
+
+		AltKeyModifier = KeyModifiers.Alt; 
 
 		BackwardNavigationKeys = [
 			Key.W,
