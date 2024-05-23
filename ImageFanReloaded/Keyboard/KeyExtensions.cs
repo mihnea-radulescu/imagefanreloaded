@@ -5,6 +5,8 @@ public static class KeyExtensions
 	public static ImageFanReloaded.Core.Keyboard.Key ToCoreKey(this Avalonia.Input.Key key)
 		=> key switch
 		{
+			Avalonia.Input.Key.LeftAlt => Core.Keyboard.Key.Alt,
+			Avalonia.Input.Key.RightAlt => Core.Keyboard.Key.Alt,
 			Avalonia.Input.Key.Tab => Core.Keyboard.Key.Tab,
 			Avalonia.Input.Key.Escape => Core.Keyboard.Key.Escape,
 			Avalonia.Input.Key.Enter => Core.Keyboard.Key.Enter,

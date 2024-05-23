@@ -4,6 +4,7 @@ public enum Key
 {
 	None = 0,
 	
+	Alt,
 	Tab,
 	Escape,
 	Enter,

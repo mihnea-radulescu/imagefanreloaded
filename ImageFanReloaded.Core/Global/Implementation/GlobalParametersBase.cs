@@ -12,6 +12,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public int ProcessorCount { get; }
 	public ImageSize ThumbnailSize { get; }
 	
+	public Key AltKey { get; }
 	public Key TabKey { get; }
 	public Key EscapeKey { get; }
 	public Key EnterKey { get; }
@@ -56,7 +57,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	{
 		ProcessorCount = Environment.ProcessorCount;
 		ThumbnailSize = new ImageSize(ThumbnailSizeSquareLength);
-		
+
+		AltKey = Key.Alt;
 		TabKey = Key.Tab;
 		EscapeKey = Key.Escape;
 		EnterKey = Key.Enter;

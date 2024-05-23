@@ -10,6 +10,7 @@ public interface IGlobalParameters
 	int ProcessorCount { get; }
 	ImageSize ThumbnailSize { get; }
 	
+	Key AltKey { get; }
 	Key TabKey { get; }
 	Key EscapeKey { get; }
 	Key EnterKey { get; }

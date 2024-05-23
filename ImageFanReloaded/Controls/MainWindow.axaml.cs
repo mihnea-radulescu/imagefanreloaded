@@ -19,6 +19,8 @@ public partial class MainWindow : Window, IMainView
         InitializeComponent();
 
 		_windowFontSize = FontSize;
+
+        _previousKeyPressed = ImageFanReloaded.Core.Keyboard.Key.None;
 		
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
@@ -62,6 +64,8 @@ public partial class MainWindow : Window, IMainView
 
 	private readonly double _windowFontSize;
 
+    private ImageFanReloaded.Core.Keyboard.Key _previousKeyPressed;
+
 	private void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
 		e.Handled = true;
@@ -76,28 +80,20 @@ public partial class MainWindow : Window, IMainView
         {
 	        CloseWindow();
         }
-        else if (keyPressed == GlobalParameters!.TabKey)
+        else if (ShouldNavigateToNextTab(keyPressed))
         {
-	        var contentTabItemCount = GetContentTabItemCount();
-	        var canNavigateAcrossTabs = contentTabItemCount > 1;
-
-	        if (canNavigateAcrossTabs)
-	        {
-		        var selectedTabItemIndex = _tabControl.SelectedIndex;
-		        var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
-		        _tabControl.SelectedIndex = nextSelectedTabItemIndex;
-	        }
+	        NavigateToNextTab();
 		}
-        else if (keyPressed == GlobalParameters!.F1Key)
+        else if (ShouldDisplayHelp(keyPressed))
         {
-	        HelpMenuRequested?.Invoke(this, EventArgs.Empty);
+	        DisplayHelp();
         }
         else
         {
-	        var contentTabItem = GetActiveContentTabItem();
-	        var keyboardKey = e.Key.ToCoreKey();
-	        contentTabItem!.OnKeyPressed(sender, new KeyboardKeyEventArgs(keyboardKey));
+	        PassKeyPressedToContentTabItem(keyPressed);
         }
+
+        _previousKeyPressed = keyPressed;
         
         e.Handled = true;
     }
@@ -121,7 +117,9 @@ public partial class MainWindow : Window, IMainView
 		_tabControl.Items.Insert(contentTabItemCount, tabItem);
 
 		ContentTabItemAdded?.Invoke(this, new ContentTabItemEventArgs(contentTabItem));
-		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
+
+		var shouldAllowTabClose = ShouldAllowTabClose();
+		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(shouldAllowTabClose));
 	}
 
 	private (IContentTabItem contentTabItem, object tabItem) BuildTabItemData()
@@ -188,12 +186,62 @@ public partial class MainWindow : Window, IMainView
 		SelectLastTabItem();
 	}
 
-	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.Key keyPressed, ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
-		=> keyPressed == GlobalParameters!.EscapeKey || 
-		   (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressed == GlobalParameters!.F4Key);
+    private bool ShouldCloseWindow(
+        ImageFanReloaded.Core.Keyboard.Key keyPressed, ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
+    {
+        if (keyPressed == GlobalParameters!.EscapeKey)
+        {
+            return true;
+        }
+
+        if (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressed == GlobalParameters!.F4Key)
+        {
+            return true;
+        }
+
+        if (_previousKeyPressed == GlobalParameters!.AltKey && keyPressed == GlobalParameters!.F4Key)
+        {
+            return true;
+        }
+
+		return false;
+    }
+
+    private bool ShouldNavigateToNextTab(ImageFanReloaded.Core.Keyboard.Key keyPressed)
+    {
+	    if (keyPressed != GlobalParameters!.TabKey)
+	    {
+		    return false;
+	    }
+	    
+	    var contentTabItemCount = GetContentTabItemCount();
+	    
+	    var shouldNavigateToNextTab = contentTabItemCount > 1;
+	    return shouldNavigateToNextTab;
+    }
+
+    private bool ShouldDisplayHelp(ImageFanReloaded.Core.Keyboard.Key keyPressed)
+	    => keyPressed == GlobalParameters!.F1Key;
 
 	private void CloseWindow() => Close();
+
+	private void NavigateToNextTab()
+	{
+		var contentTabItemCount = GetContentTabItemCount();
+		
+		var selectedTabItemIndex = _tabControl.SelectedIndex;
+		var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
+		_tabControl.SelectedIndex = nextSelectedTabItemIndex;
+	}
+	
+	private void DisplayHelp() => HelpMenuRequested?.Invoke(this, EventArgs.Empty);
+
+	private void PassKeyPressedToContentTabItem(ImageFanReloaded.Core.Keyboard.Key keyPressed)
+	{
+		var contentTabItem = GetActiveContentTabItem();
+
+		contentTabItem!.OnKeyPressed(this, new KeyboardKeyEventArgs(keyPressed));
+	}
 
 	#endregion
 }
