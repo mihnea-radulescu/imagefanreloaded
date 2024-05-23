@@ -13,21 +13,17 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public int ProcessorCount { get; }
 	public ImageSize ThumbnailSize { get; }
 	
-	public bool IsWindows { get; }
 	public bool IsLinux { get; }
+	public bool IsWindows { get; }
 	public bool IsMacOS { get; }
-	
-	public Key AltKey { get; }
-	public Key CtrlKey { get; }
 	
 	public Key TabKey { get; }
 	public Key EscapeKey { get; }
 	public Key EnterKey { get; }
 	public Key F1Key { get; }
-	public Key F4Key { get; }
 	
 	public KeyModifiers AltKeyModifier { get; }
-	public KeyModifiers CtrlKeyModifier { get; }
+	public Key F4Key { get; }
 	
 	public HashSet<Key> BackwardNavigationKeys { get; }
 	public HashSet<Key> ForwardNavigationKeys { get; }
@@ -67,22 +63,18 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	{
 		ProcessorCount = Environment.ProcessorCount;
 		ThumbnailSize = new ImageSize(ThumbnailSizeSquareLength);
-
-		IsWindows = operatingSystemSettings.IsWindows;
+		
 		IsLinux = operatingSystemSettings.IsLinux;
+		IsWindows = operatingSystemSettings.IsWindows;
 		IsMacOS = operatingSystemSettings.IsMacOS;
-
-		AltKey = Key.Alt;
-		CtrlKey = Key.Ctrl;
 		
 		TabKey = Key.Tab;
 		EscapeKey = Key.Escape;
 		EnterKey = Key.Enter;
 		F1Key = Key.F1;
-		F4Key = Key.F4;
 
 		AltKeyModifier = KeyModifiers.Alt;
-		CtrlKeyModifier = KeyModifiers.Ctrl;
+		F4Key = Key.F4;
 
 		BackwardNavigationKeys = [
 			Key.W,

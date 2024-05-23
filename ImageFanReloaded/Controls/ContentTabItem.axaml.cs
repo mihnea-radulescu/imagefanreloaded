@@ -38,21 +38,21 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_folderTreeView.SelectionChanged += OnFolderTreeViewSelectedItemChanged;
 	}
 
-	public void OnKeyPressed(object? sender, KeyboardKeyEventArgs e)
+	public void OnKeyPressing(object? sender, KeyboardKeyEventArgs e)
 	{
 		if (_selectedThumbnailBox is not null)
 		{
-			var keyPressed = e.Key;
+			var keyPressing = e.Key;
 	        
-			if (GlobalParameters!.BackwardNavigationKeys.Contains(keyPressed))
+			if (GlobalParameters!.BackwardNavigationKeys.Contains(keyPressing))
 			{
 				AdvanceToThumbnailIndex(-1);
 			}
-			else if (GlobalParameters!.ForwardNavigationKeys.Contains(keyPressed))
+			else if (GlobalParameters!.ForwardNavigationKeys.Contains(keyPressing))
 			{
 				AdvanceToThumbnailIndex(1);
 			}
-			else if (keyPressed == GlobalParameters!.EnterKey)
+			else if (keyPressing == GlobalParameters!.EnterKey)
 			{
 				BringThumbnailIntoView();
 				DisplayImage();

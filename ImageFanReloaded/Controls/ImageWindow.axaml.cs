@@ -27,6 +27,7 @@ public partial class ImageWindow : Window, IImageView
 	{
 		InitializeComponent();
 
+		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 		AddHandler(PointerWheelChangedEvent, OnMouseWheel, RoutingStrategies.Tunnel);
 	}
 	
@@ -89,19 +90,19 @@ public partial class ImageWindow : Window, IImageView
 
 	private ImageViewState _imageViewState;
 
-    private void OnKeyPressed(object? sender, KeyEventArgs e)
+    private void OnKeyPressing(object? sender, KeyEventArgs e)
     {
-        var keyPressed = e.Key.ToCoreKey();
+        var keyPressing = e.Key.ToCoreKey();
 
-        if (_globalParameters!.BackwardNavigationKeys.Contains(keyPressed))
+        if (_globalParameters!.BackwardNavigationKeys.Contains(keyPressing))
         {
             RaiseImageChanged(-1);
         }
-        else if (_globalParameters!.ForwardNavigationKeys.Contains(keyPressed))
+        else if (_globalParameters!.ForwardNavigationKeys.Contains(keyPressing))
         {
             RaiseImageChanged(1);
         }
-        else if (keyPressed == _globalParameters!.EnterKey)
+        else if (keyPressing == _globalParameters!.EnterKey)
         {
             if (!_canZoomToImageSize)
             {
@@ -117,7 +118,7 @@ public partial class ImageWindow : Window, IImageView
                 ResizeToScreenSize();
             }
         }
-        else if (keyPressed == _globalParameters!.EscapeKey)
+        else if (keyPressing == _globalParameters!.EscapeKey)
         {
             CloseWindow();
         }

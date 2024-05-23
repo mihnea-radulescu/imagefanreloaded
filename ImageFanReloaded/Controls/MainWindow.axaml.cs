@@ -19,11 +19,8 @@ public partial class MainWindow : Window, IMainView
         InitializeComponent();
 
 		_windowFontSize = FontSize;
-
-        _previousKeyPressed = ImageFanReloaded.Core.Keyboard.Key.None;
 		
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
-		AddHandler(KeyUpEvent, OnKeyPressed, RoutingStrategies.Tunnel);
     }
 	
 	public IGlobalParameters? GlobalParameters { get; set; }
@@ -56,7 +53,7 @@ public partial class MainWindow : Window, IMainView
 
 		await infoMessageBox.ShowWindowDialogAsync(this);
 	}
-	
+
 	#region Private
 
 	private const string DefaultTabItemTitle = "New Tab";
@@ -64,41 +61,32 @@ public partial class MainWindow : Window, IMainView
 
 	private readonly double _windowFontSize;
 
-    private ImageFanReloaded.Core.Keyboard.Key _previousKeyPressed;
-
 	private void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
+		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
+		var keyPressing = e.Key.ToCoreKey();
+
+		if (ShouldCloseWindow(keyModifiers, keyPressing))
+		{
+			CloseWindow();
+		}
+		else if (ShouldNavigateToNextTab(keyPressing))
+		{
+			NavigateToNextTab();
+		}
+		else if (ShouldDisplayHelp(keyPressing))
+		{
+			DisplayHelp();
+		}
+		else
+		{
+			PassKeyPressingToContentTabItem(keyPressing);
+		}
+        
 		e.Handled = true;
 	}
-
-	private void OnKeyPressed(object? sender, KeyEventArgs e)
-    {
-        var keyPressed = e.Key.ToCoreKey();
-        var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
-
-        if (ShouldCloseWindow(keyPressed, keyModifiers))
-        {
-	        CloseWindow();
-        }
-        else if (ShouldNavigateToNextTab(keyPressed, keyModifiers))
-        {
-	        NavigateToNextTab();
-		}
-        else if (ShouldDisplayHelp(keyPressed))
-        {
-	        DisplayHelp();
-        }
-        else
-        {
-	        PassKeyPressedToContentTabItem(keyPressed);
-        }
-
-        _previousKeyPressed = keyPressed;
-        
-        e.Handled = true;
-    }
-
-	private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	
+	private void OnTabChanged(object? sender, SelectionChangedEventArgs e)
 	{
 		var contentTabItem = GetActiveContentTabItem();
 		var isFakeTabItem = contentTabItem is null;
@@ -187,30 +175,25 @@ public partial class MainWindow : Window, IMainView
 	}
 
     private bool ShouldCloseWindow(
-        ImageFanReloaded.Core.Keyboard.Key keyPressed, ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
+	    ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
     {
-        if (keyPressed == GlobalParameters!.EscapeKey)
+        if (keyPressing == GlobalParameters!.EscapeKey)
         {
             return true;
         }
 
         if (GlobalParameters!.IsWindows)
         {
-	        return ShouldWindowsOsCloseWindow(keyPressed, keyModifiers);
+	        return ShouldWindowsOsCloseWindow(keyModifiers, keyPressing);
         }
 
 		return false;
     }
 
     private bool ShouldWindowsOsCloseWindow(
-	    ImageFanReloaded.Core.Keyboard.Key keyPressed, ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
+	    ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
     {
-	    if (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressed == GlobalParameters!.F4Key)
-	    {
-		    return true;
-	    }
-
-	    if (_previousKeyPressed == GlobalParameters!.AltKey && keyPressed == GlobalParameters!.F4Key)
+	    if (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressing == GlobalParameters!.F4Key)
 	    {
 		    return true;
 	    }
@@ -218,15 +201,9 @@ public partial class MainWindow : Window, IMainView
 	    return false;
     }
 
-    private bool ShouldNavigateToNextTab(
-	    ImageFanReloaded.Core.Keyboard.Key keyPressed, ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
+    private bool ShouldNavigateToNextTab(ImageFanReloaded.Core.Keyboard.Key keyPressing)
     {
-	    if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressed == GlobalParameters!.TabKey)
-	    {
-		    return HasAtLeastOneTabItem();
-	    }
-
-	    if (_previousKeyPressed == GlobalParameters!.CtrlKey && keyPressed == GlobalParameters!.TabKey)
+	    if (keyPressing == GlobalParameters!.TabKey)
 	    {
 		    return HasAtLeastOneTabItem();
 	    }
@@ -242,8 +219,8 @@ public partial class MainWindow : Window, IMainView
 	    return hasAtLeastOneTabItem;
     }
 
-    private bool ShouldDisplayHelp(ImageFanReloaded.Core.Keyboard.Key keyPressed)
-	    => keyPressed == GlobalParameters!.F1Key;
+    private bool ShouldDisplayHelp(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	    => keyPressing == GlobalParameters!.F1Key;
 
 	private void CloseWindow() => Close();
 
@@ -258,11 +235,11 @@ public partial class MainWindow : Window, IMainView
 	
 	private void DisplayHelp() => HelpMenuRequested?.Invoke(this, EventArgs.Empty);
 
-	private void PassKeyPressedToContentTabItem(ImageFanReloaded.Core.Keyboard.Key keyPressed)
+	private void PassKeyPressingToContentTabItem(ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		var contentTabItem = GetActiveContentTabItem();
-
-		contentTabItem!.OnKeyPressed(this, new KeyboardKeyEventArgs(keyPressed));
+		
+		contentTabItem!.OnKeyPressing(this, new KeyboardKeyEventArgs(keyPressing));
 	}
 
 	#endregion

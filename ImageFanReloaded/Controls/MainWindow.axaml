@@ -12,6 +12,6 @@
         WindowState="Maximized"
 		Focusable="True">
 	<TabControl Name="_tabControl"
-                SelectionChanged="OnSelectionChanged">
+                SelectionChanged="OnTabChanged">
 	</TabControl>
 </Window>

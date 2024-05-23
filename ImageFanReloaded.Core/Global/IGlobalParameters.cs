@@ -10,21 +10,17 @@ public interface IGlobalParameters
 	int ProcessorCount { get; }
 	ImageSize ThumbnailSize { get; }
 	
-	bool IsWindows { get; }
 	bool IsLinux { get; }
+	bool IsWindows { get; }
 	bool IsMacOS { get; }
-	
-	Key AltKey { get; }
-	Key CtrlKey { get; }
 	
 	Key TabKey { get; }
 	Key EscapeKey { get; }
 	Key EnterKey { get; }
 	Key F1Key { get; }
-	Key F4Key { get; }
 	
 	KeyModifiers AltKeyModifier { get; }
-	KeyModifiers CtrlKeyModifier { get; }
+	Key F4Key { get; }
 
 	HashSet<Key> BackwardNavigationKeys { get; }
 	HashSet<Key> ForwardNavigationKeys { get; }

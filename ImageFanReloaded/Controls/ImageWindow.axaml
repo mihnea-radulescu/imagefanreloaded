@@ -6,7 +6,6 @@
 		WindowState="FullScreen"
         Background="Black"
 		Focusable="True"
-		KeyUp="OnKeyPressed"
 		PointerPressed="OnMouseDown"
 		PointerReleased="OnMouseUp">
 	<ScrollViewer Name="_imageScrollViewer"

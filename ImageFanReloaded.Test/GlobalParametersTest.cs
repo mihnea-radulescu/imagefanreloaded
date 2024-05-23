@@ -41,23 +41,19 @@ public class GlobalParametersTest : TestBase
 
 		List<bool> isOperatingSystemCollection =
 		[
-			_globalParameters.IsWindows,
 			_globalParameters.IsLinux,
+			_globalParameters.IsWindows,
 			_globalParameters.IsMacOS
 		];
 		isOperatingSystemCollection.Should().ContainSingle(isOperatingSystem => isOperatingSystem == true);
-		
-		_globalParameters.AltKey.Should().NotBe(Key.None);
-		_globalParameters.CtrlKey.Should().NotBe(Key.None);
 		
 		_globalParameters.TabKey.Should().NotBe(Key.None);
 		_globalParameters.EscapeKey.Should().NotBe(Key.None);
 		_globalParameters.EnterKey.Should().NotBe(Key.None);
 		_globalParameters.F1Key.Should().NotBe(Key.None);
-		_globalParameters.F4Key.Should().NotBe(Key.None);
-		
+
 		_globalParameters.AltKeyModifier.Should().NotBe(KeyModifiers.None);
-		_globalParameters.CtrlKeyModifier.Should().NotBe(KeyModifiers.None);
+		_globalParameters.F4Key.Should().NotBe(Key.None);
 		
 		_globalParameters.BackwardNavigationKeys.Should().NotBeEmpty();
 		_globalParameters.ForwardNavigationKeys.Should().NotBeEmpty();

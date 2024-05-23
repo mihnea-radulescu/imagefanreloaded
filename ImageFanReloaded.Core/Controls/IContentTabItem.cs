@@ -25,7 +25,7 @@ public interface IContentTabItem
 
 	void EnableFolderTreeViewSelectedItemChanged();
 	
-	void OnKeyPressed(object? sender, KeyboardKeyEventArgs e);
+	void OnKeyPressing(object? sender, KeyboardKeyEventArgs e);
 
 	void SetTitle(string title);
 
