@@ -5,6 +5,7 @@ using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.Global.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
+using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Properties;
 
 namespace ImageFanReloaded.Global;
@@ -12,9 +13,10 @@ namespace ImageFanReloaded.Global;
 public class GlobalParameters : GlobalParametersBase
 {
 	public GlobalParameters(
+		IOperatingSystemSettings operatingSystemSettings,
 		IAboutInformationProvider aboutInformationProvider,
 		IImageResizer imageResizer)
-		: base(aboutInformationProvider)
+		: base(operatingSystemSettings, aboutInformationProvider)
 	{
 		_imageResizer = imageResizer;
 		

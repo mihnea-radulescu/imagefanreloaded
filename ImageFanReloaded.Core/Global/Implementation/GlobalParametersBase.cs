@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
+using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 
 namespace ImageFanReloaded.Core.Global.Implementation;
@@ -12,7 +13,13 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public int ProcessorCount { get; }
 	public ImageSize ThumbnailSize { get; }
 	
+	public bool IsWindows { get; }
+	public bool IsLinux { get; }
+	public bool IsMacOS { get; }
+	
 	public Key AltKey { get; }
+	public Key CtrlKey { get; }
+	
 	public Key TabKey { get; }
 	public Key EscapeKey { get; }
 	public Key EnterKey { get; }
@@ -20,6 +27,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key F4Key { get; }
 	
 	public KeyModifiers AltKeyModifier { get; }
+	public KeyModifiers CtrlKeyModifier { get; }
 	
 	public HashSet<Key> BackwardNavigationKeys { get; }
 	public HashSet<Key> ForwardNavigationKeys { get; }
@@ -53,19 +61,28 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 	#region Protected
 	
-	protected GlobalParametersBase(IAboutInformationProvider aboutInformationProvider)
+	protected GlobalParametersBase(
+		IOperatingSystemSettings operatingSystemSettings,
+		IAboutInformationProvider aboutInformationProvider)
 	{
 		ProcessorCount = Environment.ProcessorCount;
 		ThumbnailSize = new ImageSize(ThumbnailSizeSquareLength);
 
+		IsWindows = operatingSystemSettings.IsWindows;
+		IsLinux = operatingSystemSettings.IsLinux;
+		IsMacOS = operatingSystemSettings.IsMacOS;
+
 		AltKey = Key.Alt;
+		CtrlKey = Key.Ctrl;
+		
 		TabKey = Key.Tab;
 		EscapeKey = Key.Escape;
 		EnterKey = Key.Enter;
 		F1Key = Key.F1;
 		F4Key = Key.F4;
 
-		AltKeyModifier = KeyModifiers.Alt; 
+		AltKeyModifier = KeyModifiers.Alt;
+		CtrlKeyModifier = KeyModifiers.Ctrl;
 
 		BackwardNavigationKeys = [
 			Key.W,
@@ -85,7 +102,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			Key.PageDown
 		];
 		
-		NameComparer = OperatingSystem.IsWindows()
+		NameComparer = operatingSystemSettings.IsWindows
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)
 			: new NaturalSortingComparer(StringComparer.InvariantCulture);
 		

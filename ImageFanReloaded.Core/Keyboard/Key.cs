@@ -5,6 +5,8 @@ public enum Key
 	None = 0,
 	
 	Alt,
+	Ctrl,
+	
 	Tab,
 	Escape,
 	Enter,

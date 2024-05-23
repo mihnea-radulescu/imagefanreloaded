@@ -7,6 +7,9 @@ public static class KeyExtensions
 		{
 			Avalonia.Input.Key.LeftAlt => Core.Keyboard.Key.Alt,
 			Avalonia.Input.Key.RightAlt => Core.Keyboard.Key.Alt,
+			Avalonia.Input.Key.LeftCtrl => Core.Keyboard.Key.Ctrl,
+			Avalonia.Input.Key.RightCtrl => Core.Keyboard.Key.Ctrl,
+			
 			Avalonia.Input.Key.Tab => Core.Keyboard.Key.Tab,
 			Avalonia.Input.Key.Escape => Core.Keyboard.Key.Escape,
 			Avalonia.Input.Key.Enter => Core.Keyboard.Key.Enter,

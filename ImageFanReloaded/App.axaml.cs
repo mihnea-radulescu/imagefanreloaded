@@ -13,6 +13,8 @@ using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
+using ImageFanReloaded.Core.OperatingSystem;
+using ImageFanReloaded.Core.OperatingSystem.Implementation;
 using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Core.Synchronization.Implementation;
 using ImageFanReloaded.Global;
@@ -33,12 +35,14 @@ public class App : Application
 	    var args = desktop.Args!;
 	    var inputPath = args.Any() ? args.First() : null;
 
+	    IOperatingSystemSettings operatingSystemSettings = new OperatingSystemSettings();
 	    IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
 	    
 	    IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		IGlobalParameters globalParameters = new GlobalParameters(aboutInformationProvider, imageResizer);
+		IGlobalParameters globalParameters = new GlobalParameters(
+			operatingSystemSettings, aboutInformationProvider, imageResizer);
 		IFileSizeEngine fileSizeEngine = new FileSizeEngine();
 
 		IImageFileFactory imageFileFactory = new ImageFileFactory(globalParameters, imageResizer);

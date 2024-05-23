@@ -14,25 +14,21 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 		_globalParameters = globalParameters;
 		_fileSizeEngine = fileSizeEngine;
 		_imageFileFactory = imageFileFactory;
-
-		_isWindows = OperatingSystem.IsWindows();
-		_isLinux = OperatingSystem.IsLinux();
-		_isMacOS = OperatingSystem.IsMacOS();
 	}
 
 	public IDiscQueryEngine GetDiscQueryEngine()
 	{
-		if (_isWindows)
+		if (_globalParameters.IsWindows)
 		{
 			return new WindowsDiscQueryEngine(_globalParameters, _fileSizeEngine, _imageFileFactory);
 		}
-
-		if (_isLinux)
+		
+		if (_globalParameters.IsLinux)
 		{
 			return new LinuxDiscQueryEngine(_globalParameters, _fileSizeEngine, _imageFileFactory);
 		}
-
-		if (_isMacOS)
+		
+		if (_globalParameters.IsMacOS)
 		{
 			return new MacOSDiscQueryEngine(_globalParameters, _fileSizeEngine, _imageFileFactory);
 		}
@@ -45,10 +41,6 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IImageFileFactory _imageFileFactory;
-
-	private readonly bool _isWindows;
-	private readonly bool _isLinux;
-	private readonly bool _isMacOS;
 
 	#endregion
 }

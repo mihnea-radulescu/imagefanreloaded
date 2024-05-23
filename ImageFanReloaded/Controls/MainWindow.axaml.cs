@@ -80,7 +80,7 @@ public partial class MainWindow : Window, IMainView
         {
 	        CloseWindow();
         }
-        else if (ShouldNavigateToNextTab(keyPressed))
+        else if (ShouldNavigateToNextTab(keyPressed, keyModifiers))
         {
 	        NavigateToNextTab();
 		}
@@ -194,30 +194,52 @@ public partial class MainWindow : Window, IMainView
             return true;
         }
 
-        if (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressed == GlobalParameters!.F4Key)
+        if (GlobalParameters!.IsWindows)
         {
-            return true;
-        }
-
-        if (_previousKeyPressed == GlobalParameters!.AltKey && keyPressed == GlobalParameters!.F4Key)
-        {
-            return true;
+	        return ShouldWindowsOsCloseWindow(keyPressed, keyModifiers);
         }
 
 		return false;
     }
 
-    private bool ShouldNavigateToNextTab(ImageFanReloaded.Core.Keyboard.Key keyPressed)
+    private bool ShouldWindowsOsCloseWindow(
+	    ImageFanReloaded.Core.Keyboard.Key keyPressed, ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
     {
-	    if (keyPressed != GlobalParameters!.TabKey)
+	    if (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressed == GlobalParameters!.F4Key)
 	    {
-		    return false;
+		    return true;
 	    }
-	    
+
+	    if (_previousKeyPressed == GlobalParameters!.AltKey && keyPressed == GlobalParameters!.F4Key)
+	    {
+		    return true;
+	    }
+	        
+	    return false;
+    }
+
+    private bool ShouldNavigateToNextTab(
+	    ImageFanReloaded.Core.Keyboard.Key keyPressed, ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
+    {
+	    if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressed == GlobalParameters!.TabKey)
+	    {
+		    return HasAtLeastOneTabItem();
+	    }
+
+	    if (_previousKeyPressed == GlobalParameters!.CtrlKey && keyPressed == GlobalParameters!.TabKey)
+	    {
+		    return HasAtLeastOneTabItem();
+	    }
+
+	    return false;
+    }
+
+    private bool HasAtLeastOneTabItem()
+    {
 	    var contentTabItemCount = GetContentTabItemCount();
 	    
-	    var shouldNavigateToNextTab = contentTabItemCount > 1;
-	    return shouldNavigateToNextTab;
+	    var hasAtLeastOneTabItem = contentTabItemCount > 1;
+	    return hasAtLeastOneTabItem;
     }
 
     private bool ShouldDisplayHelp(ImageFanReloaded.Core.Keyboard.Key keyPressed)

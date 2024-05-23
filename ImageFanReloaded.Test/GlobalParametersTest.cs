@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FluentAssertions;
 using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.AboutInformation.Implementation;
@@ -5,6 +6,8 @@ using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Keyboard;
+using ImageFanReloaded.Core.OperatingSystem;
+using ImageFanReloaded.Core.OperatingSystem.Implementation;
 using ImageFanReloaded.Global;
 using ImageFanReloaded.ImageHandling;
 
@@ -14,12 +17,14 @@ public class GlobalParametersTest : TestBase
 {
 	public GlobalParametersTest()
 	{
+		IOperatingSystemSettings operatingSystemSettings = new OperatingSystemSettings();
+		
 		IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
 		
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		_globalParameters = new GlobalParameters(aboutInformationProvider, imageResizer);
+		_globalParameters = new GlobalParameters(operatingSystemSettings, aboutInformationProvider, imageResizer);
 	}
 	
 	[Fact]
@@ -33,8 +38,18 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.ProcessorCount.Should().NotBe(0);
 		_globalParameters.ThumbnailSize.Width.Should().NotBe(0);
 		_globalParameters.ThumbnailSize.Height.Should().NotBe(0);
+
+		List<bool> isOperatingSystemCollection =
+		[
+			_globalParameters.IsWindows,
+			_globalParameters.IsLinux,
+			_globalParameters.IsMacOS
+		];
+		isOperatingSystemCollection.Should().ContainSingle(isOperatingSystem => isOperatingSystem == true);
 		
 		_globalParameters.AltKey.Should().NotBe(Key.None);
+		_globalParameters.CtrlKey.Should().NotBe(Key.None);
+		
 		_globalParameters.TabKey.Should().NotBe(Key.None);
 		_globalParameters.EscapeKey.Should().NotBe(Key.None);
 		_globalParameters.EnterKey.Should().NotBe(Key.None);
@@ -42,6 +57,7 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.F4Key.Should().NotBe(Key.None);
 		
 		_globalParameters.AltKeyModifier.Should().NotBe(KeyModifiers.None);
+		_globalParameters.CtrlKeyModifier.Should().NotBe(KeyModifiers.None);
 		
 		_globalParameters.BackwardNavigationKeys.Should().NotBeEmpty();
 		_globalParameters.ForwardNavigationKeys.Should().NotBeEmpty();
