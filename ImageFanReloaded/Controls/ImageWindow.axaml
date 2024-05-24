@@ -7,7 +7,8 @@
         Background="Black"
 		Focusable="True"
 		PointerPressed="OnMouseDown"
-		PointerReleased="OnMouseUp">
+		PointerReleased="OnMouseUp"
+        Closing="OnClosing">
 	<ScrollViewer Name="_imageScrollViewer"
 				  HorizontalScrollBarVisibility="Hidden"
 				  VerticalScrollBarVisibility="Hidden">

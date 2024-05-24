@@ -17,8 +17,9 @@ User interface:
 * mouse wheel for scrolling through folders and thumbnails, and for navigating back and forward through opened images
 * key Tab for cycling through active tabs
 * keys W-A-S-D, Up-Down-Left-Right, Backspace-Space and PageUp-PageDown for back and forward navigation through thumbnails and opened images
-* keys Enter-Escape for entering into and exiting from image display modes
-* key Escape for quitting the application
+* key Enter for entering image view and zoomed image view modes
+* keys Esc and T for exiting image view and zoomed image view modes
+* key Esc for quitting the application
 
 ![Screenshot 1](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-Dark.jpg "ImageFan Reloaded - Dark Screenshot")
 

@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -8,6 +9,7 @@ using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.AboutInformation.Implementation;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Implementation;
+using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.Global;
@@ -31,75 +33,110 @@ public class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
-	    var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
-	    var args = desktop.Args!;
+	    BootstrapTypes();
+
+	    if (IsMainViewAccess())
+		{
+			ShowMainView();
+		}
+		else
+		{
+			await ShowImageView();
+		}
+    }
+
+    #region Private
+
+    private IClassicDesktopStyleApplicationLifetime _desktop = null!;
+    private IGlobalParameters _globalParameters = null!;
+    private IFileSizeEngine _fileSizeEngine = null!;
+    private IDiscQueryEngine _discQueryEngine = null!;
+    private IInputPathContainer _inputPathContainer = null!;
+    
+    private void BootstrapTypes()
+    {
+	    _desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
+	    var args = _desktop.Args!;
 	    var inputPath = args.Any() ? args.First() : null;
 
 	    IOperatingSystemSettings operatingSystemSettings = new OperatingSystemSettings();
 	    IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
 	    
 	    IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
-		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
+	    IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		IGlobalParameters globalParameters = new GlobalParameters(
-			operatingSystemSettings, aboutInformationProvider, imageResizer);
-		IFileSizeEngine fileSizeEngine = new FileSizeEngine();
+	    _globalParameters = new GlobalParameters(
+		    operatingSystemSettings, aboutInformationProvider, imageResizer);
+	    _fileSizeEngine = new FileSizeEngine();
 
-		IImageFileFactory imageFileFactory = new ImageFileFactory(globalParameters, imageResizer);
-		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
-			globalParameters, fileSizeEngine, imageFileFactory);
-		IDiscQueryEngine discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
+	    IImageFileFactory imageFileFactory = new ImageFileFactory(_globalParameters, imageResizer);
+	    IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
+		    _globalParameters, _fileSizeEngine, imageFileFactory);
+	    _discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 		
-		IInputPathContainer inputPathContainer = new InputPathContainer(
-			globalParameters, discQueryEngine, inputPath);
-		
-		IFolderChangedEventHandleFactory folderChangedEventHandleFactory = new FolderChangedEventHandleFactory();
-		
-		var mainWindow = new MainWindow();
-		desktop.MainWindow = mainWindow;
-		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
-			
-		IMainView mainView = mainWindow;
-		mainView.GlobalParameters = globalParameters;
-		mainView.FolderChangedEventHandleFactory = folderChangedEventHandleFactory;
-		
-		IImageViewFactory imageViewFactory = new ImageViewFactory(globalParameters, screenInformation);
-		IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(globalParameters);
-		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
-			globalParameters, fileSizeEngine, thumbnailInfoFactory, discQueryEngine);
-
-		var mainViewPresenter = new MainViewPresenter(
-			discQueryEngine,
-			folderVisualStateFactory,
-			imageViewFactory,
-			inputPathContainer,
-			globalParameters,
-			mainView);
-
-		mainView.AddFakeTabItem();
-		mainView.Show();
-
-		if (IsImageViewAccess(inputPathContainer))
-		{
-			var imageWindow = new ImageWindow();
-			
-			IImageView imageView = imageWindow;
-			imageView.GlobalParameters = globalParameters;
-			imageView.ScreenInformation = screenInformation;
-
-			var imageViewPresenter = new ImageViewPresenter(
-				discQueryEngine, inputPathContainer, globalParameters, imageView);
-			
-			await imageViewPresenter.SetUpAccess();
-	    
-			await imageView.ShowDialog(mainView);
-		}
-	}
-
-    #region Private
+	    _inputPathContainer = new InputPathContainer(_globalParameters, _discQueryEngine, inputPath);
+    }
     
-    private static bool IsImageViewAccess(IInputPathContainer inputPathContainer)
-		=> inputPathContainer.InputPathType == InputPathType.File;
+    private bool IsMainViewAccess() => _inputPathContainer.InputPathType != InputPathType.File;
+    
+    private void ShowMainView()
+    {
+	    IFolderChangedEventHandleFactory folderChangedEventHandleFactory = new FolderChangedEventHandleFactory();
+		
+	    var mainWindow = new MainWindow();
+	    _desktop.MainWindow = mainWindow;
+	    IScreenInformation screenInformation = new ScreenInformation(mainWindow);
+			
+	    IMainView mainView = mainWindow;
+	    mainView.GlobalParameters = _globalParameters;
+	    mainView.FolderChangedEventHandleFactory = folderChangedEventHandleFactory;
+		
+	    IImageViewFactory imageViewFactory = new ImageViewFactory(_globalParameters, screenInformation);
+	    IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(_globalParameters);
+	    IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
+		    _globalParameters, _fileSizeEngine, thumbnailInfoFactory, _discQueryEngine);
+
+	    var mainViewPresenter = new MainViewPresenter(
+		    _discQueryEngine,
+		    folderVisualStateFactory,
+		    imageViewFactory,
+		    _inputPathContainer,
+		    _globalParameters,
+		    mainView);
+
+	    mainView.AddFakeTabItem();
+	    mainView.Show();
+    }
+    
+    private async Task ShowImageView()
+    {
+	    var imageWindow = new ImageWindow();
+	    _desktop.MainWindow = imageWindow;
+	    IScreenInformation screenInformation = new ScreenInformation(imageWindow);
+			
+	    IImageView imageView = imageWindow;
+	    imageView.GlobalParameters = _globalParameters;
+	    imageView.ScreenInformation = screenInformation;
+	    
+	    imageView.ViewClosing += OnImageViewClosing;
+
+	    var imageViewPresenter = new ImageViewPresenter(
+		    _discQueryEngine, _inputPathContainer, _globalParameters, imageView);
+			
+	    await imageViewPresenter.SetUpAccessToImages();
+	    
+	    imageView.Show();
+    }
+
+    private void OnImageViewClosing(object? sender, ImageViewClosingEventArgs e)
+    {
+	    var shouldShowMainView = e.ShowMainView;
+
+	    if (shouldShowMainView)
+	    {
+		    ShowMainView();
+	    }
+    }
     
     #endregion
 }

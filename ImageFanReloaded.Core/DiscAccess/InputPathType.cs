@@ -2,7 +2,7 @@ namespace ImageFanReloaded.Core.DiscAccess;
 
 public enum InputPathType
 {
-	Invalid = 0,
+	NotSet = 0,
 	Folder = 1,
 	File = 2
 }

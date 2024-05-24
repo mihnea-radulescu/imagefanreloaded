@@ -43,6 +43,8 @@ public partial class ImageWindow : Window, IImageView
 	
 	public IScreenInformation? ScreenInformation { get; set; }
 	
+	public event EventHandler<ImageViewClosingEventArgs>? ViewClosing;
+	
 	public event EventHandler<ImageChangedEventArgs>? ImageChanged;
 
 	public void SetImage(IImageFile imageFile)
@@ -58,6 +60,8 @@ public partial class ImageWindow : Window, IImageView
 
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
+
+		_showMainViewAfterImageViewClosing = false;
 
 		ResizeToScreenSize();
 	}
@@ -90,6 +94,8 @@ public partial class ImageWindow : Window, IImageView
 
 	private ImageViewState _imageViewState;
 
+	private bool _showMainViewAfterImageViewClosing;
+
     private void OnKeyPressing(object? sender, KeyEventArgs e)
     {
         var keyPressing = e.Key.ToCoreKey();
@@ -120,7 +126,13 @@ public partial class ImageWindow : Window, IImageView
         }
         else if (keyPressing == _globalParameters!.EscapeKey)
         {
-            CloseWindow();
+	        CloseWindow();
+        }
+        else if (keyPressing == _globalParameters!.TKey)
+        {
+	        _showMainViewAfterImageViewClosing = true;
+	        
+	        CloseWindow();
         }
     }
 
@@ -190,6 +202,11 @@ public partial class ImageWindow : Window, IImageView
 		}
 
 		e.Handled = true;
+	}
+	
+	private void OnClosing(object? sender, WindowClosingEventArgs e)
+	{
+		ViewClosing?.Invoke(this, new ImageViewClosingEventArgs(_showMainViewAfterImageViewClosing));
 	}
 
 	private void RaiseImageChanged(int increment)

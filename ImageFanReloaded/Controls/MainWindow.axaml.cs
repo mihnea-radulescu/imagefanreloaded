@@ -232,8 +232,11 @@ public partial class MainWindow : Window, IMainView
 		var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
 		_tabControl.SelectedIndex = nextSelectedTabItemIndex;
 	}
-	
-	private void DisplayHelp() => HelpMenuRequested?.Invoke(this, EventArgs.Empty);
+
+	private void DisplayHelp()
+	{
+		HelpMenuRequested?.Invoke(this, EventArgs.Empty);
+	}
 
 	private void PassKeyPressingToContentTabItem(ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{

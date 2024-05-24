@@ -31,7 +31,7 @@ public class ImageViewPresenter
 		_imageFiles = new List<IImageFile>();
 	}
 	
-	public async Task SetUpAccess()
+	public async Task SetUpAccessToImages()
 	{
 		_imageFiles = await _discQueryEngine.GetImageFiles(_inputPathContainer.FolderPath!);
 			

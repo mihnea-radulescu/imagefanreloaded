@@ -20,6 +20,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key TabKey { get; }
 	public Key EscapeKey { get; }
 	public Key EnterKey { get; }
+	public Key TKey { get; }
 	public Key F1Key { get; }
 	
 	public KeyModifiers AltKeyModifier { get; }
@@ -71,6 +72,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		TabKey = Key.Tab;
 		EscapeKey = Key.Escape;
 		EnterKey = Key.Enter;
+		TKey = Key.T;
 		F1Key = Key.F1;
 
 		AltKeyModifier = KeyModifiers.Alt;

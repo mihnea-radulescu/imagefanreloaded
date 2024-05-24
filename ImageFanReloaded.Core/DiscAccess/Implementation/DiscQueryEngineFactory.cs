@@ -18,14 +18,14 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 
 	public IDiscQueryEngine GetDiscQueryEngine()
 	{
-		if (_globalParameters.IsWindows)
-		{
-			return new WindowsDiscQueryEngine(_globalParameters, _fileSizeEngine, _imageFileFactory);
-		}
-		
 		if (_globalParameters.IsLinux)
 		{
 			return new LinuxDiscQueryEngine(_globalParameters, _fileSizeEngine, _imageFileFactory);
+		}
+		
+		if (_globalParameters.IsWindows)
+		{
+			return new WindowsDiscQueryEngine(_globalParameters, _fileSizeEngine, _imageFileFactory);
 		}
 		
 		if (_globalParameters.IsMacOS)

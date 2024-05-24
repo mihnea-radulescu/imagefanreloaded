@@ -18,7 +18,7 @@ public class InputPathContainer : IInputPathContainer
 		_discQueryEngine = discQueryEngine;
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
 
-		InputPathType = InputPathType.Invalid;
+		InputPathType = InputPathType.NotSet;
 		_shouldProcessInputPath = false;
 
 		if (!string.IsNullOrEmpty(inputPath) && Path.Exists(inputPath))
@@ -49,7 +49,7 @@ public class InputPathContainer : IInputPathContainer
 			}
 		}
 
-		if (InputPathType != InputPathType.Invalid)
+		if (InputPathType != InputPathType.NotSet)
 		{
 			_shouldProcessInputPath = true;
 		}
