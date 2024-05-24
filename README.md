@@ -19,7 +19,8 @@ User interface:
 * keys W-A-S-D, Up-Down-Left-Right, Backspace-Space and PageUp-PageDown for back and forward navigation through thumbnails and opened images
 * key Enter for entering image view and zoomed image view modes
 * keys Esc and T for exiting image view and zoomed image view modes
-* key Esc for quitting the application
+* key Esc for quitting application
+* key F1 for displaying About view
 
 ![Screenshot 1](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-Dark.jpg "ImageFan Reloaded - Dark Screenshot")
 
