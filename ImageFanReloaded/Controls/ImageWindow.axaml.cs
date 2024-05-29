@@ -134,6 +134,8 @@ public partial class ImageWindow : Window, IImageView
 	        
 	        CloseWindow();
         }
+
+        e.Handled = true;
     }
 
     private void OnMouseDown(object? sender, PointerPressedEventArgs e)

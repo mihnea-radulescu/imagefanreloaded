@@ -18,6 +18,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public ContentTabItem()
 	{
 		InitializeComponent();
+
+		_thumbnailBoxCollection = new List<IThumbnailBox>();
 	}
 	
     public IMainView? MainView { get; set; }
@@ -102,9 +104,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	public void PopulateThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection)
 	{
-		foreach (var thumbnailInfo in thumbnailInfoCollection)
+		for (var i = 0; i < thumbnailInfoCollection.Count; i++)
 		{
+			var thumbnailInfo = thumbnailInfoCollection[i];
+			
 			var aThumbnailBox = new ThumbnailBox();
+			aThumbnailBox.Index = i;
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
 			aThumbnailBox.SetControlProperties(GlobalParameters!);
 
@@ -112,11 +117,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
 			aThumbnailBox.ThumbnailBoxClicked += OnThumbnailBoxClicked;
 
-			_thumbnailBoxCollection!.Add(aThumbnailBox);
+			_thumbnailBoxCollection.Add(aThumbnailBox);
 
 			if (IsFirstThumbnail())
 			{
-				SelectThumbnailBox(aThumbnailBox, 0);
+				SelectThumbnailBox(aThumbnailBox);
 			}
 
 			var aSurroundingStackPanel = new StackPanel();
@@ -130,7 +135,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_thumbnailWrapPanel.Children.Clear();
 		_selectedThumbnailBox = null;
 
-		if (_thumbnailBoxCollection is not null)
+		if (_thumbnailBoxCollection.Any())
 		{
 			foreach (var aThumbnailBox in _thumbnailBoxCollection)
 			{
@@ -139,14 +144,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
 			}
 
-			_thumbnailBoxCollection = null;
+			_thumbnailBoxCollection.Clear();
 		}
 		
 		if (resetContent)
 		{
-			_thumbnailBoxCollection = new List<IThumbnailBox>();
-			_selectedThumbnailIndex = -1;
-			
 			_thumbnailScrollViewer.Offset = new Vector(_thumbnailScrollViewer.Offset.X, 0);
 		}
 	}
@@ -191,10 +193,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
     private const string FakeTreeViewItemText = "Loading...";
 
-    private IList<IThumbnailBox>? _thumbnailBoxCollection;
+    private readonly IList<IThumbnailBox> _thumbnailBoxCollection;
+    
 	private int _selectedThumbnailIndex;
 	private IThumbnailBox? _selectedThumbnailBox;
-
 	private TreeViewItem? _inputFolderTreeViewItem;
 	
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxEventArgs e)
@@ -215,7 +217,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 		else
 		{
-			SelectThumbnailBox(thumbnailBox, null);
+			SelectThumbnailBox(thumbnailBox);
 		}
 	}
 
@@ -267,25 +269,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-    private void SelectThumbnailBox(IThumbnailBox thumbnailBox, int? indexToSelect)
+    private void SelectThumbnailBox(IThumbnailBox thumbnailBox)
 	{
 		if (_selectedThumbnailBox != thumbnailBox)
 		{
 			UnselectThumbnail();
 			
 			_selectedThumbnailBox = thumbnailBox;
-
-			if (indexToSelect is null)
-			{
-				_selectedThumbnailIndex = _thumbnailBoxCollection!
-					.Select((aThumbnailBox, index) => (aThumbnailBox, index))
-					.Single(aThumbnailBoxWithIndex => aThumbnailBoxWithIndex.aThumbnailBox == _selectedThumbnailBox)
-					.index;
-			}
-			else
-			{
-				_selectedThumbnailIndex = indexToSelect.Value;
-			}
+			_selectedThumbnailIndex = thumbnailBox.Index;
 
 			SelectThumbnail();
 		}
@@ -297,12 +288,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			var newSelectedThumbnailIndex = _selectedThumbnailIndex + increment;
 
-			if (_thumbnailBoxCollection!.IsIndexWithinBounds(newSelectedThumbnailIndex))
+			if (_thumbnailBoxCollection.IsIndexWithinBounds(newSelectedThumbnailIndex))
 			{
 				UnselectThumbnail();
 
 				_selectedThumbnailIndex = newSelectedThumbnailIndex;
-				_selectedThumbnailBox = _thumbnailBoxCollection![_selectedThumbnailIndex];
+				_selectedThumbnailBox = _thumbnailBoxCollection[_selectedThumbnailIndex];
 
 				SelectThumbnail();
 
@@ -378,7 +369,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void ShowCloseButton(bool showTabCloseButton)
 		=> ContentTabItemHeader!.ShowTabCloseButton(showTabCloseButton);
 	
-	private bool IsFirstThumbnail() => _thumbnailBoxCollection!.Count == 1;
+	private bool IsFirstThumbnail() => _thumbnailBoxCollection.Count == 1;
 
 	#endregion
 }

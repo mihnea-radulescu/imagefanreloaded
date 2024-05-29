@@ -7,15 +7,16 @@ namespace ImageFanReloaded.Core.Controls;
 
 public interface IThumbnailBox
 {
-    void SetControlProperties(IGlobalParameters globalParameters);
-    
     event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxSelected;
     event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxClicked;
+    
+    int Index { get; set; }
+    IThumbnailInfo? ThumbnailInfo { get; set; }
     
     IImageFile? ImageFile { get; }
     bool IsSelected { get; }
     
-    IThumbnailInfo? ThumbnailInfo { get; set; }
+    void SetControlProperties(IGlobalParameters globalParameters);
 
     void SelectThumbnail();
     void UnselectThumbnail();

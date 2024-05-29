@@ -12,22 +12,21 @@ namespace ImageFanReloaded.Controls;
 
 public partial class ThumbnailBox : UserControl, IThumbnailBox
 {
+	static ThumbnailBox()
+	{
+		HandCursor = new Cursor(StandardCursorType.Hand);
+		ArrowCursor = new Cursor(StandardCursorType.Arrow);
+	}
+	
 	public ThumbnailBox()
 	{
 		InitializeComponent();
 	}
-	
-	public void SetControlProperties(IGlobalParameters globalParameters)
-	{
-		_thumbnailImage.MaxWidth = globalParameters.ThumbnailSize.Width;
-		_thumbnailImage.MaxHeight = globalParameters.ThumbnailSize.Height;
-	}
 
 	public event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxSelected;
 	public event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxClicked;
-
-	public IImageFile? ImageFile { get; private set; }
-	public bool IsSelected { get; private set; }
+	
+	public int Index { get; set; }
 
 	public IThumbnailInfo? ThumbnailInfo
 	{
@@ -42,11 +41,20 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 			_thumbnailTextBlock.Text = _thumbnailInfo.ThumbnailText;
 		}
 	}
+	
+	public IImageFile? ImageFile { get; private set; }
+	public bool IsSelected { get; private set; }
+	
+	public void SetControlProperties(IGlobalParameters globalParameters)
+	{
+		_thumbnailImage.MaxWidth = globalParameters.ThumbnailSize.Width;
+		_thumbnailImage.MaxHeight = globalParameters.ThumbnailSize.Height;
+	}
 
 	public void SelectThumbnail()
 	{
 		_thumbnailBoxBorder.BorderBrush = Brushes.Gray;
-		Cursor = new Cursor(StandardCursorType.Hand);
+		Cursor = HandCursor;
 		IsSelected = true;
 
 		BringThumbnailIntoView();
@@ -57,7 +65,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	public void UnselectThumbnail()
 	{
 		_thumbnailBoxBorder.BorderBrush = Brushes.LightGray;
-		Cursor = new Cursor(StandardCursorType.Arrow);
+		Cursor = ArrowCursor;
 		IsSelected = false;
 	}
 
@@ -75,6 +83,9 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	}
 
 	#region Private
+	
+	private static readonly Cursor HandCursor;
+	private static readonly Cursor ArrowCursor;
 
 	private IThumbnailInfo? _thumbnailInfo;
 

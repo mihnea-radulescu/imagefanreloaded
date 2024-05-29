@@ -4,5 +4,5 @@ public interface IFileSizeEngine
 {
 	decimal ConvertToKilobytes(long sizeInBytes);
 	
-	int ConvertToMegabytes(decimal sizeInKilobytes);
+	decimal ConvertToMegabytes(decimal sizeInKilobytes);
 }

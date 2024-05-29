@@ -54,8 +54,7 @@ public class FolderVisualState : IFolderVisualState
 		
 		var imageFilesTotalSizeOnDiscInMegabytes = await GetImageFilesTotalSizeOnDiscInMegabytes(imageFiles);
 		
-		var folderStatusBarText =
-			$"{_folderPath} - {imageFilesCount} images - {imageFilesTotalSizeOnDiscInMegabytes} MB";
+		var folderStatusBarText = GetFolderStatusBarText(imageFilesCount, imageFilesTotalSizeOnDiscInMegabytes);
 		_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
 		_contentTabItem.SetImageStatusBarText(string.Empty);
 
@@ -151,7 +150,7 @@ public class FolderVisualState : IFolderVisualState
 				}
 			});
 
-	private async Task<int> GetImageFilesTotalSizeOnDiscInMegabytes(IReadOnlyList<IImageFile> imageFiles)
+	private async Task<decimal> GetImageFilesTotalSizeOnDiscInMegabytes(IReadOnlyList<IImageFile> imageFiles)
 		=> await Task.Run(() =>
 		{
 			var imageFilesTotalSizeOnDiscInKilobytes = imageFiles
@@ -162,6 +161,20 @@ public class FolderVisualState : IFolderVisualState
 
 			return imageFilesTotalSizeOnDiscInMegabytes;
 		});
+	
+	private string GetFolderStatusBarText(int imageFilesCount, decimal imageFilesTotalSizeOnDiscInMegabytes)
+	{
+		var imageFilesCountAndTotalSizeText = imageFilesCount switch
+		{
+			0 => "no images",
+			1 => $"1 image - {imageFilesTotalSizeOnDiscInMegabytes} MB",
+			_ => $"{imageFilesCount} images - {imageFilesTotalSizeOnDiscInMegabytes} MB"
+		};
+		
+		var folderStatusBarText = $"{_folderPath} - {imageFilesCountAndTotalSizeText}";
+		
+		return folderStatusBarText;
+	}
 
 	#endregion
 }
