@@ -104,12 +104,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	public void PopulateThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection)
 	{
-		for (var i = 0; i < thumbnailInfoCollection.Count; i++)
+		var thumbnailCount = thumbnailInfoCollection.Count;
+		
+		for (var i = 0; i < thumbnailCount; i++)
 		{
 			var thumbnailInfo = thumbnailInfoCollection[i];
 			
 			var aThumbnailBox = new ThumbnailBox();
-			aThumbnailBox.Index = i;
+			aThumbnailBox.Index = _maxThumbnailIndex + i;
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
 			aThumbnailBox.SetControlProperties(GlobalParameters!);
 
@@ -128,11 +130,15 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			aSurroundingStackPanel.Children.Add(aThumbnailBox);
 			_thumbnailWrapPanel.Children.Add(aSurroundingStackPanel);
 		}
+
+		_maxThumbnailIndex += thumbnailCount;
 	}
 
 	public void ClearThumbnailBoxes(bool resetContent)
 	{
 		_thumbnailWrapPanel.Children.Clear();
+
+		_maxThumbnailIndex = 0;
 		_selectedThumbnailBox = null;
 
 		if (_thumbnailBoxCollection.Any())
@@ -194,7 +200,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     private const string FakeTreeViewItemText = "Loading...";
 
     private readonly IList<IThumbnailBox> _thumbnailBoxCollection;
-    
+
+    private int _maxThumbnailIndex;
 	private int _selectedThumbnailIndex;
 	private IThumbnailBox? _selectedThumbnailBox;
 	private TreeViewItem? _inputFolderTreeViewItem;
