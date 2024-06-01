@@ -18,6 +18,7 @@ User interface:
 * key Tab for cycling through active tabs
 * keys W-A-S-D, Up-Down-Left-Right, Backspace-Space and PageUp-PageDown for back and forward navigation through thumbnails and opened images
 * key Enter for entering image view and zoomed image view modes
+* key I for toggling image info in image view and zoomed image view modes
 * keys Esc and T for exiting image view and zoomed image view modes
 * key Esc for quitting application
 * key F1 for displaying About view

@@ -26,6 +26,8 @@ public static class KeyExtensions
 			Avalonia.Input.Key.Right => Core.Keyboard.Key.Right,
 			Avalonia.Input.Key.Space => Core.Keyboard.Key.Space,
 			Avalonia.Input.Key.PageDown => Core.Keyboard.Key.PageDown,
+			
+			Avalonia.Input.Key.I => Core.Keyboard.Key.I,
 
 			_ => Core.Keyboard.Key.None
 		};

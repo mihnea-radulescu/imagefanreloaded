@@ -26,6 +26,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public KeyModifiers AltKeyModifier { get; }
 	public Key F4Key { get; }
 	
+	public Key IKey { get; }
+	
 	public HashSet<Key> BackwardNavigationKeys { get; }
 	public HashSet<Key> ForwardNavigationKeys { get; }
 	
@@ -77,6 +79,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		AltKeyModifier = KeyModifiers.Alt;
 		F4Key = Key.F4;
+
+		IKey = Key.I;
 
 		BackwardNavigationKeys = [
 			Key.W,

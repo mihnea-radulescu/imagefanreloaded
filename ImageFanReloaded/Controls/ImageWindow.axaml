@@ -9,10 +9,25 @@
 		PointerPressed="OnMouseDown"
 		PointerReleased="OnMouseUp"
         Closing="OnClosing">
-	<ScrollViewer Name="_imageScrollViewer"
-				  HorizontalScrollBarVisibility="Hidden"
-				  VerticalScrollBarVisibility="Hidden">
-		<Image Name="_imageControl"
-			   Stretch="None"/>
-	</ScrollViewer>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<ScrollViewer Name="_imageScrollViewer"
+		              Grid.Row="0"
+		              HorizontalScrollBarVisibility="Hidden"
+		              VerticalScrollBarVisibility="Hidden">
+			<Image Name="_imageControl"
+			       Stretch="None"/>
+		</ScrollViewer>
+		<Canvas Grid.Row="0">
+			<TextBlock Name="_textBlockImageInfo"
+			           Canvas.Bottom="3"
+			           Canvas.Right="3"
+			           Foreground="Lime"
+			           FontWeight="UltraBold"
+			           TextAlignment="Right"
+			           IsVisible="False"/>
+		</Canvas>
+	</Grid>
 </Window>

@@ -22,6 +22,8 @@ public interface IGlobalParameters
 	
 	KeyModifiers AltKeyModifier { get; }
 	Key F4Key { get; }
+	
+	Key IKey { get; }
 
 	HashSet<Key> BackwardNavigationKeys { get; }
 	HashSet<Key> ForwardNavigationKeys { get; }

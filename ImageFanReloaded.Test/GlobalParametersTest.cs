@@ -56,6 +56,8 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.AltKeyModifier.Should().NotBe(KeyModifiers.None);
 		_globalParameters.F4Key.Should().NotBe(Key.None);
 		
+		_globalParameters.IKey.Should().NotBe(Key.None);
+		
 		_globalParameters.BackwardNavigationKeys.Should().NotBeEmpty();
 		_globalParameters.ForwardNavigationKeys.Should().NotBeEmpty();
 		

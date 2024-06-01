@@ -24,5 +24,7 @@ public enum Key
 	Down,
 	Right,
 	Space,
-	PageDown
+	PageDown,
+	
+	I
 }

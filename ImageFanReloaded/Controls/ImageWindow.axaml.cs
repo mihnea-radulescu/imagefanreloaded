@@ -61,6 +61,8 @@ public partial class ImageWindow : Window, IImageView
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
 
+		_textBlockImageInfo.Text = _imageFile.GetImageInfo();
+
 		_showMainViewAfterImageViewClosing = false;
 
 		ResizeToScreenSize();
@@ -123,6 +125,10 @@ public partial class ImageWindow : Window, IImageView
             {
                 ResizeToScreenSize();
             }
+        }
+        else if (keyPressing == _globalParameters!.IKey)
+        {
+	        ToggleImageInfoVisibility();
         }
         else if (keyPressing == _globalParameters!.EscapeKey)
         {
@@ -339,6 +345,11 @@ public partial class ImageWindow : Window, IImageView
 			2 * (ImageZoomScalingFactor * image.Size.Height));
 
 		return zoomRectangle;
+	}
+	
+	private void ToggleImageInfoVisibility()
+	{
+		_textBlockImageInfo.IsVisible = !_textBlockImageInfo.IsVisible;
 	}
 
 	private void CloseWindow()
