@@ -9,7 +9,7 @@ namespace ImageFanReloaded.Core.Controls;
 public interface IMainView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
-	IFolderChangedEventHandleFactory? FolderChangedEventHandleFactory { get; set; }
+	IFolderChangedMutexFactory? FolderChangedMutexFactory { get; set; }
 	
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;

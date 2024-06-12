@@ -81,7 +81,7 @@ public class App : Application
     
     private void ShowMainView()
     {
-	    IFolderChangedEventHandleFactory folderChangedEventHandleFactory = new FolderChangedEventHandleFactory();
+	    IFolderChangedMutexFactory folderChangedMutexFactory = new FolderChangedMutexFactory();
 		
 	    var mainWindow = new MainWindow();
 	    _desktop.MainWindow = mainWindow;
@@ -89,7 +89,7 @@ public class App : Application
 			
 	    IMainView mainView = mainWindow;
 	    mainView.GlobalParameters = _globalParameters;
-	    mainView.FolderChangedEventHandleFactory = folderChangedEventHandleFactory;
+	    mainView.FolderChangedMutexFactory = folderChangedMutexFactory;
 		
 	    IImageViewFactory imageViewFactory = new ImageViewFactory(_globalParameters, screenInformation);
 	    IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(_globalParameters);

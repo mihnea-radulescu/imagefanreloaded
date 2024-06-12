@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 
 namespace ImageFanReloaded.Core.Synchronization;
 
-public interface IFolderChangedEventHandle
+public interface IFolderChangedMutex
 {
-	Task WaitOne();
+	Task Wait();
 
-	Task Set();
+	void Signal();
 }

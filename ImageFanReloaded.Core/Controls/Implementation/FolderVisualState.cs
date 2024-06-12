@@ -31,7 +31,7 @@ public class FolderVisualState : IFolderVisualState
 		_folderName = folderName;
 		_folderPath = folderPath;
 		
-		_folderChangedEventHandle = _contentTabItem.FolderChangedEventHandle!;
+		_folderChangedMutex = _contentTabItem.FolderChangedMutex!;
 		_thumbnailGeneration = new CancellationTokenSource();
 	}
 
@@ -41,7 +41,7 @@ public class FolderVisualState : IFolderVisualState
 
 	public async Task UpdateVisualState()
 	{
-		await _folderChangedEventHandle.WaitOne();
+		await _folderChangedMutex.Wait();
 		
 		_contentTabItem.ClearThumbnailBoxes(true);
 		_contentTabItem.SetTitle(_folderName);
@@ -62,7 +62,7 @@ public class FolderVisualState : IFolderVisualState
 
 		await ProcessThumbnails(thumbnails);
 
-		await _folderChangedEventHandle.Set();
+		_folderChangedMutex.Signal();
 	}
 
 	#region Private
@@ -77,7 +77,7 @@ public class FolderVisualState : IFolderVisualState
 	private readonly string _folderName;
 	private readonly string _folderPath;
 	
-	private readonly IFolderChangedEventHandle _folderChangedEventHandle;
+	private readonly IFolderChangedMutex _folderChangedMutex;
 	private readonly CancellationTokenSource _thumbnailGeneration;
 	
 	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(IReadOnlyList<IImageFile> imageFiles)

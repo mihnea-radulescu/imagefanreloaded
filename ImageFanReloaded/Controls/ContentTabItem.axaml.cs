@@ -24,7 +24,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
     public IMainView? MainView { get; set; }
     public IGlobalParameters? GlobalParameters { get; set; }
-    public IFolderChangedEventHandle? FolderChangedEventHandle { get; set; }
+    public IFolderChangedMutex? FolderChangedMutex { get; set; }
     
     public object? WrapperTabItem { get; set; }
     public IContentTabItemHeader? ContentTabItemHeader { get; set; }
