@@ -50,12 +50,14 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.TabKey.Should().NotBe(Key.None);
 		_globalParameters.EscapeKey.Should().NotBe(Key.None);
 		_globalParameters.EnterKey.Should().NotBe(Key.None);
-		_globalParameters.TKey.Should().NotBe(Key.None);
 		_globalParameters.F1Key.Should().NotBe(Key.None);
 
 		_globalParameters.AltKeyModifier.Should().NotBe(KeyModifiers.None);
 		_globalParameters.F4Key.Should().NotBe(Key.None);
 		
+		_globalParameters.RKey.Should().NotBe(Key.None);
+		
+		_globalParameters.TKey.Should().NotBe(Key.None);
 		_globalParameters.IKey.Should().NotBe(Key.None);
 		
 		_globalParameters.BackwardNavigationKeys.Should().NotBeEmpty();

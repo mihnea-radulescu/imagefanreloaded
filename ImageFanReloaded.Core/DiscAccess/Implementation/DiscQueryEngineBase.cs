@@ -13,11 +13,11 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	{
 		EmptyFileSystemEntryInfoCollection = Enumerable
 			.Empty<FileSystemEntryInfo>()
-			.ToArray();
+			.ToList();
 
 		EmptyImageFileCollection = Enumerable
 			.Empty<IImageFile>()
-			.ToArray();
+			.ToList();
 	}
 
 	protected DiscQueryEngineBase(
@@ -40,34 +40,16 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	}
 
 	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders()
-		=> await Task.Run(() =>
-			{
-				var userFolders = GetUserFolders();
-				var drives = GetDrives();
-			
-				IReadOnlyList<FileSystemEntryInfo> rootFolders = [..userFolders, ..drives];
-				return rootFolders;
-			});
+		=> await Task.Run(GetRootFoldersInternal);
 
 	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(string folderPath)
 		=> await Task.Run(() => GetSubFoldersInternal(folderPath));
-	
-	public async Task<IReadOnlyList<IImageFile>> GetImageFiles(string folderPath)
-		=> await Task.Run(() => GetImageFilesInternal(folderPath));
 
 	public async Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath)
-		=> await Task.Run(() =>
-			{
-				var folder = new DirectoryInfo(folderPath);
-				var folderName = folder.Name;
-
-				var hasSubFolders = HasSubFolders(folderPath);
-
-				var fileSystemEntryInfo = new FileSystemEntryInfo(
-					folderName, folderPath, hasSubFolders, _globalParameters.FolderIcon);
-
-				return fileSystemEntryInfo;
-			});
+		=> await Task.Run(() => GetFileSystemEntryInfoInternal(folderPath));
+	
+	public async Task<IReadOnlyList<IImageFile>> GetImageFiles(string folderPath, bool recursive)
+		=> await Task.Run(() => GetImageFilesInternal(folderPath, recursive));
 	
 	#region Protected
 
@@ -111,7 +93,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						HasSubFolders(aSpecialFolderWithPath.Path),
 						GetIcon(aSpecialFolderWithPath.Name)))
 				.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name, _globalParameters.NameComparer)
-				.ToArray();
+				.ToList();
 
 			IReadOnlyList<FileSystemEntryInfo> userFolders = [homeFolder, ..specialFolders];
 			return userFolders;
@@ -136,12 +118,21 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						HasSubFolders(aDriveName),
 						_globalParameters.DriveIcon))
 				.OrderBy(aDriveInfo => aDriveInfo.Name, _globalParameters.NameComparer)
-				.ToArray();
+				.ToList();
 		}
 		catch
 		{
 			return EmptyFileSystemEntryInfoCollection;
 		}
+	}
+
+	private IReadOnlyList<FileSystemEntryInfo> GetRootFoldersInternal()
+	{
+		var userFolders = GetUserFolders();
+		var drives = GetDrives();
+			
+		IReadOnlyList<FileSystemEntryInfo> rootFolders = [..userFolders, ..drives];
+		return rootFolders;
 	}
 	
 	private IReadOnlyList<FileSystemEntryInfo> GetSubFoldersInternal(string folderPath)
@@ -157,23 +148,38 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						HasSubFolders(aDirectory.FullName),
 						_globalParameters.FolderIcon))
 				.OrderBy(aDirectory => aDirectory.Name, _globalParameters.NameComparer)
-				.ToArray();
+				.ToList();
 		}
 		catch
 		{
 			return EmptyFileSystemEntryInfoCollection;
 		}
 	}
+
+	private FileSystemEntryInfo GetFileSystemEntryInfoInternal(string folderPath)
+	{
+		var folderInfo = new DirectoryInfo(folderPath);
+		var folderName = folderInfo.Name;
+
+		var hasSubFolders = HasSubFolders(folderPath);
+
+		var fileSystemEntryInfo = new FileSystemEntryInfo(
+			folderName, folderPath, hasSubFolders, _globalParameters.FolderIcon);
+
+		return fileSystemEntryInfo;
+	}
 	
-	private IReadOnlyList<IImageFile> GetImageFilesInternal(string folderPath)
+	private IReadOnlyList<IImageFile> GetImageFilesInternal(string folderPath, bool recursive)
 	{
 		try
 		{
-			var filesInformation = new DirectoryInfo(folderPath)
+			var folderInfo = new DirectoryInfo(folderPath);
+			
+			var filesInfo = folderInfo
 				.GetFiles("*", SearchOption.TopDirectoryOnly)
-				.ToArray();
+				.ToList();
 
-			var imageFiles = filesInformation
+			var imageFiles = filesInfo
 				.Where(aFileInfo =>
 					_globalParameters.ImageFileExtensions.Contains(aFileInfo.Extension))
 				.Select(aFileInfo => _imageFileFactory.GetImageFile(
@@ -181,7 +187,23 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 					aFileInfo.FullName,
 					_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length)))
 				.OrderBy(aFileInfo => aFileInfo.ImageFileName, _globalParameters.NameComparer)
-				.ToArray();
+				.ToList();
+
+			if (recursive)
+			{
+				var subFolderPaths = folderInfo
+					.GetDirectories()
+					.Select(aDirectoryInfo => aDirectoryInfo.FullName)
+					.OrderBy(aSubFolderPath => aSubFolderPath)
+					.ToList();
+
+				foreach (var aSubFolderPath in subFolderPaths)
+				{
+					var imageFilesInSubFolder = GetImageFilesInternal(aSubFolderPath, recursive);
+				
+					imageFiles.AddRange(imageFilesInSubFolder);
+				}
+			}
 
 			return imageFiles;
 		}

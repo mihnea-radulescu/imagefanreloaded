@@ -17,12 +17,14 @@ public interface IGlobalParameters
 	Key TabKey { get; }
 	Key EscapeKey { get; }
 	Key EnterKey { get; }
-	Key TKey { get; }
 	Key F1Key { get; }
 	
 	KeyModifiers AltKeyModifier { get; }
 	Key F4Key { get; }
 	
+	Key RKey { get; }
+	
+	Key TKey { get; }
 	Key IKey { get; }
 
 	HashSet<Key> BackwardNavigationKeys { get; }

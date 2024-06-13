@@ -9,8 +9,8 @@ public interface IDiscQueryEngine
 	Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders();
 
 	Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(string folderPath);
-
-	Task<IReadOnlyList<IImageFile>> GetImageFiles(string folderPath);
-
+	
 	Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath);
+
+	Task<IReadOnlyList<IImageFile>> GetImageFiles(string folderPath, bool recursive);
 }

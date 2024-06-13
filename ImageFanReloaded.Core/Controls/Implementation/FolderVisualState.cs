@@ -39,7 +39,7 @@ public class FolderVisualState : IFolderVisualState
 	
 	public void ClearVisualState() => _contentTabItem.ClearThumbnailBoxes(false);
 
-	public async Task UpdateVisualState()
+	public async Task UpdateVisualState(bool recursive)
 	{
 		await _folderChangedMutex.Wait();
 		
@@ -49,7 +49,7 @@ public class FolderVisualState : IFolderVisualState
 		var subFolders = await _discQueryEngine.GetSubFolders(_folderPath);
 		_contentTabItem.PopulateSubFoldersTree(subFolders);
 
-		var imageFiles = await _discQueryEngine.GetImageFiles(_folderPath);
+		var imageFiles = await _discQueryEngine.GetImageFiles(_folderPath, recursive);
 		var imageFilesCount = imageFiles.Count;
 		
 		var imageFilesTotalSizeOnDiscInMegabytes = await GetImageFilesTotalSizeOnDiscInMegabytes(imageFiles);
@@ -93,7 +93,7 @@ public class FolderVisualState : IFolderVisualState
 		{
 			var currentThumbnails = thumbnailCollection
 				.Take(_globalParameters.ProcessorCount)
-				.ToArray();
+				.ToList();
 
 			await ReadThumbnailInput(currentThumbnails);
 			if (!_thumbnailGeneration.IsCancellationRequested)

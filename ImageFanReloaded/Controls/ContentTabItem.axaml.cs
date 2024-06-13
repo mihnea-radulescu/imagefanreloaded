@@ -42,10 +42,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void OnKeyPressing(object? sender, KeyboardKeyEventArgs e)
 	{
-		if (_selectedThumbnailBox is not null)
+		var keyPressing = e.Key;
+		
+		if (keyPressing == GlobalParameters!.RKey)
 		{
-			var keyPressing = e.Key;
-	        
+			ToggleRecursiveFolderAccess();
+		}
+		else if (_selectedThumbnailBox is not null)
+		{
 			if (GlobalParameters!.BackwardNavigationKeys.Contains(keyPressing))
 			{
 				AdvanceToThumbnailIndex(-1);
@@ -206,6 +210,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private IThumbnailBox? _selectedThumbnailBox;
 	private TreeViewItem? _inputFolderTreeViewItem;
 	
+	private TreeViewItem? _selectedFolderTreeViewItem;
+	private bool _recursiveFolderAccess;
+	
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxEventArgs e)
 	{
 		var imageFile = e.ThumbnailBox.ImageFile!;
@@ -230,20 +237,22 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
     private void OnFolderTreeViewSelectedItemChanged(object? sender, SelectionChangedEventArgs e)
     {
-	    var selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
+	    _selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
 
-	    RaiseFolderChangedEvent(selectedFolderTreeViewItem);
+	    _recursiveFolderAccess = false;
+	    RaiseFolderChangedEvent();
     }
 
-    private void RaiseFolderChangedEvent(TreeViewItem selectedFolderTreeViewItem)
+    private void RaiseFolderChangedEvent()
     {
-	    if (selectedFolderTreeViewItem.Header is IFileSystemTreeViewItem fileSystemEntryItem)
+	    if (_selectedFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
 	    {
 		    var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
 		    var selectedFolderName = fileSystemEntryInfo.Name;
 		    var selectedFolderPath = fileSystemEntryInfo.Path;
 
-		    FolderChanged?.Invoke(this, new FolderChangedEventArgs(selectedFolderName, selectedFolderPath));
+		    FolderChanged?.Invoke(this, new FolderChangedEventArgs(
+			    selectedFolderName, selectedFolderPath, _recursiveFolderAccess));
 	    }
     }
     
@@ -377,6 +386,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		=> ContentTabItemHeader!.ShowTabCloseButton(showTabCloseButton);
 	
 	private bool IsFirstThumbnail() => _thumbnailBoxCollection.Count == 1;
+
+	private void ToggleRecursiveFolderAccess()
+	{
+		_recursiveFolderAccess = !_recursiveFolderAccess;
+		
+		RaiseFolderChangedEvent();
+	}
 
 	#endregion
 }

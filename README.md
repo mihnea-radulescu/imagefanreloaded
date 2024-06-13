@@ -7,6 +7,7 @@ Features:
 * quick concurrent thumbnail generation, scaling to the number of processor cores present
 * support for multiple image folder tabs
 * keyboard and mouse user interaction
+* toggleable recursive folder image browsing
 * targeted zoom and mouse-drag zoomed image control
 * fast and seamless full-screen navigation across images
 * command-line direct access to the specified folder or image file
@@ -16,6 +17,7 @@ User interface:
 * right mouse button for returning from the opened image to the main view
 * mouse wheel for scrolling through folders and thumbnails, and for navigating back and forward through opened images
 * key Tab for cycling through active tabs
+* key R for toggling recursive folder image browsing
 * keys W-A-S-D, Up-Down-Left-Right, Backspace-Space and PageUp-PageDown for back and forward navigation through thumbnails and opened images
 * key Enter for entering image view and zoomed image view modes
 * key I for toggling image info in image view and zoomed image view modes

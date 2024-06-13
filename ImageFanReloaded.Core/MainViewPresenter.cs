@@ -64,8 +64,9 @@ public class MainViewPresenter
 		var contentTabItem = e.ContentTabItem;
 		
 		contentTabItem.FolderChanged -= OnFolderChanged;
-
 		ClearContentTabItem(contentTabItem);
+		
+		contentTabItem.FolderChangedMutex!.Dispose();
 	}
 	
 	private async void OnHelpMenuRequested(object? sender, EventArgs e)
@@ -76,10 +77,19 @@ public class MainViewPresenter
 	private async void OnFolderChanged(object? sender, FolderChangedEventArgs e)
 	{
 		var contentTabItem = (IContentTabItem)sender!;
-		var name = e.Name;
-		var path = e.Path;
+		
+		var folderName = e.Name;
+		var folderPath = e.Path;
+		var recursive = e.Recursive;
+		
+		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
 
-		await UpdateContentTabItem(contentTabItem, name, path);
+		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
+			contentTabItem,
+			folderName,
+			folderPath);
+
+		await contentTabItem.FolderVisualState.UpdateVisualState(recursive);
 	}
 
 	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(IContentTabItem contentTabItem)
@@ -89,18 +99,6 @@ public class MainViewPresenter
 		contentTabItem.PopulateRootNodesSubFoldersTree(rootFolders);
 
 		return rootFolders;
-	}
-
-	private async Task UpdateContentTabItem(IContentTabItem contentTabItem, string folderName, string folderPath)
-	{
-		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
-
-		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
-			contentTabItem,
-			folderName,
-			folderPath);
-
-		await contentTabItem.FolderVisualState.UpdateVisualState();
 	}
 	
 	private static void ClearContentTabItem(IContentTabItem contentTabItem)
@@ -157,7 +155,7 @@ public class MainViewPresenter
 			fileSystemEntryInfo.Name,
 			fileSystemEntryInfo.Path);
 
-		await contentTabItem.FolderVisualState.UpdateVisualState();
+		await contentTabItem.FolderVisualState.UpdateVisualState(false);
 	}
 
 	#endregion

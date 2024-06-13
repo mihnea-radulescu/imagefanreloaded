@@ -7,7 +7,6 @@ public enum Key
 	Tab,
 	Escape,
 	Enter,
-	T,
 	F1,
 	
 	F4,
@@ -26,5 +25,8 @@ public enum Key
 	Space,
 	PageDown,
 	
+	R,
+	
+	T,
 	I
 }
