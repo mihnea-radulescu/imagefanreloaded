@@ -92,9 +92,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	public void PopulateSubFoldersTreeOfParentTreeViewItem(IReadOnlyList<FileSystemEntryInfo> subFolders)
 	{
-		if (_inputFolderTreeViewItem is not null)
+		if (_selectedFolderTreeViewItem is not null)
 		{
-			var selectedItem = _inputFolderTreeViewItem;
+			var selectedItem = _selectedFolderTreeViewItem;
 			var itemCollection = selectedItem.Items;
 			
 			ClearItemCollection(itemCollection);
@@ -183,9 +183,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	public void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo)
 	{
-		var subItems = _inputFolderTreeViewItem is null
+		var subItems = _selectedFolderTreeViewItem is null
 			? _folderTreeView.Items
-			: _inputFolderTreeViewItem.Items;
+			: _selectedFolderTreeViewItem.Items;
 
 		foreach (TreeViewItem? aSubItem in subItems)
 		{
@@ -193,7 +193,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			{
 				if (fileSystemTreeViewItem.FileSystemEntryInfo == selectedFileSystemEntryInfo)
 				{
-					_inputFolderTreeViewItem = aSubItem;
+					_selectedFolderTreeViewItem = aSubItem;
 				}
 			}
 		}
@@ -208,7 +208,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     private int _maxThumbnailIndex;
 	private int _selectedThumbnailIndex;
 	private IThumbnailBox? _selectedThumbnailBox;
-	private TreeViewItem? _inputFolderTreeViewItem;
 	
 	private TreeViewItem? _selectedFolderTreeViewItem;
 	private bool _recursiveFolderAccess;
