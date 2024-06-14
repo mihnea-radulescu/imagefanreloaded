@@ -174,7 +174,7 @@ public class FolderVisualState : IFolderVisualState
 		};
 
 		var recursiveFolderAccessInfo = recursiveFolderAccess
-			? " (recursive) "
+			? " (recursive)"
 			: string.Empty;
 		
 		var folderStatusBarText = $"{_folderPath}{recursiveFolderAccessInfo} - {imageFilesCountAndTotalSizeText}";
