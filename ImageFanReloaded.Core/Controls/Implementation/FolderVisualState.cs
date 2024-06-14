@@ -39,7 +39,7 @@ public class FolderVisualState : IFolderVisualState
 	
 	public void ClearVisualState() => _contentTabItem.ClearThumbnailBoxes(false);
 
-	public async Task UpdateVisualState(bool recursive)
+	public async Task UpdateVisualState(bool recursiveFolderAccess)
 	{
 		await _folderChangedMutex.Wait();
 		
@@ -49,12 +49,13 @@ public class FolderVisualState : IFolderVisualState
 		var subFolders = await _discQueryEngine.GetSubFolders(_folderPath);
 		_contentTabItem.PopulateSubFoldersTree(subFolders);
 
-		var imageFiles = await _discQueryEngine.GetImageFiles(_folderPath, recursive);
+		var imageFiles = await _discQueryEngine.GetImageFiles(_folderPath, recursiveFolderAccess);
 		var imageFilesCount = imageFiles.Count;
 		
 		var imageFilesTotalSizeOnDiscInMegabytes = await GetImageFilesTotalSizeOnDiscInMegabytes(imageFiles);
 		
-		var folderStatusBarText = GetFolderStatusBarText(imageFilesCount, imageFilesTotalSizeOnDiscInMegabytes);
+		var folderStatusBarText = GetFolderStatusBarText(
+			imageFilesCount, imageFilesTotalSizeOnDiscInMegabytes, recursiveFolderAccess);
 		_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
 		_contentTabItem.SetImageStatusBarText(string.Empty);
 
@@ -162,7 +163,8 @@ public class FolderVisualState : IFolderVisualState
 			return imageFilesTotalSizeOnDiscInMegabytes;
 		});
 	
-	private string GetFolderStatusBarText(int imageFilesCount, decimal imageFilesTotalSizeOnDiscInMegabytes)
+	private string GetFolderStatusBarText(
+		int imageFilesCount, decimal imageFilesTotalSizeOnDiscInMegabytes, bool recursiveFolderAccess)
 	{
 		var imageFilesCountAndTotalSizeText = imageFilesCount switch
 		{
@@ -170,8 +172,12 @@ public class FolderVisualState : IFolderVisualState
 			1 => $"1 image - {imageFilesTotalSizeOnDiscInMegabytes} MB",
 			_ => $"{imageFilesCount} images - {imageFilesTotalSizeOnDiscInMegabytes} MB"
 		};
+
+		var recursiveFolderAccessInfo = recursiveFolderAccess
+			? " (recursive) "
+			: string.Empty;
 		
-		var folderStatusBarText = $"{_folderPath} - {imageFilesCountAndTotalSizeText}";
+		var folderStatusBarText = $"{_folderPath}{recursiveFolderAccessInfo} - {imageFilesCountAndTotalSizeText}";
 		
 		return folderStatusBarText;
 	}

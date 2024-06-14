@@ -7,5 +7,5 @@ public interface IFolderVisualState
     void NotifyStopThumbnailGeneration();
     void ClearVisualState();
 
-    Task UpdateVisualState(bool recursive);
+    Task UpdateVisualState(bool recursiveFolderAccess);
 }

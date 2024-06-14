@@ -34,8 +34,8 @@
 			
 			<Grid Grid.Row="1">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*"></ColumnDefinition>
 					<ColumnDefinition Width="Auto"></ColumnDefinition>
+					<ColumnDefinition Width="*"></ColumnDefinition>
 				</Grid.ColumnDefinitions>
 				<TextBlock Name="_textBlockFolderInfo"
 				           Grid.Column="0"

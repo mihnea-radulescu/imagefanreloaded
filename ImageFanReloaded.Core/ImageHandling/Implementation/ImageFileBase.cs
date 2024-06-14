@@ -140,8 +140,8 @@ public abstract class ImageFileBase : IImageFile
 	public string GetImageInfo()
 	{
 		var imageInfo = _hasReadImageError
-			? $"{ImageFileName} - invalid image"
-			: $"{ImageFileName} - {ImageSize.Width}x{ImageSize.Height} - {SizeOnDiscInKilobytes} KB";
+			? $"{ImageFilePath} - invalid image"
+			: $"{ImageFilePath} - {ImageSize.Width}x{ImageSize.Height} - {SizeOnDiscInKilobytes} KB";
 				
 		return imageInfo;
 	}
