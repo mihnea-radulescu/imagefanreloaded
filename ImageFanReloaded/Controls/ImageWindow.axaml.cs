@@ -47,7 +47,7 @@ public partial class ImageWindow : Window, IImageView
 	
 	public event EventHandler<ImageChangedEventArgs>? ImageChanged;
 
-	public void SetImage(IImageFile imageFile)
+	public void SetImage(IImageFile imageFile, bool recursiveFolderAccess)
 	{
 		_imageFile = imageFile;
 
@@ -61,7 +61,7 @@ public partial class ImageWindow : Window, IImageView
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
 
-		_textBlockImageInfo.Text = _imageFile.GetImageInfo();
+		_textBlockImageInfo.Text = _imageFile.GetImageInfo(recursiveFolderAccess);
 
 		_showMainViewAfterImageViewClosing = false;
 

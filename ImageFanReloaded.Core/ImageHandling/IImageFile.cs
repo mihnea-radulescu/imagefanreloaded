@@ -15,5 +15,5 @@ public interface IImageFile
     IImage GetThumbnail();
     void DisposeImageData();
 
-    string GetImageInfo();
+    string GetImageInfo(bool longFormat);
 }

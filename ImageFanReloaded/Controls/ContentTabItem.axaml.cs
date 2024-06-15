@@ -215,7 +215,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxEventArgs e)
 	{
 		var imageFile = e.ThumbnailBox.ImageFile!;
-		var imageInfo = imageFile.GetImageInfo();
+		var imageInfo = imageFile.GetImageInfo(_recursiveFolderAccess);
 		
 		SetImageStatusBarText(imageInfo);
 	}
@@ -280,7 +280,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		
 		if (AdvanceToThumbnailIndex(increment))
 		{
-			imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
+			imageView.SetImage(_selectedThumbnailBox!.ImageFile!, _recursiveFolderAccess);
 		}
 	}
 
@@ -326,7 +326,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private async void DisplayImage()
 	{
 		var imageView = ImageViewFactory!.GetImageView();
-		imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
+		imageView.SetImage(_selectedThumbnailBox!.ImageFile!, _recursiveFolderAccess);
 
 		imageView.ImageChanged += OnImageChanged;
 		await imageView.ShowDialog(MainView!);

@@ -60,7 +60,7 @@ public class ImageViewPresenter
 	private void LoadCurrentImage()
 	{
 		_currentImageFile!.ReadImageDataFromDisc();
-		_imageView.SetImage(_currentImageFile);
+		_imageView.SetImage(_currentImageFile, false);
 	}
 	
 	private void OnImageChanged(object? sender, ImageChangedEventArgs e)

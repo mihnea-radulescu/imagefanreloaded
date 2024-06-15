@@ -137,11 +137,13 @@ public abstract class ImageFileBase : IImageFile
 		}
 	}
 
-	public string GetImageInfo()
+	public string GetImageInfo(bool longFormat)
 	{
+		var imageFileInfo = longFormat ? ImageFilePath : ImageFileName;
+		
 		var imageInfo = _hasReadImageError
-			? $"{ImageFilePath} - invalid image"
-			: $"{ImageFilePath} - {ImageSize.Width}x{ImageSize.Height} - {SizeOnDiscInKilobytes} KB";
+			? $"{imageFileInfo} - invalid image"
+			: $"{imageFileInfo} - {ImageSize.Width}x{ImageSize.Height} - {SizeOnDiscInKilobytes} KB";
 				
 		return imageInfo;
 	}
