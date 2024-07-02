@@ -9,6 +9,7 @@ using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Synchronization;
 
 namespace ImageFanReloaded.Controls;
@@ -42,11 +43,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void OnKeyPressing(object? sender, KeyboardKeyEventArgs e)
 	{
+		var keyModifiers = e.KeyModifiers;
 		var keyPressing = e.Key;
 		
 		if (keyPressing == GlobalParameters!.RKey)
 		{
-			ToggleRecursiveFolderAccess();
+			var isPersistentRecursive = keyModifiers == KeyModifiers.Shift;
+			
+			ToggleRecursiveFolderAccess(isPersistentRecursive);
 		}
 		else if (_selectedThumbnailBox is not null)
 		{
@@ -210,12 +214,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private IThumbnailBox? _selectedThumbnailBox;
 	
 	private TreeViewItem? _selectedFolderTreeViewItem;
-	private bool _recursiveFolderAccess;
+	private FolderAccessType _folderAccessType;
 	
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxEventArgs e)
 	{
 		var imageFile = e.ThumbnailBox.ImageFile!;
-		var imageInfo = imageFile.GetImageInfo(_recursiveFolderAccess);
+		var imageInfo = imageFile.GetImageInfo(_folderAccessType.IsRecursive());
 		
 		SetImageStatusBarText(imageInfo);
 	}
@@ -238,8 +242,16 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     {
 	    _selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
 
-	    _recursiveFolderAccess = false;
+	    UpdateRecursiveFolderAccess();
 	    RaiseFolderChangedEvent();
+    }
+
+    private void UpdateRecursiveFolderAccess()
+    {
+	    if (_folderAccessType != FolderAccessType.PersistentRecursive)
+	    {
+		    _folderAccessType = FolderAccessType.Normal;
+	    }
     }
 
     private void RaiseFolderChangedEvent()
@@ -251,7 +263,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		    var selectedFolderPath = fileSystemEntryInfo.Path;
 
 		    FolderChanged?.Invoke(this, new FolderChangedEventArgs(
-			    selectedFolderName, selectedFolderPath, _recursiveFolderAccess));
+			    selectedFolderName, selectedFolderPath, _folderAccessType.IsRecursive()));
 	    }
     }
     
@@ -280,7 +292,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		
 		if (AdvanceToThumbnailIndex(increment))
 		{
-			imageView.SetImage(_selectedThumbnailBox!.ImageFile!, _recursiveFolderAccess);
+			imageView.SetImage(_selectedThumbnailBox!.ImageFile!, _folderAccessType.IsRecursive());
 		}
 	}
 
@@ -326,7 +338,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private async void DisplayImage()
 	{
 		var imageView = ImageViewFactory!.GetImageView();
-		imageView.SetImage(_selectedThumbnailBox!.ImageFile!, _recursiveFolderAccess);
+		imageView.SetImage(_selectedThumbnailBox!.ImageFile!, _folderAccessType.IsRecursive());
 
 		imageView.ImageChanged += OnImageChanged;
 		await imageView.ShowDialog(MainView!);
@@ -386,9 +398,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	private bool IsFirstThumbnail() => _thumbnailBoxCollection.Count == 1;
 
-	private void ToggleRecursiveFolderAccess()
+	private void ToggleRecursiveFolderAccess(bool isPersistentRecursive)
 	{
-		_recursiveFolderAccess = !_recursiveFolderAccess;
+		if (_folderAccessType == FolderAccessType.Normal)
+		{
+			_folderAccessType = isPersistentRecursive
+				? FolderAccessType.PersistentRecursive
+				: FolderAccessType.Recursive;
+		}
+		else
+		{
+			_folderAccessType = FolderAccessType.Normal;
+		}
 		
 		RaiseFolderChangedEvent();
 	}

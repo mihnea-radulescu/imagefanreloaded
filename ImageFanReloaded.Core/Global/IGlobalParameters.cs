@@ -20,6 +20,8 @@ public interface IGlobalParameters
 	Key F1Key { get; }
 	
 	KeyModifiers AltKeyModifier { get; }
+	KeyModifiers ShiftKeyModifier { get; }
+	
 	Key F4Key { get; }
 	
 	Key RKey { get; }

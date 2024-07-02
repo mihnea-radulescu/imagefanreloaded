@@ -80,7 +80,7 @@ public partial class MainWindow : Window, IMainView
 		}
 		else
 		{
-			PassKeyPressingToContentTabItem(keyPressing);
+			PassKeyPressingToContentTabItem(keyModifiers, keyPressing);
 		}
         
 		e.Handled = true;
@@ -238,11 +238,12 @@ public partial class MainWindow : Window, IMainView
 		HelpMenuRequested?.Invoke(this, EventArgs.Empty);
 	}
 
-	private void PassKeyPressingToContentTabItem(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	private void PassKeyPressingToContentTabItem(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		var contentTabItem = GetActiveContentTabItem();
 		
-		contentTabItem!.OnKeyPressing(this, new KeyboardKeyEventArgs(keyPressing));
+		contentTabItem!.OnKeyPressing(this, new KeyboardKeyEventArgs(keyModifiers, keyPressing));
 	}
 
 	#endregion

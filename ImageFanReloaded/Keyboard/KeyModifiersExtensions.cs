@@ -8,6 +8,8 @@ public static class KeyModifiersExtensions
 		{
 			Avalonia.Input.KeyModifiers.Alt => Core.Keyboard.KeyModifiers.Alt,
 			
+			Avalonia.Input.KeyModifiers.Shift => Core.Keyboard.KeyModifiers.Shift,
+			
 			_ => Core.Keyboard.KeyModifiers.None
 		};
 }
