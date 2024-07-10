@@ -139,7 +139,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			"Desktop",
 			"Documents",
 			"Downloads",
-			"Media",
 			"Pictures"
 		};
 		
