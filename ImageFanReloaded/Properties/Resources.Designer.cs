@@ -101,13 +101,6 @@ namespace ImageFanReloaded.Properties {
             }
         }
         
-        internal static byte[] MediaFolderIcon {
-            get {
-                object obj = ResourceManager.GetObject("MediaFolderIcon", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
         internal static byte[] PicturesFolderIcon {
             get {
                 object obj = ResourceManager.GetObject("PicturesFolderIcon", resourceCulture);

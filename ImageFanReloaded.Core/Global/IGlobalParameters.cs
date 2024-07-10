@@ -53,7 +53,6 @@ public interface IGlobalParameters
 	IImage DriveIcon { get; }
 	IImage FolderIcon { get; }
 	IImage HomeFolderIcon { get; }
-	IImage MediaFolderIcon { get; }
 	IImage PicturesFolderIcon { get; }
 	
 	string AboutTitle { get; }

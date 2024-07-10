@@ -48,7 +48,6 @@ public class GlobalParameters : GlobalParametersBase
         DriveIcon = GetResizedIcon(Resources.DriveIcon, iconSize);
         FolderIcon = GetResizedIcon(Resources.FolderIcon, iconSize);
         HomeFolderIcon = GetResizedIcon(Resources.HomeFolderIcon, iconSize);
-        MediaFolderIcon = GetResizedIcon(Resources.MediaFolderIcon, iconSize);
         PicturesFolderIcon = GetResizedIcon(Resources.PicturesFolderIcon, iconSize);
 	}
 	
@@ -64,7 +63,6 @@ public class GlobalParameters : GlobalParametersBase
 	public override IImage DriveIcon { get; }
 	public override IImage FolderIcon { get; }
 	public override IImage HomeFolderIcon { get; }
-	public override IImage MediaFolderIcon { get; }
 	public override IImage PicturesFolderIcon { get; }
 	
 	#region Private

@@ -34,7 +34,6 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 			{ "Desktop", _globalParameters.DesktopFolderIcon },
 			{ "Documents", _globalParameters.DocumentsFolderIcon },
 			{ "Downloads", _globalParameters.DownloadsFolderIcon },
-			{ "Media", _globalParameters.MediaFolderIcon },
 			{ "Pictures", _globalParameters.PicturesFolderIcon },
 		};
 	}

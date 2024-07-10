@@ -59,7 +59,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public abstract IImage DriveIcon { get; }
 	public abstract IImage FolderIcon { get; }
 	public abstract IImage HomeFolderIcon { get; }
-	public abstract IImage MediaFolderIcon { get; }
 	public abstract IImage PicturesFolderIcon { get; }
 
 	#region Protected
