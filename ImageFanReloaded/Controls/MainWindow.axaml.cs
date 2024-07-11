@@ -6,7 +6,7 @@ using Avalonia.Interactivity;
 using MsBox.Avalonia;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
-using ImageFanReloaded.Core.Global;
+using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Keyboard;
 

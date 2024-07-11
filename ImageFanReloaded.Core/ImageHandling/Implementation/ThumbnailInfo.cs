@@ -1,5 +1,5 @@
 using ImageFanReloaded.Core.Controls;
-using ImageFanReloaded.Core.Global;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 

@@ -2,30 +2,35 @@ using System.Collections.Generic;
 using System.IO;
 using Avalonia.Media.Imaging;
 using ImageFanReloaded.Core.AboutInformation;
-using ImageFanReloaded.Core.Global.Implementation;
+using ImageFanReloaded.Core.Settings.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.OperatingSystem;
+using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Properties;
 
-namespace ImageFanReloaded.Global;
+namespace ImageFanReloaded.Settings;
 
 public class GlobalParameters : GlobalParametersBase
 {
 	public GlobalParameters(
 		IOperatingSystemSettings operatingSystemSettings,
 		IAboutInformationProvider aboutInformationProvider,
-		IImageResizer imageResizer)
+		IImageResizer imageResizer,
+		IAppSettings appSettings)
 		: base(operatingSystemSettings, aboutInformationProvider)
 	{
 		_imageResizer = imageResizer;
 		
 		var invalidBitmap = GetBitmapFromResource(Resources.InvalidImage);
-		var invalidBitmapSize = new ImageSize(
-			invalidBitmap.Size.Width, invalidBitmap.Size.Height);
+		var invalidBitmapSize = new ImageSize(invalidBitmap.Size.Width, invalidBitmap.Size.Height);
+		
+		var thumbnailSizeInPixels = appSettings.ThumbnailSizeInPixels;
+		var thumbnailSize = new ImageSize(thumbnailSizeInPixels);
+		ThumbnailSize = thumbnailSize;
 		
 		var invalidImage = new Image(invalidBitmap, invalidBitmapSize);
-		var invalidImageThumbnail = imageResizer.CreateResizedImage(invalidImage, ThumbnailSize);
+		var invalidImageThumbnail = imageResizer.CreateResizedImage(invalidImage, thumbnailSize);
 		InvalidImage = invalidImage;
 		InvalidImageThumbnail = invalidImageThumbnail;
 
@@ -34,7 +39,7 @@ public class GlobalParameters : GlobalParametersBase
         {
             var loadingBitmapSize = new ImageSize(loadingBitmap.Size.Width, loadingBitmap.Size.Height);
             var loadingImage = new Image(loadingBitmap, loadingBitmapSize);
-            loadingImageThumbnail = imageResizer.CreateResizedImage(loadingImage, ThumbnailSize);
+            loadingImageThumbnail = imageResizer.CreateResizedImage(loadingImage, thumbnailSize);
             LoadingImageThumbnail = loadingImageThumbnail;
         }
 
@@ -52,6 +57,8 @@ public class GlobalParameters : GlobalParametersBase
 	}
 	
 	public override IImage InvalidImage { get; }
+	
+	public override ImageSize ThumbnailSize { get; }
 	public override IImage InvalidImageThumbnail { get; }
 	public override IImage LoadingImageThumbnail { get; }
 	

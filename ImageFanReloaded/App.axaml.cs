@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -12,15 +11,15 @@ using ImageFanReloaded.Core.Controls.Implementation;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
-using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.OperatingSystem.Implementation;
+using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Core.Synchronization.Implementation;
-using ImageFanReloaded.Global;
 using ImageFanReloaded.ImageHandling;
+using ImageFanReloaded.Settings;
 
 namespace ImageFanReloaded;
 
@@ -56,19 +55,33 @@ public class App : Application
     private void BootstrapTypes()
     {
 	    _desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
-	    var args = _desktop.Args!;
-	    var inputPath = args.Any() ? args.First() : null;
 
+	    string? inputPath;
+		#if LINUX_FLATPAK_BUILD
+			inputPath = null;
+		#else
+			var args = _desktop.Args!;
+			inputPath = args.Length > 0 ? args[0] : null;
+		#endif
+	    
 	    IOperatingSystemSettings operatingSystemSettings = new OperatingSystemSettings();
 	    IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
 	    
 	    IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 	    IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-	    _globalParameters = new GlobalParameters(
-		    operatingSystemSettings, aboutInformationProvider, imageResizer);
-	    _fileSizeEngine = new FileSizeEngine();
+	    IAppSettings appSettings;
+	    #if LINUX_FLATPAK_BUILD
+			appSettings = new DefaultAppSettings();
+	    #else
+			appSettings = new AppSettings();
+	    #endif
 
+	    _globalParameters = new GlobalParameters(
+		    operatingSystemSettings, aboutInformationProvider, imageResizer, appSettings);
+	    
+	    _fileSizeEngine = new FileSizeEngine();
+	    
 	    IImageFileFactory imageFileFactory = new ImageFileFactory(_globalParameters, imageResizer);
 	    IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
 		    _globalParameters, _fileSizeEngine, imageFileFactory);

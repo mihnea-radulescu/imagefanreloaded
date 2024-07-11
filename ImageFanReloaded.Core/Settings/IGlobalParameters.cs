@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 
-namespace ImageFanReloaded.Core.Global;
+namespace ImageFanReloaded.Core.Settings;
 
 public interface IGlobalParameters
 {
 	int ProcessorCount { get; }
-	ImageSize ThumbnailSize { get; }
 	
 	bool IsLinux { get; }
 	bool IsWindows { get; }
@@ -42,6 +41,8 @@ public interface IGlobalParameters
 	IReadOnlyList<string> SpecialFolders { get; }
 
 	IImage InvalidImage { get; }
+	
+	ImageSize ThumbnailSize { get; }
 	IImage InvalidImageThumbnail { get; }
 	IImage LoadingImageThumbnail { get; }
 	

@@ -6,12 +6,11 @@ using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 
-namespace ImageFanReloaded.Core.Global.Implementation;
+namespace ImageFanReloaded.Core.Settings.Implementation;
 
 public abstract class GlobalParametersBase : IGlobalParameters
 {
 	public int ProcessorCount { get; }
-	public ImageSize ThumbnailSize { get; }
 	
 	public bool IsLinux { get; }
 	public bool IsWindows { get; }
@@ -48,6 +47,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public string AboutText { get; }
 
 	public abstract IImage InvalidImage { get; }
+	
+	public abstract ImageSize ThumbnailSize { get; }
 	public abstract IImage InvalidImageThumbnail { get; }
 	public abstract IImage LoadingImageThumbnail { get; }
 	
@@ -68,7 +69,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		IAboutInformationProvider aboutInformationProvider)
 	{
 		ProcessorCount = Environment.ProcessorCount;
-		ThumbnailSize = new ImageSize(ThumbnailSizeSquareLength);
 		
 		IsLinux = operatingSystemSettings.IsLinux;
 		IsWindows = operatingSystemSettings.IsWindows;
@@ -169,11 +169,5 @@ User interface:
 	
 	protected const int IconSizeSquareLength = 36;
 	
-	#endregion
-	
-	#region Private
-	
-	private const int ThumbnailSizeSquareLength = 250;
-
 	#endregion
 }

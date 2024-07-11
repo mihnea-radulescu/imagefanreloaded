@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
-using ImageFanReloaded.Core.Global;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core;
 

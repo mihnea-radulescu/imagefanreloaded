@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.DiscAccess;
-using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 
 namespace ImageFanReloaded.Core.Controls.Implementation;

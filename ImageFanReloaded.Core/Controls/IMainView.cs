@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.CustomEventArgs;
-using ImageFanReloaded.Core.Global;
+using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 
 namespace ImageFanReloaded.Core.Controls;

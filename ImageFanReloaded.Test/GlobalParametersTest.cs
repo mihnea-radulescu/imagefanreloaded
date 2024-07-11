@@ -8,8 +8,9 @@ using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.OperatingSystem.Implementation;
-using ImageFanReloaded.Global;
+using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.ImageHandling;
+using ImageFanReloaded.Settings;
 
 namespace ImageFanReloaded.Test;
 
@@ -24,7 +25,10 @@ public class GlobalParametersTest : TestBase
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		_globalParameters = new GlobalParameters(operatingSystemSettings, aboutInformationProvider, imageResizer);
+		IAppSettings appSettings = new DefaultAppSettings();
+
+		_globalParameters = new GlobalParameters(
+			operatingSystemSettings, aboutInformationProvider, imageResizer, appSettings);
 	}
 	
 	[Fact]

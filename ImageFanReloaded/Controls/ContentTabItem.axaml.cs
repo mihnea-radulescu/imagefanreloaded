@@ -7,9 +7,9 @@ using ImageFanReloaded.Core.Collections.Implementation;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
-using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
+using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 
 namespace ImageFanReloaded.Controls;

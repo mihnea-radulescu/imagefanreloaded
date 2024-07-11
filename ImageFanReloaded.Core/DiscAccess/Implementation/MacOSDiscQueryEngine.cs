@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
@@ -12,7 +12,7 @@ public class MacOSDiscQueryEngine : UnixDiscQueryEngineBase
 		IImageFileFactory imageFileFactory)
 		: base(globalParameters, fileSizeEngine, imageFileFactory)
 	{
-		_supportedDrivePrefixes = ["/Volumes/"];
+		_supportedDrivePrefixes = [ "/Volumes/" ];
 	}
 	
 	#region Protected

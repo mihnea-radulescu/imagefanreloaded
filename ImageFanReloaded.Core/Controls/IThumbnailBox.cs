@@ -1,7 +1,7 @@
 using System;
 using ImageFanReloaded.Core.CustomEventArgs;
-using ImageFanReloaded.Core.Global;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.Controls;
 
