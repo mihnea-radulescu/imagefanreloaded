@@ -18,6 +18,7 @@ public interface IGlobalParameters
 	Key EnterKey { get; }
 	Key F1Key { get; }
 	
+	KeyModifiers NoneKeyModifier { get; }
 	KeyModifiers AltKeyModifier { get; }
 	KeyModifiers ShiftKeyModifier { get; }
 	

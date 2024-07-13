@@ -41,14 +41,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_folderTreeView.SelectionChanged += OnFolderTreeViewSelectedItemChanged;
 	}
 
-	public void OnKeyPressing(object? sender, KeyboardKeyEventArgs e)
+	public void HandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		var keyModifiers = e.KeyModifiers;
-		var keyPressing = e.Key;
-		
-		if (keyPressing == GlobalParameters!.RKey)
+		if (keyPressing == GlobalParameters!.RKey &&
+		    (keyModifiers == GlobalParameters!.NoneKeyModifier || keyModifiers == GlobalParameters!.ShiftKeyModifier))
 		{
-			var isPersistentRecursive = keyModifiers == KeyModifiers.Shift;
+			var isPersistentRecursive = keyModifiers == GlobalParameters!.ShiftKeyModifier;
 			
 			ToggleRecursiveFolderAccess(isPersistentRecursive);
 		}

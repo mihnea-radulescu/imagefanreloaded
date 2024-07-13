@@ -21,6 +21,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key EnterKey { get; }
 	public Key F1Key { get; }
 	
+	public KeyModifiers NoneKeyModifier { get; }
 	public KeyModifiers AltKeyModifier { get; }
 	public KeyModifiers ShiftKeyModifier { get; }
 	
@@ -84,6 +85,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		EnterKey = Key.Enter;
 		F1Key = Key.F1;
 
+		NoneKeyModifier = KeyModifiers.None;
 		AltKeyModifier = KeyModifiers.Alt;
 		ShiftKeyModifier = KeyModifiers.Shift;
 		

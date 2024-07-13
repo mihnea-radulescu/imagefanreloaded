@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 
@@ -25,7 +26,7 @@ public interface IContentTabItem
 
 	void EnableFolderTreeViewSelectedItemChanged();
 	
-	void OnKeyPressing(object? sender, KeyboardKeyEventArgs e);
+	void HandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing);
 
 	void SetTitle(string title);
 

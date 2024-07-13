@@ -256,7 +256,7 @@ public partial class MainWindow : Window, IMainView
 	{
 		var contentTabItem = GetActiveContentTabItem();
 		
-		contentTabItem!.OnKeyPressing(this, new KeyboardKeyEventArgs(keyModifiers, keyPressing));
+		contentTabItem!.HandleKeyPressing(keyModifiers, keyPressing);
 	}
 
 	#endregion
