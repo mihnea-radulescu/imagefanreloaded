@@ -66,24 +66,27 @@ public partial class MainWindow : Window, IMainView
 		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 		var keyPressing = e.Key.ToCoreKey();
 
-		if (ShouldCloseWindow(keyModifiers, keyPressing))
+		if (ShouldProcess(keyPressing))
 		{
-			CloseWindow();
+			if (ShouldCloseWindow(keyModifiers, keyPressing))
+			{
+				CloseWindow();
+			}
+			else if (ShouldNavigateToNextTab(keyPressing))
+			{
+				NavigateToNextTab();
+			}
+			else if (ShouldDisplayHelp(keyPressing))
+			{
+				DisplayHelp();
+			}
+			else
+			{
+				PassKeyPressingToContentTabItem(keyModifiers, keyPressing);
+			}
+			
+			e.Handled = true;
 		}
-		else if (ShouldNavigateToNextTab(keyPressing))
-		{
-			NavigateToNextTab();
-		}
-		else if (ShouldDisplayHelp(keyPressing))
-		{
-			DisplayHelp();
-		}
-		else
-		{
-			PassKeyPressingToContentTabItem(keyModifiers, keyPressing);
-		}
-        
-		e.Handled = true;
 	}
 	
 	private void OnTabChanged(object? sender, SelectionChangedEventArgs e)
@@ -172,6 +175,16 @@ public partial class MainWindow : Window, IMainView
 		contentTabItem.UnregisterMainViewEvents();
 
 		SelectLastTabItem();
+	}
+	
+	private bool ShouldProcess(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (GlobalParameters!.FolderTreeNavigationKeys.Contains(keyPressing))
+		{
+			return false;
+		}
+
+		return true;
 	}
 
     private bool ShouldCloseWindow(

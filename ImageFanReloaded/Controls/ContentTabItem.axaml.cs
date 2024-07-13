@@ -54,11 +54,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 		else if (_selectedThumbnailBox is not null)
 		{
-			if (GlobalParameters!.BackwardNavigationKeys.Contains(keyPressing))
+			if (GlobalParameters!.ThumbnailsBackwardNavigationKeys.Contains(keyPressing))
 			{
 				AdvanceToThumbnailIndex(-1);
 			}
-			else if (GlobalParameters!.ForwardNavigationKeys.Contains(keyPressing))
+			else if (GlobalParameters!.ThumbnailsForwardNavigationKeys.Contains(keyPressing))
 			{
 				AdvanceToThumbnailIndex(1);
 			}

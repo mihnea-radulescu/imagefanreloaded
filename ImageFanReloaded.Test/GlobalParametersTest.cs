@@ -66,8 +66,13 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.TKey.Should().NotBe(Key.None);
 		_globalParameters.IKey.Should().NotBe(Key.None);
 		
-		_globalParameters.BackwardNavigationKeys.Should().NotBeEmpty();
-		_globalParameters.ForwardNavigationKeys.Should().NotBeEmpty();
+		_globalParameters.FolderTreeNavigationKeys.Should().NotBeEmpty();
+		
+		_globalParameters.ThumbnailsBackwardNavigationKeys.Should().NotBeEmpty();
+		_globalParameters.ThumbnailsForwardNavigationKeys.Should().NotBeEmpty();
+		
+		_globalParameters.ImagesBackwardNavigationKeys.Should().NotBeEmpty();
+		_globalParameters.ImagesForwardNavigationKeys.Should().NotBeEmpty();
 		
 		_globalParameters.NameComparer.Should().NotBeNull();
 		

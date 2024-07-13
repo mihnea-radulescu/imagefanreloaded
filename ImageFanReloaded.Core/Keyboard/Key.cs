@@ -15,15 +15,11 @@ public enum Key
 	A,
 	Up,
 	Left,
-	Backspace,
-	PageUp,
 	
 	S,
 	D,
 	Down,
 	Right,
-	Space,
-	PageDown,
 	
 	R,
 	

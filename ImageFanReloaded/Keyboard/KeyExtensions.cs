@@ -16,15 +16,11 @@ public static class KeyExtensions
 			Avalonia.Input.Key.A => Core.Keyboard.Key.A,
 			Avalonia.Input.Key.Up => Core.Keyboard.Key.Up,
 			Avalonia.Input.Key.Left => Core.Keyboard.Key.Left,
-			Avalonia.Input.Key.Back => Core.Keyboard.Key.Backspace,
-			Avalonia.Input.Key.PageUp => Core.Keyboard.Key.PageUp,
 
 			Avalonia.Input.Key.S => Core.Keyboard.Key.S,
 			Avalonia.Input.Key.D => Core.Keyboard.Key.D,
 			Avalonia.Input.Key.Down => Core.Keyboard.Key.Down,
 			Avalonia.Input.Key.Right => Core.Keyboard.Key.Right,
-			Avalonia.Input.Key.Space => Core.Keyboard.Key.Space,
-			Avalonia.Input.Key.PageDown => Core.Keyboard.Key.PageDown,
 			
 			Avalonia.Input.Key.R => Core.Keyboard.Key.R,
 			

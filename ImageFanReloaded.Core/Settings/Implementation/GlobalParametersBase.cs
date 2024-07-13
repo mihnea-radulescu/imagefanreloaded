@@ -31,8 +31,13 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key TKey { get; }
 	public Key IKey { get; }
 	
-	public HashSet<Key> BackwardNavigationKeys { get; }
-	public HashSet<Key> ForwardNavigationKeys { get; }
+	public HashSet<Key> FolderTreeNavigationKeys { get; }
+	
+	public HashSet<Key> ThumbnailsBackwardNavigationKeys { get; }
+	public HashSet<Key> ThumbnailsForwardNavigationKeys { get; }
+	
+	public HashSet<Key> ImagesBackwardNavigationKeys { get; }
+	public HashSet<Key> ImagesForwardNavigationKeys { get; }
 	
 	public StringComparer NameComparer { get; }
 
@@ -89,22 +94,35 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		TKey = Key.T;
 		IKey = Key.I;
 
-		BackwardNavigationKeys = [
-			Key.W,
-			Key.A,
+		FolderTreeNavigationKeys = [
 			Key.Up,
+			Key.Down,
 			Key.Left,
-			Key.Backspace,
-			Key.PageUp
+			Key.Right
 		];
 
-		ForwardNavigationKeys = [
+		ThumbnailsBackwardNavigationKeys = [
+			Key.W,
+			Key.A
+		];
+
+		ThumbnailsForwardNavigationKeys = [
 			Key.S,
-			Key.D,
+			Key.D
+		];
+		
+		ImagesBackwardNavigationKeys = [
+			Key.Up,
+			Key.Left,
+			Key.W,
+			Key.A
+		];
+
+		ImagesForwardNavigationKeys = [
 			Key.Down,
 			Key.Right,
-			Key.Space,
-			Key.PageDown
+			Key.S,
+			Key.D
 		];
 		
 		NameComparer = operatingSystemSettings.IsWindows
@@ -159,7 +177,9 @@ User interface:
 • mouse wheel for scrolling through folders and thumbnails, and for navigating back and forward through opened images
 • key Tab for cycling through active tabs
 • key R for toggling recursive folder access, and key combo Shift-R for toggling persistent recursive folder access
-• keys W-A-S-D, Up-Down-Left-Right, Backspace-Space and PageUp-PageDown for back and forward navigation through thumbnails and opened images
+• keys Up-Down-Left-Right for back and forward navigation through the folders tree
+• keys W-A-S-D for back and forward navigation through thumbnails
+• keys Up-Down-Left-Right and W-A-S-D for back and forward navigation through opened images
 • key Enter for entering image view and zoomed image view modes
 • key I for toggling image info in image view and zoomed image view modes
 • keys Esc and T for exiting image view and zoomed image view modes
