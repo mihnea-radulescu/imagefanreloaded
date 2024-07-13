@@ -217,7 +217,7 @@ public partial class MainWindow : Window, IMainView
     private bool ShouldNavigateToNextTab(
 	    ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
     {
-	    if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.TabKey)
+	    if (keyModifiers == GlobalParameters!.ShiftKeyModifier && keyPressing == GlobalParameters!.TabKey)
 	    {
 		    return HasAtLeastOneTabItem();
 	    }

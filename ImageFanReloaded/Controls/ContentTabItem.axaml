@@ -15,10 +15,12 @@
 		<TreeView Name="_folderTreeView"
 				  Grid.Column="0"
 				  SelectionMode="Single"/>
-		<GridSplitter Grid.Column="1"
+		<GridSplitter Name="_gridSplitter"
+					  Grid.Column="1"
                       ResizeBehavior="PreviousAndNext"
                       Width="5"
-                      Background="#FFBCBCBC"/>
+                      Background="#FFBCBCBC"
+					  Focusable="True"/>
 		<Grid Grid.Column="2">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="*"/>
@@ -26,7 +28,8 @@
 			</Grid.RowDefinitions>
 			<ScrollViewer Name="_thumbnailScrollViewer"
 			              Grid.Row="0"
-			              VerticalScrollBarVisibility="Auto">
+			              VerticalScrollBarVisibility="Auto"
+			              Focusable="True">
 				<WrapPanel Name="_thumbnailWrapPanel"
 				           Orientation="Horizontal"
 				           Margin="5 0 5 0"/>

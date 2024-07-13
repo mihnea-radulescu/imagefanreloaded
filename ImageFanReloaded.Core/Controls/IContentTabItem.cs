@@ -28,6 +28,8 @@ public interface IContentTabItem
 	
 	void HandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing);
 
+	void SetFocusOnFirstFolderTreeViewItem();
+
 	void SetTitle(string title);
 
 	void RegisterMainViewEvents();

@@ -43,7 +43,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void HandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing))
+		if (ShouldSwitchControlFocus(keyModifiers, keyPressing))
+		{
+			SwitchControlFocus();
+		}
+		else if (ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing))
 		{
 			ToggleRecursiveFolderAccess(keyModifiers);
 		}
@@ -62,6 +66,17 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				BringThumbnailIntoView();
 				DisplayImage();
 			}
+		}
+	}
+
+	public void SetFocusOnFirstFolderTreeViewItem()
+	{
+		_folderTreeView.SelectedItem = _folderTreeView.Items.FirstOrDefault();
+
+		if (_folderTreeView.SelectedItem is not null)
+		{
+			var selectedItemAsTreeViewItem = (TreeViewItem)_folderTreeView.SelectedItem;
+			selectedItemAsTreeViewItem.Focus();
 		}
 	}
 
@@ -393,6 +408,16 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	private bool IsFirstThumbnail() => _thumbnailBoxCollection.Count == 1;
 
+	private bool ShouldSwitchControlFocus(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyPressing == GlobalParameters!.TabKey && keyModifiers == GlobalParameters!.NoneKeyModifier)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool ShouldToggleRecursiveFolderAccess(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyPressing == GlobalParameters!.RKey &&
@@ -402,6 +427,29 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 
 		return false;
+	}
+
+	private void SwitchControlFocus()
+	{
+		if (_folderTreeView.SelectedItem is null)
+		{
+			return;
+		}
+		
+		var selectedItemAsTreeViewItem = (TreeViewItem)_folderTreeView.SelectedItem;
+		
+		if (selectedItemAsTreeViewItem.IsFocused)
+		{
+			_gridSplitter.Focus();
+		}
+		else if (_gridSplitter.IsFocused)
+		{
+			_thumbnailScrollViewer.Focus();
+		}
+		else
+		{
+			selectedItemAsTreeViewItem.Focus();
+		}
 	}
 
 	private void ToggleRecursiveFolderAccess(KeyModifiers keyModifiers)
