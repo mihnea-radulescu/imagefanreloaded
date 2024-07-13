@@ -57,6 +57,7 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.F1Key.Should().NotBe(Key.None);
 
 		_globalParameters.NoneKeyModifier.Should().Be(KeyModifiers.None);
+		_globalParameters.CtrlKeyModifier.Should().NotBe(KeyModifiers.None);
 		_globalParameters.AltKeyModifier.Should().NotBe(KeyModifiers.None);
 		_globalParameters.ShiftKeyModifier.Should().NotBe(KeyModifiers.None);
 		

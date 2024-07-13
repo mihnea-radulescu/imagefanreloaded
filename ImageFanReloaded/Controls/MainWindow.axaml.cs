@@ -72,7 +72,7 @@ public partial class MainWindow : Window, IMainView
 			{
 				CloseWindow();
 			}
-			else if (ShouldNavigateToNextTab(keyPressing))
+			else if (ShouldNavigateToNextTab(keyModifiers, keyPressing))
 			{
 				NavigateToNextTab();
 			}
@@ -214,9 +214,10 @@ public partial class MainWindow : Window, IMainView
 	    return false;
     }
 
-    private bool ShouldNavigateToNextTab(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+    private bool ShouldNavigateToNextTab(
+	    ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
     {
-	    if (keyPressing == GlobalParameters!.TabKey)
+	    if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.TabKey)
 	    {
 		    return HasAtLeastOneTabItem();
 	    }

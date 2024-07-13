@@ -6,6 +6,7 @@ namespace ImageFanReloaded.Core.Keyboard;
 public enum KeyModifiers
 {
 	None = 0,
-	Alt = 1,
-	Shift = 2
+	Ctrl = 1,
+	Alt = 2,
+	Shift = 3
 }

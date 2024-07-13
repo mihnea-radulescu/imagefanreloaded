@@ -17,8 +17,8 @@ User interface:
 * left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and dragging images
 * right mouse button for returning from the opened image to the main view
 * mouse wheel for scrolling through folders and thumbnails, and for navigating back and forward through opened images
-* key Tab for cycling through active tabs
-* key R for toggling recursive folder access, and key combo Shift-R for toggling persistent recursive folder access
+* key combo Ctrl+Tab for cycling through active tabs
+* key R for toggling recursive folder access, and key combo Shift+R for toggling persistent recursive folder access
 * keys Up-Down-Left-Right for back and forward navigation through the folders tree
 * keys W-A-S-D for back and forward navigation through thumbnails
 * keys Up-Down-Left-Right and W-A-S-D for back and forward navigation through opened images
