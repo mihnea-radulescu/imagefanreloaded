@@ -11,7 +11,7 @@ Features:
 * targeted zoom and mouse-drag zoomed image control
 * fast and seamless full-screen navigation across images
 * command-line direct access to the specified folder or image file
-* configurable thumbnail size, between 50 and 500 pixels, available in the file AppSettings.json
+* configurable thumbnail size, between 50 and 500 pixels, available in file AppSettings.json
 
 User interface:
 * left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and dragging images

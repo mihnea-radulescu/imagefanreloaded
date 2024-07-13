@@ -43,12 +43,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void HandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyPressing == GlobalParameters!.RKey &&
-		    (keyModifiers == GlobalParameters!.NoneKeyModifier || keyModifiers == GlobalParameters!.ShiftKeyModifier))
+		if (ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing))
 		{
-			var isPersistentRecursive = keyModifiers == GlobalParameters!.ShiftKeyModifier;
-			
-			ToggleRecursiveFolderAccess(isPersistentRecursive);
+			ToggleRecursiveFolderAccess(keyModifiers);
 		}
 		else if (_selectedThumbnailBox is not null)
 		{
@@ -396,8 +393,21 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	private bool IsFirstThumbnail() => _thumbnailBoxCollection.Count == 1;
 
-	private void ToggleRecursiveFolderAccess(bool isPersistentRecursive)
+	private bool ShouldToggleRecursiveFolderAccess(KeyModifiers keyModifiers, Key keyPressing)
 	{
+		if (keyPressing == GlobalParameters!.RKey &&
+		    (keyModifiers == GlobalParameters!.NoneKeyModifier || keyModifiers == GlobalParameters!.ShiftKeyModifier))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private void ToggleRecursiveFolderAccess(KeyModifiers keyModifiers)
+	{
+		var isPersistentRecursive = keyModifiers == GlobalParameters!.ShiftKeyModifier;
+		
 		if (_folderAccessType == FolderAccessType.Normal)
 		{
 			_folderAccessType = isPersistentRecursive

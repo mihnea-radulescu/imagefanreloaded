@@ -224,7 +224,10 @@ public partial class MainWindow : Window, IMainView
 
 	    return false;
     }
-
+    
+    private bool ShouldDisplayHelp(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	    => keyPressing == GlobalParameters!.F1Key;
+    
     private bool HasAtLeastOneTabItem()
     {
 	    var contentTabItemCount = GetContentTabItemCount();
@@ -232,9 +235,6 @@ public partial class MainWindow : Window, IMainView
 	    var hasAtLeastOneTabItem = contentTabItemCount > 1;
 	    return hasAtLeastOneTabItem;
     }
-
-    private bool ShouldDisplayHelp(ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	    => keyPressing == GlobalParameters!.F1Key;
 
 	private void CloseWindow() => Close();
 
