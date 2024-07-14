@@ -22,8 +22,8 @@
 		</ScrollViewer>
 		<Canvas Grid.Row="0">
 			<TextBox Name="_textBoxImageInfo"
-			         Canvas.Bottom="3"
-			         Canvas.Right="3"
+			         Canvas.Bottom="0"
+			         Canvas.Right="0"
 			         IsReadOnly="True"
 			         Background="Transparent"
 			         BorderThickness="0"

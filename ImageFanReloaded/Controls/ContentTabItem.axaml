@@ -45,14 +45,12 @@
 				         IsReadOnly="True"
 				         Background="Transparent"
 				         BorderThickness="0"
-				         Margin="3"
 				         TextAlignment="Left"/>
 				<TextBox Name="_textBoxImageInfo"
 				         Grid.Column="1"
 				         IsReadOnly="True"
 				         Background="Transparent"
 				         BorderThickness="0"
-				         Margin="3"
 				         TextAlignment="Right"/>
 			</Grid>
 			
