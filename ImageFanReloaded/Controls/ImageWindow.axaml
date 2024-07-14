@@ -21,13 +21,16 @@
 			       Stretch="None"/>
 		</ScrollViewer>
 		<Canvas Grid.Row="0">
-			<TextBlock Name="_textBlockImageInfo"
-			           Canvas.Bottom="3"
-			           Canvas.Right="3"
-			           Foreground="Lime"
-			           FontWeight="UltraBold"
-			           TextAlignment="Right"
-			           IsVisible="False"/>
+			<TextBox Name="_textBoxImageInfo"
+			         Canvas.Bottom="3"
+			         Canvas.Right="3"
+			         IsReadOnly="True"
+			         Background="Transparent"
+			         BorderThickness="0"
+			         Foreground="Lime"
+			         FontWeight="UltraBold"
+			         TextAlignment="Right"
+			         IsVisible="False"/>
 		</Canvas>
 	</Grid>
 </Window>

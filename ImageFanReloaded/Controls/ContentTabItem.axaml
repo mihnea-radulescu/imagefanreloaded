@@ -40,14 +40,20 @@
 					<ColumnDefinition Width="Auto"></ColumnDefinition>
 					<ColumnDefinition Width="*"></ColumnDefinition>
 				</Grid.ColumnDefinitions>
-				<TextBlock Name="_textBlockFolderInfo"
-				           Grid.Column="0"
-				           Margin="3"
-				           TextAlignment="Left"/>
-				<TextBlock Name="_textBlockImageInfo"
-				           Grid.Column="1"
-				           Margin="3"
-				           TextAlignment="Right"/>
+				<TextBox Name="_textBoxFolderInfo"
+				         Grid.Column="0"
+				         IsReadOnly="True"
+				         Background="Transparent"
+				         BorderThickness="0"
+				         Margin="3"
+				         TextAlignment="Left"/>
+				<TextBox Name="_textBoxImageInfo"
+				         Grid.Column="1"
+				         IsReadOnly="True"
+				         Background="Transparent"
+				         BorderThickness="0"
+				         Margin="3"
+				         TextAlignment="Right"/>
 			</Grid>
 			
 		</Grid>

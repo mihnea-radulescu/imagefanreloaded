@@ -184,12 +184,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void SetFolderStatusBarText(string folderStatusBarText)
 	{
-		_textBlockFolderInfo.Text = folderStatusBarText;
+		_textBoxFolderInfo.Text = folderStatusBarText;
 	}
 	
 	public void SetImageStatusBarText(string imageStatusBarText)
 	{
-		_textBlockImageInfo.Text = imageStatusBarText;
+		_textBoxImageInfo.Text = imageStatusBarText;
 	}
 	
 	public void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo)

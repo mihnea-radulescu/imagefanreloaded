@@ -18,8 +18,8 @@ public partial class ImageWindow : Window, IImageView
 {
 	static ImageWindow()
 	{
+		ArrowCursor = new Cursor(StandardCursorType.Arrow);
 		HandCursor = new Cursor(StandardCursorType.Hand);
-		NoneCursor = new Cursor(StandardCursorType.None);
 		SizeAllCursor = new Cursor(StandardCursorType.SizeAll);
 	}
 	
@@ -61,7 +61,7 @@ public partial class ImageWindow : Window, IImageView
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
 
-		_textBlockImageInfo.Text = _imageFile.GetImageInfo(recursiveFolderAccess);
+		_textBoxImageInfo.Text = _imageFile.GetImageInfo(recursiveFolderAccess);
 
 		_showMainViewAfterImageViewClosing = false;
 
@@ -75,9 +75,9 @@ public partial class ImageWindow : Window, IImageView
 	private const double ImageZoomScalingFactor = 0.1;
 	private const double ImageScrollFactor = 0.1;
 	private const double NegligibleImageDragFactor = 0.025;
-
+	
+	private static readonly Cursor ArrowCursor;
 	private static readonly Cursor HandCursor;
-	private static readonly Cursor NoneCursor;
 	private static readonly Cursor SizeAllCursor;
 	
 	private IGlobalParameters? _globalParameters;
@@ -186,7 +186,8 @@ public partial class ImageWindow : Window, IImageView
 				}
 				else
 				{
-					DragImage();
+					var (normalizedDragX, normalizedDragY) = GetNormalizedDrag();
+					DragImage(normalizedDragX, normalizedDragY);
 				}
 			}
 			else if (e.InitialPressMouseButton == MouseButton.Right)
@@ -221,11 +222,10 @@ public partial class ImageWindow : Window, IImageView
 	{
 		ImageChanged?.Invoke(this, new ImageChangedEventArgs(this, increment));
 	}
-
-	private void DragImage()
+	
+	private (double, double) GetNormalizedDrag()
 	{
 		var dragX = _mouseUpCoordinates.X - _mouseDownCoordinates.X;
-		var dragY = _mouseUpCoordinates.Y - _mouseDownCoordinates.Y;
 
 		double normalizedDragX;
 		if (Math.Abs(dragX) < _negligibleImageDragX)
@@ -236,6 +236,8 @@ public partial class ImageWindow : Window, IImageView
 		{
 			normalizedDragX = dragX >= 0 ? -1 : 1;
 		}
+		
+		var dragY = _mouseUpCoordinates.Y - _mouseDownCoordinates.Y;
 
 		double normalizedDragY;
 		if (Math.Abs(dragY) < _negligibleImageDragY)
@@ -247,6 +249,11 @@ public partial class ImageWindow : Window, IImageView
 			normalizedDragY = dragY >= 0 ? -1 : 1;
 		}
 
+		return (normalizedDragX, normalizedDragY);
+	}
+
+	private void DragImage(double normalizedDragX, double normalizedDragY)
+	{
 		var newHorizontalScrollOffset = _imageScrollViewer.Offset.X +
 			normalizedDragX * ImageScrollFactor * _imageControl.Source!.Size.Width;
 		var newVerticalScrollOffset = _imageScrollViewer.Offset.Y +
@@ -269,10 +276,9 @@ public partial class ImageWindow : Window, IImageView
 			newVerticalScrollOffset = _imageScrollViewer.ScrollBarMaximum.Y;
 		}
 
-		_imageScrollViewer.Offset = new Vector(
-			newHorizontalScrollOffset, newVerticalScrollOffset);
+		_imageScrollViewer.Offset = new Vector(newHorizontalScrollOffset, newVerticalScrollOffset);
 	}
-
+	
 	private CoordinatesToImageSizeRatio GetCoordinatesToImageSizeRatio(
 		Point mousePositionToImage, ImageSize imageSize)
 	{
@@ -307,7 +313,7 @@ public partial class ImageWindow : Window, IImageView
 	}
 
 	private Cursor GetScreenSizeCursor() 
-		=> _canZoomToImageSize ? HandCursor : NoneCursor;
+		=> _canZoomToImageSize ? HandCursor : ArrowCursor;
 
 	private void ResizeToScreenSize()
 	{
@@ -349,7 +355,7 @@ public partial class ImageWindow : Window, IImageView
 	
 	private void ToggleImageInfoVisibility()
 	{
-		_textBlockImageInfo.IsVisible = !_textBlockImageInfo.IsVisible;
+		_textBoxImageInfo.IsVisible = !_textBoxImageInfo.IsVisible;
 	}
 
 	private void CloseWindow()
