@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using FluentAssertions;
+using Xunit;
 using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.AboutInformation.Implementation;
-using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Keyboard;
@@ -68,13 +68,9 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.TKey.Should().NotBe(Key.None);
 		_globalParameters.IKey.Should().NotBe(Key.None);
 		
-		_globalParameters.FolderTreeNavigationKeys.Should().NotBeEmpty();
-		
-		_globalParameters.ThumbnailsBackwardNavigationKeys.Should().NotBeEmpty();
-		_globalParameters.ThumbnailsForwardNavigationKeys.Should().NotBeEmpty();
-		
-		_globalParameters.ImagesBackwardNavigationKeys.Should().NotBeEmpty();
-		_globalParameters.ImagesForwardNavigationKeys.Should().NotBeEmpty();
+		_globalParameters.BackwardNavigationKeys.Should().NotBeEmpty();
+		_globalParameters.ForwardNavigationKeys.Should().NotBeEmpty();
+		_globalParameters.NavigationKeys.Should().NotBeEmpty();
 		
 		_globalParameters.NameComparer.Should().NotBeNull();
 		

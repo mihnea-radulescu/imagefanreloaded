@@ -65,26 +65,32 @@ public partial class MainWindow : Window, IMainView
 	{
 		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 		var keyPressing = e.Key.ToCoreKey();
+		
+		var contentTabItem = GetActiveContentTabItem();
 
-		if (ShouldProcess(keyPressing))
+		if (ShouldCloseWindow(keyModifiers, keyPressing))
 		{
-			if (ShouldCloseWindow(keyModifiers, keyPressing))
-			{
-				CloseWindow();
-			}
-			else if (ShouldNavigateToNextTab(keyModifiers, keyPressing))
-			{
-				NavigateToNextTab();
-			}
-			else if (ShouldDisplayHelp(keyPressing))
-			{
-				DisplayHelp();
-			}
-			else
-			{
-				PassKeyPressingToContentTabItem(keyModifiers, keyPressing);
-			}
-			
+			CloseWindow();
+			e.Handled = true;
+		}
+		else if (ShouldNavigateToNextTab(keyModifiers, keyPressing))
+		{
+			NavigateToNextTab();
+			e.Handled = true;
+		}
+		else if (ShouldDisplayHelp(keyPressing))
+		{
+			DisplayHelp();
+			e.Handled = true;
+		}
+		else if (contentTabItem!.ShouldHandleKeyPressing(keyModifiers, keyPressing))
+		{
+			contentTabItem!.HandleKeyPressing(keyModifiers, keyPressing);
+			e.Handled = true;
+		}
+		else if (contentTabItem!.IsFolderTreeViewFocused() &&
+		         !GlobalParameters!.NavigationKeys.Contains(keyPressing))
+		{
 			e.Handled = true;
 		}
 	}
@@ -138,9 +144,11 @@ public partial class MainWindow : Window, IMainView
 			Header = contentTabItem.ContentTabItemHeader,
 			Content = contentTabItem
 		};
+		
+		tabItem.KeyDown += (_, e) => e.Handled = true;
 
 		contentTabItem.WrapperTabItem = tabItem;
-
+		
 		return (contentTabItem, tabItem);
 	}
 
@@ -175,16 +183,6 @@ public partial class MainWindow : Window, IMainView
 		contentTabItem.UnregisterMainViewEvents();
 
 		SelectLastTabItem();
-	}
-	
-	private bool ShouldProcess(ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (GlobalParameters!.FolderTreeNavigationKeys.Contains(keyPressing))
-		{
-			return false;
-		}
-
-		return true;
 	}
 
     private bool ShouldCloseWindow(
@@ -250,14 +248,6 @@ public partial class MainWindow : Window, IMainView
 	private void DisplayHelp()
 	{
 		HelpMenuRequested?.Invoke(this, EventArgs.Empty);
-	}
-
-	private void PassKeyPressingToContentTabItem(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		var contentTabItem = GetActiveContentTabItem();
-		
-		contentTabItem!.HandleKeyPressing(keyModifiers, keyPressing);
 	}
 
 	#endregion

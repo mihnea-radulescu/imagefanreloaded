@@ -11,6 +11,7 @@ using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
+using ImageFanReloaded.Keyboard;
 
 namespace ImageFanReloaded.Controls;
 
@@ -40,6 +41,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		_folderTreeView.SelectionChanged += OnFolderTreeViewSelectedItemChanged;
 	}
+	
+	public bool ShouldHandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		var shouldHandleKeyPressing = ShouldSwitchControlFocus(keyModifiers, keyPressing)
+			|| ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing);
+
+		return shouldHandleKeyPressing;
+	}
 
 	public void HandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing)
 	{
@@ -50,22 +59,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing))
 		{
 			ToggleRecursiveFolderAccess(keyModifiers);
-		}
-		else if (_selectedThumbnailBox is not null)
-		{
-			if (GlobalParameters!.ThumbnailsBackwardNavigationKeys.Contains(keyPressing))
-			{
-				AdvanceToThumbnailIndex(-1);
-			}
-			else if (GlobalParameters!.ThumbnailsForwardNavigationKeys.Contains(keyPressing))
-			{
-				AdvanceToThumbnailIndex(1);
-			}
-			else if (keyPressing == GlobalParameters!.EnterKey)
-			{
-				BringThumbnailIntoView();
-				DisplayImage();
-			}
 		}
 	}
 
@@ -208,6 +201,19 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				}
 			}
 		}
+	}
+	
+	public bool IsFolderTreeViewFocused()
+	{
+		if (_folderTreeView.SelectedItem is null)
+		{
+			return false;
+		}
+		
+		var selectedItemAsTreeViewItem = (TreeViewItem)_folderTreeView.SelectedItem;
+		var isFolderTreeViewFocused = selectedItemAsTreeViewItem.IsFocused;
+
+		return isFolderTreeViewFocused;
 	}
 	
     #region Private
@@ -425,7 +431,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		return false;
 	}
-
+	
 	private void SwitchControlFocus()
 	{
 		if (_folderTreeView.SelectedItem is null)
@@ -465,6 +471,30 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 		
 		RaiseFolderChangedEvent();
+	}
+	
+	private void ThumbnailScrollViewerOnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
+	{
+		var keyPressing = e.Key.ToCoreKey();
+		
+		if (_selectedThumbnailBox is not null)
+		{
+			if (GlobalParameters!.BackwardNavigationKeys.Contains(keyPressing))
+			{
+				AdvanceToThumbnailIndex(-1);
+			}
+			else if (GlobalParameters!.ForwardNavigationKeys.Contains(keyPressing))
+			{
+				AdvanceToThumbnailIndex(1);
+			}
+			else if (keyPressing == GlobalParameters!.EnterKey)
+			{
+				BringThumbnailIntoView();
+				DisplayImage();
+			}
+		}
+
+		e.Handled = true;
 	}
 
 	#endregion

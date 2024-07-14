@@ -25,7 +25,8 @@ public interface IContentTabItem
 	event EventHandler<FolderChangedEventArgs>? FolderChanged;
 
 	void EnableFolderTreeViewSelectedItemChanged();
-	
+
+	bool ShouldHandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing);
 	void HandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing);
 
 	void SetFocusOnFirstFolderTreeViewItem();
@@ -47,4 +48,6 @@ public interface IContentTabItem
 	void SetImageStatusBarText(string imageStatusBarText);
 
 	void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo);
+
+	bool IsFolderTreeViewFocused();
 }

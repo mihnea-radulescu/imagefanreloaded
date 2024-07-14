@@ -33,13 +33,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key TKey { get; }
 	public Key IKey { get; }
 	
-	public HashSet<Key> FolderTreeNavigationKeys { get; }
-	
-	public HashSet<Key> ThumbnailsBackwardNavigationKeys { get; }
-	public HashSet<Key> ThumbnailsForwardNavigationKeys { get; }
-	
-	public HashSet<Key> ImagesBackwardNavigationKeys { get; }
-	public HashSet<Key> ImagesForwardNavigationKeys { get; }
+	public HashSet<Key> BackwardNavigationKeys { get; }
+	public HashSet<Key> ForwardNavigationKeys { get; }
+	public HashSet<Key> NavigationKeys { get; }
 	
 	public StringComparer NameComparer { get; }
 
@@ -97,37 +93,18 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		TKey = Key.T;
 		IKey = Key.I;
-
-		FolderTreeNavigationKeys = [
+		
+		BackwardNavigationKeys = [
 			Key.Up,
+			Key.Left
+		];
+
+		ForwardNavigationKeys = [
 			Key.Down,
-			Key.Left,
 			Key.Right
 		];
 
-		ThumbnailsBackwardNavigationKeys = [
-			Key.W,
-			Key.A
-		];
-
-		ThumbnailsForwardNavigationKeys = [
-			Key.S,
-			Key.D
-		];
-		
-		ImagesBackwardNavigationKeys = [
-			Key.Up,
-			Key.Left,
-			Key.W,
-			Key.A
-		];
-
-		ImagesForwardNavigationKeys = [
-			Key.Down,
-			Key.Right,
-			Key.S,
-			Key.D
-		];
+		NavigationKeys = [ ..BackwardNavigationKeys, ..ForwardNavigationKeys ];
 		
 		NameComparer = operatingSystemSettings.IsWindows
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)

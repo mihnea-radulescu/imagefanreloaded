@@ -29,14 +29,10 @@ public interface IGlobalParameters
 	
 	Key TKey { get; }
 	Key IKey { get; }
-
-	HashSet<Key> FolderTreeNavigationKeys { get; }
 	
-	HashSet<Key> ThumbnailsBackwardNavigationKeys { get; }
-	HashSet<Key> ThumbnailsForwardNavigationKeys { get; }
-	
-	HashSet<Key> ImagesBackwardNavigationKeys { get; }
-	HashSet<Key> ImagesForwardNavigationKeys { get; }
+	HashSet<Key> BackwardNavigationKeys { get; }
+	HashSet<Key> ForwardNavigationKeys { get; }
+	HashSet<Key> NavigationKeys { get; }
 	
 	StringComparer NameComparer { get; }
 

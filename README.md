@@ -20,9 +20,7 @@ User interface:
 * key combo Shift+Tab for cycling through tabs
 * key Tab for cycling through controls in the active tab
 * key R for toggling recursive folder access, and key combo Shift+R for toggling persistent recursive folder access
-* keys Up-Down-Left-Right for back and forward navigation through the folders tree
-* keys W-A-S-D for back and forward navigation through thumbnails
-* keys Up-Down-Left-Right and W-A-S-D for back and forward navigation through opened images
+* keys Up-Down-Left-Right for back and forward navigation through the folders tree, thumbnails and opened images
 * key Enter for entering image view and zoomed image view modes
 * key I for toggling image info in image view and zoomed image view modes
 * keys Esc and T for exiting image view and zoomed image view modes
