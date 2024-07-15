@@ -68,10 +68,6 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.TKey.Should().NotBe(Key.None);
 		_globalParameters.IKey.Should().NotBe(Key.None);
 		
-		_globalParameters.BackwardNavigationKeys.Should().NotBeEmpty();
-		_globalParameters.ForwardNavigationKeys.Should().NotBeEmpty();
-		_globalParameters.NavigationKeys.Should().NotBeEmpty();
-		
 		_globalParameters.NameComparer.Should().NotBeNull();
 		
 		_globalParameters.ImageFileExtensions.Should().NotBeEmpty();

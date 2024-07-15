@@ -88,8 +88,7 @@ public partial class MainWindow : Window, IMainView
 			contentTabItem!.HandleKeyPressing(keyModifiers, keyPressing);
 			e.Handled = true;
 		}
-		else if (contentTabItem!.IsFolderTreeViewFocused() &&
-		         !GlobalParameters!.NavigationKeys.Contains(keyPressing))
+		else if (contentTabItem!.IsFolderTreeViewFocused() && !GlobalParameters!.IsNavigationKey(keyPressing))
 		{
 			e.Handled = true;
 		}

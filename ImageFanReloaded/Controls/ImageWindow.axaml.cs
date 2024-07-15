@@ -102,11 +102,11 @@ public partial class ImageWindow : Window, IImageView
     {
         var keyPressing = e.Key.ToCoreKey();
 
-        if (_globalParameters!.BackwardNavigationKeys.Contains(keyPressing))
+        if (_globalParameters!.IsBackwardNavigationKey(keyPressing))
         {
             RaiseImageChanged(-1);
         }
-        else if (_globalParameters!.ForwardNavigationKeys.Contains(keyPressing))
+        else if (_globalParameters!.IsForwardNavigationKey(keyPressing))
         {
             RaiseImageChanged(1);
         }

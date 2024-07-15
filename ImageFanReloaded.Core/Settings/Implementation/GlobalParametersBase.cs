@@ -32,10 +32,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	public Key TKey { get; }
 	public Key IKey { get; }
-	
-	public HashSet<Key> BackwardNavigationKeys { get; }
-	public HashSet<Key> ForwardNavigationKeys { get; }
-	public HashSet<Key> NavigationKeys { get; }
+
+	public bool IsBackwardNavigationKey(Key aKey) => _backwardNavigationKeys.Contains(aKey);
+	public bool IsForwardNavigationKey(Key aKey) => _forwardNavigationKeys.Contains(aKey);
+	public bool IsNavigationKey(Key aKey) => _navigationKeys.Contains(aKey);
 	
 	public StringComparer NameComparer { get; }
 
@@ -94,18 +94,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		TKey = Key.T;
 		IKey = Key.I;
 		
-		BackwardNavigationKeys = [
-			Key.Up,
-			Key.Left
-		];
-
-		ForwardNavigationKeys = [
-			Key.Down,
-			Key.Right
-		];
-
-		NavigationKeys = [ ..BackwardNavigationKeys, ..ForwardNavigationKeys ];
-		
 		NameComparer = operatingSystemSettings.IsWindows
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)
 			: new NaturalSortingComparer(StringComparer.InvariantCulture);
@@ -140,9 +128,29 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			"Downloads",
 			"Pictures"
 		};
+		
+		_backwardNavigationKeys = [
+			Key.Up,
+			Key.Left
+		];
+
+		_forwardNavigationKeys = [
+			Key.Down,
+			Key.Right
+		];
+
+		_navigationKeys = [ .._backwardNavigationKeys, .._forwardNavigationKeys ];
 	}
 	
 	protected const int IconSizeSquareLength = 36;
 	
+	#endregion
+	
+	#region Private
+
+	private readonly HashSet<Key> _backwardNavigationKeys;
+	private readonly HashSet<Key> _forwardNavigationKeys;
+	private readonly HashSet<Key> _navigationKeys;
+
 	#endregion
 }

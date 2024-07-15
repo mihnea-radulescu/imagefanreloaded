@@ -29,10 +29,10 @@ public interface IGlobalParameters
 	
 	Key TKey { get; }
 	Key IKey { get; }
-	
-	HashSet<Key> BackwardNavigationKeys { get; }
-	HashSet<Key> ForwardNavigationKeys { get; }
-	HashSet<Key> NavigationKeys { get; }
+
+	bool IsBackwardNavigationKey(Key aKey);
+	bool IsForwardNavigationKey(Key aKey);
+	bool IsNavigationKey(Key aKey);
 	
 	StringComparer NameComparer { get; }
 
