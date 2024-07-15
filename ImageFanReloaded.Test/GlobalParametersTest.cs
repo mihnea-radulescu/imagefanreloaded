@@ -51,22 +51,27 @@ public class GlobalParametersTest : TestBase
 		];
 		isOperatingSystemCollection.Should().ContainSingle(isOperatingSystem => isOperatingSystem == true);
 		
-		_globalParameters.TabKey.Should().NotBe(Key.None);
-		_globalParameters.EscapeKey.Should().NotBe(Key.None);
-		_globalParameters.EnterKey.Should().NotBe(Key.None);
-		_globalParameters.F1Key.Should().NotBe(Key.None);
-
 		_globalParameters.NoneKeyModifier.Should().Be(KeyModifiers.None);
 		_globalParameters.CtrlKeyModifier.Should().NotBe(KeyModifiers.None);
 		_globalParameters.AltKeyModifier.Should().NotBe(KeyModifiers.None);
 		_globalParameters.ShiftKeyModifier.Should().NotBe(KeyModifiers.None);
 		
+		_globalParameters.TabKey.Should().NotBe(Key.None);
+		_globalParameters.EscapeKey.Should().NotBe(Key.None);
+		_globalParameters.EnterKey.Should().NotBe(Key.None);
+		_globalParameters.F1Key.Should().NotBe(Key.None);
+
 		_globalParameters.F4Key.Should().NotBe(Key.None);
 		
 		_globalParameters.RKey.Should().NotBe(Key.None);
 		
 		_globalParameters.TKey.Should().NotBe(Key.None);
 		_globalParameters.IKey.Should().NotBe(Key.None);
+		
+		_globalParameters.UpKey.Should().NotBe(Key.None);
+		_globalParameters.DownKey.Should().NotBe(Key.None);
+		_globalParameters.LeftKey.Should().NotBe(Key.None);
+		_globalParameters.RightKey.Should().NotBe(Key.None);
 		
 		_globalParameters.NameComparer.Should().NotBeNull();
 		

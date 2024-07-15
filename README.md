@@ -8,7 +8,7 @@ Features:
 * support for multiple image folder tabs
 * keyboard and mouse user interaction
 * toggleable recursive folder image browsing
-* targeted zoom and mouse-drag zoomed image control
+* targeted zoom and drag zoomed image control
 * fast and seamless full-screen navigation across images
 * command-line direct access to the specified folder or image file
 * configurable thumbnail size, between 50 and 500 pixels, available in file AppSettings.json
@@ -22,6 +22,7 @@ User interface:
 * key R for toggling recursive folder access, and key combo Shift+R for toggling persistent recursive folder access
 * keys Up-Down-Left-Right for back and forward navigation through the folders tree, thumbnails and opened images
 * key Enter for entering image view and zoomed image view modes
+* key combos Ctrl+Up, Ctrl+Down, Ctrl+Left and Ctrl+Right for dragging zoomed images
 * key I for toggling image info in image view and zoomed image view modes
 * keys Esc and T for exiting image view and zoomed image view modes
 * key Esc for quitting application

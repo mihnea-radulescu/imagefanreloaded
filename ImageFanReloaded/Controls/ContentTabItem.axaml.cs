@@ -50,7 +50,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return shouldHandleKeyPressing;
 	}
 
-	public void HandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing)
+	public void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (ShouldSwitchControlFocus(keyModifiers, keyPressing))
 		{
@@ -202,19 +202,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			}
 		}
 	}
-	
-	public bool IsFolderTreeViewFocused()
-	{
-		if (_folderTreeView.SelectedItem is null)
-		{
-			return false;
-		}
-		
-		var selectedItemAsTreeViewItem = (TreeViewItem)_folderTreeView.SelectedItem;
-		var isFolderTreeViewFocused = selectedItemAsTreeViewItem.IsFocused;
 
-		return isFolderTreeViewFocused;
-	}
+	public bool IsThumbnailScrollViewerFocused => _thumbnailScrollViewer.IsFocused;
 	
     #region Private
 

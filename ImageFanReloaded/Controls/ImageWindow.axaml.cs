@@ -100,9 +100,30 @@ public partial class ImageWindow : Window, IImageView
 
     private void OnKeyPressing(object? sender, KeyEventArgs e)
     {
-        var keyPressing = e.Key.ToCoreKey();
+	    var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
+	    var keyPressing = e.Key.ToCoreKey();
 
-        if (_globalParameters!.IsBackwardNavigationKey(keyPressing))
+	    if (keyModifiers == _globalParameters!.CtrlKeyModifier &&
+	        _imageViewState == ImageViewState.ZoomedToImageSize)
+	    {
+		    if (keyPressing == _globalParameters!.UpKey)
+		    {
+			    DragImage(0, -1);
+		    }
+		    else if (keyPressing == _globalParameters!.DownKey)
+		    {
+			    DragImage(0, 1);
+		    }
+		    else if (keyPressing == _globalParameters!.LeftKey)
+		    {
+			    DragImage(-1, 0);
+		    }
+		    else if (keyPressing == _globalParameters!.RightKey)
+		    {
+			    DragImage(1, 0);
+		    }
+	    }
+        else if (_globalParameters!.IsBackwardNavigationKey(keyPressing))
         {
             RaiseImageChanged(-1);
         }

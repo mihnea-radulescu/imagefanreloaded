@@ -27,7 +27,7 @@ public interface IContentTabItem
 	void EnableFolderTreeViewSelectedItemChanged();
 
 	bool ShouldHandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing);
-	void HandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing);
+	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 
 	void SetFocusOnFirstFolderTreeViewItem();
 
@@ -49,5 +49,5 @@ public interface IContentTabItem
 
 	void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo);
 
-	bool IsFolderTreeViewFocused();
+	bool IsThumbnailScrollViewerFocused { get; }
 }

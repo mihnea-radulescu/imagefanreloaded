@@ -13,15 +13,15 @@ public interface IGlobalParameters
 	bool IsWindows { get; }
 	bool IsMacOS { get; }
 	
-	Key TabKey { get; }
-	Key EscapeKey { get; }
-	Key EnterKey { get; }
-	Key F1Key { get; }
-	
 	KeyModifiers NoneKeyModifier { get; }
 	KeyModifiers CtrlKeyModifier { get; }
 	KeyModifiers AltKeyModifier { get; }
 	KeyModifiers ShiftKeyModifier { get; }
+
+	Key TabKey { get; }
+	Key EscapeKey { get; }
+	Key EnterKey { get; }
+	Key F1Key { get; }
 	
 	Key F4Key { get; }
 	
@@ -29,6 +29,11 @@ public interface IGlobalParameters
 	
 	Key TKey { get; }
 	Key IKey { get; }
+	
+	Key UpKey { get; }
+	Key DownKey { get; }
+	Key LeftKey { get; }
+	Key RightKey { get; }
 
 	bool IsBackwardNavigationKey(Key aKey);
 	bool IsForwardNavigationKey(Key aKey);

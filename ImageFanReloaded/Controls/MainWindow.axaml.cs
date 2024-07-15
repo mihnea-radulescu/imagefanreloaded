@@ -85,10 +85,10 @@ public partial class MainWindow : Window, IMainView
 		}
 		else if (contentTabItem!.ShouldHandleKeyPressing(keyModifiers, keyPressing))
 		{
-			contentTabItem!.HandleKeyPressing(keyModifiers, keyPressing);
+			contentTabItem!.HandleControlKeyFunctions(keyModifiers, keyPressing);
 			e.Handled = true;
 		}
-		else if (contentTabItem!.IsFolderTreeViewFocused() && !GlobalParameters!.IsNavigationKey(keyPressing))
+		else if (!contentTabItem!.IsThumbnailScrollViewerFocused && !GlobalParameters!.IsNavigationKey(keyPressing))
 		{
 			e.Handled = true;
 		}

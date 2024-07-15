@@ -16,15 +16,15 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public bool IsWindows { get; }
 	public bool IsMacOS { get; }
 	
-	public Key TabKey { get; }
-	public Key EscapeKey { get; }
-	public Key EnterKey { get; }
-	public Key F1Key { get; }
-	
 	public KeyModifiers NoneKeyModifier { get; }
 	public KeyModifiers CtrlKeyModifier { get; }
 	public KeyModifiers AltKeyModifier { get; }
 	public KeyModifiers ShiftKeyModifier { get; }
+	
+	public Key TabKey { get; }
+	public Key EscapeKey { get; }
+	public Key EnterKey { get; }
+	public Key F1Key { get; }
 	
 	public Key F4Key { get; }
 	
@@ -32,6 +32,11 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	public Key TKey { get; }
 	public Key IKey { get; }
+	
+	public Key UpKey { get; }
+	public Key DownKey { get; }
+	public Key LeftKey { get; }
+	public Key RightKey { get; }
 
 	public bool IsBackwardNavigationKey(Key aKey) => _backwardNavigationKeys.Contains(aKey);
 	public bool IsForwardNavigationKey(Key aKey) => _forwardNavigationKeys.Contains(aKey);
@@ -93,6 +98,11 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		TKey = Key.T;
 		IKey = Key.I;
+
+		UpKey = Key.Up;
+		DownKey = Key.Down;
+		LeftKey = Key.Left;
+		RightKey = Key.Right;
 		
 		NameComparer = operatingSystemSettings.IsWindows
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)
