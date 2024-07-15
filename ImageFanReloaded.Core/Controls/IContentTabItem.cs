@@ -26,7 +26,7 @@ public interface IContentTabItem
 
 	void EnableFolderTreeViewSelectedItemChanged();
 
-	bool ShouldHandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing);
+	bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 
 	void SetFocusOnFirstFolderTreeViewItem();

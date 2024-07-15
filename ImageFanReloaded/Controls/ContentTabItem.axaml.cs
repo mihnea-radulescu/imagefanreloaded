@@ -42,10 +42,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_folderTreeView.SelectionChanged += OnFolderTreeViewSelectedItemChanged;
 	}
 	
-	public bool ShouldHandleKeyPressing(KeyModifiers keyModifiers, Key keyPressing)
+	public bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		var shouldHandleKeyPressing = ShouldSwitchControlFocus(keyModifiers, keyPressing)
-			|| ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing);
+			|| ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing)
+			|| ShouldHandleThumbnailSelection(keyPressing);
 
 		return shouldHandleKeyPressing;
 	}
@@ -59,6 +60,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing))
 		{
 			ToggleRecursiveFolderAccess(keyModifiers);
+		}
+		else if (ShouldHandleThumbnailSelection(keyPressing))
+		{
+			BringThumbnailIntoView();
+			DisplayImage();
 		}
 	}
 
@@ -420,6 +426,16 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		return false;
 	}
+
+	private bool ShouldHandleThumbnailSelection(Key keyPressing)
+	{
+		if (_selectedThumbnailBox is not null && keyPressing == GlobalParameters!.EnterKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
 	
 	private void SwitchControlFocus()
 	{
@@ -475,11 +491,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			else if (GlobalParameters!.IsForwardNavigationKey(keyPressing))
 			{
 				AdvanceToThumbnailIndex(1);
-			}
-			else if (keyPressing == GlobalParameters!.EnterKey)
-			{
-				BringThumbnailIntoView();
-				DisplayImage();
 			}
 		}
 

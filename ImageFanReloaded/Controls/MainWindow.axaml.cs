@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using MsBox.Avalonia;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
+using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Keyboard;
@@ -61,12 +61,12 @@ public partial class MainWindow : Window, IMainView
 
 	private readonly double _windowFontSize;
 
-	private void OnKeyPressing(object? sender, KeyEventArgs e)
+	private void OnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
 	{
 		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 		var keyPressing = e.Key.ToCoreKey();
 		
-		var contentTabItem = GetActiveContentTabItem();
+		var contentTabItem = GetActiveContentTabItem()!;
 
 		if (ShouldCloseWindow(keyModifiers, keyPressing))
 		{
@@ -83,17 +83,17 @@ public partial class MainWindow : Window, IMainView
 			DisplayHelp();
 			e.Handled = true;
 		}
-		else if (contentTabItem!.ShouldHandleKeyPressing(keyModifiers, keyPressing))
+		else if (contentTabItem.ShouldHandleControlKeyFunctions(keyModifiers, keyPressing))
 		{
-			contentTabItem!.HandleControlKeyFunctions(keyModifiers, keyPressing);
+			contentTabItem.HandleControlKeyFunctions(keyModifiers, keyPressing);
 			e.Handled = true;
 		}
-		else if (!contentTabItem!.IsThumbnailScrollViewerFocused && !GlobalParameters!.IsNavigationKey(keyPressing))
+		else if (!ShouldAllowKeyPressingEventPropagation(contentTabItem, keyPressing))
 		{
 			e.Handled = true;
 		}
 	}
-	
+
 	private void OnTabChanged(object? sender, SelectionChangedEventArgs e)
 	{
 		var contentTabItem = GetActiveContentTabItem();
@@ -222,8 +222,10 @@ public partial class MainWindow : Window, IMainView
 	    return false;
     }
     
-    private bool ShouldDisplayHelp(ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	    => keyPressing == GlobalParameters!.F1Key;
+    private bool ShouldDisplayHelp(Key keyPressing) => keyPressing == GlobalParameters!.F1Key;
+    
+    private bool ShouldAllowKeyPressingEventPropagation(IContentTabItem contentTabItem, Key keyPressing)
+		=> contentTabItem.IsThumbnailScrollViewerFocused || GlobalParameters!.IsNavigationKey(keyPressing);
     
     private bool HasAtLeastOneTabItem()
     {
