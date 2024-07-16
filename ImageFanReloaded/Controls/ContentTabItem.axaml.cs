@@ -304,7 +304,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		var imageView = e.ImageView;
 		var increment = e.Increment;
 		
-		if (AdvanceToThumbnailIndex(increment))
+		if (AdvanceSelectedThumbnailByIncrement(increment))
 		{
 			imageView.SetImage(_selectedThumbnailBox!.ImageFile!, _folderAccessType.IsRecursive());
 		}
@@ -323,7 +323,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-    private bool AdvanceToThumbnailIndex(int increment)
+    private bool AdvanceSelectedThumbnailByIncrement(int increment)
 	{
 		if (_selectedThumbnailBox is not null)
 		{
@@ -488,16 +488,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		var keyPressing = e.Key.ToCoreKey();
 		
-		if (_selectedThumbnailBox is not null)
+		if (GlobalParameters!.IsBackwardNavigationKey(keyPressing))
 		{
-			if (GlobalParameters!.IsBackwardNavigationKey(keyPressing))
-			{
-				AdvanceToThumbnailIndex(-1);
-			}
-			else if (GlobalParameters!.IsForwardNavigationKey(keyPressing))
-			{
-				AdvanceToThumbnailIndex(1);
-			}
+			AdvanceSelectedThumbnailByIncrement(-1);
+		}
+		else if (GlobalParameters!.IsForwardNavigationKey(keyPressing))
+		{
+			AdvanceSelectedThumbnailByIncrement(1);
 		}
 
 		e.Handled = true;
