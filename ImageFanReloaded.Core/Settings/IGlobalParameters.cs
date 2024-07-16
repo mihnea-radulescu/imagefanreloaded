@@ -34,6 +34,9 @@ public interface IGlobalParameters
 	Key DownKey { get; }
 	Key LeftKey { get; }
 	Key RightKey { get; }
+	
+	Key PlusKey { get; }
+	Key MinusKey { get; }
 
 	bool IsBackwardNavigationKey(Key aKey);
 	bool IsForwardNavigationKey(Key aKey);

@@ -17,10 +17,11 @@ User interface:
 * left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and dragging images
 * right mouse button for returning from the opened image to the main view
 * mouse wheel for scrolling through folders and thumbnails, and for navigating back and forward through opened images
+* key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 * key combo Shift+Tab for cycling through tabs
 * key Tab for cycling through controls in the active tab
 * key R for toggling recursive folder access, and key combo Shift+R for toggling persistent recursive folder access
-* keys Up-Down-Left-Right for back and forward navigation through the folders tree, thumbnails and opened images
+* keys Up, Down, Left and Right for back and forward navigation through the folders tree, thumbnails and opened images
 * key Enter for entering image view and zoomed image view modes
 * key combos Ctrl+Up, Ctrl+Down, Ctrl+Left and Ctrl+Right for dragging zoomed images
 * key I for toggling image info in image view and zoomed image view modes

@@ -26,6 +26,11 @@ public static class KeyExtensions
 			
 			Avalonia.Input.Key.T => Core.Keyboard.Key.T,
 			Avalonia.Input.Key.I => Core.Keyboard.Key.I,
+			
+			Avalonia.Input.Key.OemPlus => Core.Keyboard.Key.Plus,
+			Avalonia.Input.Key.Add => Core.Keyboard.Key.Plus,
+			Avalonia.Input.Key.OemMinus => Core.Keyboard.Key.Minus,
+			Avalonia.Input.Key.Subtract => Core.Keyboard.Key.Minus,
 
 			_ => Core.Keyboard.Key.None
 		};

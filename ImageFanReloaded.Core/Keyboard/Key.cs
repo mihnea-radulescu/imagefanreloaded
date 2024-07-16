@@ -24,5 +24,8 @@ public enum Key
 	R,
 	
 	T,
-	I
+	I,
+	
+	Plus,
+	Minus
 }

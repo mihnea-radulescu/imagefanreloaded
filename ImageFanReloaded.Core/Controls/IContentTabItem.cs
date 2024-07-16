@@ -29,7 +29,7 @@ public interface IContentTabItem
 	bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 
-	void SetFocusOnFirstFolderTreeViewItem();
+	void SetFolderTreeViewSelectedItem();
 
 	void SetTitle(string title);
 

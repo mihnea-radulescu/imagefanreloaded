@@ -58,7 +58,7 @@ public class MainViewPresenter
 			EnableContentTabEventHandling(contentTabItem);
 		}
 		
-		contentTabItem.SetFocusOnFirstFolderTreeViewItem();
+		contentTabItem.SetFolderTreeViewSelectedItem();
 	}
 	
 	private void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)

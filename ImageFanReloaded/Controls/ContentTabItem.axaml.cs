@@ -68,7 +68,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void SetFocusOnFirstFolderTreeViewItem()
+	public void SetFolderTreeViewSelectedItem()
 	{
 		if (_folderTreeView.SelectedItem is null)
 		{

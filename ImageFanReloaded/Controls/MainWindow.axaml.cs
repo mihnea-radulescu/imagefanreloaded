@@ -73,6 +73,16 @@ public partial class MainWindow : Window, IMainView
 			CloseWindow();
 			e.Handled = true;
 		}
+		else if (ShouldAddNewTab(keyModifiers, keyPressing))
+		{
+			AddContentTabItem();
+			e.Handled = true;
+		}
+		else if (ShouldCloseSelectedTab(keyModifiers, keyPressing))
+		{
+			CloseContentTabItem();
+			e.Handled = true;
+		}
 		else if (ShouldNavigateToNextTab(keyModifiers, keyPressing))
 		{
 			NavigateToNextTab();
@@ -116,6 +126,19 @@ public partial class MainWindow : Window, IMainView
 
 		var shouldAllowTabClose = ShouldAllowTabClose();
 		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(shouldAllowTabClose));
+		
+		SelectLastTabItem();
+	}
+
+	private void CloseContentTabItem()
+	{
+		var activeContentTabItem = GetActiveContentTabItem();
+
+		if (activeContentTabItem is not null)
+		{
+			var contentTabItemEventArgs = new ContentTabItemEventArgs(activeContentTabItem);
+			CloseContentTabItem(this, contentTabItemEventArgs);
+		}
 	}
 
 	private (IContentTabItem contentTabItem, object tabItem) BuildTabItemData()
@@ -184,8 +207,7 @@ public partial class MainWindow : Window, IMainView
 		SelectLastTabItem();
 	}
 
-    private bool ShouldCloseWindow(
-	    ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+    private bool ShouldCloseWindow(KeyModifiers keyModifiers, Key keyPressing)
     {
         if (keyPressing == GlobalParameters!.EscapeKey)
         {
@@ -200,8 +222,7 @@ public partial class MainWindow : Window, IMainView
 		return false;
     }
 
-    private bool ShouldWindowsOsCloseWindow(
-	    ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+    private bool ShouldWindowsOsCloseWindow(KeyModifiers keyModifiers, Key keyPressing)
     {
 	    if (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressing == GlobalParameters!.F4Key)
 	    {
@@ -210,13 +231,32 @@ public partial class MainWindow : Window, IMainView
 	        
 	    return false;
     }
+    
+    private bool ShouldAddNewTab(KeyModifiers keyModifiers, Key keyPressing)
+    {
+	    if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.PlusKey)
+	    {
+		    return true;
+	    }
 
-    private bool ShouldNavigateToNextTab(
-	    ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	    return false;
+    }
+    
+    private bool ShouldCloseSelectedTab(KeyModifiers keyModifiers, Key keyPressing)
+    {
+	    if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.MinusKey)
+	    {
+		    return HasAtLeastOneContentTabItem();
+	    }
+
+	    return false;
+    }
+
+    private bool ShouldNavigateToNextTab(KeyModifiers keyModifiers, Key keyPressing)
     {
 	    if (keyModifiers == GlobalParameters!.ShiftKeyModifier && keyPressing == GlobalParameters!.TabKey)
 	    {
-		    return HasAtLeastOneTabItem();
+		    return HasAtLeastOneContentTabItem();
 	    }
 
 	    return false;
@@ -227,7 +267,7 @@ public partial class MainWindow : Window, IMainView
     private bool ShouldAllowKeyPressingEventPropagation(IContentTabItem contentTabItem, Key keyPressing)
 		=> contentTabItem.IsThumbnailScrollViewerFocused || GlobalParameters!.IsNavigationKey(keyPressing);
     
-    private bool HasAtLeastOneTabItem()
+    private bool HasAtLeastOneContentTabItem()
     {
 	    var contentTabItemCount = GetContentTabItemCount();
 	    
