@@ -74,6 +74,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			_folderTreeView.SelectedItem = _folderTreeView.Items.FirstOrDefault();
 		}
+		
+		if (_folderTreeView.SelectedItem is not null)
+		{
+			var selectedItemAsTreeViewItem = (TreeViewItem)_folderTreeView.SelectedItem;
+			selectedItemAsTreeViewItem.Focus();
+		}
 	}
 
 	public void SetTitle(string title) => ContentTabItemHeader!.SetTabTitle(title);
