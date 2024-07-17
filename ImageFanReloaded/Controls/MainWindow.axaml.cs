@@ -265,7 +265,7 @@ public partial class MainWindow : Window, IMainView
     private bool ShouldDisplayHelp(Key keyPressing) => keyPressing == GlobalParameters!.F1Key;
     
     private bool ShouldAllowKeyPressingEventPropagation(IContentTabItem contentTabItem, Key keyPressing)
-		=> contentTabItem.IsThumbnailScrollViewerFocused || GlobalParameters!.IsNavigationKey(keyPressing);
+		=> GlobalParameters!.IsNavigationKey(keyPressing);
     
     private bool HasAtLeastOneContentTabItem()
     {

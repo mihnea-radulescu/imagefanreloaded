@@ -48,6 +48,4 @@ public interface IContentTabItem
 	void SetImageStatusBarText(string imageStatusBarText);
 
 	void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo);
-
-	bool IsThumbnailScrollViewerFocused { get; }
 }

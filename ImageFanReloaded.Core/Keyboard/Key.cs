@@ -27,5 +27,8 @@ public enum Key
 	I,
 	
 	Plus,
-	Minus
+	Minus,
+	
+	PageUp,
+	PageDown
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using ImageFanReloaded.Core.Collections.Implementation;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
@@ -45,8 +44,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		var shouldHandleKeyPressing = ShouldSwitchControlFocus(keyModifiers, keyPressing)
-			|| ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing)
-			|| ShouldHandleThumbnailSelection(keyPressing);
+		                              || ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing)
+		                              || ShouldHandleThumbnailSelection(keyPressing)
+		                              || ShouldHandleThumbnailScrolling(keyPressing);
 
 		return shouldHandleKeyPressing;
 	}
@@ -65,6 +65,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			BringThumbnailIntoView();
 			DisplayImage();
+		}
+		else if (ShouldHandleThumbnailScrolling(keyPressing))
+		{
+			HandleThumbnailScrolling(keyPressing);
 		}
 	}
 
@@ -214,12 +218,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			}
 		}
 	}
-
-	public bool IsThumbnailScrollViewerFocused => _thumbnailScrollViewer.IsFocused;
 	
     #region Private
 
     private const string FakeTreeViewItemText = "Loading...";
+
+    private const int ThumbnailScrollAdvanceCount = 20;
 
     private readonly IList<IThumbnailBox> _thumbnailBoxCollection;
 
@@ -304,7 +308,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		var imageView = e.ImageView;
 		var increment = e.Increment;
 		
-		if (AdvanceSelectedThumbnailByIncrement(increment))
+		if (AdvanceFromSelectedThumbnail(increment))
 		{
 			imageView.SetImage(_selectedThumbnailBox!.ImageFile!, _folderAccessType.IsRecursive());
 		}
@@ -323,26 +327,37 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-    private bool AdvanceSelectedThumbnailByIncrement(int increment)
+	private bool AdvanceFromSelectedThumbnail(int increment)
 	{
+		var canAdvanceToNewSelectedThumbnailIndex = false;
+		
 		if (_selectedThumbnailBox is not null)
 		{
 			var newSelectedThumbnailIndex = _selectedThumbnailIndex + increment;
 
-			if (_thumbnailBoxCollection.IsIndexWithinBounds(newSelectedThumbnailIndex))
+			if (newSelectedThumbnailIndex < 0)
 			{
+				newSelectedThumbnailIndex = 0;
+			}
+			else if (newSelectedThumbnailIndex >= _thumbnailBoxCollection.Count)
+			{
+				newSelectedThumbnailIndex = _thumbnailBoxCollection.Count - 1;
+			}
+
+			if (_selectedThumbnailIndex != newSelectedThumbnailIndex)
+			{
+				canAdvanceToNewSelectedThumbnailIndex = true;
+				
 				UnselectThumbnail();
 
 				_selectedThumbnailIndex = newSelectedThumbnailIndex;
 				_selectedThumbnailBox = _thumbnailBoxCollection[_selectedThumbnailIndex];
 
 				SelectThumbnail();
-
-				return true;
 			}
 		}
 
-		return false;
+		return canAdvanceToNewSelectedThumbnailIndex;
 	}
 
 	private void BringThumbnailIntoView() => _selectedThumbnailBox?.BringThumbnailIntoView();
@@ -443,6 +458,17 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 	
+	private bool ShouldHandleThumbnailScrolling(Key keyPressing)
+	{
+		if (_selectedThumbnailBox is not null &&
+		    (keyPressing == GlobalParameters!.PageUpKey || keyPressing == GlobalParameters!.PageDownKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+	
 	private void SwitchControlFocus()
 	{
 		if (_folderTreeView.SelectedItem is null)
@@ -484,17 +510,32 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		RaiseFolderChangedEvent();
 	}
 	
+	private void HandleThumbnailScrolling(Key keyPressing)
+	{
+		if (_selectedThumbnailBox is not null)
+		{
+			if (keyPressing == GlobalParameters!.PageUpKey)
+			{
+				AdvanceFromSelectedThumbnail(-ThumbnailScrollAdvanceCount);
+			}
+			else if (keyPressing == GlobalParameters!.PageDownKey)
+			{
+				AdvanceFromSelectedThumbnail(ThumbnailScrollAdvanceCount);
+			}
+		}
+	}
+	
 	private void ThumbnailScrollViewerOnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
 	{
 		var keyPressing = e.Key.ToCoreKey();
 		
 		if (GlobalParameters!.IsBackwardNavigationKey(keyPressing))
 		{
-			AdvanceSelectedThumbnailByIncrement(-1);
+			AdvanceFromSelectedThumbnail(-1);
 		}
 		else if (GlobalParameters!.IsForwardNavigationKey(keyPressing))
 		{
-			AdvanceSelectedThumbnailByIncrement(1);
+			AdvanceFromSelectedThumbnail(1);
 		}
 
 		e.Handled = true;

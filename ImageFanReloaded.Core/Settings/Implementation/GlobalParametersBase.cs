@@ -40,6 +40,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	public Key PlusKey { get; }
 	public Key MinusKey { get; }
+	
+	public Key PageUpKey { get; }
+	public Key PageDownKey { get; }
 
 	public bool IsBackwardNavigationKey(Key aKey) => _backwardNavigationKeys.Contains(aKey);
 	public bool IsForwardNavigationKey(Key aKey) => _forwardNavigationKeys.Contains(aKey);
@@ -109,6 +112,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		PlusKey = Key.Plus;
 		MinusKey = Key.Minus;
+
+		PageUpKey = Key.PageUp;
+		PageDownKey = Key.PageDown;
 		
 		NameComparer = operatingSystemSettings.IsWindows
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)

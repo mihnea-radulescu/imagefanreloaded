@@ -31,6 +31,9 @@ public static class KeyExtensions
 			Avalonia.Input.Key.Add => Core.Keyboard.Key.Plus,
 			Avalonia.Input.Key.OemMinus => Core.Keyboard.Key.Minus,
 			Avalonia.Input.Key.Subtract => Core.Keyboard.Key.Minus,
+			
+			Avalonia.Input.Key.PageUp => Core.Keyboard.Key.PageUp,
+			Avalonia.Input.Key.PageDown => Core.Keyboard.Key.PageDown,
 
 			_ => Core.Keyboard.Key.None
 		};

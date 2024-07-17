@@ -37,6 +37,9 @@ public interface IGlobalParameters
 	
 	Key PlusKey { get; }
 	Key MinusKey { get; }
+	
+	Key PageUpKey { get; }
+	Key PageDownKey { get; }
 
 	bool IsBackwardNavigationKey(Key aKey);
 	bool IsForwardNavigationKey(Key aKey);

@@ -76,6 +76,9 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.PlusKey.Should().NotBe(Key.None);
 		_globalParameters.MinusKey.Should().NotBe(Key.None);
 		
+		_globalParameters.PageUpKey.Should().NotBe(Key.None);
+		_globalParameters.PageDownKey.Should().NotBe(Key.None);
+		
 		_globalParameters.NameComparer.Should().NotBeNull();
 		
 		_globalParameters.ImageFileExtensions.Should().NotBeEmpty();
