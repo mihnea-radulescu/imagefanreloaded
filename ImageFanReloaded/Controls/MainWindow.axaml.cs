@@ -126,8 +126,6 @@ public partial class MainWindow : Window, IMainView
 
 		var shouldAllowTabClose = ShouldAllowTabClose();
 		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(shouldAllowTabClose));
-		
-		SelectLastTabItem();
 	}
 
 	private void CloseContentTabItem()
@@ -164,7 +162,8 @@ public partial class MainWindow : Window, IMainView
 		{
 			FontSize = _windowFontSize,
 			Header = contentTabItem.ContentTabItemHeader,
-			Content = contentTabItem
+			Content = contentTabItem,
+			IsSelected = true
 		};
 		
 		tabItem.KeyDown += (_, e) => e.Handled = true;
