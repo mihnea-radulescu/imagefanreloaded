@@ -223,7 +223,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
     private const string FakeTreeViewItemText = "Loading...";
 
-    private const int ThumbnailScrollAdvanceCount = 20;
+    private const int ThumbnailScrollAdvanceCount = 25;
 
     private readonly IList<IThumbnailBox> _thumbnailBoxCollection;
 
