@@ -63,6 +63,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 		else if (ShouldHandleThumbnailSelection(keyPressing))
 		{
+			FocusThumbnailScrollViewer();
 			BringThumbnailIntoView();
 			DisplayImage();
 		}
@@ -480,17 +481,21 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		
 		if (selectedItemAsTreeViewItem.IsFocused)
 		{
-			_gridSplitter.Focus();
+			FocusGridSplitter();
 		}
 		else if (_gridSplitter.IsFocused)
 		{
-			_thumbnailScrollViewer.Focus();
+			FocusThumbnailScrollViewer();
 		}
 		else
 		{
-			selectedItemAsTreeViewItem.Focus();
+			FocusTreeViewItem(selectedItemAsTreeViewItem);
 		}
 	}
+	
+	private void FocusGridSplitter() => _gridSplitter.Focus();
+	private void FocusThumbnailScrollViewer() => _thumbnailScrollViewer.Focus();
+	private static void FocusTreeViewItem(TreeViewItem treeViewItem) => treeViewItem.Focus();
 
 	private void ToggleRecursiveFolderAccess(KeyModifiers keyModifiers)
 	{

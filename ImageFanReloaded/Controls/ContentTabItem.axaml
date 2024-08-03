@@ -31,6 +31,11 @@
 			              VerticalScrollBarVisibility="Auto"
 			              KeyDown="ThumbnailScrollViewerOnKeyPressing"
 			              Focusable="True">
+				<ScrollViewer.Styles>
+					<Style Selector="ScrollViewer">
+						<Setter Property="FocusAdorner" Value="{x:Null}" />
+					</Style>
+				</ScrollViewer.Styles>
 				<WrapPanel Name="_thumbnailWrapPanel"
 				           Orientation="Horizontal"
 				           Margin="5 0 5 0"/>

@@ -98,7 +98,7 @@ public partial class MainWindow : Window, IMainView
 			contentTabItem.HandleControlKeyFunctions(keyModifiers, keyPressing);
 			e.Handled = true;
 		}
-		else if (!ShouldAllowKeyPressingEventPropagation(contentTabItem, keyPressing))
+		else if (!ShouldAllowKeyPressingEventPropagation(keyPressing))
 		{
 			e.Handled = true;
 		}
@@ -263,7 +263,7 @@ public partial class MainWindow : Window, IMainView
     
     private bool ShouldDisplayHelp(Key keyPressing) => keyPressing == GlobalParameters!.F1Key;
     
-    private bool ShouldAllowKeyPressingEventPropagation(IContentTabItem contentTabItem, Key keyPressing)
+    private bool ShouldAllowKeyPressingEventPropagation(Key keyPressing)
 		=> GlobalParameters!.IsNavigationKey(keyPressing);
     
     private bool HasAtLeastOneContentTabItem()
