@@ -53,7 +53,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	public void SelectThumbnail()
 	{
-		_thumbnailBoxBorder.BorderBrush = Brushes.Gray;
+		_thumbnailBoxBorder.BorderBrush = Brushes.DodgerBlue;
 		Cursor = HandCursor;
 		IsSelected = true;
 

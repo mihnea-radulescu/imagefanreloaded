@@ -113,6 +113,8 @@ public partial class MainWindow : Window, IMainView
 		{
 			AddContentTabItem();
 		}
+		
+		FocusSelectedContentTabItem();
 	}
 
 	private void AddContentTabItem()
@@ -130,11 +132,11 @@ public partial class MainWindow : Window, IMainView
 
 	private void CloseContentTabItem()
 	{
-		var activeContentTabItem = GetActiveContentTabItem();
+		var contentTabItem = GetActiveContentTabItem();
 
-		if (activeContentTabItem is not null)
+		if (contentTabItem is not null)
 		{
-			var contentTabItemEventArgs = new ContentTabItemEventArgs(activeContentTabItem);
+			var contentTabItemEventArgs = new ContentTabItemEventArgs(contentTabItem);
 			CloseContentTabItem(this, contentTabItemEventArgs);
 		}
 	}
@@ -189,6 +191,8 @@ public partial class MainWindow : Window, IMainView
 		var lastTabItemIndex = GetContentTabItemCount() - 1;
 		var lastTabItem = (TabItem)_tabControl.Items[lastTabItemIndex]!;
 		lastTabItem.IsSelected = true;
+		
+		FocusSelectedContentTabItem();
 	}
 
 	private void CloseContentTabItem(object? sender, ContentTabItemEventArgs e)
@@ -204,6 +208,12 @@ public partial class MainWindow : Window, IMainView
 		contentTabItem.UnregisterMainViewEvents();
 
 		SelectLastTabItem();
+	}
+	
+	private void FocusSelectedContentTabItem()
+	{
+		var selectedContentTabItem = GetActiveContentTabItem()!;
+		selectedContentTabItem.SetFolderTreeViewSelectedItem();
 	}
 
     private bool ShouldCloseWindow(KeyModifiers keyModifiers, Key keyPressing)

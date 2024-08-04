@@ -6,8 +6,6 @@
 		WindowState="FullScreen"
         Background="Black"
 		Focusable="True"
-		PointerPressed="OnMouseDown"
-		PointerReleased="OnMouseUp"
         Closing="OnClosing">
 	<Grid>
 		<Grid.RowDefinitions>
@@ -16,7 +14,9 @@
 		<ScrollViewer Name="_imageScrollViewer"
 		              Grid.Row="0"
 		              HorizontalScrollBarVisibility="Hidden"
-		              VerticalScrollBarVisibility="Hidden">
+		              VerticalScrollBarVisibility="Hidden"
+		              PointerPressed="OnMouseDown"
+		              PointerReleased="OnMouseUp">
 			<Image Name="_imageControl"
 			       Stretch="None"/>
 		</ScrollViewer>
@@ -28,7 +28,7 @@
 			         Background="Transparent"
 			         BorderThickness="0"
 			         Foreground="Lime"
-			         FontWeight="UltraBold"
+			         FontWeight="Bold"
 			         TextAlignment="Right"
 			         IsVisible="False"/>
 		</Canvas>

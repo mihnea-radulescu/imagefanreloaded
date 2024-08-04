@@ -153,7 +153,7 @@ public partial class ImageWindow : Window, IImageView
         }
         else if (keyPressing == _globalParameters!.EscapeKey)
         {
-	        CloseWindow();
+	        HandleEscapeAction();
         }
         else if (keyPressing == _globalParameters!.TKey)
         {
@@ -192,7 +192,7 @@ public partial class ImageWindow : Window, IImageView
 			}
 			else if (e.InitialPressMouseButton == MouseButton.Right)
 			{
-				CloseWindow();
+				HandleEscapeAction();
 			}
 		}
 		else if (_imageViewState == ImageViewState.ZoomedToImageSize)
@@ -213,7 +213,7 @@ public partial class ImageWindow : Window, IImageView
 			}
 			else if (e.InitialPressMouseButton == MouseButton.Right)
 			{
-				CloseWindow();
+				HandleEscapeAction();
 			}
 		}
 	}
@@ -242,6 +242,18 @@ public partial class ImageWindow : Window, IImageView
 	private void RaiseImageChanged(int increment)
 	{
 		ImageChanged?.Invoke(this, new ImageChangedEventArgs(this, increment));
+	}
+	
+	private void HandleEscapeAction()
+	{
+		if (_textBoxImageInfo.IsFocused)
+		{
+			Focus();
+		}
+		else
+		{
+			CloseWindow();
+		}
 	}
 	
 	private (double, double) GetNormalizedDrag()
