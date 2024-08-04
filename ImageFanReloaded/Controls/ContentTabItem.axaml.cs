@@ -219,6 +219,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			}
 		}
 	}
+
+	public bool AreFolderInfoOrImageInfoFocused() => _textBoxFolderInfo.IsFocused || _textBoxImageInfo.IsFocused;
+	
+	public void FocusThumbnailScrollViewer() => _thumbnailScrollViewer.Focus();
 	
     #region Private
 
@@ -494,7 +498,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	}
 	
 	private void FocusGridSplitter() => _gridSplitter.Focus();
-	private void FocusThumbnailScrollViewer() => _thumbnailScrollViewer.Focus();
 	private static void FocusTreeViewItem(TreeViewItem treeViewItem) => treeViewItem.Focus();
 
 	private void ToggleRecursiveFolderAccess(KeyModifiers keyModifiers)

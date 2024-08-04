@@ -68,9 +68,21 @@ public partial class MainWindow : Window, IMainView
 		
 		var contentTabItem = GetActiveContentTabItem()!;
 
-		if (ShouldCloseWindow(keyModifiers, keyPressing))
+		if (ShouldWindowsOsCloseWindow(keyModifiers, keyPressing))
 		{
 			CloseWindow();
+			e.Handled = true;
+		}
+		else if (ShouldHandleEscapeAction(keyModifiers, keyPressing))
+		{
+			if (contentTabItem.AreFolderInfoOrImageInfoFocused())
+			{
+				contentTabItem.FocusThumbnailScrollViewer();
+			}
+			else
+			{
+				CloseWindow();
+			}
 			e.Handled = true;
 		}
 		else if (ShouldAddNewTab(keyModifiers, keyPressing))
@@ -216,16 +228,11 @@ public partial class MainWindow : Window, IMainView
 		selectedContentTabItem.SetFolderTreeViewSelectedItem();
 	}
 
-    private bool ShouldCloseWindow(KeyModifiers keyModifiers, Key keyPressing)
+    private bool ShouldHandleEscapeAction(KeyModifiers keyModifiers, Key keyPressing)
     {
         if (keyPressing == GlobalParameters!.EscapeKey)
         {
             return true;
-        }
-
-        if (GlobalParameters!.IsWindows)
-        {
-	        return ShouldWindowsOsCloseWindow(keyModifiers, keyPressing);
         }
 
 		return false;
