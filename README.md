@@ -5,13 +5,13 @@ It is written in C#, relies on the Avalonia UI framework, and targets .NET 8 on 
 
 Features:
 * quick concurrent thumbnail generation, scaling to the number of processor cores present
-* support for multiple image folder tabs
+* support for multiple folder tabs
 * keyboard and mouse user interaction
-* toggleable recursive folder image browsing
-* targeted zoom and drag zoomed image control
+* toggle-able recursive folder browsing
+* targeted zooming in, and moving over the zoomed image
 * fast and seamless full-screen navigation across images
 * command-line direct access to the specified folder or image file
-* configurable thumbnail size, between 50 and 500 pixels, available in file AppSettings.json
+* custom thumbnail size, between 50 and 500 pixels, configurable in file AppSettings.json
 
 User interface:
 * left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and dragging images
