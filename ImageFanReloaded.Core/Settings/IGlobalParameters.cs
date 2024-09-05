@@ -69,9 +69,6 @@ public interface IGlobalParameters
 	IImage HomeFolderIcon { get; }
 	IImage PicturesFolderIcon { get; }
 	
-	string AboutTitle { get; }
-	string AboutText { get; }
-	
 	IImage GetInvalidImageThumbnail(int thumbnailSize);
 	IImage GetLoadingImageThumbnail(int thumbnailSize);
 }

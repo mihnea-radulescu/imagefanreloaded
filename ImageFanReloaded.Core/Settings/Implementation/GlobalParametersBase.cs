@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.OperatingSystem;
@@ -72,17 +71,12 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public abstract IImage HomeFolderIcon { get; }
 	public abstract IImage PicturesFolderIcon { get; }
 	
-	public abstract string AboutTitle { get; }
-	public abstract string AboutText { get; }
-	
 	public abstract IImage GetInvalidImageThumbnail(int thumbnailSize);
 	public abstract IImage GetLoadingImageThumbnail(int thumbnailSize);
 
 	#region Protected
 	
-	protected GlobalParametersBase(
-		IOperatingSystemSettings operatingSystemSettings,
-		IAboutInformationProvider aboutInformationProvider)
+	protected GlobalParametersBase(IOperatingSystemSettings operatingSystemSettings)
 	{
 		ProcessorCount = Environment.ProcessorCount;
 		

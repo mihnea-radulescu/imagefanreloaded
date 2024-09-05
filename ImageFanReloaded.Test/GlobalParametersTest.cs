@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using Xunit;
-using ImageFanReloaded.Core.AboutInformation;
-using ImageFanReloaded.Core.AboutInformation.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Keyboard;
@@ -19,13 +17,10 @@ public class GlobalParametersTest : TestBase
 	{
 		IOperatingSystemSettings operatingSystemSettings = new OperatingSystemSettings();
 		
-		IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
-		
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		_globalParameters = new GlobalParameters(
-			operatingSystemSettings, aboutInformationProvider, imageResizer);
+		_globalParameters = new GlobalParameters(operatingSystemSettings, imageResizer);
 	}
 	
 	[Fact]
@@ -96,9 +91,6 @@ public class GlobalParametersTest : TestBase
 
 		_globalParameters.DriveIcon.GetBitmap().Should().NotBeNull();
 		_globalParameters.FolderIcon.GetBitmap().Should().NotBeNull();
-		
-		_globalParameters.AboutTitle.Should().NotBeNullOrEmpty();
-		_globalParameters.AboutText.Should().NotBeNullOrEmpty();
 
 		SaveImageToDisc(
 			_globalParameters.InvalidImage.GetBitmap(),

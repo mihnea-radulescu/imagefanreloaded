@@ -1,0 +1,17 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ImageFanReloaded.Controls.AboutWindow"
+        Icon="/MainWindowIcon.ico"
+        Title="About ImageFan Reloaded"
+        MinWidth="800"
+        MinHeight="450"
+        Width="800"
+        Height="450"
+        WindowStartupLocation="CenterOwner"
+        Focusable="True">
+	<TextBox Name="_textBoxAbout"
+	         IsReadOnly="True"
+	         Background="Transparent"
+	         BorderThickness="0"
+	         Margin="3"/>
+</Window>

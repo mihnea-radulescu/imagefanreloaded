@@ -20,7 +20,7 @@ User interface:
 * key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 * key combo Shift+Tab for cycling through tabs
 * key Tab for cycling through controls in the active tab
-* keys + and - for changing the thumbnail size by an increment of 50 pixels
+* keys + and - for changing thumbnail size by an increment of 50 pixels
 * key R for toggling recursive folder access, and key combo Shift+R for toggling persistent recursive folder access
 * keys Up, Down, Left and Right for back and forward navigation through the folders tree, thumbnails and opened images
 * keys PageUp and PageDown for scrolling through thumbnails

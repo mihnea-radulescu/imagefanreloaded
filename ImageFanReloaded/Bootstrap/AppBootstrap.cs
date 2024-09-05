@@ -54,12 +54,11 @@ public class AppBootstrap : IAppBootstrap
     private void BootstrapTypes()
     {
 	    IOperatingSystemSettings operatingSystemSettings = new OperatingSystemSettings();
-	    IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
 	    
 	    IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 	    IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
-
-	    _globalParameters = new GlobalParameters(operatingSystemSettings, aboutInformationProvider, imageResizer);
+	    
+	    _globalParameters = new GlobalParameters(operatingSystemSettings, imageResizer);
 	    
 	    _fileSizeEngine = new FileSizeEngine();
 	    
@@ -99,12 +98,16 @@ public class AppBootstrap : IAppBootstrap
 	    IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
 		    _globalParameters, _fileSizeEngine, thumbnailInfoFactory, _discQueryEngine);
 
+	    IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
+	    IAboutViewFactory aboutViewFactory = new AboutViewFactory(aboutInformationProvider, _globalParameters);
+
 	    var mainViewPresenter = new MainViewPresenter(
 		    _discQueryEngine,
 		    folderVisualStateFactory,
 		    imageViewFactory,
 		    _inputPathContainer,
 		    _globalParameters,
+		    aboutViewFactory,
 		    mainView);
 
 	    mainView.AddFakeTabItem();

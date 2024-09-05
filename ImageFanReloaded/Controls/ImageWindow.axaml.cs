@@ -68,7 +68,7 @@ public partial class ImageWindow : Window, IImageView
 		ResizeToScreenSize();
 	}
 
-	public Task ShowDialog(IMainView owner) => ShowDialog((Window)owner);
+	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
 
 	#region Private
 

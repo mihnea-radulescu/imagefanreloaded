@@ -14,11 +14,11 @@ public interface IMainView
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
 	event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
-	event EventHandler? HelpMenuRequested;
+	event EventHandler? AboutInfoRequested;
 
 	void AddFakeTabItem();
-	
-	Task ShowInfoMessage(string title, string text);
 
 	void Show();
+	
+	Task ShowAboutInfo(IAboutView aboutView);
 }

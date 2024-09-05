@@ -16,6 +16,7 @@ public class MainViewPresenter
 		IImageViewFactory imageViewFactory,
 		IInputPathContainer inputPathContainer,
 		IGlobalParameters globalParameters,
+		IAboutViewFactory aboutViewFactory,
 		IMainView mainView)
 	{
 		_discQueryEngine = discQueryEngine;
@@ -24,11 +25,12 @@ public class MainViewPresenter
 
 		_inputPathContainer = inputPathContainer;
 		_globalParameters = globalParameters;
+		_aboutViewFactory = aboutViewFactory;
 
 		_mainView = mainView;
 		_mainView.ContentTabItemAdded += OnContentTabItemAdded;
 		_mainView.ContentTabItemClosed += OnContentTabItemClosed;
-		_mainView.HelpMenuRequested += OnHelpMenuRequested;
+		_mainView.AboutInfoRequested += OnAboutInfoRequested;
 	}
 
 	#region Private
@@ -39,6 +41,7 @@ public class MainViewPresenter
 	
 	private readonly IInputPathContainer _inputPathContainer;
 	private readonly IGlobalParameters _globalParameters;
+	private readonly IAboutViewFactory _aboutViewFactory;
 
 	private readonly IMainView _mainView;
 
@@ -71,9 +74,10 @@ public class MainViewPresenter
 		contentTabItem.FolderChangedMutex!.Dispose();
 	}
 	
-	private async void OnHelpMenuRequested(object? sender, EventArgs e)
+	private async void OnAboutInfoRequested(object? sender, EventArgs e)
 	{
-		await _mainView.ShowInfoMessage(_globalParameters.AboutTitle, _globalParameters.AboutText);
+		var aboutView = _aboutViewFactory.GetAboutView();
+		await _mainView.ShowAboutInfo(aboutView);
 	}
 	
 	private async void OnFolderChanged(object? sender, FolderChangedEventArgs e)
