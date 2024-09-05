@@ -140,9 +140,7 @@ User interface:
 	{
 		var invalidImageThumbnails = new Dictionary<int, IImage>();
 
-		for (var thumbnailSize = ThumbnailSizeLowerThreshold;
-		     thumbnailSize <= ThumbnailSizeUpperThreshold;
-		     thumbnailSize += ThumbnailSizeIncrement)
+		foreach (var thumbnailSize in _validThumbnailSizes)
 		{
 			var thumbnailImageSize = new ImageSize(thumbnailSize);
 			
@@ -162,9 +160,7 @@ User interface:
 			var loadingBitmapSize = new ImageSize(loadingBitmap.Size.Width, loadingBitmap.Size.Height);
 			var loadingImage = new Image(loadingBitmap, loadingBitmapSize);
 			
-			for (var thumbnailSize = ThumbnailSizeLowerThreshold;
-			     thumbnailSize <= ThumbnailSizeUpperThreshold;
-			     thumbnailSize += ThumbnailSizeIncrement)
+			foreach (var thumbnailSize in _validThumbnailSizes)
 			{
 				var thumbnailImageSize = new ImageSize(thumbnailSize);
 			

@@ -103,8 +103,7 @@ public partial class ImageWindow : Window, IImageView
 	    var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 	    var keyPressing = e.Key.ToCoreKey();
 
-	    if (keyModifiers == _globalParameters!.CtrlKeyModifier &&
-	        _imageViewState == ImageViewState.ZoomedToImageSize)
+	    if (ShouldHandleImageDrag(keyModifiers))
 	    {
 		    if (keyPressing == _globalParameters!.UpKey)
 		    {
@@ -123,15 +122,15 @@ public partial class ImageWindow : Window, IImageView
 			    DragImage(1, 0);
 		    }
 	    }
-        else if (_globalParameters!.IsBackwardNavigationKey(keyPressing))
+        else if (ShouldHandleBackwardNavigation(keyModifiers, keyPressing))
         {
             RaiseImageChanged(-1);
         }
-        else if (_globalParameters!.IsForwardNavigationKey(keyPressing))
+        else if (ShouldHandleForwardNavigation(keyModifiers, keyPressing))
         {
             RaiseImageChanged(1);
         }
-        else if (keyPressing == _globalParameters!.EnterKey)
+        else if (ShouldHandleImageZoom(keyModifiers, keyPressing))
         {
             if (!_canZoomToImageSize)
             {
@@ -147,15 +146,15 @@ public partial class ImageWindow : Window, IImageView
                 ResizeToScreenSize();
             }
         }
-        else if (keyPressing == _globalParameters!.IKey)
+        else if (ShouldToggleImageInfo(keyModifiers, keyPressing))
         {
-	        ToggleImageInfoVisibility();
+	        ToggleImageInfo();
         }
-        else if (keyPressing == _globalParameters!.EscapeKey)
+        else if (ShouldHandleEscapeAction(keyModifiers, keyPressing))
         {
 	        HandleEscapeAction();
         }
-        else if (keyPressing == _globalParameters!.TKey)
+        else if (ShouldHandleWindowClose(keyModifiers, keyPressing))
         {
 	        _showMainViewAfterImageViewClosing = true;
 	        
@@ -237,6 +236,89 @@ public partial class ImageWindow : Window, IImageView
 	private void OnClosing(object? sender, WindowClosingEventArgs e)
 	{
 		ViewClosing?.Invoke(this, new ImageViewClosingEventArgs(_showMainViewAfterImageViewClosing));
+	}
+	
+	private bool ShouldHandleImageDrag(ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
+	{
+		if (keyModifiers == _globalParameters!.CtrlKeyModifier &&
+		    _imageViewState == ImageViewState.ZoomedToImageSize)
+		{
+			return true;
+		}
+
+		return false;
+	}
+	
+	private bool ShouldHandleBackwardNavigation(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+		    _globalParameters!.IsBackwardNavigationKey(keyPressing))
+		{
+			return true;
+		}
+	    
+		return false;
+	}
+
+	private bool ShouldHandleForwardNavigation(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+		    _globalParameters!.IsForwardNavigationKey(keyPressing))
+		{
+			return true;
+		}
+	    
+		return false;
+	}
+	
+	private bool ShouldHandleImageZoom(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+		    keyPressing == _globalParameters!.EnterKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+	
+	private bool ShouldToggleImageInfo(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+		    keyPressing == _globalParameters!.IKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+	
+	private bool ShouldHandleEscapeAction(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+		    keyPressing == _globalParameters!.EscapeKey)
+		{
+			return true;
+		}
+	    
+		return false;
+	}
+	
+	private bool ShouldHandleWindowClose(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+		    keyPressing == _globalParameters!.TKey)
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	private void RaiseImageChanged(int increment)
@@ -386,7 +468,7 @@ public partial class ImageWindow : Window, IImageView
 		return zoomRectangle;
 	}
 	
-	private void ToggleImageInfoVisibility()
+	private void ToggleImageInfo()
 	{
 		_textBoxImageInfo.IsVisible = !_textBoxImageInfo.IsVisible;
 	}

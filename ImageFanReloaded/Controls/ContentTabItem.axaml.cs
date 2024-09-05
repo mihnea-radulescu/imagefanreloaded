@@ -58,7 +58,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		                              || ShouldSwitchControlFocus(keyModifiers, keyPressing)
 		                              || ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing)
 		                              || ShouldHandleThumbnailSelection(keyModifiers, keyPressing)
-		                              || ShouldHandleThumbnailScrolling(keyModifiers, keyPressing);
+		                              || ShouldHandleThumbnailScrolling(keyModifiers, keyPressing)
+		                              || ShouldHandleThumbnailNavigation(keyModifiers, keyPressing);
 
 		return shouldHandleKeyPressing;
 	}
@@ -86,6 +87,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldHandleThumbnailScrolling(keyModifiers, keyPressing))
 		{
 			HandleThumbnailScrolling(keyPressing);
+		}
+		else if (ShouldHandleThumbnailNavigation(keyModifiers, keyPressing))
+		{
+			HandleThumbnailNavigation(keyPressing);
 		}
 	}
 
@@ -505,7 +510,28 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		return false;
 	}
-	
+
+	private bool ShouldHandleThumbnailNavigation(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (_folderTreeView.SelectedItem is null)
+		{
+			return false;
+		}
+
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+		    GlobalParameters!.IsNavigationKey(keyPressing))
+		{
+			var selectedItemAsTreeViewItem = (TreeViewItem)_folderTreeView.SelectedItem;
+
+			if (!selectedItemAsTreeViewItem.IsFocused && !_gridSplitter.IsFocused)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private void ChangeThumbnailSize(Key keyPressing)
 	{
 		var increment = keyPressing == GlobalParameters!.PlusKey
@@ -581,10 +607,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 	
-	private void ThumbnailScrollViewerOnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
+	private void HandleThumbnailNavigation(Key keyPressing)
 	{
-		var keyPressing = e.Key.ToCoreKey();
-		
 		if (GlobalParameters!.IsBackwardNavigationKey(keyPressing))
 		{
 			AdvanceFromSelectedThumbnail(-1);
@@ -593,8 +617,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			AdvanceFromSelectedThumbnail(1);
 		}
-
-		e.Handled = true;
 	}
 
 	#endregion

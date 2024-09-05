@@ -29,7 +29,6 @@
 			<ScrollViewer Name="_thumbnailScrollViewer"
 			              Grid.Row="0"
 			              VerticalScrollBarVisibility="Auto"
-			              KeyDown="ThumbnailScrollViewerOnKeyPressing"
 			              Focusable="True">
 				<ScrollViewer.Styles>
 					<Style Selector="ScrollViewer">
