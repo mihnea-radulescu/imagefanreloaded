@@ -82,6 +82,7 @@ public class MainViewPresenter
 		
 		var folderName = e.Name;
 		var folderPath = e.Path;
+		var thumbnailSize = e.ThumbnailSize;
 		var recursive = e.Recursive;
 		
 		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
@@ -91,7 +92,7 @@ public class MainViewPresenter
 			folderName,
 			folderPath);
 
-		await contentTabItem.FolderVisualState.UpdateVisualState(recursive);
+		await contentTabItem.FolderVisualState.UpdateVisualState(thumbnailSize, recursive);
 	}
 
 	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(IContentTabItem contentTabItem)
@@ -157,7 +158,7 @@ public class MainViewPresenter
 			fileSystemEntryInfo.Name,
 			fileSystemEntryInfo.Path);
 
-		await contentTabItem.FolderVisualState.UpdateVisualState(false);
+		await contentTabItem.FolderVisualState.UpdateVisualState(_globalParameters.DefaultThumbnailSize, false);
 	}
 
 	#endregion

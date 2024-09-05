@@ -39,7 +39,7 @@ public class FolderVisualState : IFolderVisualState
 	
 	public void ClearVisualState() => _contentTabItem.ClearThumbnailBoxes(false);
 
-	public async Task UpdateVisualState(bool recursiveFolderAccess)
+	public async Task UpdateVisualState(int thumbnailSize, bool recursiveFolderAccess)
 	{
 		await _folderChangedMutex.Wait();
 		
@@ -59,7 +59,7 @@ public class FolderVisualState : IFolderVisualState
 		_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
 		_contentTabItem.SetImageStatusBarText(string.Empty);
 
-		var thumbnails = GetThumbnailInfoCollection(imageFiles);
+		var thumbnails = GetThumbnailInfoCollection(thumbnailSize, imageFiles);
 
 		await ProcessThumbnails(thumbnails);
 
@@ -81,9 +81,10 @@ public class FolderVisualState : IFolderVisualState
 	private readonly IFolderChangedMutex _folderChangedMutex;
 	private readonly CancellationTokenSource _thumbnailGeneration;
 	
-	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(IReadOnlyList<IImageFile> imageFiles)
+	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(
+		int thumbnailSize, IReadOnlyList<IImageFile> imageFiles)
 		=> imageFiles
-			.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(anImageFile))
+			.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(thumbnailSize, anImageFile))
 			.ToList();
 	
 	private async Task ProcessThumbnails(IReadOnlyList<IThumbnailInfo> thumbnails)

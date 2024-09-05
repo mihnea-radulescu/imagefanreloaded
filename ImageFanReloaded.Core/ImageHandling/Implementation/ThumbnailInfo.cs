@@ -7,12 +7,14 @@ public class ThumbnailInfo : IThumbnailInfo
 {
     public ThumbnailInfo(
         IGlobalParameters globalParameters,
+        int thumbnailSize,
         IImageFile imageFile)
     {
         _globalParameters = globalParameters;
+        _thumbnailSize = thumbnailSize;
+        
         ImageFile = imageFile;
-
-        ThumbnailImage = _globalParameters.LoadingImageThumbnail;
+        ThumbnailImage = _globalParameters.GetLoadingImageThumbnail(_thumbnailSize);
     }
 
     public IThumbnailBox? ThumbnailBox { get; set; }
@@ -25,7 +27,7 @@ public class ThumbnailInfo : IThumbnailInfo
 
     public void GetThumbnail()
     {
-        ThumbnailImage = ImageFile.GetThumbnail();
+        ThumbnailImage = ImageFile.GetThumbnail(_thumbnailSize);
     }
 
     public void RefreshThumbnail() => ThumbnailBox!.RefreshThumbnail();
@@ -43,6 +45,7 @@ public class ThumbnailInfo : IThumbnailInfo
     #region Private
 
     private readonly IGlobalParameters _globalParameters;
+    private readonly int _thumbnailSize;
 
     #endregion
 }

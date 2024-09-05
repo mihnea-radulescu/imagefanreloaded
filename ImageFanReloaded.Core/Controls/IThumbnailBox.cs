@@ -16,7 +16,7 @@ public interface IThumbnailBox
     IImageFile? ImageFile { get; }
     bool IsSelected { get; }
     
-    void SetControlProperties(IGlobalParameters globalParameters);
+    void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters);
 
     void SelectThumbnail();
     void UnselectThumbnail();

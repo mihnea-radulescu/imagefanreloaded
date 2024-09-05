@@ -100,7 +100,7 @@ public partial class MainWindow : Window, IMainView
 			NavigateToNextTab();
 			e.Handled = true;
 		}
-		else if (ShouldDisplayHelp(keyPressing))
+		else if (ShouldDisplayHelp(keyModifiers, keyPressing))
 		{
 			DisplayHelp();
 			e.Handled = true;
@@ -110,7 +110,7 @@ public partial class MainWindow : Window, IMainView
 			contentTabItem.HandleControlKeyFunctions(keyModifiers, keyPressing);
 			e.Handled = true;
 		}
-		else if (!ShouldAllowKeyPressingEventPropagation(keyPressing))
+		else if (!ShouldAllowKeyPressingEventPropagation(keyModifiers, keyPressing))
 		{
 			e.Handled = true;
 		}
@@ -230,7 +230,7 @@ public partial class MainWindow : Window, IMainView
 
     private bool ShouldHandleEscapeAction(KeyModifiers keyModifiers, Key keyPressing)
     {
-        if (keyPressing == GlobalParameters!.EscapeKey)
+        if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EscapeKey)
         {
             return true;
         }
@@ -277,11 +277,26 @@ public partial class MainWindow : Window, IMainView
 
 	    return false;
     }
-    
-    private bool ShouldDisplayHelp(Key keyPressing) => keyPressing == GlobalParameters!.F1Key;
-    
-    private bool ShouldAllowKeyPressingEventPropagation(Key keyPressing)
-		=> GlobalParameters!.IsNavigationKey(keyPressing);
+
+    private bool ShouldDisplayHelp(KeyModifiers keyModifiers, Key keyPressing)
+    {
+	    if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.F1Key)
+	    {
+		    return true;
+	    }
+
+	    return false;
+    }
+
+    private bool ShouldAllowKeyPressingEventPropagation(KeyModifiers keyModifiers, Key keyPressing)
+    {
+	    if (keyModifiers == GlobalParameters!.NoneKeyModifier && GlobalParameters!.IsNavigationKey(keyPressing))
+	    {
+		    return true;
+	    }
+
+	    return false;
+    }
     
     private bool HasAtLeastOneContentTabItem()
     {

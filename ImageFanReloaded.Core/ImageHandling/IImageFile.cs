@@ -12,7 +12,7 @@ public interface IImageFile
 	IImage GetResizedImage(ImageSize viewPortSize);
 
     void ReadImageDataFromDisc();
-    IImage GetThumbnail();
+    IImage GetThumbnail(int thumbnailSize);
     void DisposeImageData();
 
     string GetImageInfo(bool longFormat);

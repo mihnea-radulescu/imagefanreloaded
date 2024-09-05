@@ -54,12 +54,11 @@ public interface IGlobalParameters
 	string UserProfilePath { get; }
 	IReadOnlyList<string> SpecialFolders { get; }
 
+	int DefaultThumbnailSize { get; }
+	int ThumbnailSizeIncrement { get; }
+	bool IsValidThumbnailSize(int thumbnailSize);
+	
 	IImage InvalidImage { get; }
-	
-	ImageSize ThumbnailSize { get; }
-	IImage InvalidImageThumbnail { get; }
-	IImage LoadingImageThumbnail { get; }
-	
 	HashSet<IImage> PersistentImages { get; }
 
 	IImage DesktopFolderIcon { get; }
@@ -72,4 +71,7 @@ public interface IGlobalParameters
 	
 	string AboutTitle { get; }
 	string AboutText { get; }
+	
+	IImage GetInvalidImageThumbnail(int thumbnailSize);
+	IImage GetLoadingImageThumbnail(int thumbnailSize);
 }

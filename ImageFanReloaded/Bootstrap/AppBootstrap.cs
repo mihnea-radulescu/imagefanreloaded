@@ -21,8 +21,13 @@ using ImageFanReloaded.Settings;
 
 namespace ImageFanReloaded.Bootstrap;
 
-public abstract class AppBootstrapBase : IAppBootstrap
+public class AppBootstrap : IAppBootstrap
 {
+	public AppBootstrap(IClassicDesktopStyleApplicationLifetime desktop)
+	{
+		_desktop = desktop;
+	}
+	
 	public async Task BootstrapApplication()
     {
 	    BootstrapTypes();
@@ -36,22 +41,10 @@ public abstract class AppBootstrapBase : IAppBootstrap
 			await ShowImageView();
 		}
     }
-	
-	#region Protected
-	
-	protected AppBootstrapBase(IClassicDesktopStyleApplicationLifetime desktop)
-	{
-		Desktop = desktop;
-	}
-	
-	protected readonly IClassicDesktopStyleApplicationLifetime Desktop;
-
-	protected abstract string? GetInputPath();
-	protected abstract IAppSettings GetAppSettings();
-	
-	#endregion
 
     #region Private
+    
+    private readonly IClassicDesktopStyleApplicationLifetime _desktop;
     
     private IGlobalParameters _globalParameters = null!;
     private IFileSizeEngine _fileSizeEngine = null!;
@@ -60,18 +53,13 @@ public abstract class AppBootstrapBase : IAppBootstrap
     
     private void BootstrapTypes()
     {
-	    string? inputPath = GetInputPath();
-	    
 	    IOperatingSystemSettings operatingSystemSettings = new OperatingSystemSettings();
 	    IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
 	    
 	    IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 	    IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-	    IAppSettings appSettings = GetAppSettings();
-
-	    _globalParameters = new GlobalParameters(
-		    operatingSystemSettings, aboutInformationProvider, imageResizer, appSettings);
+	    _globalParameters = new GlobalParameters(operatingSystemSettings, aboutInformationProvider, imageResizer);
 	    
 	    _fileSizeEngine = new FileSizeEngine();
 	    
@@ -80,7 +68,16 @@ public abstract class AppBootstrapBase : IAppBootstrap
 		    _globalParameters, _fileSizeEngine, imageFileFactory);
 	    _discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 		
+	    string? inputPath = GetInputPath();
 	    _inputPathContainer = new InputPathContainer(_globalParameters, _discQueryEngine, inputPath);
+    }
+    
+    private string? GetInputPath()
+    {
+	    var args = _desktop.Args!;
+	    var inputPath = args.Length > 0 ? args[0] : null;
+
+	    return inputPath;
     }
     
     private bool IsMainViewAccess() => _inputPathContainer.InputPathType != InputPathType.File;
@@ -90,7 +87,7 @@ public abstract class AppBootstrapBase : IAppBootstrap
 	    IFolderChangedMutexFactory folderChangedMutexFactory = new FolderChangedMutexFactory();
 		
 	    var mainWindow = new MainWindow();
-	    Desktop.MainWindow = mainWindow;
+	    _desktop.MainWindow = mainWindow;
 	    IScreenInformation screenInformation = new ScreenInformation(mainWindow);
 			
 	    IMainView mainView = mainWindow;
@@ -117,7 +114,7 @@ public abstract class AppBootstrapBase : IAppBootstrap
     private async Task ShowImageView()
     {
 	    var imageWindow = new ImageWindow();
-	    Desktop.MainWindow = imageWindow;
+	    _desktop.MainWindow = imageWindow;
 	    IScreenInformation screenInformation = new ScreenInformation(imageWindow);
 			
 	    IImageView imageView = imageWindow;

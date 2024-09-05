@@ -24,7 +24,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	}
 	
     public IMainView? MainView { get; set; }
-    public IGlobalParameters? GlobalParameters { get; set; }
+
+    public IGlobalParameters? GlobalParameters
+    {
+	    get => _globalParameters;
+	    set
+	    {
+		    _globalParameters = value!;
+
+		    _thumbnailSize = _globalParameters.DefaultThumbnailSize;
+	    }
+    }
+    
     public IFolderChangedMutex? FolderChangedMutex { get; set; }
     
     public object? WrapperTabItem { get; set; }
@@ -43,17 +54,22 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	public bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		var shouldHandleKeyPressing = ShouldSwitchControlFocus(keyModifiers, keyPressing)
+		var shouldHandleKeyPressing = ShouldChangeThumbnailSize(keyModifiers, keyPressing)
+		                              || ShouldSwitchControlFocus(keyModifiers, keyPressing)
 		                              || ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing)
-		                              || ShouldHandleThumbnailSelection(keyPressing)
-		                              || ShouldHandleThumbnailScrolling(keyPressing);
+		                              || ShouldHandleThumbnailSelection(keyModifiers, keyPressing)
+		                              || ShouldHandleThumbnailScrolling(keyModifiers, keyPressing);
 
 		return shouldHandleKeyPressing;
 	}
 
 	public void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (ShouldSwitchControlFocus(keyModifiers, keyPressing))
+		if (ShouldChangeThumbnailSize(keyModifiers, keyPressing))
+		{
+			ChangeThumbnailSize(keyPressing);
+		}
+		else if (ShouldSwitchControlFocus(keyModifiers, keyPressing))
 		{
 			SwitchControlFocus();
 		}
@@ -61,13 +77,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			ToggleRecursiveFolderAccess(keyModifiers);
 		}
-		else if (ShouldHandleThumbnailSelection(keyPressing))
+		else if (ShouldHandleThumbnailSelection(keyModifiers, keyPressing))
 		{
 			FocusThumbnailScrollViewer();
 			BringThumbnailIntoView();
 			DisplayImage();
 		}
-		else if (ShouldHandleThumbnailScrolling(keyPressing))
+		else if (ShouldHandleThumbnailScrolling(keyModifiers, keyPressing))
 		{
 			HandleThumbnailScrolling(keyPressing);
 		}
@@ -138,7 +154,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var aThumbnailBox = new ThumbnailBox();
 			aThumbnailBox.Index = _maxThumbnailIndex + i;
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
-			aThumbnailBox.SetControlProperties(GlobalParameters!);
+			aThumbnailBox.SetControlProperties(_thumbnailSize, GlobalParameters!);
 
 			thumbnailInfo.ThumbnailBox = aThumbnailBox;
 			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
@@ -227,11 +243,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     #region Private
 
     private const string FakeTreeViewItemText = "Loading...";
-
     private const int ThumbnailScrollAdvanceCount = 25;
-
+    
     private readonly IList<IThumbnailBox> _thumbnailBoxCollection;
 
+    private IGlobalParameters? _globalParameters;
+    private int _thumbnailSize;
+    
     private int _maxThumbnailIndex;
 	private int _selectedThumbnailIndex;
 	private IThumbnailBox? _selectedThumbnailBox;
@@ -286,7 +304,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		    var selectedFolderPath = fileSystemEntryInfo.Path;
 
 		    FolderChanged?.Invoke(this, new FolderChangedEventArgs(
-			    selectedFolderName, selectedFolderPath, _folderAccessType.IsRecursive()));
+			    selectedFolderName, selectedFolderPath, _thumbnailSize, _folderAccessType.IsRecursive()));
 	    }
     }
     
@@ -431,10 +449,21 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		=> ContentTabItemHeader!.ShowTabCloseButton(showTabCloseButton);
 	
 	private bool IsFirstThumbnail() => _thumbnailBoxCollection.Count == 1;
+	
+	private bool ShouldChangeThumbnailSize(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+		    (keyPressing == GlobalParameters!.PlusKey || keyPressing == GlobalParameters!.MinusKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
 
 	private bool ShouldSwitchControlFocus(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyPressing == GlobalParameters!.TabKey && keyModifiers == GlobalParameters!.NoneKeyModifier)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.TabKey)
 		{
 			return true;
 		}
@@ -444,8 +473,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldToggleRecursiveFolderAccess(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyPressing == GlobalParameters!.RKey &&
-		    (keyModifiers == GlobalParameters!.NoneKeyModifier || keyModifiers == GlobalParameters!.ShiftKeyModifier))
+		if ((keyModifiers == GlobalParameters!.NoneKeyModifier || keyModifiers == GlobalParameters!.ShiftKeyModifier) &&
+			keyPressing == GlobalParameters!.RKey)
 		{
 			return true;
 		}
@@ -453,9 +482,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
-	private bool ShouldHandleThumbnailSelection(Key keyPressing)
+	private bool ShouldHandleThumbnailSelection(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (_selectedThumbnailBox is not null && keyPressing == GlobalParameters!.EnterKey)
+		if (_selectedThumbnailBox is not null &&
+		    keyModifiers == GlobalParameters!.NoneKeyModifier &&
+		    keyPressing == GlobalParameters!.EnterKey)
 		{
 			return true;
 		}
@@ -463,15 +494,32 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 	
-	private bool ShouldHandleThumbnailScrolling(Key keyPressing)
+	private bool ShouldHandleThumbnailScrolling(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (_selectedThumbnailBox is not null &&
+		    keyModifiers == GlobalParameters!.NoneKeyModifier &&
 		    (keyPressing == GlobalParameters!.PageUpKey || keyPressing == GlobalParameters!.PageDownKey))
 		{
 			return true;
 		}
 
 		return false;
+	}
+	
+	private void ChangeThumbnailSize(Key keyPressing)
+	{
+		var increment = keyPressing == GlobalParameters!.PlusKey
+			? GlobalParameters!.ThumbnailSizeIncrement
+			: -GlobalParameters!.ThumbnailSizeIncrement;
+		
+		var newThumbnailSize = _thumbnailSize + increment;
+
+		if (GlobalParameters!.IsValidThumbnailSize(newThumbnailSize))
+		{
+			_thumbnailSize = newThumbnailSize;
+			
+			RaiseFolderChangedEvent();
+		}
 	}
 	
 	private void SwitchControlFocus()

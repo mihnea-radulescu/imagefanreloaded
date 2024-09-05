@@ -57,12 +57,11 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public string UserProfilePath { get; }
 	public IReadOnlyList<string> SpecialFolders { get; }
 
+	public int DefaultThumbnailSize => 250;
+	public int ThumbnailSizeIncrement => 50;
+	public abstract bool IsValidThumbnailSize(int thumbnailSize);
+	
 	public abstract IImage InvalidImage { get; }
-	
-	public abstract ImageSize ThumbnailSize { get; }
-	public abstract IImage InvalidImageThumbnail { get; }
-	public abstract IImage LoadingImageThumbnail { get; }
-	
 	public abstract HashSet<IImage> PersistentImages { get; }
 	
 	public abstract IImage DesktopFolderIcon { get; }
@@ -75,6 +74,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	public abstract string AboutTitle { get; }
 	public abstract string AboutText { get; }
+	
+	public abstract IImage GetInvalidImageThumbnail(int thumbnailSize);
+	public abstract IImage GetLoadingImageThumbnail(int thumbnailSize);
 
 	#region Protected
 	

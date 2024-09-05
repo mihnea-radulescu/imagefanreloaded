@@ -1,5 +1,3 @@
-//#define FLATPAK
-
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -17,15 +15,8 @@ public class App : Application
     public override async void OnFrameworkInitializationCompleted()
     {
 	    var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
-        
-	    IAppBootstrap appBootstrap;
-            
-        #if FLATPAK
-            appBootstrap = new FlatpakAppBootstrap(desktop);
-        #else
-            appBootstrap = new DefaultAppBootstrap(desktop);
-        #endif
 
+        IAppBootstrap appBootstrap = new AppBootstrap(desktop);
 	    await appBootstrap.BootstrapApplication();
     }
 }

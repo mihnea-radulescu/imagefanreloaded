@@ -101,7 +101,7 @@ public abstract class ImageFileBase : IImageFile
 		}
 	}
 
-    public IImage GetThumbnail()
+    public IImage GetThumbnail(int thumbnailSize)
     {
         lock (_thumbnailGenerationLockObject)
         {
@@ -109,11 +109,12 @@ public abstract class ImageFileBase : IImageFile
 
             try
             {
-                thumbnail = _imageResizer.CreateResizedImage(_imageData!, _globalParameters.ThumbnailSize);
+                var thumbnailImageSize = new ImageSize(thumbnailSize);
+	            thumbnail = _imageResizer.CreateResizedImage(_imageData!, thumbnailImageSize);
             }
             catch
             {
-	            thumbnail = _globalParameters.InvalidImageThumbnail;
+	            thumbnail = _globalParameters.GetInvalidImageThumbnail(thumbnailSize);
             }
             finally
             {

@@ -45,10 +45,10 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	public IImageFile? ImageFile { get; private set; }
 	public bool IsSelected { get; private set; }
 	
-	public void SetControlProperties(IGlobalParameters globalParameters)
+	public void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters)
 	{
-		_thumbnailImage.MaxWidth = globalParameters.ThumbnailSize.Width;
-		_thumbnailImage.MaxHeight = globalParameters.ThumbnailSize.Height;
+		_thumbnailImage.MaxWidth = thumbnailSize;
+		_thumbnailImage.MaxHeight = thumbnailSize;
 	}
 
 	public void SelectThumbnail()

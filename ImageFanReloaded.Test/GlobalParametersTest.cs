@@ -8,7 +8,6 @@ using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.OperatingSystem.Implementation;
-using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.ImageHandling;
 using ImageFanReloaded.Settings;
 
@@ -25,10 +24,8 @@ public class GlobalParametersTest : TestBase
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		IAppSettings appSettings = new DefaultAppSettings();
-
 		_globalParameters = new GlobalParameters(
-			operatingSystemSettings, aboutInformationProvider, imageResizer, appSettings);
+			operatingSystemSettings, aboutInformationProvider, imageResizer);
 	}
 	
 	[Fact]
@@ -40,8 +37,6 @@ public class GlobalParametersTest : TestBase
 
 		// Assert
 		_globalParameters.ProcessorCount.Should().NotBe(0);
-		_globalParameters.ThumbnailSize.Width.Should().NotBe(0);
-		_globalParameters.ThumbnailSize.Height.Should().NotBe(0);
 
 		List<bool> isOperatingSystemCollection =
 		[
@@ -85,12 +80,19 @@ public class GlobalParametersTest : TestBase
 		
 		_globalParameters.UserProfilePath.Should().NotBeNullOrEmpty();
 		_globalParameters.SpecialFolders.Should().NotBeEmpty();
+
+		_globalParameters.DefaultThumbnailSize.Should().Be(250);
+		_globalParameters.ThumbnailSizeIncrement.Should().Be(50);
+		_globalParameters.IsValidThumbnailSize(_globalParameters.DefaultThumbnailSize).Should().BeTrue();
 		
 		_globalParameters.InvalidImage.GetBitmap().Should().NotBeNull();
-		_globalParameters.InvalidImageThumbnail.GetBitmap().Should().NotBeNull();
-		_globalParameters.LoadingImageThumbnail.GetBitmap().Should().NotBeNull();
 		
-		_globalParameters.PersistentImages.Count.Should().Be(3);
+		_globalParameters.GetInvalidImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap()
+			.Should().NotBeNull();
+		_globalParameters.GetLoadingImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap()
+			.Should().NotBeNull();
+		
+		_globalParameters.PersistentImages.Count.Should().Be(17);
 
 		_globalParameters.DriveIcon.GetBitmap().Should().NotBeNull();
 		_globalParameters.FolderIcon.GetBitmap().Should().NotBeNull();
@@ -102,18 +104,18 @@ public class GlobalParametersTest : TestBase
 			_globalParameters.InvalidImage.GetBitmap(),
 			$"{nameof(_globalParameters.InvalidImage)}{OutputFileExtension}");
 		SaveImageToDisc(
-			_globalParameters.InvalidImageThumbnail.GetBitmap(),
-			$"{nameof(_globalParameters.InvalidImageThumbnail)}{OutputFileExtension}");
+			_globalParameters.GetInvalidImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap(),
+			$"InvalidImageThumbnail_{OutputFileExtension}");
 
 		SaveImageToDisc(
-			_globalParameters.LoadingImageThumbnail.GetBitmap(),
-			$"{nameof(_globalParameters.LoadingImageThumbnail)}{OutputFileExtension}");
+			_globalParameters.GetLoadingImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap(),
+			$"LoadingImageThumbnail_{OutputFileExtension}");
 
 		SaveImageToDisc(
 			_globalParameters.DriveIcon.GetBitmap(),
 			$"{nameof(_globalParameters.DriveIcon)}{OutputFileExtension}");
 		SaveImageToDisc(
-			_globalParameters.FolderIcon.GetBitmap(),
+			_globalParameters.FolderIcon.GetBitmap(), 
 			$"{nameof(_globalParameters.FolderIcon)}{OutputFileExtension}");
 	}
 	
