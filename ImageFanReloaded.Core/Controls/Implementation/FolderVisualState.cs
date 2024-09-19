@@ -39,14 +39,15 @@ public class FolderVisualState : IFolderVisualState
 	
 	public void ClearVisualState() => _contentTabItem.ClearThumbnailBoxes(false);
 
-	public async Task UpdateVisualState(int thumbnailSize, bool recursiveFolderAccess)
+	public async Task UpdateVisualState(
+		FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering, int thumbnailSize, bool recursiveFolderAccess)
 	{
 		await _folderChangedMutex.Wait();
 		
 		_contentTabItem.ClearThumbnailBoxes(true);
 		_contentTabItem.SetTitle(_folderName);
 
-		var subFolders = await _discQueryEngine.GetSubFolders(_folderPath);
+		var subFolders = await _discQueryEngine.GetSubFolders(_folderPath, fileSystemEntryInfoOrdering);
 		_contentTabItem.PopulateSubFoldersTree(subFolders);
 
 		var imageFiles = await _discQueryEngine.GetImageFiles(_folderPath, recursiveFolderAccess);

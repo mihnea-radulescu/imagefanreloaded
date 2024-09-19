@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
-using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core;
 
@@ -15,7 +14,6 @@ public class MainViewPresenter
 		IFolderVisualStateFactory folderVisualStateFactory,
 		IImageViewFactory imageViewFactory,
 		IInputPathContainer inputPathContainer,
-		IGlobalParameters globalParameters,
 		IAboutViewFactory aboutViewFactory,
 		IMainView mainView)
 	{
@@ -24,7 +22,6 @@ public class MainViewPresenter
 		_imageViewFactory = imageViewFactory;
 
 		_inputPathContainer = inputPathContainer;
-		_globalParameters = globalParameters;
 		_aboutViewFactory = aboutViewFactory;
 
 		_mainView = mainView;
@@ -40,7 +37,6 @@ public class MainViewPresenter
 	private readonly IImageViewFactory _imageViewFactory;
 	
 	private readonly IInputPathContainer _inputPathContainer;
-	private readonly IGlobalParameters _globalParameters;
 	private readonly IAboutViewFactory _aboutViewFactory;
 
 	private readonly IMainView _mainView;
@@ -84,19 +80,15 @@ public class MainViewPresenter
 	{
 		var contentTabItem = (IContentTabItem)sender!;
 		
-		var folderName = e.Name;
-		var folderPath = e.Path;
-		var thumbnailSize = e.ThumbnailSize;
-		var recursive = e.Recursive;
-		
 		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
-
+		
 		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
 			contentTabItem,
-			folderName,
-			folderPath);
+			e.Name,
+			e.Path);
 
-		await contentTabItem.FolderVisualState.UpdateVisualState(thumbnailSize, recursive);
+		await contentTabItem.FolderVisualState.UpdateVisualState(
+			e.FileSystemEntryInfoOrdering, e.ThumbnailSize, e.Recursive);
 	}
 
 	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(IContentTabItem contentTabItem)
@@ -140,7 +132,8 @@ public class MainViewPresenter
 			{
 				contentTabItem.SaveMatchingTreeViewItem(matchingFileSystemEntryInfo);
 				
-				subFolders = await _discQueryEngine.GetSubFolders(matchingFileSystemEntryInfo.Path);
+				subFolders = await _discQueryEngine.GetSubFolders(
+					matchingFileSystemEntryInfo.Path, contentTabItem.FileSystemEntryInfoOrdering);
 				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(subFolders);
 			}
 		} while (matchingFileSystemEntryInfo is not null);
@@ -162,7 +155,8 @@ public class MainViewPresenter
 			fileSystemEntryInfo.Name,
 			fileSystemEntryInfo.Path);
 
-		await contentTabItem.FolderVisualState.UpdateVisualState(_globalParameters.DefaultThumbnailSize, false);
+		await contentTabItem.FolderVisualState.UpdateVisualState(
+			contentTabItem.FileSystemEntryInfoOrdering, contentTabItem.ThumbnailSize, false);
 	}
 
 	#endregion

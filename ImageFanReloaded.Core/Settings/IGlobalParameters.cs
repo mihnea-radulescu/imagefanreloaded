@@ -25,6 +25,10 @@ public interface IGlobalParameters
 	
 	Key F4Key { get; }
 	
+	Key NKey { get; }
+	Key CKey { get; }
+	Key MKey { get; }
+	
 	Key RKey { get; }
 	
 	Key TKey { get; }
@@ -53,6 +57,7 @@ public interface IGlobalParameters
 	
 	string UserProfilePath { get; }
 	IReadOnlyList<string> SpecialFolders { get; }
+	FileSystemEntryInfoOrdering DefaultFileSystemEntryInfoOrdering { get; }
 
 	int DefaultThumbnailSize { get; }
 	int ThumbnailSizeIncrement { get; }

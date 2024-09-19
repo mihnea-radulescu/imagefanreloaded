@@ -4,6 +4,7 @@ using ImageFanReloaded.Controls;
 using ImageFanReloaded.Core;
 using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.AboutInformation.Implementation;
+using ImageFanReloaded.Core.Bootstrap;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Implementation;
 using ImageFanReloaded.Core.CustomEventArgs;
@@ -106,7 +107,6 @@ public class AppBootstrap : IAppBootstrap
 		    folderVisualStateFactory,
 		    imageViewFactory,
 		    _inputPathContainer,
-		    _globalParameters,
 		    aboutViewFactory,
 		    mainView);
 

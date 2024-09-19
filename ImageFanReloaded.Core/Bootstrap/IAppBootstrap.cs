@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace ImageFanReloaded.Bootstrap;
+namespace ImageFanReloaded.Core.Bootstrap;
 
 public interface IAppBootstrap
 {

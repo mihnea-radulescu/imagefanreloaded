@@ -41,8 +41,9 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders()
 		=> await Task.Run(GetRootFoldersInternal);
 
-	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(string folderPath)
-		=> await Task.Run(() => GetSubFoldersInternal(folderPath));
+	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
+		string folderPath, FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering)
+		=> await Task.Run(() => GetSubFoldersInternal(folderPath, fileSystemEntryInfoOrdering));
 
 	public async Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath)
 		=> await Task.Run(() => GetFileSystemEntryInfoInternal(folderPath));
@@ -134,20 +135,28 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		return rootFolders;
 	}
 	
-	private IReadOnlyList<FileSystemEntryInfo> GetSubFoldersInternal(string folderPath)
+	private IReadOnlyList<FileSystemEntryInfo> GetSubFoldersInternal(
+		string folderPath, FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering)
 	{
 		try
 		{
-			return new DirectoryInfo(folderPath)
+			var subFolderInfoCollection = new DirectoryInfo(folderPath)
 				.GetDirectories()
+				.AsQueryable();
+
+			var orderedSubFolderInfoCollection = GetOrderedFileSystemInfoCollection(
+				subFolderInfoCollection, fileSystemEntryInfoOrdering);
+			
+			var subFolders = orderedSubFolderInfoCollection
 				.Select(aDirectory =>
 					new FileSystemEntryInfo(
 						aDirectory.Name,
 						aDirectory.FullName,
 						HasSubFolders(aDirectory.FullName),
 						_globalParameters.FolderIcon))
-				.OrderBy(aDirectory => aDirectory.Name, _globalParameters.NameComparer)
 				.ToList();
+			
+			return subFolders;
 		}
 		catch
 		{
@@ -228,6 +237,25 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
     }
     
     private IImage GetIcon(string aSpecialFolderName) => _specialFolderToIconMapping[aSpecialFolderName];
+
+    private IQueryable<FileSystemInfo> GetOrderedFileSystemInfoCollection(
+	    IQueryable<FileSystemInfo> fileSystemInfoCollection,
+	    FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering)
+    {
+	    var orderedFileSystemInfoCollection = fileSystemEntryInfoOrdering switch
+	    {
+		    FileSystemEntryInfoOrdering.CreationTime => fileSystemInfoCollection
+			    .OrderBy(aFileSystemInfo => aFileSystemInfo.CreationTimeUtc),
+		    
+		    FileSystemEntryInfoOrdering.ModificationTime => fileSystemInfoCollection
+			    .OrderBy(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc),
+		    
+		    _ => fileSystemInfoCollection
+			    .OrderBy(aFileSystemInfo => aFileSystemInfo.Name, _globalParameters.NameComparer)
+	    };
+
+	    return orderedFileSystemInfoCollection;
+    }
     
     #endregion
 }

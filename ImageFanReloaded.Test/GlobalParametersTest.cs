@@ -6,6 +6,7 @@ using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.OperatingSystem.Implementation;
+using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.ImageHandling;
 using ImageFanReloaded.Settings;
 
@@ -53,6 +54,10 @@ public class GlobalParametersTest : TestBase
 
 		_globalParameters.F4Key.Should().NotBe(Key.None);
 		
+		_globalParameters.NKey.Should().NotBe(Key.None);
+		_globalParameters.CKey.Should().NotBe(Key.None);
+		_globalParameters.MKey.Should().NotBe(Key.None);
+		
 		_globalParameters.RKey.Should().NotBe(Key.None);
 		
 		_globalParameters.TKey.Should().NotBe(Key.None);
@@ -75,6 +80,7 @@ public class GlobalParametersTest : TestBase
 		
 		_globalParameters.UserProfilePath.Should().NotBeNullOrEmpty();
 		_globalParameters.SpecialFolders.Should().NotBeEmpty();
+		_globalParameters.DefaultFileSystemEntryInfoOrdering.Should().Be(FileSystemEntryInfoOrdering.Name);
 
 		_globalParameters.DefaultThumbnailSize.Should().Be(250);
 		_globalParameters.ThumbnailSizeIncrement.Should().Be(50);

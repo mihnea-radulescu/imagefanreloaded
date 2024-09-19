@@ -10,7 +10,6 @@ using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
-using ImageFanReloaded.Keyboard;
 
 namespace ImageFanReloaded.Controls;
 
@@ -32,9 +31,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	    {
 		    _globalParameters = value!;
 
-		    _thumbnailSize = _globalParameters.DefaultThumbnailSize;
+		    FileSystemEntryInfoOrdering = _globalParameters.DefaultFileSystemEntryInfoOrdering;
+		    ThumbnailSize = _globalParameters.DefaultThumbnailSize;
 	    }
     }
+    
+    public FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; private set; }
+    public int ThumbnailSize { get; private set; }
     
     public IFolderChangedMutex? FolderChangedMutex { get; set; }
     
@@ -54,7 +57,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	public bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		var shouldHandleKeyPressing = ShouldChangeThumbnailSize(keyModifiers, keyPressing)
+		var shouldHandleKeyPressing = ShouldChangeFolderOrdering(keyModifiers, keyPressing)
+		                              || ShouldChangeThumbnailSize(keyModifiers, keyPressing)
 		                              || ShouldSwitchControlFocus(keyModifiers, keyPressing)
 		                              || ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing)
 		                              || ShouldHandleThumbnailSelection(keyModifiers, keyPressing)
@@ -66,7 +70,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (ShouldChangeThumbnailSize(keyModifiers, keyPressing))
+		if (ShouldChangeFolderOrdering(keyModifiers, keyPressing))
+		{
+			ChangeFolderOrdering(keyPressing);
+		}
+		else if (ShouldChangeThumbnailSize(keyModifiers, keyPressing))
 		{
 			ChangeThumbnailSize(keyPressing);
 		}
@@ -159,7 +167,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var aThumbnailBox = new ThumbnailBox();
 			aThumbnailBox.Index = _maxThumbnailIndex + i;
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
-			aThumbnailBox.SetControlProperties(_thumbnailSize, GlobalParameters!);
+			aThumbnailBox.SetControlProperties(ThumbnailSize, GlobalParameters!);
 
 			thumbnailInfo.ThumbnailBox = aThumbnailBox;
 			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
@@ -253,7 +261,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     private readonly IList<IThumbnailBox> _thumbnailBoxCollection;
 
     private IGlobalParameters? _globalParameters;
-    private int _thumbnailSize;
     
     private int _maxThumbnailIndex;
 	private int _selectedThumbnailIndex;
@@ -305,11 +312,21 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	    if (_selectedFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
 	    {
 		    var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-		    var selectedFolderName = fileSystemEntryInfo.Name;
-		    var selectedFolderPath = fileSystemEntryInfo.Path;
+		    
+		    InvokeFolderChangedEventHandler(fileSystemEntryInfo);
+	    }
+    }
+    
+    private void RaiseFolderOrderingChangedEvent()
+    {
+	    if (_selectedFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
+	    {
+		    var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
 
-		    FolderChanged?.Invoke(this, new FolderChangedEventArgs(
-			    selectedFolderName, selectedFolderPath, _thumbnailSize, _folderAccessType.IsRecursive()));
+		    if (fileSystemEntryInfo.HasSubFolders)
+		    {
+			    InvokeFolderChangedEventHandler(fileSystemEntryInfo);
+		    }
 	    }
     }
     
@@ -455,6 +472,19 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	private bool IsFirstThumbnail() => _thumbnailBoxCollection.Count == 1;
 	
+	private bool ShouldChangeFolderOrdering(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+		    (keyPressing == GlobalParameters!.NKey ||
+		     keyPressing == GlobalParameters!.CKey ||
+		     keyPressing == GlobalParameters!.MKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+	
 	private bool ShouldChangeThumbnailSize(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
@@ -531,6 +561,31 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		return false;
 	}
+	
+	private void ChangeFolderOrdering(Key keyPressing)
+	{
+		var newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering;
+		
+		if (keyPressing == GlobalParameters!.NKey)
+		{
+			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.Name;
+		}
+		else if (keyPressing == GlobalParameters!.CKey)
+		{
+			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.CreationTime;
+		}
+		else if (keyPressing == GlobalParameters!.MKey)
+		{
+			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.ModificationTime;
+		}
+
+		if (newFileSystemEntryInfoOrdering != FileSystemEntryInfoOrdering)
+		{
+			FileSystemEntryInfoOrdering = newFileSystemEntryInfoOrdering;
+			
+			RaiseFolderOrderingChangedEvent();
+		}
+	}
 
 	private void ChangeThumbnailSize(Key keyPressing)
 	{
@@ -538,11 +593,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			? GlobalParameters!.ThumbnailSizeIncrement
 			: -GlobalParameters!.ThumbnailSizeIncrement;
 		
-		var newThumbnailSize = _thumbnailSize + increment;
+		var newThumbnailSize = ThumbnailSize + increment;
 
 		if (GlobalParameters!.IsValidThumbnailSize(newThumbnailSize))
 		{
-			_thumbnailSize = newThumbnailSize;
+			ThumbnailSize = newThumbnailSize;
 			
 			RaiseFolderChangedEvent();
 		}
@@ -617,6 +672,21 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			AdvanceFromSelectedThumbnail(1);
 		}
+	}
+	
+	private void InvokeFolderChangedEventHandler(FileSystemEntryInfo fileSystemEntryInfo)
+	{
+		var selectedFolderName = fileSystemEntryInfo.Name;
+		var selectedFolderPath = fileSystemEntryInfo.Path;
+
+		var folderChangedEventArgs = new FolderChangedEventArgs(
+			selectedFolderName,
+			selectedFolderPath,
+			FileSystemEntryInfoOrdering,
+			ThumbnailSize,
+			_folderAccessType.IsRecursive());
+
+		FolderChanged?.Invoke(this, folderChangedEventArgs);
 	}
 
 	#endregion

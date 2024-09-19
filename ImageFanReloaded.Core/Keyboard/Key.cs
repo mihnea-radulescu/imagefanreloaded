@@ -21,6 +21,10 @@ public enum Key
 	Down,
 	Right,
 	
+	N,
+	C,
+	M,
+	
 	R,
 	
 	T,

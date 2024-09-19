@@ -27,6 +27,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	public Key F4Key { get; }
 	
+	public Key NKey { get; }
+	public Key CKey { get; }
+	public Key MKey { get; }
+	
 	public Key RKey { get; }
 	
 	public Key TKey { get; }
@@ -55,6 +59,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	public string UserProfilePath { get; }
 	public IReadOnlyList<string> SpecialFolders { get; }
+	public FileSystemEntryInfoOrdering DefaultFileSystemEntryInfoOrdering => FileSystemEntryInfoOrdering.Name;
 
 	public int DefaultThumbnailSize => 250;
 	public int ThumbnailSizeIncrement => 50;
@@ -95,6 +100,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		ShiftKeyModifier = KeyModifiers.Shift;
 		
 		F4Key = Key.F4;
+		
+		NKey = Key.N;
+		CKey = Key.C;
+		MKey = Key.M;
 
 		RKey = Key.R;
 

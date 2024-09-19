@@ -12,7 +12,11 @@ namespace ImageFanReloaded.Core.Controls;
 public interface IContentTabItem
 {
 	IMainView? MainView { get; set; }
+	
 	IGlobalParameters? GlobalParameters { get; set; }
+	FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; }
+	int ThumbnailSize { get; }
+	
 	IFolderChangedMutex? FolderChangedMutex { get; set; }
 
 	object? WrapperTabItem { get; set; }
