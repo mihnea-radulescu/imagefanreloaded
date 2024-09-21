@@ -16,12 +16,12 @@ public class ImageViewPresenter
 {
 	public ImageViewPresenter(
 		IDiscQueryEngine discQueryEngine,
-		IInputPathContainer inputPathContainer,
+		IInputPathHandler inputPathHandler,
 		IGlobalParameters globalParameters,
 		IImageView imageView)
 	{
 		_discQueryEngine = discQueryEngine;
-		_inputPathContainer = inputPathContainer;
+		_inputPathHandler = inputPathHandler;
 
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
 		
@@ -33,12 +33,12 @@ public class ImageViewPresenter
 	
 	public async Task SetUpAccessToImages()
 	{
-		_imageFiles = await _discQueryEngine.GetImageFiles(_inputPathContainer.FolderPath!, false);
+		_imageFiles = await _discQueryEngine.GetImageFiles(_inputPathHandler.FolderPath!, false);
 			
 		(_currentImageFile, _currentImageFileIndex) = _imageFiles
 			.Select((anImageFile, index) => (anImageFile, index))
 			.Single(anImageFileWithIndex => anImageFileWithIndex.anImageFile.ImageFilePath.Equals(
-				_inputPathContainer.FilePath,
+				_inputPathHandler.FilePath,
 				_nameComparison));
 	    
 		LoadCurrentImage();
@@ -47,7 +47,7 @@ public class ImageViewPresenter
 	#region Private
 	
 	private readonly IDiscQueryEngine _discQueryEngine;
-	private readonly IInputPathContainer _inputPathContainer;
+	private readonly IInputPathHandler _inputPathHandler;
 	
 	private readonly StringComparison _nameComparison;
 	

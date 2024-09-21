@@ -8,9 +8,9 @@ using ImageFanReloaded.Core.TextHandling.Implementation;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
-public class InputPathContainer : IInputPathContainer
+public class InputPathHandler : IInputPathHandler
 {
-	public InputPathContainer(
+	public InputPathHandler(
 		IGlobalParameters globalParameters,
 		IDiscQueryEngine discQueryEngine,
 		string? inputPath)
@@ -19,7 +19,6 @@ public class InputPathContainer : IInputPathContainer
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
 
 		InputPathType = InputPathType.NotSet;
-		_shouldProcessInputPath = false;
 
 		if (!string.IsNullOrEmpty(inputPath) && Path.Exists(inputPath))
 		{
@@ -48,11 +47,6 @@ public class InputPathContainer : IInputPathContainer
 				}
 			}
 		}
-
-		if (InputPathType != InputPathType.NotSet)
-		{
-			_shouldProcessInputPath = true;
-		}
 	}
 	
 	public InputPathType InputPathType { get; }
@@ -60,12 +54,7 @@ public class InputPathContainer : IInputPathContainer
 	public string? FolderPath { get; }
 	public string? FilePath { get; }
 
-	public bool ShouldProcessInputPath() => _shouldProcessInputPath;
-	
-	public void DisableProcessInputPath()
-	{
-		_shouldProcessInputPath = false;
-	}
+	public bool CanProcessInputPath() => InputPathType != InputPathType.NotSet;
 
 	public async Task<FileSystemEntryInfo> GetFileSystemEntryInfo()
 		=> await _discQueryEngine.GetFileSystemEntryInfo(FolderPath!);
@@ -93,8 +82,6 @@ public class InputPathContainer : IInputPathContainer
 	private readonly IDiscQueryEngine _discQueryEngine;
 	
 	private readonly StringComparison _nameComparison;
-
-	private volatile bool _shouldProcessInputPath;
 
 	#endregion
 }

@@ -80,7 +80,7 @@ public class GlobalParametersTest : TestBase
 		
 		_globalParameters.UserProfilePath.Should().NotBeNullOrEmpty();
 		_globalParameters.SpecialFolders.Should().NotBeEmpty();
-		_globalParameters.DefaultFileSystemEntryInfoOrdering.Should().Be(FileSystemEntryInfoOrdering.Name);
+		_globalParameters.DefaultFileSystemEntryInfoOrdering.Should().Be(FileSystemEntryInfoOrdering.NameAscending);
 
 		_globalParameters.DefaultThumbnailSize.Should().Be(250);
 		_globalParameters.ThumbnailSizeIncrement.Should().Be(50);

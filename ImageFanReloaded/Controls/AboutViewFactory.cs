@@ -46,7 +46,8 @@ User interface:
 • key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 • key combo Shift+Tab for cycling through tabs
 • key Tab for cycling through controls in the active tab
-• keys N, C and M for changing folder ordering between name, creation time and modification time
+• keys N, C and M for changing folder ordering between name ascending, creation time descending and
+   last modification time descending
 • keys + and - for changing thumbnail size by an increment of 50 pixels
 • key R for toggling recursive folder access, and key combo Shift+R for toggling persistent recursive folder access
 • keys Up, Down, Left and Right for back and forward navigation through the folders tree, thumbnails and

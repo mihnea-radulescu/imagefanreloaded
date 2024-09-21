@@ -49,10 +49,16 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public IFolderVisualState? FolderVisualState { get; set; }
 
 	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
+	public event EventHandler<FolderChangedEventArgs>? FolderOrderingChanged;
 
 	public void EnableFolderTreeViewSelectedItemChanged()
 	{
 		_folderTreeView.SelectionChanged += OnFolderTreeViewSelectedItemChanged;
+	}
+	
+	public void DisableFolderTreeViewSelectedItemChanged()
+	{
+		_folderTreeView.SelectionChanged -= OnFolderTreeViewSelectedItemChanged;
 	}
 	
 	public bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
@@ -102,6 +108,15 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
+	public string GetFolderTreeViewSelectedItemFolderPath()
+	{
+		var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem()!;
+		var fileSystemTreeViewItem = (IFileSystemTreeViewItem)folderTreeViewSelectedItem.Header!;
+		var selectedItemFolderPath = fileSystemTreeViewItem.FileSystemEntryInfo!.Path;
+
+		return selectedItemFolderPath;
+	}
+
 	public void SetFolderTreeViewSelectedItem()
 	{
 		if (_folderTreeView.SelectedItem is null)
@@ -111,8 +126,26 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		
 		if (_folderTreeView.SelectedItem is not null)
 		{
-			var selectedItemAsTreeViewItem = (TreeViewItem)_folderTreeView.SelectedItem;
-			selectedItemAsTreeViewItem.Focus();
+			var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem()!;
+			folderTreeViewSelectedItem.Focus();
+		}
+	}
+
+	public bool? GetFolderTreeViewSelectedItemExpandedState()
+	{
+		var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem();
+		var isExpanded = folderTreeViewSelectedItem?.IsExpanded;
+
+		return isExpanded;
+	}
+	
+	public void SetFolderTreeViewSelectedItemExpandedState(bool isExpanded)
+	{
+		var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem();
+
+		if (folderTreeViewSelectedItem is not null)
+		{
+			folderTreeViewSelectedItem.IsExpanded = isExpanded;
 		}
 	}
 
@@ -125,6 +158,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		var itemCollection = _folderTreeView.Items;
 		
+		ClearItemCollection(itemCollection);
 		AddSubFoldersToTreeView(itemCollection, rootFolders);
 	}
 
@@ -132,7 +166,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		if (_folderTreeView.SelectedItem is not null)
 		{
-			var selectedItem = (TreeViewItem)_folderTreeView.SelectedItem;
+			var selectedItem = GetFolderTreeViewSelectedItem()!;
 			var itemCollection = selectedItem.Items;
 			
 			ClearItemCollection(itemCollection);
@@ -231,9 +265,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_textBoxImageInfo.Text = imageStatusBarText;
 	}
 	
-	public void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo)
+	public void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders)
 	{
-		var subItems = _selectedFolderTreeViewItem is null
+		var subItems = _selectedFolderTreeViewItem is null || startAtRootFolders
 			? _folderTreeView.Items
 			: _selectedFolderTreeViewItem.Items;
 
@@ -244,6 +278,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				if (fileSystemTreeViewItem.FileSystemEntryInfo == selectedFileSystemEntryInfo)
 				{
 					_selectedFolderTreeViewItem = aSubItem;
+					break;
 				}
 			}
 		}
@@ -312,22 +347,21 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	    if (_selectedFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
 	    {
 		    var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-		    
-		    InvokeFolderChangedEventHandler(fileSystemEntryInfo);
+		    var folderChangedEventArgs = GetFolderChangedEventArgs(fileSystemEntryInfo);
+
+		    FolderChanged?.Invoke(this, folderChangedEventArgs);
 	    }
     }
     
     private void RaiseFolderOrderingChangedEvent()
     {
 	    if (_selectedFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
-	    {
+		{
 		    var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
+		    var folderChangedEventArgs = GetFolderChangedEventArgs(fileSystemEntryInfo);
 
-		    if (fileSystemEntryInfo.HasSubFolders)
-		    {
-			    InvokeFolderChangedEventHandler(fileSystemEntryInfo);
-		    }
-	    }
+		    FolderOrderingChanged?.Invoke(this, folderChangedEventArgs);
+		}
     }
     
     private void OnTreeViewItemPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -551,9 +585,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 		    GlobalParameters!.IsNavigationKey(keyPressing))
 		{
-			var selectedItemAsTreeViewItem = (TreeViewItem)_folderTreeView.SelectedItem;
+			var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem()!;
 
-			if (!selectedItemAsTreeViewItem.IsFocused && !_gridSplitter.IsFocused)
+			if (!folderTreeViewSelectedItem.IsFocused && !_gridSplitter.IsFocused)
 			{
 				return true;
 			}
@@ -568,15 +602,15 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		
 		if (keyPressing == GlobalParameters!.NKey)
 		{
-			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.Name;
+			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.NameAscending;
 		}
 		else if (keyPressing == GlobalParameters!.CKey)
 		{
-			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.CreationTime;
+			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.CreationTimeDescending;
 		}
 		else if (keyPressing == GlobalParameters!.MKey)
 		{
-			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.ModificationTime;
+			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.LastModificationTimeDescending;
 		}
 
 		if (newFileSystemEntryInfoOrdering != FileSystemEntryInfoOrdering)
@@ -610,9 +644,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			return;
 		}
 		
-		var selectedItemAsTreeViewItem = (TreeViewItem)_folderTreeView.SelectedItem;
+		var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem()!;
 		
-		if (selectedItemAsTreeViewItem.IsFocused)
+		if (folderTreeViewSelectedItem.IsFocused)
 		{
 			FocusGridSplitter();
 		}
@@ -622,7 +656,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 		else
 		{
-			FocusTreeViewItem(selectedItemAsTreeViewItem);
+			FocusTreeViewItem(folderTreeViewSelectedItem);
 		}
 	}
 	
@@ -674,7 +708,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 	
-	private void InvokeFolderChangedEventHandler(FileSystemEntryInfo fileSystemEntryInfo)
+	private FolderChangedEventArgs GetFolderChangedEventArgs(FileSystemEntryInfo fileSystemEntryInfo)
 	{
 		var selectedFolderName = fileSystemEntryInfo.Name;
 		var selectedFolderPath = fileSystemEntryInfo.Path;
@@ -685,9 +719,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			FileSystemEntryInfoOrdering,
 			ThumbnailSize,
 			_folderAccessType.IsRecursive());
-
-		FolderChanged?.Invoke(this, folderChangedEventArgs);
+		
+		return folderChangedEventArgs;
 	}
+	
+	private TreeViewItem? GetFolderTreeViewSelectedItem() => (TreeViewItem?)_folderTreeView.SelectedItem;
 
 	#endregion
 }

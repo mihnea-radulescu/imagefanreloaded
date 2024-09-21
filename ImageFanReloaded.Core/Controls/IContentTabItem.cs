@@ -27,13 +27,19 @@ public interface IContentTabItem
 	IFolderVisualState? FolderVisualState { get; set; }
 
 	event EventHandler<FolderChangedEventArgs>? FolderChanged;
-
+	event EventHandler<FolderChangedEventArgs>? FolderOrderingChanged;
+	
 	void EnableFolderTreeViewSelectedItemChanged();
+	void DisableFolderTreeViewSelectedItemChanged();
 
 	bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 
+	string GetFolderTreeViewSelectedItemFolderPath();
 	void SetFolderTreeViewSelectedItem();
+
+	bool? GetFolderTreeViewSelectedItemExpandedState();
+	void SetFolderTreeViewSelectedItemExpandedState(bool isExpanded);
 
 	void SetTitle(string title);
 
@@ -51,7 +57,7 @@ public interface IContentTabItem
 	void SetFolderStatusBarText(string folderStatusBarText);
 	void SetImageStatusBarText(string imageStatusBarText);
 
-	void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo);
+	void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders);
 
 	bool AreFolderInfoOrImageInfoFocused();
 	void FocusThumbnailScrollViewer();

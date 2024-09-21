@@ -50,7 +50,8 @@ public class AppBootstrap : IAppBootstrap
     private IGlobalParameters _globalParameters = null!;
     private IFileSizeEngine _fileSizeEngine = null!;
     private IDiscQueryEngine _discQueryEngine = null!;
-    private IInputPathContainer _inputPathContainer = null!;
+    private IInputPathHandlerFactory _inputPathHandlerFactory = null!;
+    private IInputPathHandler _commandLineArgsInputPathHandler = null!;
     
     private void BootstrapTypes()
     {
@@ -67,12 +68,13 @@ public class AppBootstrap : IAppBootstrap
 	    IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
 		    _globalParameters, _fileSizeEngine, imageFileFactory);
 	    _discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
-		
-	    string? inputPath = GetInputPath();
-	    _inputPathContainer = new InputPathContainer(_globalParameters, _discQueryEngine, inputPath);
+
+	    _inputPathHandlerFactory = new InputPathHandlerFactory(_globalParameters, _discQueryEngine);
+	    string? commandLineArgsInputPath = GetCommandLineArgsInputPath();
+	    _commandLineArgsInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(commandLineArgsInputPath);
     }
     
-    private string? GetInputPath()
+    private string? GetCommandLineArgsInputPath()
     {
 	    var args = _desktop.Args!;
 	    var inputPath = args.Length > 0 ? args[0] : null;
@@ -80,7 +82,7 @@ public class AppBootstrap : IAppBootstrap
 	    return inputPath;
     }
     
-    private bool IsMainViewAccess() => _inputPathContainer.InputPathType != InputPathType.File;
+    private bool IsMainViewAccess() => _commandLineArgsInputPathHandler.InputPathType != InputPathType.File;
     
     private void ShowMainView()
     {
@@ -93,12 +95,12 @@ public class AppBootstrap : IAppBootstrap
 	    IMainView mainView = mainWindow;
 	    mainView.GlobalParameters = _globalParameters;
 	    mainView.FolderChangedMutexFactory = folderChangedMutexFactory;
-		
-	    IImageViewFactory imageViewFactory = new ImageViewFactory(_globalParameters, screenInformation);
+	    
 	    IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(_globalParameters);
 	    IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
 		    _globalParameters, _fileSizeEngine, thumbnailInfoFactory, _discQueryEngine);
 
+	    IImageViewFactory imageViewFactory = new ImageViewFactory(_globalParameters, screenInformation);
 	    IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
 	    IAboutViewFactory aboutViewFactory = new AboutViewFactory(aboutInformationProvider, _globalParameters);
 
@@ -106,8 +108,9 @@ public class AppBootstrap : IAppBootstrap
 		    _discQueryEngine,
 		    folderVisualStateFactory,
 		    imageViewFactory,
-		    _inputPathContainer,
 		    aboutViewFactory,
+		    _inputPathHandlerFactory,
+		    _commandLineArgsInputPathHandler,
 		    mainView);
 
 	    mainView.AddFakeTabItem();
@@ -127,7 +130,7 @@ public class AppBootstrap : IAppBootstrap
 	    imageView.ViewClosing += OnImageViewClosing;
 
 	    var imageViewPresenter = new ImageViewPresenter(
-		    _discQueryEngine, _inputPathContainer, _globalParameters, imageView);
+		    _discQueryEngine, _commandLineArgsInputPathHandler, _globalParameters, imageView);
 			
 	    await imageViewPresenter.SetUpAccessToImages();
 	    

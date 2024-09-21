@@ -13,16 +13,19 @@ public class MainViewPresenter
 		IDiscQueryEngine discQueryEngine,
 		IFolderVisualStateFactory folderVisualStateFactory,
 		IImageViewFactory imageViewFactory,
-		IInputPathContainer inputPathContainer,
 		IAboutViewFactory aboutViewFactory,
+		IInputPathHandlerFactory inputPathHandlerFactory,
+		IInputPathHandler commandLineArgsInputPathHandler,
 		IMainView mainView)
 	{
 		_discQueryEngine = discQueryEngine;
 		_folderVisualStateFactory = folderVisualStateFactory;
 		_imageViewFactory = imageViewFactory;
-
-		_inputPathContainer = inputPathContainer;
 		_aboutViewFactory = aboutViewFactory;
+		_inputPathHandlerFactory = inputPathHandlerFactory;
+		
+		_commandLineArgsInputPathHandler = commandLineArgsInputPathHandler;
+		_shouldProcessCommandLineArgsInputPath = true;
 
 		_mainView = mainView;
 		_mainView.ContentTabItemAdded += OnContentTabItemAdded;
@@ -35,9 +38,11 @@ public class MainViewPresenter
 	private readonly IDiscQueryEngine _discQueryEngine;
 	private readonly IFolderVisualStateFactory _folderVisualStateFactory;
 	private readonly IImageViewFactory _imageViewFactory;
-	
-	private readonly IInputPathContainer _inputPathContainer;
 	private readonly IAboutViewFactory _aboutViewFactory;
+	private readonly IInputPathHandlerFactory _inputPathHandlerFactory;
+	
+	private readonly IInputPathHandler _commandLineArgsInputPathHandler;
+	private bool _shouldProcessCommandLineArgsInputPath;
 
 	private readonly IMainView _mainView;
 
@@ -48,9 +53,11 @@ public class MainViewPresenter
 
 		var rootFolders = await PopulateRootFolders(contentTabItem);
 		
-		if (_inputPathContainer.ShouldProcessInputPath())
+		if (_shouldProcessCommandLineArgsInputPath && _commandLineArgsInputPathHandler.CanProcessInputPath())
 		{
-			await PopulateInputPath(contentTabItem, rootFolders);
+			await PopulateInputPath(contentTabItem, rootFolders, _commandLineArgsInputPathHandler, true);
+
+			_shouldProcessCommandLineArgsInputPath = false;
 		}
 		else
 		{
@@ -64,7 +71,6 @@ public class MainViewPresenter
 	{
 		var contentTabItem = e.ContentTabItem;
 		
-		contentTabItem.FolderChanged -= OnFolderChanged;
 		ClearContentTabItem(contentTabItem);
 		
 		contentTabItem.FolderChangedMutex!.Dispose();
@@ -81,7 +87,7 @@ public class MainViewPresenter
 		var contentTabItem = (IContentTabItem)sender!;
 		
 		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
-		
+
 		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
 			contentTabItem,
 			e.Name,
@@ -89,6 +95,25 @@ public class MainViewPresenter
 
 		await contentTabItem.FolderVisualState.UpdateVisualState(
 			e.FileSystemEntryInfoOrdering, e.ThumbnailSize, e.Recursive);
+	}
+	
+	private async void OnFolderOrderingChanged(object? sender, FolderChangedEventArgs e)
+	{
+		var contentTabItem = (IContentTabItem)sender!;
+		
+		var folderPath = contentTabItem.GetFolderTreeViewSelectedItemFolderPath();
+		var isExpandedFolderTreeViewSelectedItem = contentTabItem.GetFolderTreeViewSelectedItemExpandedState()
+			?? false;
+
+		ClearContentTabItem(contentTabItem);
+
+		var rootFolders = await PopulateRootFolders(contentTabItem);
+
+		var folderChangedInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(folderPath);
+		await PopulateInputPath(
+			contentTabItem, rootFolders, folderChangedInputPathHandler, isExpandedFolderTreeViewSelectedItem);
+
+		contentTabItem.SetFolderTreeViewSelectedItem();
 	}
 
 	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(IContentTabItem contentTabItem)
@@ -100,43 +125,54 @@ public class MainViewPresenter
 		return rootFolders;
 	}
 	
-	private static void ClearContentTabItem(IContentTabItem contentTabItem)
+	private void ClearContentTabItem(IContentTabItem contentTabItem)
 	{
 		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
-
 		contentTabItem.FolderVisualState?.ClearVisualState();
+		
+		DisableContentTabEventHandling(contentTabItem);
 	}
 
-	private async Task PopulateInputPath(IContentTabItem contentTabItem, IReadOnlyList<FileSystemEntryInfo> rootFolders)
+	private async Task PopulateInputPath(
+		IContentTabItem contentTabItem,
+		IReadOnlyList<FileSystemEntryInfo> rootFolders,
+		IInputPathHandler inputPathHandler,
+		bool isExpandedFolderTreeViewSelectedItem)
 	{
-		_inputPathContainer.DisableProcessInputPath();
-
-		await BuildInputFolderTreeView(contentTabItem, rootFolders);
+		await BuildInputFolderTreeView(
+			contentTabItem, rootFolders, inputPathHandler, isExpandedFolderTreeViewSelectedItem);
 
 		EnableContentTabEventHandling(contentTabItem);
 
-		await RenderInputFolderImages(contentTabItem);
+		await RenderInputFolderImages(contentTabItem, inputPathHandler);
 	}
 	
 	private async Task BuildInputFolderTreeView(
-		IContentTabItem contentTabItem, IReadOnlyList<FileSystemEntryInfo> rootFolders)
+		IContentTabItem contentTabItem,
+		IReadOnlyList<FileSystemEntryInfo> rootFolders,
+		IInputPathHandler inputPathHandler,
+		bool isExpandedFolderTreeViewSelectedItem)
 	{
 		FileSystemEntryInfo? matchingFileSystemEntryInfo;
 		var subFolders = rootFolders;
+		var startAtRootFolders = true;
 
 		do
 		{
-			matchingFileSystemEntryInfo = await _inputPathContainer.GetMatchingFileSystemEntryInfo(subFolders);
+			matchingFileSystemEntryInfo = await inputPathHandler.GetMatchingFileSystemEntryInfo(subFolders);
 
 			if (matchingFileSystemEntryInfo is not null)
 			{
-				contentTabItem.SaveMatchingTreeViewItem(matchingFileSystemEntryInfo);
+				contentTabItem.SaveMatchingTreeViewItem(matchingFileSystemEntryInfo, startAtRootFolders);
+				startAtRootFolders = false;
 				
 				subFolders = await _discQueryEngine.GetSubFolders(
 					matchingFileSystemEntryInfo.Path, contentTabItem.FileSystemEntryInfoOrdering);
 				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(subFolders);
 			}
 		} while (matchingFileSystemEntryInfo is not null);
+		
+		contentTabItem.SetFolderTreeViewSelectedItemExpandedState(isExpandedFolderTreeViewSelectedItem);
 	}
 
 	private void EnableContentTabEventHandling(IContentTabItem contentTabItem)
@@ -144,11 +180,20 @@ public class MainViewPresenter
 		contentTabItem.EnableFolderTreeViewSelectedItemChanged();
 		
 		contentTabItem.FolderChanged += OnFolderChanged;
+		contentTabItem.FolderOrderingChanged += OnFolderOrderingChanged;
 	}
 	
-	private async Task RenderInputFolderImages(IContentTabItem contentTabItem)
+	private void DisableContentTabEventHandling(IContentTabItem contentTabItem)
 	{
-		var fileSystemEntryInfo = await _inputPathContainer.GetFileSystemEntryInfo();
+		contentTabItem.DisableFolderTreeViewSelectedItemChanged();
+		
+		contentTabItem.FolderChanged -= OnFolderChanged;
+		contentTabItem.FolderOrderingChanged -= OnFolderOrderingChanged;
+	}
+	
+	private async Task RenderInputFolderImages(IContentTabItem contentTabItem, IInputPathHandler inputPathHandler)
+	{
+		var fileSystemEntryInfo = await inputPathHandler.GetFileSystemEntryInfo();
 		
 		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
 			contentTabItem,

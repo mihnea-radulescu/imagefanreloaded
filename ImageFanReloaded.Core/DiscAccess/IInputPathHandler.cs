@@ -3,15 +3,14 @@ using System.Threading.Tasks;
 
 namespace ImageFanReloaded.Core.DiscAccess;
 
-public interface IInputPathContainer
+public interface IInputPathHandler
 {
 	InputPathType InputPathType { get; }
 	
 	string? FolderPath { get; }
 	string? FilePath { get; }
 
-	bool ShouldProcessInputPath();
-	void DisableProcessInputPath();
+	bool CanProcessInputPath();
 
 	Task<FileSystemEntryInfo> GetFileSystemEntryInfo();
 	Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(IReadOnlyList<FileSystemEntryInfo> folders);

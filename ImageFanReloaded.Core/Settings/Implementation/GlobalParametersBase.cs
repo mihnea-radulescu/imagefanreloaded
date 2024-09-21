@@ -59,7 +59,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	public string UserProfilePath { get; }
 	public IReadOnlyList<string> SpecialFolders { get; }
-	public FileSystemEntryInfoOrdering DefaultFileSystemEntryInfoOrdering => FileSystemEntryInfoOrdering.Name;
+	public FileSystemEntryInfoOrdering DefaultFileSystemEntryInfoOrdering => FileSystemEntryInfoOrdering.NameAscending;
 
 	public int DefaultThumbnailSize => 250;
 	public int ThumbnailSizeIncrement => 50;

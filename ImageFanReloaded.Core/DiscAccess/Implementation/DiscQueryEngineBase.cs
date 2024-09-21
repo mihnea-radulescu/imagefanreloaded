@@ -244,11 +244,11 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
     {
 	    var orderedFileSystemInfoCollection = fileSystemEntryInfoOrdering switch
 	    {
-		    FileSystemEntryInfoOrdering.CreationTime => fileSystemInfoCollection
-			    .OrderBy(aFileSystemInfo => aFileSystemInfo.CreationTimeUtc),
+		    FileSystemEntryInfoOrdering.CreationTimeDescending => fileSystemInfoCollection
+			    .OrderByDescending(aFileSystemInfo => aFileSystemInfo.CreationTimeUtc),
 		    
-		    FileSystemEntryInfoOrdering.ModificationTime => fileSystemInfoCollection
-			    .OrderBy(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc),
+		    FileSystemEntryInfoOrdering.LastModificationTimeDescending => fileSystemInfoCollection
+			    .OrderByDescending(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc),
 		    
 		    _ => fileSystemInfoCollection
 			    .OrderBy(aFileSystemInfo => aFileSystemInfo.Name, _globalParameters.NameComparer)

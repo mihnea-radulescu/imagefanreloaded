@@ -16,7 +16,7 @@ public partial class AboutWindow : Window, IAboutView
 		
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 		
-		_textBoxAbout.FontSize = 0.9 * FontSize;
+		_textBoxAbout.FontSize = 0.85 * FontSize;
 	}
 	
 	public IGlobalParameters? GlobalParameters { get; set; }
