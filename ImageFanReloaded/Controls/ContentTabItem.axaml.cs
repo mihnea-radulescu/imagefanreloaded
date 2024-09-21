@@ -20,6 +20,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		InitializeComponent();
 
 		_thumbnailBoxCollection = new List<IThumbnailBox>();
+		_folderAccessType = FolderAccessType.Normal;
 	}
 	
     public IMainView? MainView { get; set; }
@@ -49,7 +50,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public IFolderVisualState? FolderVisualState { get; set; }
 
 	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
-	public event EventHandler<FolderChangedEventArgs>? FolderOrderingChanged;
+	public event EventHandler<FolderOrderingChangedEventArgs>? FolderOrderingChanged;
 
 	public void EnableFolderTreeViewSelectedItemChanged()
 	{
@@ -338,7 +339,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	    if (_selectedFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
 	    {
 		    var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-		    var folderChangedEventArgs = GetFolderChangedEventArgs(fileSystemEntryInfo);
+		    var selectedFolderName = fileSystemEntryInfo.Name;
+		    var selectedFolderPath = fileSystemEntryInfo.Path;
+
+		    var folderChangedEventArgs = new FolderChangedEventArgs(
+			    this,
+			    selectedFolderName,
+			    selectedFolderPath,
+			    _folderAccessType.IsRecursive());
 
 		    FolderChanged?.Invoke(this, folderChangedEventArgs);
 	    }
@@ -348,10 +356,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     {
 	    if (_selectedFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
 		{
-		    var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-		    var folderChangedEventArgs = GetFolderChangedEventArgs(fileSystemEntryInfo);
+			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
+			var selectedFolderPath = fileSystemEntryInfo.Path;
+			
+			var folderOrderingChangedEventArgs = new FolderOrderingChangedEventArgs(this, selectedFolderPath);
 
-		    FolderOrderingChanged?.Invoke(this, folderChangedEventArgs);
+		    FolderOrderingChanged?.Invoke(this, folderOrderingChangedEventArgs);
 		}
     }
     
@@ -697,21 +707,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			AdvanceFromSelectedThumbnail(1);
 		}
-	}
-	
-	private FolderChangedEventArgs GetFolderChangedEventArgs(FileSystemEntryInfo fileSystemEntryInfo)
-	{
-		var selectedFolderName = fileSystemEntryInfo.Name;
-		var selectedFolderPath = fileSystemEntryInfo.Path;
-
-		var folderChangedEventArgs = new FolderChangedEventArgs(
-			selectedFolderName,
-			selectedFolderPath,
-			FileSystemEntryInfoOrdering,
-			ThumbnailSize,
-			_folderAccessType.IsRecursive());
-		
-		return folderChangedEventArgs;
 	}
 	
 	private TreeViewItem? GetFolderTreeViewSelectedItem() => (TreeViewItem?)_folderTreeView.SelectedItem;

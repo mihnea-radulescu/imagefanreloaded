@@ -10,5 +10,5 @@ public enum FolderAccessType
 public static class FolderAccessTypeExtensions
 {
 	public static bool IsRecursive(this FolderAccessType folderAccessType) =>
-		folderAccessType != FolderAccessType.Normal;
+		folderAccessType is FolderAccessType.Recursive or FolderAccessType.PersistentRecursive;
 }

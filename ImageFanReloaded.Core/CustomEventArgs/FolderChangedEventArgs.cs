@@ -1,27 +1,26 @@
 using System;
-using ImageFanReloaded.Core.Settings;
+using ImageFanReloaded.Core.Controls;
 
 namespace ImageFanReloaded.Core.CustomEventArgs;
 
 public class FolderChangedEventArgs : EventArgs
 {
     public FolderChangedEventArgs(
+        IContentTabItem contentTabItem,
         string name,
         string path,
-        FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering,
-        int thumbnailSize,
         bool recursive)
     {
+        ContentTabItem = contentTabItem;
+        
         Name = name;
         Path = path;
-        FileSystemEntryInfoOrdering = fileSystemEntryInfoOrdering;
-        ThumbnailSize = thumbnailSize;
         Recursive = recursive;
     }
 
+    public IContentTabItem ContentTabItem { get; }
+    
     public string Name { get; }
     public string Path { get; }
-    public FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; }
-    public int ThumbnailSize { get; }
     public bool Recursive { get; }
 }

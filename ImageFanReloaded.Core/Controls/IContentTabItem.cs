@@ -27,7 +27,7 @@ public interface IContentTabItem
 	IFolderVisualState? FolderVisualState { get; set; }
 
 	event EventHandler<FolderChangedEventArgs>? FolderChanged;
-	event EventHandler<FolderChangedEventArgs>? FolderOrderingChanged;
+	event EventHandler<FolderOrderingChangedEventArgs>? FolderOrderingChanged;
 	
 	void EnableFolderTreeViewSelectedItemChanged();
 	void DisableFolderTreeViewSelectedItemChanged();
