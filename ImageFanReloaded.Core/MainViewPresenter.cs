@@ -55,7 +55,7 @@ public class MainViewPresenter
 		
 		if (_shouldProcessCommandLineArgsInputPath && _commandLineArgsInputPathHandler.CanProcessInputPath())
 		{
-			await PopulateInputPath(contentTabItem, rootFolders, _commandLineArgsInputPathHandler, true);
+			await PopulateInputPath(contentTabItem, rootFolders, _commandLineArgsInputPathHandler);
 
 			_shouldProcessCommandLineArgsInputPath = false;
 		}
@@ -110,10 +110,10 @@ public class MainViewPresenter
 		var rootFolders = await PopulateRootFolders(contentTabItem);
 
 		var folderChangedInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(folderPath);
-		await PopulateInputPath(
-			contentTabItem, rootFolders, folderChangedInputPathHandler, isExpandedFolderTreeViewSelectedItem);
+		await PopulateInputPath(contentTabItem, rootFolders, folderChangedInputPathHandler);
 
 		contentTabItem.SetFolderTreeViewSelectedItem();
+		contentTabItem.SetFolderTreeViewSelectedItemExpandedState(isExpandedFolderTreeViewSelectedItem);
 	}
 
 	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(IContentTabItem contentTabItem)
@@ -136,11 +136,9 @@ public class MainViewPresenter
 	private async Task PopulateInputPath(
 		IContentTabItem contentTabItem,
 		IReadOnlyList<FileSystemEntryInfo> rootFolders,
-		IInputPathHandler inputPathHandler,
-		bool isExpandedFolderTreeViewSelectedItem)
+		IInputPathHandler inputPathHandler)
 	{
-		await BuildInputFolderTreeView(
-			contentTabItem, rootFolders, inputPathHandler, isExpandedFolderTreeViewSelectedItem);
+		await BuildInputFolderTreeView(contentTabItem, rootFolders, inputPathHandler);
 
 		EnableContentTabEventHandling(contentTabItem);
 
@@ -150,8 +148,7 @@ public class MainViewPresenter
 	private async Task BuildInputFolderTreeView(
 		IContentTabItem contentTabItem,
 		IReadOnlyList<FileSystemEntryInfo> rootFolders,
-		IInputPathHandler inputPathHandler,
-		bool isExpandedFolderTreeViewSelectedItem)
+		IInputPathHandler inputPathHandler)
 	{
 		FileSystemEntryInfo? matchingFileSystemEntryInfo;
 		var subFolders = rootFolders;
@@ -171,8 +168,6 @@ public class MainViewPresenter
 				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(subFolders);
 			}
 		} while (matchingFileSystemEntryInfo is not null);
-		
-		contentTabItem.SetFolderTreeViewSelectedItemExpandedState(isExpandedFolderTreeViewSelectedItem);
 	}
 
 	private void EnableContentTabEventHandling(IContentTabItem contentTabItem)
