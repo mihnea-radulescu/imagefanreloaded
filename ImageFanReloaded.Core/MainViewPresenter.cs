@@ -55,7 +55,7 @@ public class MainViewPresenter
 		
 		if (_shouldProcessCommandLineArgsInputPath && _commandLineArgsInputPathHandler.CanProcessInputPath())
 		{
-			await PopulateInputPath(contentTabItem, rootFolders, _commandLineArgsInputPathHandler);
+			await PopulateInputPath(contentTabItem, rootFolders, _commandLineArgsInputPathHandler, false);
 
 			_shouldProcessCommandLineArgsInputPath = false;
 		}
@@ -100,8 +100,8 @@ public class MainViewPresenter
 	private async void OnFolderOrderingChanged(object? sender, FolderChangedEventArgs e)
 	{
 		var contentTabItem = (IContentTabItem)sender!;
-		
-		var folderPath = contentTabItem.GetFolderTreeViewSelectedItemFolderPath();
+
+		var folderPath = e.Path;
 		var isExpandedFolderTreeViewSelectedItem = contentTabItem.GetFolderTreeViewSelectedItemExpandedState()
 			?? false;
 
@@ -110,7 +110,7 @@ public class MainViewPresenter
 		var rootFolders = await PopulateRootFolders(contentTabItem);
 
 		var folderChangedInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(folderPath);
-		await PopulateInputPath(contentTabItem, rootFolders, folderChangedInputPathHandler);
+		await PopulateInputPath(contentTabItem, rootFolders, folderChangedInputPathHandler, e.Recursive);
 
 		contentTabItem.SetFolderTreeViewSelectedItem();
 		contentTabItem.SetFolderTreeViewSelectedItemExpandedState(isExpandedFolderTreeViewSelectedItem);
@@ -136,13 +136,14 @@ public class MainViewPresenter
 	private async Task PopulateInputPath(
 		IContentTabItem contentTabItem,
 		IReadOnlyList<FileSystemEntryInfo> rootFolders,
-		IInputPathHandler inputPathHandler)
+		IInputPathHandler inputPathHandler,
+		bool recursiveFolderAccess)
 	{
 		await BuildInputFolderTreeView(contentTabItem, rootFolders, inputPathHandler);
 
 		EnableContentTabEventHandling(contentTabItem);
 
-		await RenderInputFolderImages(contentTabItem, inputPathHandler);
+		await RenderInputFolderImages(contentTabItem, inputPathHandler, recursiveFolderAccess);
 	}
 	
 	private async Task BuildInputFolderTreeView(
@@ -186,7 +187,8 @@ public class MainViewPresenter
 		contentTabItem.FolderOrderingChanged -= OnFolderOrderingChanged;
 	}
 	
-	private async Task RenderInputFolderImages(IContentTabItem contentTabItem, IInputPathHandler inputPathHandler)
+	private async Task RenderInputFolderImages(
+		IContentTabItem contentTabItem, IInputPathHandler inputPathHandler, bool recursiveFolderAccess)
 	{
 		var fileSystemEntryInfo = await inputPathHandler.GetFileSystemEntryInfo();
 		
@@ -196,7 +198,7 @@ public class MainViewPresenter
 			fileSystemEntryInfo.Path);
 
 		await contentTabItem.FolderVisualState.UpdateVisualState(
-			contentTabItem.FileSystemEntryInfoOrdering, contentTabItem.ThumbnailSize, false);
+			contentTabItem.FileSystemEntryInfoOrdering, contentTabItem.ThumbnailSize, recursiveFolderAccess);
 	}
 
 	#endregion

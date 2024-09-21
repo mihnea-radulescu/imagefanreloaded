@@ -34,8 +34,7 @@ public interface IContentTabItem
 
 	bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
-
-	string GetFolderTreeViewSelectedItemFolderPath();
+	
 	void SetFolderTreeViewSelectedItem();
 
 	bool? GetFolderTreeViewSelectedItemExpandedState();

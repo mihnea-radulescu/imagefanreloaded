@@ -108,15 +108,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public string GetFolderTreeViewSelectedItemFolderPath()
-	{
-		var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem()!;
-		var fileSystemTreeViewItem = (IFileSystemTreeViewItem)folderTreeViewSelectedItem.Header!;
-		var selectedItemFolderPath = fileSystemTreeViewItem.FileSystemEntryInfo!.Path;
-
-		return selectedItemFolderPath;
-	}
-
 	public void SetFolderTreeViewSelectedItem()
 	{
 		if (_folderTreeView.SelectedItem is null)
@@ -336,7 +327,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
     private void UpdateRecursiveFolderAccess()
     {
-	    if (_folderAccessType != FolderAccessType.PersistentRecursive)
+	    if (_folderAccessType == FolderAccessType.Recursive)
 	    {
 		    _folderAccessType = FolderAccessType.Normal;
 	    }
