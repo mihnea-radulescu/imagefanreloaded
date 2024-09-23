@@ -53,19 +53,15 @@ public class MainViewPresenter
 
 		var rootFolders = await PopulateRootFolders(contentTabItem);
 		
-		if (_shouldProcessCommandLineArgsInputPath && _commandLineArgsInputPathHandler.CanProcessInputPath())
+		EnableContentTabEventHandling(contentTabItem);
+
+		var shouldProcessInputPath = _shouldProcessCommandLineArgsInputPath &&
+		                             _commandLineArgsInputPathHandler.CanProcessInputPath();
+		if (shouldProcessInputPath)
 		{
-			await BuildInputFolderTreeView(contentTabItem, rootFolders, _commandLineArgsInputPathHandler);
-
-			EnableContentTabEventHandling(contentTabItem);
-
-			await RenderInputFolderImages(contentTabItem, _commandLineArgsInputPathHandler, false);
-
 			_shouldProcessCommandLineArgsInputPath = false;
-		}
-		else
-		{
-			EnableContentTabEventHandling(contentTabItem);
+			
+			await BuildInputFolderTreeView(contentTabItem, rootFolders, _commandLineArgsInputPathHandler);
 		}
 		
 		contentTabItem.SetFolderTreeViewSelectedItem();
@@ -172,20 +168,6 @@ public class MainViewPresenter
 		
 		contentTabItem.FolderChanged -= OnFolderChanged;
 		contentTabItem.FolderOrderingChanged -= OnFolderOrderingChanged;
-	}
-	
-	private async Task RenderInputFolderImages(
-		IContentTabItem contentTabItem, IInputPathHandler inputPathHandler, bool recursiveFolderAccess)
-	{
-		var fileSystemEntryInfo = await inputPathHandler.GetFileSystemEntryInfo();
-		
-		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
-			contentTabItem,
-			fileSystemEntryInfo.Name,
-			fileSystemEntryInfo.Path);
-
-		await contentTabItem.FolderVisualState.UpdateVisualState(
-			contentTabItem.FileSystemEntryInfoOrdering, contentTabItem.ThumbnailSize, recursiveFolderAccess);
 	}
 
 	#endregion

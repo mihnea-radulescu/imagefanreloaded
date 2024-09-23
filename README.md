@@ -11,6 +11,7 @@ Features:
 * targeted zooming in, and moving over the zoomed image
 * fast and seamless full-screen navigation across images
 * command-line direct access to the specified folder or image file
+* folder ordering by name, creation time and last modification time
 * configurable thumbnail size, between 50 and 400 pixels
 
 User interface:
