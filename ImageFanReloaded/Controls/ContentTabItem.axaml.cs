@@ -109,7 +109,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void SetFolderTreeViewSelectedItem()
+	public void SetFocusOnSelectedFolderTreeViewItem()
 	{
 		if (_folderTreeView.SelectedItem is null)
 		{
@@ -170,15 +170,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		if (_activeFolderTreeViewItem is not null)
 		{
-			var selectedItem = _activeFolderTreeViewItem;
-			var itemCollection = selectedItem.Items;
+			var itemCollection = _activeFolderTreeViewItem.Items;
 			
 			ClearItemCollection(itemCollection);
 			AddSubFoldersToTreeView(itemCollection, subFolders);
 
-			selectedItem.IsExpanded = true;
-			selectedItem.IsSelected = true;
-			_folderTreeView.SelectedItem = selectedItem;
+			_activeFolderTreeViewItem.IsExpanded = true;
+			_activeFolderTreeViewItem.IsSelected = true;
+			_folderTreeView.SelectedItem = _activeFolderTreeViewItem;
 		}
 	}
 	
@@ -280,6 +279,24 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	public void FocusThumbnailScrollViewer() => _thumbnailScrollViewer.Focus();
 	
+	public void RaiseFolderChangedEvent()
+	{
+		if (_activeFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
+		{
+			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
+			var selectedFolderName = fileSystemEntryInfo.Name;
+			var selectedFolderPath = fileSystemEntryInfo.Path;
+
+			var folderChangedEventArgs = new FolderChangedEventArgs(
+				this,
+				selectedFolderName,
+				selectedFolderPath,
+				_folderAccessType.IsRecursive());
+
+			FolderChanged?.Invoke(this, folderChangedEventArgs);
+		}
+	}
+	
     #region Private
 
     private const string FakeTreeViewItemText = "Loading...";
@@ -331,24 +348,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	    if (_folderAccessType == FolderAccessType.Recursive)
 	    {
 		    _folderAccessType = FolderAccessType.Normal;
-	    }
-    }
-
-    private void RaiseFolderChangedEvent()
-    {
-	    if (_activeFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
-	    {
-		    var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-		    var selectedFolderName = fileSystemEntryInfo.Name;
-		    var selectedFolderPath = fileSystemEntryInfo.Path;
-
-		    var folderChangedEventArgs = new FolderChangedEventArgs(
-			    this,
-			    selectedFolderName,
-			    selectedFolderPath,
-			    _folderAccessType.IsRecursive());
-
-		    FolderChanged?.Invoke(this, folderChangedEventArgs);
 	    }
     }
     

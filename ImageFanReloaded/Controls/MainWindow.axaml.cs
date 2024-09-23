@@ -214,7 +214,7 @@ public partial class MainWindow : Window, IMainView
 	private void FocusSelectedContentTabItem()
 	{
 		var selectedContentTabItem = GetActiveContentTabItem()!;
-		selectedContentTabItem.SetFolderTreeViewSelectedItem();
+		selectedContentTabItem.SetFocusOnSelectedFolderTreeViewItem();
 	}
 
     private bool ShouldHandleEscapeAction(KeyModifiers keyModifiers, Key keyPressing)

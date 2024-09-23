@@ -52,8 +52,6 @@ public class MainViewPresenter
 		contentTabItem.ImageViewFactory = _imageViewFactory;
 
 		var rootFolders = await PopulateRootFolders(contentTabItem);
-		
-		EnableContentTabEventHandling(contentTabItem);
 
 		var shouldProcessInputPath = _shouldProcessCommandLineArgsInputPath &&
 		                             _commandLineArgsInputPathHandler.CanProcessInputPath();
@@ -62,9 +60,17 @@ public class MainViewPresenter
 			_shouldProcessCommandLineArgsInputPath = false;
 			
 			await BuildInputFolderTreeView(contentTabItem, rootFolders, _commandLineArgsInputPathHandler);
+			
+			EnableContentTabEventHandling(contentTabItem);
+			
+			contentTabItem.RaiseFolderChangedEvent();
 		}
-		
-		contentTabItem.SetFolderTreeViewSelectedItem();
+		else
+		{
+			EnableContentTabEventHandling(contentTabItem);
+			
+			contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
+		}
 	}
 	
 	private void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
@@ -116,7 +122,7 @@ public class MainViewPresenter
 
 		EnableContentTabEventHandling(contentTabItem);
 
-		contentTabItem.SetFolderTreeViewSelectedItem();
+		contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
 		contentTabItem.SetFolderTreeViewSelectedItemExpandedState(isExpandedFolderTreeViewSelectedItem);
 	}
 

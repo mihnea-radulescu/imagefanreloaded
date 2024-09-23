@@ -35,7 +35,7 @@ public interface IContentTabItem
 	bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 	
-	void SetFolderTreeViewSelectedItem();
+	void SetFocusOnSelectedFolderTreeViewItem();
 
 	bool? GetFolderTreeViewSelectedItemExpandedState();
 	void SetFolderTreeViewSelectedItemExpandedState(bool isExpanded);
@@ -60,4 +60,6 @@ public interface IContentTabItem
 
 	bool AreFolderInfoOrImageInfoFocused();
 	void FocusThumbnailScrollViewer();
+
+	void RaiseFolderChangedEvent();
 }
