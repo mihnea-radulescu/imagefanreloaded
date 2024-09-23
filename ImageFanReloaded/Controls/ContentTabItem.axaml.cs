@@ -168,9 +168,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	public void PopulateSubFoldersTreeOfParentTreeViewItem(IReadOnlyList<FileSystemEntryInfo> subFolders)
 	{
-		if (_selectedFolderTreeViewItem is not null)
+		if (_activeFolderTreeViewItem is not null)
 		{
-			var selectedItem = _selectedFolderTreeViewItem;
+			var selectedItem = _activeFolderTreeViewItem;
 			var itemCollection = selectedItem.Items;
 			
 			ClearItemCollection(itemCollection);
@@ -259,9 +259,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	public void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders)
 	{
-		var subItems = _selectedFolderTreeViewItem is null || startAtRootFolders
+		var subItems = _activeFolderTreeViewItem is null || startAtRootFolders
 			? _folderTreeView.Items
-			: _selectedFolderTreeViewItem.Items;
+			: _activeFolderTreeViewItem.Items;
 
 		foreach (TreeViewItem? aSubItem in subItems)
 		{
@@ -269,7 +269,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			{
 				if (fileSystemTreeViewItem.FileSystemEntryInfo == selectedFileSystemEntryInfo)
 				{
-					_selectedFolderTreeViewItem = aSubItem;
+					_activeFolderTreeViewItem = aSubItem;
 					break;
 				}
 			}
@@ -293,7 +293,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private int _selectedThumbnailIndex;
 	private IThumbnailBox? _selectedThumbnailBox;
 	
-	private TreeViewItem? _selectedFolderTreeViewItem;
+	private TreeViewItem? _activeFolderTreeViewItem;
 	private FolderAccessType _folderAccessType;
 	
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxEventArgs e)
@@ -320,7 +320,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
     private void OnFolderTreeViewSelectedItemChanged(object? sender, SelectionChangedEventArgs e)
     {
-	    _selectedFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
+	    _activeFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
 
 	    UpdateRecursiveFolderAccess();
 	    RaiseFolderChangedEvent();
@@ -336,7 +336,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
     private void RaiseFolderChangedEvent()
     {
-	    if (_selectedFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
+	    if (_activeFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
 	    {
 		    var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
 		    var selectedFolderName = fileSystemEntryInfo.Name;
@@ -354,7 +354,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     
     private void RaiseFolderOrderingChangedEvent()
     {
-	    if (_selectedFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
+	    if (_activeFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
 		{
 			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
 			var selectedFolderPath = fileSystemEntryInfo.Path;
