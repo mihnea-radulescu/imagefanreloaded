@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
@@ -28,7 +27,6 @@ public partial class MainWindow : Window, IMainView
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
 	public event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
-	public event EventHandler? AboutInfoRequested;
 
 	public void AddFakeTabItem()
 	{
@@ -40,12 +38,10 @@ public partial class MainWindow : Window, IMainView
 
 		_tabControl.Items.Add(fakeTabItem);
 	}
-	
-	public async Task ShowAboutInfo(IAboutView aboutView) => await aboutView.ShowDialog(this);
 
 	#region Private
 
-	private const string DefaultTabItemTitle = "New Tab";
+	private const string DefaultTabItemTitle = "New tab";
 	private const string FakeTabItemTitle = "➕";
 
 	private readonly double _windowFontSize;
@@ -87,11 +83,6 @@ public partial class MainWindow : Window, IMainView
 		else if (ShouldNavigateToNextTab(keyModifiers, keyPressing))
 		{
 			NavigateToNextTab();
-			e.Handled = true;
-		}
-		else if (ShouldDisplayHelp(keyModifiers, keyPressing))
-		{
-			DisplayAboutInfo();
 			e.Handled = true;
 		}
 		else if (contentTabItem.ShouldHandleControlKeyFunctions(keyModifiers, keyPressing))
@@ -137,8 +128,7 @@ public partial class MainWindow : Window, IMainView
 
 		if (contentTabItem is not null)
 		{
-			var contentTabItemEventArgs = new ContentTabItemEventArgs(contentTabItem);
-			CloseContentTabItem(this, contentTabItemEventArgs);
+			CloseContentTabItem(this, new ContentTabItemEventArgs(contentTabItem));
 		}
 	}
 
@@ -267,16 +257,6 @@ public partial class MainWindow : Window, IMainView
 	    return false;
     }
 
-    private bool ShouldDisplayHelp(KeyModifiers keyModifiers, Key keyPressing)
-    {
-	    if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.F1Key)
-	    {
-		    return true;
-	    }
-
-	    return false;
-    }
-
     private bool ShouldAllowKeyPressingEventPropagation(KeyModifiers keyModifiers, Key keyPressing)
     {
 	    if (keyModifiers == GlobalParameters!.NoneKeyModifier && GlobalParameters!.IsNavigationKey(keyPressing))
@@ -304,11 +284,6 @@ public partial class MainWindow : Window, IMainView
 		var selectedTabItemIndex = _tabControl.SelectedIndex;
 		var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
 		_tabControl.SelectedIndex = nextSelectedTabItemIndex;
-	}
-
-	private void DisplayAboutInfo()
-	{
-		AboutInfoRequested?.Invoke(this, EventArgs.Empty);
 	}
 
 	#endregion

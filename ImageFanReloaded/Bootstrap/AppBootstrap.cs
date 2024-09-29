@@ -102,13 +102,16 @@ public class AppBootstrap : IAppBootstrap
 
 	    IImageViewFactory imageViewFactory = new ImageViewFactory(_globalParameters, screenInformation);
 	    IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
+	    
 	    IAboutViewFactory aboutViewFactory = new AboutViewFactory(aboutInformationProvider, _globalParameters);
+	    ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);
 
 	    var mainViewPresenter = new MainViewPresenter(
 		    _discQueryEngine,
 		    folderVisualStateFactory,
 		    imageViewFactory,
 		    aboutViewFactory,
+		    tabOptionsViewFactory,
 		    _inputPathHandlerFactory,
 		    _commandLineArgsInputPathHandler,
 		    mainView);

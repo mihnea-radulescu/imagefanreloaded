@@ -1,17 +1,13 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="ImageFanReloaded.Controls.AboutWindow"
+        x:Class="ImageFanReloaded.Controls.TabOptionsWindow"
         Icon="/MainWindowIcon.ico"
-        Title="About ImageFan Reloaded"
+        Title="Tab Options"
         MinWidth="800"
         MinHeight="600"
         Width="800"
         Height="600"
         WindowStartupLocation="CenterOwner"
         Focusable="True">
-	<TextBox Name="_textBoxAbout"
-	         IsReadOnly="True"
-	         Background="Transparent"
-	         BorderThickness="0"
-	         Margin="3"/>
+	
 </Window>

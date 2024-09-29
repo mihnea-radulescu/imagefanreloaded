@@ -13,8 +13,9 @@ public interface IImageView
 
 	event EventHandler<ImageViewClosingEventArgs>? ViewClosing;
 	event EventHandler<ImageChangedEventArgs>? ImageChanged;
+	event EventHandler<ImageInfoVisibilityChangedEventArgs>? ImageInfoVisibilityChanged;
 
-	void SetImage(IImageFile imageFile, bool recursiveFolderAccess);
+	void SetImage(IImageFile imageFile, bool recursiveFolderAccess, bool showImageInfo);
 
 	void Show();
     Task ShowDialog(IMainView owner);

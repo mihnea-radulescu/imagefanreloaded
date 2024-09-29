@@ -23,7 +23,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key TabKey { get; }
 	public Key EscapeKey { get; }
 	public Key EnterKey { get; }
+	
 	public Key F1Key { get; }
+	public Key HKey { get; }
+	public Key OKey { get; }
 	
 	public Key F4Key { get; }
 	
@@ -92,7 +95,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		TabKey = Key.Tab;
 		EscapeKey = Key.Escape;
 		EnterKey = Key.Enter;
+		
 		F1Key = Key.F1;
+		HKey = Key.H;
+		OKey = Key.O;
 
 		NoneKeyModifier = KeyModifiers.None;
 		CtrlKeyModifier = KeyModifiers.Ctrl;

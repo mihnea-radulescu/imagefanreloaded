@@ -44,37 +44,41 @@
 			<DependentUpon>Resources.resx</DependentUpon>
 		</Compile>
 		<Compile Update="Controls\ContentTabItem.axaml.cs">
-		  <DependentUpon>ContentTabItem.axaml</DependentUpon>
-		  <SubType>Code</SubType>
+			<DependentUpon>ContentTabItem.axaml</DependentUpon>
+			<SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Controls\ContentTabItemHeader.axaml.cs">
-		  <DependentUpon>ContentTabItemHeader.axaml</DependentUpon>
-		  <SubType>Code</SubType>
+			<DependentUpon>ContentTabItemHeader.axaml</DependentUpon>
+			<SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Controls\FileSystemEntryItem.axaml.cs">
-		  <DependentUpon>FileSystemEntryItem.axaml</DependentUpon>
-		  <SubType>Code</SubType>
+			<DependentUpon>FileSystemEntryItem.axaml</DependentUpon>
+			<SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Controls\ThumbnailBox.axaml.cs">
-		  <DependentUpon>ThumbnailBox.axaml</DependentUpon>
-		  <SubType>Code</SubType>
+			<DependentUpon>ThumbnailBox.axaml</DependentUpon>
+			<SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Controls\AboutWindow.axaml.cs">
-		  <DependentUpon>AboutWindow.axaml</DependentUpon>
-		  <SubType>Code</SubType>
+			<DependentUpon>AboutWindow.axaml</DependentUpon>
+			<SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Controls\ImageWindow.axaml.cs">
-		  <DependentUpon>ImageWindow.axaml</DependentUpon>
-		  <SubType>Code</SubType>
+			<DependentUpon>ImageWindow.axaml</DependentUpon>
+			<SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Controls\MainWindow.axaml.cs">
-		  <DependentUpon>MainWindow.axaml</DependentUpon>
-		  <SubType>Code</SubType>
+			<DependentUpon>MainWindow.axaml</DependentUpon>
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Controls\TabOptionsWindow.axaml.cs">
+			<DependentUpon>TabOptionsWindow.axaml</DependentUpon>
+			<SubType>Code</SubType>
 		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\ImageFanReloaded.Core\ImageFanReloaded.Core.csproj" />
+		<ProjectReference Include="..\ImageFanReloaded.Core\ImageFanReloaded.Core.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -21,7 +21,10 @@ public interface IGlobalParameters
 	Key TabKey { get; }
 	Key EscapeKey { get; }
 	Key EnterKey { get; }
+	
 	Key F1Key { get; }
+	Key HKey { get; }
+	Key OKey { get; }
 	
 	Key F4Key { get; }
 	

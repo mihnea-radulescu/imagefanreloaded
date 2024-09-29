@@ -5,9 +5,9 @@
         Icon="/MainWindowIcon.ico"
         Title="ImageFan Reloaded"
         MinWidth="800"
-        MinHeight="450"
+        MinHeight="600"
 		Width="800"
-        Height="450"
+        Height="600"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
 		Focusable="True">

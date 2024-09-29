@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls;
@@ -14,6 +13,7 @@ public class MainViewPresenter
 		IFolderVisualStateFactory folderVisualStateFactory,
 		IImageViewFactory imageViewFactory,
 		IAboutViewFactory aboutViewFactory,
+		ITabOptionsViewFactory tabOptionsViewFactory,
 		IInputPathHandlerFactory inputPathHandlerFactory,
 		IInputPathHandler commandLineArgsInputPathHandler,
 		IMainView mainView)
@@ -22,15 +22,16 @@ public class MainViewPresenter
 		_folderVisualStateFactory = folderVisualStateFactory;
 		_imageViewFactory = imageViewFactory;
 		_aboutViewFactory = aboutViewFactory;
+		_tabOptionsViewFactory = tabOptionsViewFactory;
 		_inputPathHandlerFactory = inputPathHandlerFactory;
 		
 		_commandLineArgsInputPathHandler = commandLineArgsInputPathHandler;
 		_shouldProcessCommandLineArgsInputPath = true;
 
 		_mainView = mainView;
+		
 		_mainView.ContentTabItemAdded += OnContentTabItemAdded;
 		_mainView.ContentTabItemClosed += OnContentTabItemClosed;
-		_mainView.AboutInfoRequested += OnAboutInfoRequested;
 	}
 
 	#region Private
@@ -39,6 +40,7 @@ public class MainViewPresenter
 	private readonly IFolderVisualStateFactory _folderVisualStateFactory;
 	private readonly IImageViewFactory _imageViewFactory;
 	private readonly IAboutViewFactory _aboutViewFactory;
+	private readonly ITabOptionsViewFactory _tabOptionsViewFactory;
 	private readonly IInputPathHandlerFactory _inputPathHandlerFactory;
 	
 	private readonly IInputPathHandler _commandLineArgsInputPathHandler;
@@ -85,10 +87,20 @@ public class MainViewPresenter
 		contentTabItem.FolderChangedMutex!.Dispose();
 	}
 	
-	private async void OnAboutInfoRequested(object? sender, EventArgs e)
+	private async void OnAboutInfoRequested(object? sender, ContentTabItemEventArgs e)
 	{
+		var contentTabItem = e.ContentTabItem;
+		
 		var aboutView = _aboutViewFactory.GetAboutView();
-		await _mainView.ShowAboutInfo(aboutView);
+		await contentTabItem.ShowAboutInfo(aboutView);
+	}
+	
+	private async void OnTabOptionsRequested(object? sender, ContentTabItemEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+		
+		var tabOptionsView = _tabOptionsViewFactory.GetTabOptionsView();
+		await contentTabItem.ShowTabOptions(tabOptionsView);
 	}
 	
 	private async void OnFolderChanged(object? sender, FolderChangedEventArgs e)
@@ -163,17 +175,23 @@ public class MainViewPresenter
 	private void EnableContentTabEventHandling(IContentTabItem contentTabItem)
 	{
 		contentTabItem.EnableFolderTreeViewSelectedItemChanged();
-		
+
 		contentTabItem.FolderChanged += OnFolderChanged;
 		contentTabItem.FolderOrderingChanged += OnFolderOrderingChanged;
+
+		contentTabItem.AboutInfoRequested += OnAboutInfoRequested;
+		contentTabItem.TabOptionsRequested += OnTabOptionsRequested;
 	}
 	
 	private void DisableContentTabEventHandling(IContentTabItem contentTabItem)
 	{
 		contentTabItem.DisableFolderTreeViewSelectedItemChanged();
-		
+
 		contentTabItem.FolderChanged -= OnFolderChanged;
 		contentTabItem.FolderOrderingChanged -= OnFolderOrderingChanged;
+
+		contentTabItem.AboutInfoRequested -= OnAboutInfoRequested;
+		contentTabItem.TabOptionsRequested -= OnTabOptionsRequested;
 	}
 
 	#endregion

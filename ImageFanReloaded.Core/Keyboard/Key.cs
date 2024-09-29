@@ -7,7 +7,10 @@ public enum Key
 	Tab,
 	Escape,
 	Enter,
+	
 	F1,
+	H,
+	O,
 	
 	F4,
 	

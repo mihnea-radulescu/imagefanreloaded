@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling;
@@ -28,7 +29,10 @@ public interface IContentTabItem
 
 	event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	event EventHandler<FolderOrderingChangedEventArgs>? FolderOrderingChanged;
-	
+
+	event EventHandler<ContentTabItemEventArgs>? AboutInfoRequested;
+	event EventHandler<ContentTabItemEventArgs>? TabOptionsRequested;
+
 	void EnableFolderTreeViewSelectedItemChanged();
 	void DisableFolderTreeViewSelectedItemChanged();
 
@@ -62,4 +66,7 @@ public interface IContentTabItem
 	void FocusThumbnailScrollViewer();
 
 	void RaiseFolderChangedEvent();
+
+	Task ShowAboutInfo(IAboutView aboutView);
+	Task ShowTabOptions(ITabOptionsView tabOptionsView);
 }

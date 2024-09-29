@@ -44,10 +44,10 @@ public partial class ImageWindow : Window, IImageView
 	public IScreenInformation? ScreenInformation { get; set; }
 	
 	public event EventHandler<ImageViewClosingEventArgs>? ViewClosing;
-	
 	public event EventHandler<ImageChangedEventArgs>? ImageChanged;
+	public event EventHandler<ImageInfoVisibilityChangedEventArgs>? ImageInfoVisibilityChanged;
 
-	public void SetImage(IImageFile imageFile, bool recursiveFolderAccess)
+	public void SetImage(IImageFile imageFile, bool recursiveFolderAccess, bool showImageInfo)
 	{
 		_imageFile = imageFile;
 
@@ -62,6 +62,7 @@ public partial class ImageWindow : Window, IImageView
 		_screenSizeCursor = GetScreenSizeCursor();
 
 		_textBoxImageInfo.Text = _imageFile.GetImageInfo(recursiveFolderAccess);
+		_textBoxImageInfo.IsVisible = showImageInfo;
 
 		_showMainViewAfterImageViewClosing = false;
 
@@ -240,8 +241,7 @@ public partial class ImageWindow : Window, IImageView
 	
 	private bool ShouldHandleImageDrag(ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
 	{
-		if (keyModifiers == _globalParameters!.CtrlKeyModifier &&
-		    _imageViewState == ImageViewState.ZoomedToImageSize)
+		if (keyModifiers == _globalParameters!.CtrlKeyModifier && _imageViewState == ImageViewState.ZoomedToImageSize)
 		{
 			return true;
 		}
@@ -276,8 +276,7 @@ public partial class ImageWindow : Window, IImageView
 	private bool ShouldHandleImageZoom(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
-		    keyPressing == _globalParameters!.EnterKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.EnterKey)
 		{
 			return true;
 		}
@@ -288,8 +287,7 @@ public partial class ImageWindow : Window, IImageView
 	private bool ShouldToggleImageInfo(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
-		    keyPressing == _globalParameters!.IKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.IKey)
 		{
 			return true;
 		}
@@ -300,8 +298,7 @@ public partial class ImageWindow : Window, IImageView
 	private bool ShouldHandleEscapeAction(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
-		    keyPressing == _globalParameters!.EscapeKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.EscapeKey)
 		{
 			return true;
 		}
@@ -312,8 +309,7 @@ public partial class ImageWindow : Window, IImageView
 	private bool ShouldHandleWindowClose(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
-		    keyPressing == _globalParameters!.TKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.TKey)
 		{
 			return true;
 		}
@@ -471,6 +467,8 @@ public partial class ImageWindow : Window, IImageView
 	private void ToggleImageInfo()
 	{
 		_textBoxImageInfo.IsVisible = !_textBoxImageInfo.IsVisible;
+		
+		ImageInfoVisibilityChanged?.Invoke(this, new ImageInfoVisibilityChangedEventArgs(_textBoxImageInfo.IsVisible));
 	}
 
 	private void CloseWindow()

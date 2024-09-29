@@ -27,8 +27,12 @@ public class ImageViewPresenter
 		
 		_imageView = imageView;
 		_imageView.ImageChanged += OnImageChanged;
-
+		_imageView.ImageInfoVisibilityChanged += OnImageInfoVisibilityChanged;
+		
 		_imageFiles = new List<IImageFile>();
+		_currentImageFileIndex = 0;
+		
+		_showImageInfo = false;
 	}
 	
 	public async Task SetUpAccessToImages()
@@ -56,11 +60,14 @@ public class ImageViewPresenter
 	private IReadOnlyList<IImageFile> _imageFiles;
 	private IImageFile? _currentImageFile;
 	private int _currentImageFileIndex;
+	
+	private bool _showImageInfo;
 
 	private void LoadCurrentImage()
 	{
 		_currentImageFile!.ReadImageDataFromDisc();
-		_imageView.SetImage(_currentImageFile, false);
+		
+		_imageView.SetImage(_currentImageFile, false, _showImageInfo);
 	}
 	
 	private void OnImageChanged(object? sender, ImageChangedEventArgs e)
@@ -74,6 +81,11 @@ public class ImageViewPresenter
 			
 			LoadCurrentImage();
 		}
+	}
+	
+	private void OnImageInfoVisibilityChanged(object? sender, ImageInfoVisibilityChangedEventArgs e)
+	{
+		_showImageInfo = e.IsVisible;
 	}
 	
 	#endregion

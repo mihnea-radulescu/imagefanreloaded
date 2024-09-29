@@ -23,7 +23,7 @@ User interface:
 * key Tab for cycling through controls in the active tab
 * keys N, C and M for changing folder ordering between name ascending, creation time descending and last modification time descending
 * keys + and - for changing thumbnail size by an increment of 50 pixels
-* key R for toggling recursive folder access, and key combo Shift+R for toggling persistent recursive folder access
+* key R for toggling recursive folder access
 * keys Up, Down, Left and Right for back and forward navigation through the folders tree, thumbnails and opened images
 * keys PageUp and PageDown for scrolling through thumbnails
 * key Enter for entering image view and zoomed image view modes
@@ -31,7 +31,8 @@ User interface:
 * key I for toggling image info in image view and zoomed image view modes
 * keys Esc and T for exiting image view and zoomed image view modes
 * key Esc for quitting application
-* key F1 for displaying About view
+* keys F1 and H for displaying About view
+* key O for displaying Tab Options view
 
 ![Screenshot 1](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-1.jpg "ImageFan Reloaded - Screenshot 1")
 
