@@ -25,7 +25,6 @@ public enum Key
 	Right,
 	
 	N,
-	C,
 	M,
 	
 	R,

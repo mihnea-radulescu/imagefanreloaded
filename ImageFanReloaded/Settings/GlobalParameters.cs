@@ -22,7 +22,6 @@ public class GlobalParameters : GlobalParametersBase
 		var invalidImage = new Image(invalidBitmap, invalidBitmapSize);
 		InvalidImage = invalidImage;
 		
-		_validThumbnailSizes = BuildValidThumbnailSizes();
 		_invalidImageThumbnails = BuildInvalidImageThumbnails();
 		_loadingImageThumbnails = BuildLoadingImageThumbnails();
 
@@ -39,8 +38,6 @@ public class GlobalParameters : GlobalParametersBase
         HomeFolderIcon = GetResizedIcon(Resources.HomeFolderIcon, iconSize);
         PicturesFolderIcon = GetResizedIcon(Resources.PicturesFolderIcon, iconSize);
 	}
-
-	public override bool IsValidThumbnailSize(int thumbnailSize) => _validThumbnailSizes.Contains(thumbnailSize);
 	
 	public override IImage InvalidImage { get; }
 	public override HashSet<IImage> PersistentImages { get; }
@@ -57,13 +54,9 @@ public class GlobalParameters : GlobalParametersBase
 	public override IImage GetLoadingImageThumbnail(int thumbnailSize) => _loadingImageThumbnails[thumbnailSize];
 	
 	#region Private
-
-	private const int ThumbnailSizeLowerThreshold = 50;
-	private const int ThumbnailSizeUpperThreshold = 400;
 	
 	private readonly IImageResizer _imageResizer;
-
-	private readonly HashSet<int> _validThumbnailSizes;
+	
 	private readonly IReadOnlyDictionary<int, IImage> _invalidImageThumbnails;
 	private readonly IReadOnlyDictionary<int, IImage> _loadingImageThumbnails;
 
@@ -86,25 +79,11 @@ public class GlobalParameters : GlobalParametersBase
 		return resizedIcon;
 	}
 	
-	private HashSet<int> BuildValidThumbnailSizes()
-	{
-		var validThumbnailSizes = new HashSet<int>();
-		
-		for (var thumbnailSize = ThumbnailSizeLowerThreshold;
-		     thumbnailSize <= ThumbnailSizeUpperThreshold;
-		     thumbnailSize += ThumbnailSizeIncrement)
-		{
-			validThumbnailSizes.Add(thumbnailSize);
-		}
-
-		return validThumbnailSizes;
-	}
-
 	private IReadOnlyDictionary<int, IImage> BuildInvalidImageThumbnails()
 	{
 		var invalidImageThumbnails = new Dictionary<int, IImage>();
 
-		foreach (var thumbnailSize in _validThumbnailSizes)
+		foreach (var thumbnailSize in ValidThumbnailSizes)
 		{
 			var thumbnailImageSize = new ImageSize(thumbnailSize);
 			
@@ -124,7 +103,7 @@ public class GlobalParameters : GlobalParametersBase
 			var loadingBitmapSize = new ImageSize(loadingBitmap.Size.Width, loadingBitmap.Size.Height);
 			var loadingImage = new Image(loadingBitmap, loadingBitmapSize);
 			
-			foreach (var thumbnailSize in _validThumbnailSizes)
+			foreach (var thumbnailSize in ValidThumbnailSizes)
 			{
 				var thumbnailImageSize = new ImageSize(thumbnailSize);
 			

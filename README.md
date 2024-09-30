@@ -7,12 +7,12 @@ Features:
 * quick concurrent thumbnail generation, scaling to the number of processor cores present
 * support for multiple folder tabs
 * keyboard and mouse user interaction
+* folder ordering by name and last modification time
+* configurable thumbnail size, between 50 and 400 pixels
 * toggle-able recursive folder browsing
 * targeted zooming in, and moving over the zoomed image
 * fast and seamless full-screen navigation across images
 * command-line direct access to the specified folder or image file
-* folder ordering by name, creation time and last modification time
-* configurable thumbnail size, between 50 and 400 pixels
 
 User interface:
 * left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and dragging images
@@ -21,9 +21,11 @@ User interface:
 * key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 * key combo Shift+Tab for cycling through tabs
 * key Tab for cycling through controls in the active tab
-* keys N, C and M for changing folder ordering between name ascending, creation time descending and last modification time descending
+* keys N and M for changing folder ordering between name ascending and last modification time descending
 * keys + and - for changing thumbnail size by an increment of 50 pixels
-* key R for toggling recursive folder access
+* key R for toggling recursive folder browsing
+* key O for displaying Tab options view
+* keys F1 and H for displaying About view
 * keys Up, Down, Left and Right for back and forward navigation through the folders tree, thumbnails and opened images
 * keys PageUp and PageDown for scrolling through thumbnails
 * key Enter for entering image view and zoomed image view modes
@@ -31,8 +33,6 @@ User interface:
 * key I for toggling image info in image view and zoomed image view modes
 * keys Esc and T for exiting image view and zoomed image view modes
 * key Esc for quitting application
-* keys F1 and H for displaying About view
-* key O for displaying Tab Options view
 
 ![Screenshot 1](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-1.jpg "ImageFan Reloaded - Screenshot 1")
 

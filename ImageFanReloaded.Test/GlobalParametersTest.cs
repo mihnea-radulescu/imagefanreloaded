@@ -58,7 +58,6 @@ public class GlobalParametersTest : TestBase
 		_globalParameters.F4Key.Should().NotBe(Key.None);
 		
 		_globalParameters.NKey.Should().NotBe(Key.None);
-		_globalParameters.CKey.Should().NotBe(Key.None);
 		_globalParameters.MKey.Should().NotBe(Key.None);
 		
 		_globalParameters.RKey.Should().NotBe(Key.None);

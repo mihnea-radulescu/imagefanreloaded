@@ -46,10 +46,11 @@ User interface:
 • key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 • key combo Shift+Tab for cycling through tabs
 • key Tab for cycling through controls in the active tab
-• keys N, C and M for changing folder ordering between name ascending, creation time descending and
-   last modification time descending
+• keys N and M for changing folder ordering between name ascending and last modification time descending
 • keys + and - for changing thumbnail size by an increment of 50 pixels
-• key R for toggling recursive folder access
+• key R for toggling recursive folder browsing
+• key O for displaying Tab options view
+• keys F1 and H for displaying About view
 • keys Up, Down, Left and Right for back and forward navigation through the folders tree, thumbnails and
    opened images
 • keys PageUp and PageDown for scrolling through thumbnails
@@ -57,9 +58,7 @@ User interface:
 • key combos Ctrl+Up, Ctrl+Down, Ctrl+Left and Ctrl+Right for dragging zoomed images
 • key I for toggling image info in image view and zoomed image view modes
 • keys Esc and T for exiting image view and zoomed image view modes
-• key Esc for quitting application
-• keys F1 and H for displaying About view
-• key O for displaying Tab Options view";
+• key Esc for quitting application";
     
     private readonly IAboutInformationProvider _aboutInformationProvider;
     private readonly IGlobalParameters _globalParameters;

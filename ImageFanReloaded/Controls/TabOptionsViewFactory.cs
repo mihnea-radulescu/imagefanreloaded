@@ -10,10 +10,20 @@ public class TabOptionsViewFactory : ITabOptionsViewFactory
 		_globalParameters = globalParameters;
 	}
 	
-	public ITabOptionsView GetTabOptionsView()
+	public ITabOptionsView GetTabOptionsView(IContentTabItem contentTabItem)
 	{
 		ITabOptionsView tabOptionsView = new TabOptionsWindow();
+		
 		tabOptionsView.GlobalParameters = _globalParameters;
+		
+		tabOptionsView.ContentTabItem = contentTabItem;
+		
+		tabOptionsView.FileSystemEntryInfoOrdering = contentTabItem.FileSystemEntryInfoOrdering;
+		tabOptionsView.ThumbnailSize = contentTabItem.ThumbnailSize;
+		tabOptionsView.RecursiveFolderBrowsing = contentTabItem.RecursiveFolderBrowsing;
+		tabOptionsView.ShowImageViewImageInfo = contentTabItem.ShowImageViewImageInfo;
+		
+		tabOptionsView.PopulateTabOptions();
 
 		return tabOptionsView;
 	}

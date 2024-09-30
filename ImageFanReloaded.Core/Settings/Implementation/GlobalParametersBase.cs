@@ -31,7 +31,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key F4Key { get; }
 	
 	public Key NKey { get; }
-	public Key CKey { get; }
 	public Key MKey { get; }
 	
 	public Key RKey { get; }
@@ -66,7 +65,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 	public int DefaultThumbnailSize => 250;
 	public int ThumbnailSizeIncrement => 50;
-	public abstract bool IsValidThumbnailSize(int thumbnailSize);
+	
+	public IReadOnlyList<int> GetValidThumbnailSizes() => [..ValidThumbnailSizes];
+	public bool IsValidThumbnailSize(int thumbnailSize) => ValidThumbnailSizes.Contains(thumbnailSize);
 	
 	public abstract IImage InvalidImage { get; }
 	public abstract HashSet<IImage> PersistentImages { get; }
@@ -108,7 +109,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		F4Key = Key.F4;
 		
 		NKey = Key.N;
-		CKey = Key.C;
 		MKey = Key.M;
 
 		RKey = Key.R;
@@ -173,17 +173,38 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		];
 
 		_navigationKeys = [ .._backwardNavigationKeys, .._forwardNavigationKeys ];
+
+		ValidThumbnailSizes = BuildValidThumbnailSizes();
 	}
 	
 	protected const int IconSizeSquareLength = 36;
 	
+	protected readonly HashSet<int> ValidThumbnailSizes;
+	
 	#endregion
 	
 	#region Private
+	
+	private const int ThumbnailSizeLowerThreshold = 50;
+	private const int ThumbnailSizeUpperThreshold = 400;
 
 	private readonly HashSet<Key> _backwardNavigationKeys;
 	private readonly HashSet<Key> _forwardNavigationKeys;
 	private readonly HashSet<Key> _navigationKeys;
+	
+	private HashSet<int> BuildValidThumbnailSizes()
+	{
+		var validThumbnailSizes = new HashSet<int>();
+		
+		for (var thumbnailSize = ThumbnailSizeLowerThreshold;
+		     thumbnailSize <= ThumbnailSizeUpperThreshold;
+		     thumbnailSize += ThumbnailSizeIncrement)
+		{
+			validThumbnailSizes.Add(thumbnailSize);
+		}
+
+		return validThumbnailSizes;
+	}
 
 	#endregion
 }

@@ -29,7 +29,6 @@ public interface IGlobalParameters
 	Key F4Key { get; }
 	
 	Key NKey { get; }
-	Key CKey { get; }
 	Key MKey { get; }
 	
 	Key RKey { get; }
@@ -64,6 +63,8 @@ public interface IGlobalParameters
 
 	int DefaultThumbnailSize { get; }
 	int ThumbnailSizeIncrement { get; }
+
+	IReadOnlyList<int> GetValidThumbnailSizes();
 	bool IsValidThumbnailSize(int thumbnailSize);
 	
 	IImage InvalidImage { get; }

@@ -33,9 +33,9 @@ public partial class AboutWindow : Window, IAboutView
 		if (ShouldCloseWindow(keyModifiers, keyPressing))
 		{
 			Close();
+			
+			e.Handled = true;
 		}
-		
-		e.Handled = true;
 	}
 
 	private bool ShouldCloseWindow(

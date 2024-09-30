@@ -15,8 +15,11 @@ public interface IContentTabItem
 	IMainView? MainView { get; set; }
 	
 	IGlobalParameters? GlobalParameters { get; set; }
-	FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; }
-	int ThumbnailSize { get; }
+	
+	FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; set; }
+	int ThumbnailSize { get; set; }
+	bool RecursiveFolderBrowsing { get; set; }
+	bool ShowImageViewImageInfo { get; set; }
 	
 	IFolderChangedMutex? FolderChangedMutex { get; set; }
 
@@ -66,7 +69,8 @@ public interface IContentTabItem
 	void FocusThumbnailScrollViewer();
 
 	void RaiseFolderChangedEvent();
-
-	Task ShowAboutInfo(IAboutView aboutView);
+	void RaiseFolderOrderingChangedEvent();
+	
 	Task ShowTabOptions(ITabOptionsView tabOptionsView);
+	Task ShowAboutInfo(IAboutView aboutView);
 }

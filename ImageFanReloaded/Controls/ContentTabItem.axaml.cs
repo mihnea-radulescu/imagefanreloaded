@@ -20,10 +20,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public ContentTabItem()
 	{
 		InitializeComponent();
-
+		
+		RecursiveFolderBrowsing = false;
+		ShowImageViewImageInfo = false;
+		
 		_thumbnailBoxCollection = new List<IThumbnailBox>();
-		_isRecursiveFolderAccess = false;
-		_showImageViewImageInfo = false;
 	}
 	
     public IMainView? MainView { get; set; }
@@ -40,8 +41,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	    }
     }
     
-    public FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; private set; }
-    public int ThumbnailSize { get; private set; }
+    public FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; set; }
+    public int ThumbnailSize { get; set; }
+    public bool RecursiveFolderBrowsing { get; set; }
+    public bool ShowImageViewImageInfo { get; set; }
     
     public IFolderChangedMutex? FolderChangedMutex { get; set; }
     
@@ -70,8 +73,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	public bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		var shouldHandleKeyPressing = ShouldDisplayAboutInfo(keyModifiers, keyPressing)
-		                              || ShouldDisplayTabOptions(keyModifiers, keyPressing)
+		var shouldHandleKeyPressing = ShouldDisplayTabOptions(keyModifiers, keyPressing)
+		                              || ShouldDisplayAboutInfo(keyModifiers, keyPressing)
 		                              || ShouldChangeFolderOrdering(keyModifiers, keyPressing)
 		                              || ShouldChangeThumbnailSize(keyModifiers, keyPressing)
 		                              || ShouldChangeImageViewImageInfoVisibility(keyModifiers, keyPressing)
@@ -86,13 +89,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (ShouldDisplayAboutInfo(keyModifiers, keyPressing))
-		{
-			RaiseAboutInfoRequested();
-		}
-		else if (ShouldDisplayTabOptions(keyModifiers, keyPressing))
+		if (ShouldDisplayTabOptions(keyModifiers, keyPressing))
 		{
 			RaiseTabOptionsRequested();
+		}
+		else if (ShouldDisplayAboutInfo(keyModifiers, keyPressing))
+		{
+			RaiseAboutInfoRequested();
 		}
 		else if (ShouldChangeFolderOrdering(keyModifiers, keyPressing))
 		{
@@ -312,9 +315,22 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				this,
 				selectedFolderName,
 				selectedFolderPath,
-				_isRecursiveFolderAccess);
+				RecursiveFolderBrowsing);
 
 			FolderChanged?.Invoke(this, folderChangedEventArgs);
+		}
+	}
+	
+	public void RaiseFolderOrderingChangedEvent()
+	{
+		if (_activeFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
+		{
+			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
+			var selectedFolderPath = fileSystemEntryInfo.Path;
+			
+			var folderOrderingChangedEventArgs = new FolderOrderingChangedEventArgs(this, selectedFolderPath);
+
+			FolderOrderingChanged?.Invoke(this, folderOrderingChangedEventArgs);
 		}
 	}
 
@@ -335,13 +351,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private IThumbnailBox? _selectedThumbnailBox;
 	
 	private TreeViewItem? _activeFolderTreeViewItem;
-	private bool _isRecursiveFolderAccess;
-	private bool _showImageViewImageInfo;
 
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxEventArgs e)
 	{
 		var imageFile = e.ThumbnailBox.ImageFile!;
-		var imageInfo = imageFile.GetImageInfo(_isRecursiveFolderAccess);
+		var imageInfo = imageFile.GetImageInfo(RecursiveFolderBrowsing);
 		
 		SetImageStatusBarText(imageInfo);
 	}
@@ -365,19 +379,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	    _activeFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
 	    
 	    RaiseFolderChangedEvent();
-    }
-    
-    private void RaiseFolderOrderingChangedEvent()
-    {
-	    if (_activeFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
-		{
-			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-			var selectedFolderPath = fileSystemEntryInfo.Path;
-			
-			var folderOrderingChangedEventArgs = new FolderOrderingChangedEventArgs(this, selectedFolderPath);
-
-		    FolderOrderingChanged?.Invoke(this, folderOrderingChangedEventArgs);
-		}
     }
     
     private void OnTreeViewItemPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -405,17 +406,17 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		
 		if (AdvanceFromSelectedThumbnail(increment))
 		{
-			imageView.SetImage(_selectedThumbnailBox!.ImageFile!, _isRecursiveFolderAccess, _showImageViewImageInfo);
+			imageView.SetImage(_selectedThumbnailBox!.ImageFile!, RecursiveFolderBrowsing, ShowImageViewImageInfo);
 		}
 	}
 	
 	private void OnImageInfoVisibilityChanged(object? sender, ImageInfoVisibilityChangedEventArgs e)
 	{
-		_showImageViewImageInfo = e.IsVisible;
+		ShowImageViewImageInfo = e.IsVisible;
 	}
-
-	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e) => RaiseAboutInfoRequested();
+	
 	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e) => RaiseTabOptionsRequested();
+	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e) => RaiseAboutInfoRequested();
 
     private void SelectThumbnailBox(IThumbnailBox thumbnailBox)
 	{
@@ -470,7 +471,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private async void DisplayImage()
 	{
 		var imageView = ImageViewFactory!.GetImageView();
-		imageView.SetImage(_selectedThumbnailBox!.ImageFile!, _isRecursiveFolderAccess, _showImageViewImageInfo);
+		imageView.SetImage(_selectedThumbnailBox!.ImageFile!, RecursiveFolderBrowsing, ShowImageViewImageInfo);
 
 		imageView.ImageChanged += OnImageChanged;
 		imageView.ImageInfoVisibilityChanged += OnImageInfoVisibilityChanged;
@@ -534,17 +535,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	private bool IsFirstThumbnail() => _thumbnailBoxCollection.Count == 1;
 	
-	private bool ShouldDisplayAboutInfo(KeyModifiers keyModifiers, Key keyPressing)
-	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-		    (keyPressing == GlobalParameters!.F1Key || keyPressing == GlobalParameters!.HKey))
-		{
-			return true;
-		}
-
-		return false;
-	}
-    
 	private bool ShouldDisplayTabOptions(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.OKey)
@@ -555,12 +545,21 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 	
+	private bool ShouldDisplayAboutInfo(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+		    (keyPressing == GlobalParameters!.F1Key || keyPressing == GlobalParameters!.HKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+	
 	private bool ShouldChangeFolderOrdering(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-		    (keyPressing == GlobalParameters!.NKey ||
-		     keyPressing == GlobalParameters!.CKey ||
-		     keyPressing == GlobalParameters!.MKey))
+		    (keyPressing == GlobalParameters!.NKey || keyPressing == GlobalParameters!.MKey))
 		{
 			return true;
 		}
@@ -653,15 +652,15 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		return false;
 	}
+
+	private void RaiseTabOptionsRequested()
+	{
+		TabOptionsRequested?.Invoke(this, new ContentTabItemEventArgs(this));
+	}
 	
 	private void RaiseAboutInfoRequested()
 	{
 		AboutInfoRequested?.Invoke(this, new ContentTabItemEventArgs(this));
-	}
-	
-	private void RaiseTabOptionsRequested()
-	{
-		TabOptionsRequested?.Invoke(this, new ContentTabItemEventArgs(this));
 	}
 	
 	private void ChangeFolderOrdering(Key keyPressing)
@@ -671,10 +670,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		if (keyPressing == GlobalParameters!.NKey)
 		{
 			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.NameAscending;
-		}
-		else if (keyPressing == GlobalParameters!.CKey)
-		{
-			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.CreationTimeDescending;
 		}
 		else if (keyPressing == GlobalParameters!.MKey)
 		{
@@ -707,7 +702,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void ChangeImageViewImageInfoVisibility()
 	{
-		_showImageViewImageInfo = !_showImageViewImageInfo;
+		ShowImageViewImageInfo = !ShowImageViewImageInfo;
 	}
 	
 	private void SwitchControlFocus()
@@ -738,7 +733,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void ToggleRecursiveFolderAccess()
 	{
-		_isRecursiveFolderAccess = !_isRecursiveFolderAccess;
+		RecursiveFolderBrowsing = !RecursiveFolderBrowsing;
 		
 		RaiseFolderChangedEvent();
 	}

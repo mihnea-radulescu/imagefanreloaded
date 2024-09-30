@@ -2,12 +2,75 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="ImageFanReloaded.Controls.TabOptionsWindow"
         Icon="/MainWindowIcon.ico"
-        Title="Tab Options"
-        MinWidth="800"
-        MinHeight="600"
-        Width="800"
-        Height="600"
+        Title="Tab options"
+        Width="575"
+        Height="175"
         WindowStartupLocation="CenterOwner"
-        Focusable="True">
-	
+        CanResize="False"
+        Focusable="True"
+        Closing="OnWindowClosing">
+	<Grid Margin="4">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="4*"/>
+			<RowDefinition Height="20*"/>
+			<RowDefinition Height="4*"/>
+			<RowDefinition Height="20*"/>
+			<RowDefinition Height="4*"/>
+			<RowDefinition Height="20*"/>
+			<RowDefinition Height="4*"/>
+			<RowDefinition Height="20*"/>
+			<RowDefinition Height="4*"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="5*"/>
+			<ColumnDefinition Width="38*"/>
+			<ColumnDefinition Width="2*"/>
+			<ColumnDefinition Width="50*"/>
+			<ColumnDefinition Width="5*"/>
+		</Grid.ColumnDefinitions>
+		
+		<TextBlock Grid.Row="1"
+		           Grid.Column="1"
+		           HorizontalAlignment="Right"
+		           Text="Folder ordering:"
+		           Margin="0 6 0 0"/>
+		<ComboBox Name="_folderOrderingComboBox"
+		          Grid.Row="1"
+		          Grid.Column="3"
+		          HorizontalAlignment="Stretch"
+		          VerticalContentAlignment="Center"
+		          SelectionChanged="OnFolderOrderingSelectionChanged"/>
+		
+		<TextBlock Grid.Row="3"
+		           Grid.Column="1"
+		           HorizontalAlignment="Right"
+		           Text="Thumbnail size:"
+		           Margin="0 6 0 0"/>
+		<ComboBox Name="_thumbnailSizeComboBox"
+		          Grid.Row="3"
+		          Grid.Column="3"
+		          HorizontalAlignment="Stretch"
+		          VerticalContentAlignment="Center"
+		          SelectionChanged="OnThumbnailSizeSelectionChanged"/>
+		
+		<TextBlock Grid.Row="5"
+		           Grid.Column="1"
+		           HorizontalAlignment="Right"
+		           Text="Recursive folder browsing?"
+		           Margin="0 8 0 0"/>
+		<CheckBox Name="_recursiveFolderBrowsingCheckBox"
+		          Grid.Row="5"
+		          Grid.Column="3"
+		          IsCheckedChanged="OnRecursiveFolderBrowsingIsCheckedChanged"/>
+		
+		<TextBlock Grid.Row="7"
+		           Grid.Column="1"
+		           HorizontalAlignment="Right"
+		           Text="Show image info in image view?"
+		           Margin="0 8 0 0"/>
+		<CheckBox Name="_showImageViewImageInfoCheckBox"
+		          Grid.Row="7"
+		          Grid.Column="3"
+		          IsCheckedChanged="OnShowImageViewImageInfoIsCheckedChanged"/>
+	</Grid>
 </Window>

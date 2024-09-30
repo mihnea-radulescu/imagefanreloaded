@@ -3,11 +3,10 @@
         x:Class="ImageFanReloaded.Controls.AboutWindow"
         Icon="/MainWindowIcon.ico"
         Title="About ImageFan Reloaded"
-        MinWidth="800"
-        MinHeight="600"
         Width="800"
-        Height="600"
+        Height="530"
         WindowStartupLocation="CenterOwner"
+        CanResize="False"
         Focusable="True">
 	<TextBox Name="_textBoxAbout"
 	         IsReadOnly="True"

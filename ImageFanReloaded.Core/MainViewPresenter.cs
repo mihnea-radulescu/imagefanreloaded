@@ -99,8 +99,38 @@ public class MainViewPresenter
 	{
 		var contentTabItem = e.ContentTabItem;
 		
-		var tabOptionsView = _tabOptionsViewFactory.GetTabOptionsView();
+		var tabOptionsView = _tabOptionsViewFactory.GetTabOptionsView(contentTabItem);
+		
+		tabOptionsView.TabOptionsChanged += OnTabOptionsChanged;
 		await contentTabItem.ShowTabOptions(tabOptionsView);
+		tabOptionsView.TabOptionsChanged -= OnTabOptionsChanged;
+	}
+	
+	private static void OnTabOptionsChanged(object? sender, TabOptionsChangedEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+
+		var shouldRaiseFolderChangedEvent =
+			contentTabItem.ThumbnailSize != e.ThumbnailSize ||
+			contentTabItem.RecursiveFolderBrowsing != e.RecursiveFolderBrowsing;
+		
+		var shouldRaiseFolderOrderingChangedEvent =
+			contentTabItem.FileSystemEntryInfoOrdering != e.FileSystemEntryInfoOrdering;
+		
+		contentTabItem.FileSystemEntryInfoOrdering = e.FileSystemEntryInfoOrdering;
+		contentTabItem.ThumbnailSize = e.ThumbnailSize;
+		contentTabItem.RecursiveFolderBrowsing = e.RecursiveFolderBrowsing;
+		contentTabItem.ShowImageViewImageInfo = e.ShowImageViewImageInfo;
+
+		if (shouldRaiseFolderChangedEvent)
+		{
+			contentTabItem.RaiseFolderChangedEvent();
+		}
+
+		if (shouldRaiseFolderOrderingChangedEvent)
+		{
+			contentTabItem.RaiseFolderOrderingChangedEvent();
+		}
 	}
 	
 	private async void OnFolderChanged(object? sender, FolderChangedEventArgs e)
