@@ -31,14 +31,14 @@
 				<Button Name="_optionsButton"
 				        BorderThickness="0"
 				        CornerRadius="5"
-				        Margin="0 0 4 0"
+				        Margin="0 0 4 8"
 				        Content="Tab options"
 				        Click="OnTabOptionsButtonClicked"/>
 				
 				<Button Name="_aboutButton"
 				        BorderThickness="0"
 				        CornerRadius="5"
-				        Margin="4 0 0 0"
+				        Margin="4 0 0 8"
 				        Content="About"
 				        Click="OnAboutButtonClicked"/>
 			</DockPanel>
@@ -54,7 +54,7 @@
 				</ScrollViewer.Styles>
 				<WrapPanel Name="_thumbnailWrapPanel"
 				           Orientation="Horizontal"
-				           Margin="4"/>
+				           Margin="4 0 4 0"/>
 			</ScrollViewer>
 			
 			<Grid Grid.Row="2">
