@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="desktop-application">
+
+	<id>io.github.mihnea_radulescu.imagefanreloaded</id>
+
+	<name>ImageFan Reloaded</name>
+	<summary>Light-weight, tab-based image viewer, supporting multi-core processing</summary>
+
+	<developer_name>Mihnea Rădulescu</developer_name>
+	<content_rating type="oars-1.1" />
+
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-3.0-or-later</project_license>
+
+	<description>
+		<p>Features:</p>
+		<ul>
+			<li>quick concurrent thumbnail generation, scaling to the number of processor cores present</li>
+			<li>support for multiple folder tabs</li>
+			<li>keyboard and mouse user interaction</li>
+			<li>folder ordering by name and last modification time</li>
+			<li>configurable thumbnail size, between 50 and 400 pixels</li>
+			<li>toggle-able recursive folder browsing</li>
+			<li>targeted zooming in, and moving over the zoomed image</li>
+			<li>fast and seamless full-screen navigation across images</li>
+		</ul>
+	</description>
+
+	<categories>
+		<category>Graphics</category>
+		<category>2DGraphics</category>
+		<category>RasterGraphics</category>
+		<category>Viewer</category>
+	</categories>
+
+	<keywords>
+		<keyword>viewer</keyword>
+		<keyword>image viewer</keyword>
+		<keyword>image catalog</keyword>
+	</keywords>
+
+	<launchable type="desktop-id">io.github.mihnea_radulescu.imagefanreloaded.desktop</launchable>
+	
+	<screenshots>
+		<screenshot type="default">
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-1.jpg</image>
+		</screenshot>
+		<screenshot>
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-2.jpg</image>
+		</screenshot>
+		<screenshot>
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-3.jpg</image>
+		</screenshot>
+	</screenshots>
+
+	<url type="homepage">https://github.com/mihnea-radulescu/imagefanreloaded</url>
+	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
+
+	<releases>
+		<release version="1.2024.10.01" date="2024-10-01">
+			<description>
+				<p>Added tab options</p>
+			</description>
+		</release>
+		<release version="1.2024.09.22" date="2024-09-22">
+			<description>
+				<p>Added support for folder ordering</p>
+			</description>
+		</release>
+		<release version="1.2024.09.06" date="2024-09-06">
+			<description>
+				<p>Made thumbnail size configurable</p>
+			</description>
+		</release>
+		<release version="1.2024.08.14" date="2024-08-14">
+			<description>
+				<p>Updated application libraries</p>
+			</description>
+		</release>
+		<release version="1.2024.08.05" date="2024-08-05">
+			<description>
+				<p>Improved application navigation</p>
+			</description>
+		</release>
+		<release version="1.2024.07.30" date="2024-07-30">
+			<description>
+				<p>Improved thumbnail scrolling</p>
+			</description>
+		</release>
+		<release version="1.2024.07.18" date="2024-07-18">
+			<description>
+				<p>Added full keyboard navigation support</p>
+			</description>
+		</release>
+		<release version="1.2024.07.02" date="2024-07-02">
+			<description>
+				<p>Enabled persistent recursive folder access</p>
+			</description>
+		</release>
+		<release version="1.2024.06.15" date="2024-06-15">
+			<description>
+				<p>Added recursive folder image browsing</p>
+			</description>
+		</release>
+		<release version="1.2024.06.01" date="2024-06-01">
+			<description>
+				<p>Optimized access to thumbnails, and added image info display toggle</p>
+			</description>
+		</release>
+		<release version="1.2024.05.25" date="2024-05-25">
+			<description>
+				<p>Improved thumbnail and image navigation</p>
+			</description>
+		</release>
+		<release version="1.2024.05.10" date="2024-05-10">
+			<description>
+				<p>Updated application icons, and extended supported image formats</p>
+			</description>
+		</release>
+		<release version="1.2024.05.05" date="2024-05-05">
+			<description>
+				<p>Updated disc drives identification using Flatpak</p>
+			</description>
+		</release>
+		<release version="1.2024.05.04" date="2024-05-05">
+			<description>
+				<p>Improved application performance</p>
+			</description>
+		</release>
+		<release version="1.2024.03.08" date="2024-03-08">
+			<description>
+				<p>Updated application libraries</p>
+			</description>
+		</release>
+		<release version="1.2024.02.25" date="2024-02-25">
+			<description>
+				<p>Improved folder and thumbnail navigation</p>
+			</description>
+		</release>
+		<release version="1.2024.02.23" date="2024-02-23">
+			<description>
+				<p>Implemented close tab feature, and added image status bar</p>
+			</description>
+		</release>
+		<release version="1.2024.02.18" date="2024-02-18">
+			<description>
+				<p>Added information status bar</p>
+			</description>
+		</release>
+		<release version="1.2024.02.12" date="2024-02-12">
+			<description>
+				<p>Updated application libraries</p>
+			</description>
+		</release>
+		<release version="1.2024.02.04" date="2024-02-04">
+			<description>
+				<p>Added natural sort order for folders and files</p>
+			</description>
+		</release>
+		<release version="1.2024.01.29" date="2024-01-29">
+			<description>
+				<p>Improved folder access experience</p>
+			</description>
+		</release>
+		<release version="1.2024.01.28" date="2024-01-28">
+			<description>
+				<p>Improved application startup performance</p>
+			</description>
+		</release>
+		<release version="1.2024.01.22" date="2024-01-22">
+			<description>
+				<p>Added keyboard keys support</p>
+			</description>
+		</release>
+		<release version="1.2024.01.17" date="2024-01-17">
+			<description>
+				<p>Updated application libraries</p>
+			</description>
+		</release>
+		<release version="1.2024.01.16" date="2024-01-16">
+			<description>
+				<p>Further optimized application memory usage</p>
+			</description>
+		</release>
+		<release version="1.2024.01.15" date="2024-01-15">
+			<description>
+				<p>Improved application memory management</p>
+			</description>
+		</release>
+		<release version="1.2023.12.12" date="2023-12-12">
+			<description>
+				<p>Updated tab-based navigation and application libraries</p>
+			</description>
+		</release>
+		<release version="1.2023.12.01" date="2023-12-01">
+			<description>
+				<p>Updated runtime, main framework and libraries</p>
+			</description>
+		</release>
+		<release version="1.2023.10.09" date="2023-10-09">
+			<description>
+				<p>Updated application libraries</p>
+			</description>
+		</release>
+		<release version="1.2023.10.08" date="2023-10-08">
+			<description>
+				<p>Fixed an image display and scrolling issue</p>
+			</description>
+		</release>
+		<release version="1.2023.10.01" date="2023-10-01">
+			<description>
+				<p>Added tab support and made minor improvements</p>
+			</description>
+		</release>
+		<release version="1.2023.09.07" date="2023-09-08">
+			<description>
+				<p>Fixed minor scrolling bug when viewing zoomed images</p>
+			</description>
+		</release>
+		<release version="1.2023.08.28" date="2023-08-29">
+			<description>
+				<p>Initial Flatpak release</p>
+			</description>
+		</release>
+	</releases>
+
+</component>
