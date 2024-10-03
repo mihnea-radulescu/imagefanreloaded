@@ -1,0 +1,152 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"build",
+				"${workspaceFolder}/ImageFanReloaded/ImageFanReloaded.csproj"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "test",
+			"command": "dotnet",
+			"type": "process",
+			"group": "test",
+			"args": [
+				"test",
+				"${workspaceFolder}/ImageFanReloaded.Test/ImageFanReloaded.Test.csproj"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish linux-arm64",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/ImageFanReloaded/ImageFanReloaded.csproj",
+				"--output",
+				"${workspaceFolder}/publish/linux-arm64",
+				"-p:PublishReadyToRun=true",
+				"-p:PublishSingleFile=true",
+				"-p:PublishTrimmed=true",
+				"--self-contained",
+				"true",
+				"--framework",
+				"net8.0",
+				"--runtime",
+				"linux-arm64"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish linux-x64",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/ImageFanReloaded/ImageFanReloaded.csproj",
+				"--output",
+				"${workspaceFolder}/publish/linux-x64",
+				"-p:PublishReadyToRun=true",
+				"-p:PublishSingleFile=true",
+				"-p:PublishTrimmed=true",
+				"--self-contained",
+				"true",
+				"--framework",
+				"net8.0",
+				"--runtime",
+				"linux-x64"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish osx-arm64",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/ImageFanReloaded/ImageFanReloaded.csproj",
+				"--output",
+				"${workspaceFolder}/publish/osx-arm64",
+				"-p:PublishReadyToRun=true",
+				"-p:PublishSingleFile=true",
+				"-p:PublishTrimmed=true",
+				"--self-contained",
+				"true",
+				"--framework",
+				"net8.0",
+				"--runtime",
+				"osx-arm64"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish osx-x64",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/ImageFanReloaded/ImageFanReloaded.csproj",
+				"--output",
+				"${workspaceFolder}/publish/osx-x64",
+				"-p:PublishReadyToRun=true",
+				"-p:PublishSingleFile=true",
+				"-p:PublishTrimmed=true",
+				"--self-contained",
+				"true",
+				"--framework",
+				"net8.0",
+				"--runtime",
+				"osx-x64"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish win-arm64",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/ImageFanReloaded/ImageFanReloaded.csproj",
+				"--output",
+				"${workspaceFolder}/publish/win-arm64",
+				"-p:PublishReadyToRun=true",
+				"-p:PublishSingleFile=true",
+				"-p:PublishTrimmed=true",
+				"--self-contained",
+				"true",
+				"--framework",
+				"net8.0",
+				"--runtime",
+				"win-arm64"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish win-x64",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/ImageFanReloaded/ImageFanReloaded.csproj",
+				"--output",
+				"${workspaceFolder}/publish/win-x64",
+				"-p:PublishReadyToRun=true",
+				"-p:PublishSingleFile=true",
+				"-p:PublishTrimmed=true",
+				"--self-contained",
+				"true",
+				"--framework",
+				"net8.0",
+				"--runtime",
+				"win-x64"
+			],
+			"problemMatcher": "$msCompile"
+		}
+	]
+}
