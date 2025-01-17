@@ -1,4 +1,3 @@
-using FluentAssertions;
 using NSubstitute;
 using Xunit;
 using Avalonia.Media.Imaging;
@@ -42,8 +41,8 @@ public class ImageResizerTest : TestBase
 		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 
 		// Assert
-		resizedImage.Size.Width.Should().Be(referenceResizedImageSize.Width);
-		resizedImage.Size.Height.Should().Be(referenceResizedImageSize.Height);
+		Assert.Equal(referenceResizedImageSize.Width, resizedImage.Size.Width);
+		Assert.Equal(referenceResizedImageSize.Height, resizedImage.Size.Height);
 
 		var outputFileName = GetOutputImageFileName(
 			LandscapeImageFileName, viewPortSize, referenceResizedImageSize);
@@ -75,8 +74,8 @@ public class ImageResizerTest : TestBase
 		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 
 		// Assert
-		resizedImage.Size.Width.Should().Be(referenceResizedImageSize.Width);
-		resizedImage.Size.Height.Should().Be(referenceResizedImageSize.Height);
+		Assert.Equal(referenceResizedImageSize.Width, resizedImage.Size.Width);
+		Assert.Equal(referenceResizedImageSize.Height, resizedImage.Size.Height);
 
 		var outputFileName = GetOutputImageFileName(
 			PortraitImageFileName, viewPortSize, referenceResizedImageSize);

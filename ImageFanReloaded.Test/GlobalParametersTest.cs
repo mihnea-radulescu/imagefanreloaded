@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using FluentAssertions;
 using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -32,7 +31,7 @@ public class GlobalParametersTest : TestBase
 		// Act
 
 		// Assert
-		_globalParameters.ProcessorCount.Should().NotBe(0);
+		Assert.NotEqual(0, _globalParameters.ProcessorCount);
 
 		List<bool> isOperatingSystemCollection =
 		[
@@ -40,65 +39,70 @@ public class GlobalParametersTest : TestBase
 			_globalParameters.IsWindows,
 			_globalParameters.IsMacOS
 		];
-		isOperatingSystemCollection.Should().ContainSingle(isOperatingSystem => isOperatingSystem == true);
+		Assert.Single(isOperatingSystemCollection, isOperatingSystem => isOperatingSystem == true);
 		
-		_globalParameters.NoneKeyModifier.Should().Be(KeyModifiers.None);
-		_globalParameters.CtrlKeyModifier.Should().NotBe(KeyModifiers.None);
-		_globalParameters.AltKeyModifier.Should().NotBe(KeyModifiers.None);
-		_globalParameters.ShiftKeyModifier.Should().NotBe(KeyModifiers.None);
+		Assert.Equal(KeyModifiers.None, _globalParameters.NoneKeyModifier);
 		
-		_globalParameters.TabKey.Should().NotBe(Key.None);
-		_globalParameters.EscapeKey.Should().NotBe(Key.None);
-		_globalParameters.EnterKey.Should().NotBe(Key.None);
-		
-		_globalParameters.F1Key.Should().NotBe(Key.None);
-		_globalParameters.HKey.Should().NotBe(Key.None);
-		_globalParameters.OKey.Should().NotBe(Key.None);
+		Assert.NotEqual(KeyModifiers.None, _globalParameters.CtrlKeyModifier);
+		Assert.NotEqual(KeyModifiers.None, _globalParameters.AltKeyModifier);
+		Assert.NotEqual(KeyModifiers.None, _globalParameters.ShiftKeyModifier);
 
-		_globalParameters.F4Key.Should().NotBe(Key.None);
-		
-		_globalParameters.NKey.Should().NotBe(Key.None);
-		_globalParameters.MKey.Should().NotBe(Key.None);
-		
-		_globalParameters.RKey.Should().NotBe(Key.None);
-		
-		_globalParameters.TKey.Should().NotBe(Key.None);
-		_globalParameters.IKey.Should().NotBe(Key.None);
-		
-		_globalParameters.UpKey.Should().NotBe(Key.None);
-		_globalParameters.DownKey.Should().NotBe(Key.None);
-		_globalParameters.LeftKey.Should().NotBe(Key.None);
-		_globalParameters.RightKey.Should().NotBe(Key.None);
-		
-		_globalParameters.PlusKey.Should().NotBe(Key.None);
-		_globalParameters.MinusKey.Should().NotBe(Key.None);
-		
-		_globalParameters.PageUpKey.Should().NotBe(Key.None);
-		_globalParameters.PageDownKey.Should().NotBe(Key.None);
-		
-		_globalParameters.NameComparer.Should().NotBeNull();
-		
-		_globalParameters.ImageFileExtensions.Should().NotBeEmpty();
-		
-		_globalParameters.UserProfilePath.Should().NotBeNullOrEmpty();
-		_globalParameters.SpecialFolders.Should().NotBeEmpty();
-		_globalParameters.DefaultFileSystemEntryInfoOrdering.Should().Be(FileSystemEntryInfoOrdering.NameAscending);
+		Assert.NotEqual(Key.None, _globalParameters.TabKey);
+		Assert.NotEqual(Key.None, _globalParameters.EscapeKey);
+		Assert.NotEqual(Key.None, _globalParameters.EnterKey);
 
-		_globalParameters.DefaultThumbnailSize.Should().Be(250);
-		_globalParameters.ThumbnailSizeIncrement.Should().Be(50);
-		_globalParameters.IsValidThumbnailSize(_globalParameters.DefaultThumbnailSize).Should().BeTrue();
-		
-		_globalParameters.InvalidImage.GetBitmap().Should().NotBeNull();
-		
-		_globalParameters.GetInvalidImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap()
-			.Should().NotBeNull();
-		_globalParameters.GetLoadingImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap()
-			.Should().NotBeNull();
-		
-		_globalParameters.PersistentImages.Count.Should().Be(17);
+		Assert.NotEqual(Key.None, _globalParameters.F1Key);
+		Assert.NotEqual(Key.None, _globalParameters.HKey);
+		Assert.NotEqual(Key.None, _globalParameters.OKey);
 
-		_globalParameters.DriveIcon.GetBitmap().Should().NotBeNull();
-		_globalParameters.FolderIcon.GetBitmap().Should().NotBeNull();
+		Assert.NotEqual(Key.None, _globalParameters.F4Key);
+		
+		Assert.NotEqual(Key.None, _globalParameters.NKey);
+		Assert.NotEqual(Key.None, _globalParameters.MKey);
+		
+		Assert.NotEqual(Key.None, _globalParameters.RKey);
+		
+		Assert.NotEqual(Key.None, _globalParameters.TKey);
+		Assert.NotEqual(Key.None, _globalParameters.IKey);
+		
+		Assert.NotEqual(Key.None, _globalParameters.UpKey);
+		Assert.NotEqual(Key.None, _globalParameters.DownKey);
+		Assert.NotEqual(Key.None, _globalParameters.LeftKey);
+		Assert.NotEqual(Key.None, _globalParameters.RightKey);
+		
+		Assert.NotEqual(Key.None, _globalParameters.PlusKey);
+		Assert.NotEqual(Key.None, _globalParameters.MinusKey);
+		
+		Assert.NotEqual(Key.None, _globalParameters.PageUpKey);
+		Assert.NotEqual(Key.None, _globalParameters.PageDownKey);
+
+		Assert.NotNull(_globalParameters.NameComparer);
+
+		Assert.NotEmpty(_globalParameters.ImageFileExtensions);
+
+		Assert.NotNull(_globalParameters.UserProfilePath);
+		Assert.NotEmpty(_globalParameters.UserProfilePath);
+		Assert.NotEmpty(_globalParameters.SpecialFolders);
+		Assert.Equal(
+			FileSystemEntryInfoOrdering.NameAscending,
+			_globalParameters.DefaultFileSystemEntryInfoOrdering);
+
+		Assert.Equal(250, _globalParameters.DefaultThumbnailSize);
+		Assert.Equal(50, _globalParameters.ThumbnailSizeIncrement);
+		Assert.True(_globalParameters.IsValidThumbnailSize(_globalParameters.DefaultThumbnailSize));
+
+		Assert.NotNull(_globalParameters.InvalidImage.GetBitmap());
+
+		Assert.NotNull(
+			_globalParameters.GetInvalidImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap());
+		Assert.NotNull(
+			_globalParameters.GetLoadingImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap()
+		);
+
+		Assert.Equal(17, _globalParameters.PersistentImages.Count);
+
+		Assert.NotNull(_globalParameters.DriveIcon.GetBitmap());
+		Assert.NotNull(_globalParameters.FolderIcon.GetBitmap());
 
 		SaveImageToDisc(
 			_globalParameters.InvalidImage.GetBitmap(),

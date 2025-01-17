@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -29,7 +28,7 @@ public class ImageResizeCalculatorTest
 			LandscapeImageSize, viewPortSize);
 
 		// Assert
-		resizedImageSize.Should().Be(referenceResizedImageSize);
+		Assert.Equal(referenceResizedImageSize, resizedImageSize);
 	}
 
 	[Theory]
@@ -49,7 +48,7 @@ public class ImageResizeCalculatorTest
 			PortraitImageSize, viewPortSize);
 
 		// Assert
-		resizedImageSize.Should().Be(referenceResizedImageSize);
+		Assert.Equal(referenceResizedImageSize, resizedImageSize);
 	}
 
 	#region Private
