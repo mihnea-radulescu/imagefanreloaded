@@ -7,20 +7,21 @@ public abstract class ImageResizerBase : IImageResizer
 		_imageResizeCalculator = imageResizeCalculator;
 	}
 
-	public IImage CreateResizedImage(IImage image, ImageSize viewPortSize)
+	public IImage CreateResizedImage(IImage image, ImageSize viewPortSize, ImageQuality imageQuality)
 	{
 		var imageSize = new ImageSize(image.Size.Width, image.Size.Height);
 
 		var resizedImageSize = _imageResizeCalculator
 			.GetResizedImageSize(imageSize, viewPortSize);
 
-		var resizedImage = BuildResizedImage(image, resizedImageSize);
+		var resizedImage = BuildResizedImage(image, resizedImageSize, imageQuality);
 		return resizedImage;
 	}
 	
 	#region Protected
 
-	protected abstract IImage BuildResizedImage(IImage image, ImageSize resizedImageSize);
+	protected abstract IImage BuildResizedImage(
+		IImage image, ImageSize resizedImageSize, ImageQuality imageQuality);
 
 	#endregion
 	

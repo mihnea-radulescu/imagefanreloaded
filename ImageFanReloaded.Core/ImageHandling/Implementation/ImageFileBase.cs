@@ -61,7 +61,7 @@ public abstract class ImageFileBase : IImageFile
 			image = GetImageFromDisc(ImageFilePath);
 			ImageSize = image.Size;
 			
-			resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
+			resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize, ImageQuality.High);
 		}
 		catch
         {
@@ -110,7 +110,9 @@ public abstract class ImageFileBase : IImageFile
             try
             {
                 var thumbnailImageSize = new ImageSize(thumbnailSize);
-	            thumbnail = _imageResizer.CreateResizedImage(_imageData!, thumbnailImageSize);
+
+	            thumbnail = _imageResizer.CreateResizedImage(
+					_imageData!, thumbnailImageSize, ImageQuality.Medium);
             }
             catch
             {
