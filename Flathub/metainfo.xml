@@ -58,6 +58,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.02.17" date="2025-02-17">
+			<description>
+				<p>Improved thumbnail generation performance</p>
+			</description>
+		</release>
 		<release version="1.2024.10.01" date="2024-10-02">
 			<description>
 				<p>Improved flatpak format compliance</p>
