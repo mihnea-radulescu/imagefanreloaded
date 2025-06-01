@@ -87,7 +87,7 @@ public class GlobalParametersTest : TestBase
 			FileSystemEntryInfoOrdering.NameAscending,
 			_globalParameters.DefaultFileSystemEntryInfoOrdering);
 
-		Assert.Equal(250, _globalParameters.DefaultThumbnailSize);
+		Assert.Equal(400, _globalParameters.DefaultThumbnailSize);
 		Assert.Equal(50, _globalParameters.ThumbnailSizeIncrement);
 		Assert.True(_globalParameters.IsValidThumbnailSize(_globalParameters.DefaultThumbnailSize));
 

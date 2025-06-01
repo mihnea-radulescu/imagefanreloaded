@@ -63,7 +63,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public IReadOnlyList<string> SpecialFolders { get; }
 	public FileSystemEntryInfoOrdering DefaultFileSystemEntryInfoOrdering => FileSystemEntryInfoOrdering.NameAscending;
 
-	public int DefaultThumbnailSize => 250;
+	public int DefaultThumbnailSize => 400;
 	public int ThumbnailSizeIncrement => 50;
 	
 	public IReadOnlyList<int> GetValidThumbnailSizes() => [..ValidThumbnailSizes];
