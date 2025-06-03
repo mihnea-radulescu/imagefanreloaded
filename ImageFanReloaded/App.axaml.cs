@@ -8,16 +8,16 @@ namespace ImageFanReloaded;
 
 public class App : Application
 {
-    public override void Initialize()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
+	public override void Initialize()
+	{
+		AvaloniaXamlLoader.Load(this);
+	}
 
-    public override async void OnFrameworkInitializationCompleted()
-    {
-	    var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
+	public override async void OnFrameworkInitializationCompleted()
+	{
+		var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
 
-        IAppBootstrap appBootstrap = new AppBootstrap(desktop);
-	    await appBootstrap.BootstrapApplication();
-    }
+		IAppBootstrap appBootstrap = new AppBootstrap(desktop);
+		await appBootstrap.BootstrapApplication();
+	}
 }

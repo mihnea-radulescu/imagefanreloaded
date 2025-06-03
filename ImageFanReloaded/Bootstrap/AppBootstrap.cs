@@ -91,18 +91,18 @@ public class AppBootstrap : IAppBootstrap
 	    var mainWindow = new MainWindow();
 	    _desktop.MainWindow = mainWindow;
 	    IScreenInformation screenInformation = new ScreenInformation(mainWindow);
-			
+
 	    IMainView mainView = mainWindow;
 	    mainView.GlobalParameters = _globalParameters;
 	    mainView.FolderChangedMutexFactory = folderChangedMutexFactory;
-	    
+
 	    IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(_globalParameters);
 	    IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
 		    _globalParameters, _fileSizeEngine, thumbnailInfoFactory, _discQueryEngine);
 
 	    IImageViewFactory imageViewFactory = new ImageViewFactory(_globalParameters, screenInformation);
 	    IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
-	    
+
 	    IAboutViewFactory aboutViewFactory = new AboutViewFactory(aboutInformationProvider, _globalParameters);
 	    ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);
 
