@@ -8,13 +8,9 @@ namespace ImageFanReloaded.Core.Controls;
 public interface ITabOptionsView
 {
     IGlobalParameters? GlobalParameters { get; set; }
-    
+    ITabOptions? TabOptions { get; set; }
+
 	IContentTabItem? ContentTabItem { get; set; }
-    
-	FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; set; }
-	int ThumbnailSize { get; set; }
-	bool RecursiveFolderBrowsing { get; set; }
-	bool ShowImageViewImageInfo { get; set; }
 	
 	public event EventHandler<TabOptionsChangedEventArgs>? TabOptionsChanged;
 

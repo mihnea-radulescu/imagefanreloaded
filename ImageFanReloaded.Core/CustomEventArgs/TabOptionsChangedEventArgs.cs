@@ -7,20 +7,11 @@ public class TabOptionsChangedEventArgs : ContentTabItemEventArgs
 {
 	public TabOptionsChangedEventArgs(
 		IContentTabItem contentTabItem,
-		FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering,
-		int thumbnailSize,
-		bool recursiveFolderBrowsing,
-		bool showImageViewImageInfo)
+		ITabOptions tabOptions)
 		: base(contentTabItem)
 	{
-		FileSystemEntryInfoOrdering = fileSystemEntryInfoOrdering;
-		ThumbnailSize = thumbnailSize;
-		RecursiveFolderBrowsing = recursiveFolderBrowsing;
-		ShowImageViewImageInfo = showImageViewImageInfo;
+		TabOptions = tabOptions;
 	}
 	
-	public FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; }
-	public int ThumbnailSize { get; }
-	public bool RecursiveFolderBrowsing { get; }
-	public bool ShowImageViewImageInfo { get; }
+	public ITabOptions TabOptions { get; }
 }

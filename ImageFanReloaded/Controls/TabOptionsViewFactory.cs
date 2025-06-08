@@ -15,13 +15,9 @@ public class TabOptionsViewFactory : ITabOptionsViewFactory
 		ITabOptionsView tabOptionsView = new TabOptionsWindow();
 		
 		tabOptionsView.GlobalParameters = _globalParameters;
+		tabOptionsView.TabOptions = contentTabItem.TabOptions;
 		
 		tabOptionsView.ContentTabItem = contentTabItem;
-		
-		tabOptionsView.FileSystemEntryInfoOrdering = contentTabItem.FileSystemEntryInfoOrdering;
-		tabOptionsView.ThumbnailSize = contentTabItem.ThumbnailSize;
-		tabOptionsView.RecursiveFolderBrowsing = contentTabItem.RecursiveFolderBrowsing;
-		tabOptionsView.ShowImageViewImageInfo = contentTabItem.ShowImageViewImageInfo;
 		
 		tabOptionsView.PopulateTabOptions();
 

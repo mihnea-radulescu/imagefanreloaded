@@ -59,9 +59,7 @@ public interface IGlobalParameters
 	
 	string UserProfilePath { get; }
 	IReadOnlyList<string> SpecialFolders { get; }
-	FileSystemEntryInfoOrdering DefaultFileSystemEntryInfoOrdering { get; }
 
-	int DefaultThumbnailSize { get; }
 	int ThumbnailSizeIncrement { get; }
 
 	IReadOnlyList<int> GetValidThumbnailSizes();

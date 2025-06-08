@@ -21,30 +21,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		InitializeComponent();
 		
-		RecursiveFolderBrowsing = false;
-		ShowImageViewImageInfo = false;
-		
 		_thumbnailBoxCollection = new List<IThumbnailBox>();
 	}
 	
     public IMainView? MainView { get; set; }
 
-    public IGlobalParameters? GlobalParameters
-    {
-	    get => _globalParameters;
-	    set
-	    {
-		    _globalParameters = value!;
-
-		    FileSystemEntryInfoOrdering = _globalParameters.DefaultFileSystemEntryInfoOrdering;
-		    ThumbnailSize = _globalParameters.DefaultThumbnailSize;
-	    }
-    }
-    
-    public FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; set; }
-    public int ThumbnailSize { get; set; }
-    public bool RecursiveFolderBrowsing { get; set; }
-    public bool ShowImageViewImageInfo { get; set; }
+    public IGlobalParameters? GlobalParameters { get; set; }
+	public ITabOptions? TabOptions { get; set; }
     
     public IFolderChangedMutex? FolderChangedMutex { get; set; }
     
@@ -216,7 +199,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var aThumbnailBox = new ThumbnailBox();
 			aThumbnailBox.Index = _maxThumbnailIndex + i;
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
-			aThumbnailBox.SetControlProperties(ThumbnailSize, GlobalParameters!);
+			aThumbnailBox.SetControlProperties(TabOptions!.ThumbnailSize, GlobalParameters!);
 
 			thumbnailInfo.ThumbnailBox = aThumbnailBox;
 			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
@@ -315,7 +298,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				this,
 				selectedFolderName,
 				selectedFolderPath,
-				RecursiveFolderBrowsing);
+				TabOptions!.RecursiveFolderBrowsing);
 
 			FolderChanged?.Invoke(this, folderChangedEventArgs);
 		}
@@ -343,8 +326,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     private const int ThumbnailScrollAdvanceCount = 25;
     
     private readonly IList<IThumbnailBox> _thumbnailBoxCollection;
-
-    private IGlobalParameters? _globalParameters;
     
     private int _maxThumbnailIndex;
 	private int _selectedThumbnailIndex;
@@ -355,7 +336,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxEventArgs e)
 	{
 		var imageFile = e.ThumbnailBox.ImageFile!;
-		var imageInfo = imageFile.GetImageInfo(RecursiveFolderBrowsing);
+		var imageInfo = imageFile.GetImageInfo(TabOptions!.RecursiveFolderBrowsing);
 		
 		SetImageStatusBarText(imageInfo);
 	}
@@ -406,13 +387,16 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		
 		if (AdvanceFromSelectedThumbnail(increment))
 		{
-			imageView.SetImage(_selectedThumbnailBox!.ImageFile!, RecursiveFolderBrowsing, ShowImageViewImageInfo);
+			imageView.SetImage(
+				_selectedThumbnailBox!.ImageFile!,
+				TabOptions!.RecursiveFolderBrowsing,
+				TabOptions!.ShowImageViewImageInfo);
 		}
 	}
 	
 	private void OnImageInfoVisibilityChanged(object? sender, ImageInfoVisibilityChangedEventArgs e)
 	{
-		ShowImageViewImageInfo = e.IsVisible;
+		TabOptions!.ShowImageViewImageInfo = e.IsVisible;
 	}
 	
 	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e) => RaiseTabOptionsRequested();
@@ -471,7 +455,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private async void DisplayImage()
 	{
 		var imageView = ImageViewFactory!.GetImageView();
-		imageView.SetImage(_selectedThumbnailBox!.ImageFile!, RecursiveFolderBrowsing, ShowImageViewImageInfo);
+		imageView.SetImage(
+			_selectedThumbnailBox!.ImageFile!,
+			TabOptions!.RecursiveFolderBrowsing,
+			TabOptions!.ShowImageViewImageInfo);
 
 		imageView.ImageChanged += OnImageChanged;
 		imageView.ImageInfoVisibilityChanged += OnImageInfoVisibilityChanged;
@@ -665,7 +652,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	
 	private void ChangeFolderOrdering(Key keyPressing)
 	{
-		var newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering;
+		var newFileSystemEntryInfoOrdering = TabOptions!.FileSystemEntryInfoOrdering;
 		
 		if (keyPressing == GlobalParameters!.NKey)
 		{
@@ -676,9 +663,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.LastModificationTimeDescending;
 		}
 
-		if (newFileSystemEntryInfoOrdering != FileSystemEntryInfoOrdering)
+		if (newFileSystemEntryInfoOrdering != TabOptions!.FileSystemEntryInfoOrdering)
 		{
-			FileSystemEntryInfoOrdering = newFileSystemEntryInfoOrdering;
+			TabOptions!.FileSystemEntryInfoOrdering = newFileSystemEntryInfoOrdering;
 			
 			RaiseFolderOrderingChangedEvent();
 		}
@@ -690,11 +677,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			? GlobalParameters!.ThumbnailSizeIncrement
 			: -GlobalParameters!.ThumbnailSizeIncrement;
 		
-		var newThumbnailSize = ThumbnailSize + increment;
+		var newThumbnailSize = TabOptions!.ThumbnailSize + increment;
 
 		if (GlobalParameters!.IsValidThumbnailSize(newThumbnailSize))
 		{
-			ThumbnailSize = newThumbnailSize;
+			TabOptions!.ThumbnailSize = newThumbnailSize;
 			
 			RaiseFolderChangedEvent();
 		}
@@ -702,7 +689,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void ChangeImageViewImageInfoVisibility()
 	{
-		ShowImageViewImageInfo = !ShowImageViewImageInfo;
+		TabOptions!.ShowImageViewImageInfo = !TabOptions!.ShowImageViewImageInfo;
 	}
 	
 	private void SwitchControlFocus()
@@ -733,7 +720,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void ToggleRecursiveFolderAccess()
 	{
-		RecursiveFolderBrowsing = !RecursiveFolderBrowsing;
+		TabOptions!.RecursiveFolderBrowsing = !TabOptions!.RecursiveFolderBrowsing;
 		
 		RaiseFolderChangedEvent();
 	}

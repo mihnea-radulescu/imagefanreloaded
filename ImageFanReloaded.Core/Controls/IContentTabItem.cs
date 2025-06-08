@@ -15,11 +15,7 @@ public interface IContentTabItem
 	IMainView? MainView { get; set; }
 	
 	IGlobalParameters? GlobalParameters { get; set; }
-	
-	FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; set; }
-	int ThumbnailSize { get; set; }
-	bool RecursiveFolderBrowsing { get; set; }
-	bool ShowImageViewImageInfo { get; set; }
+	ITabOptions? TabOptions { get; set; }
 	
 	IFolderChangedMutex? FolderChangedMutex { get; set; }
 

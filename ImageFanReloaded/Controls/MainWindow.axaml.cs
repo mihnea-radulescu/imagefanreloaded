@@ -5,6 +5,7 @@ using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Settings;
+using ImageFanReloaded.Core.Settings.Implementation;
 using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Keyboard;
 
@@ -138,6 +139,7 @@ public partial class MainWindow : Window, IMainView
 		{
 			MainView = this,
 			GlobalParameters = GlobalParameters,
+			TabOptions = new TabOptions(),
 			FolderChangedMutex = FolderChangedMutexFactory!.GetFolderChangedMutex()
 		};
 

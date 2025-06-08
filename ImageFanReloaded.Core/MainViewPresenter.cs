@@ -111,16 +111,13 @@ public class MainViewPresenter
 		var contentTabItem = e.ContentTabItem;
 
 		var shouldRaiseFolderChangedEvent =
-			contentTabItem.ThumbnailSize != e.ThumbnailSize ||
-			contentTabItem.RecursiveFolderBrowsing != e.RecursiveFolderBrowsing;
+			contentTabItem.TabOptions!.ThumbnailSize != e.TabOptions.ThumbnailSize ||
+			contentTabItem.TabOptions!.RecursiveFolderBrowsing != e.TabOptions.RecursiveFolderBrowsing;
 		
 		var shouldRaiseFolderOrderingChangedEvent =
-			contentTabItem.FileSystemEntryInfoOrdering != e.FileSystemEntryInfoOrdering;
-		
-		contentTabItem.FileSystemEntryInfoOrdering = e.FileSystemEntryInfoOrdering;
-		contentTabItem.ThumbnailSize = e.ThumbnailSize;
-		contentTabItem.RecursiveFolderBrowsing = e.RecursiveFolderBrowsing;
-		contentTabItem.ShowImageViewImageInfo = e.ShowImageViewImageInfo;
+			contentTabItem.TabOptions!.FileSystemEntryInfoOrdering != e.TabOptions.FileSystemEntryInfoOrdering;
+
+		contentTabItem.TabOptions = e.TabOptions;
 
 		if (shouldRaiseFolderChangedEvent)
 		{
@@ -145,7 +142,9 @@ public class MainViewPresenter
 			e.Path);
 
 		await contentTabItem.FolderVisualState.UpdateVisualState(
-			contentTabItem.FileSystemEntryInfoOrdering, contentTabItem.ThumbnailSize, e.Recursive);
+			contentTabItem.TabOptions!.FileSystemEntryInfoOrdering,
+			contentTabItem.TabOptions!.ThumbnailSize,
+			e.Recursive);
 	}
 	
 	private async void OnFolderOrderingChanged(object? sender, FolderOrderingChangedEventArgs e)
@@ -196,7 +195,7 @@ public class MainViewPresenter
 				startAtRootFolders = false;
 				
 				subFolders = await _discQueryEngine.GetSubFolders(
-					matchingFileSystemEntryInfo.Path, contentTabItem.FileSystemEntryInfoOrdering);
+					matchingFileSystemEntryInfo.Path, contentTabItem.TabOptions!.FileSystemEntryInfoOrdering);
 				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(subFolders);
 			}
 		} while (matchingFileSystemEntryInfo is not null);

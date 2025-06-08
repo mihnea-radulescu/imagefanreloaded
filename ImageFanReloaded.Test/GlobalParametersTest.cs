@@ -5,7 +5,6 @@ using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.OperatingSystem.Implementation;
-using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.ImageHandling;
 using ImageFanReloaded.Settings;
 
@@ -16,13 +15,13 @@ public class GlobalParametersTest : TestBase
 	public GlobalParametersTest()
 	{
 		IOperatingSystemSettings operatingSystemSettings = new OperatingSystemSettings();
-		
+
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
 		_globalParameters = new GlobalParameters(operatingSystemSettings, imageResizer);
 	}
-	
+
 	[Fact]
 	public void GlobalParameters_IsCorrectlyInitialized()
 	{
@@ -40,9 +39,9 @@ public class GlobalParametersTest : TestBase
 			_globalParameters.IsMacOS
 		];
 		Assert.Single(isOperatingSystemCollection, isOperatingSystem => isOperatingSystem == true);
-		
+
 		Assert.Equal(KeyModifiers.None, _globalParameters.NoneKeyModifier);
-		
+
 		Assert.NotEqual(KeyModifiers.None, _globalParameters.CtrlKeyModifier);
 		Assert.NotEqual(KeyModifiers.None, _globalParameters.AltKeyModifier);
 		Assert.NotEqual(KeyModifiers.None, _globalParameters.ShiftKeyModifier);
@@ -56,23 +55,23 @@ public class GlobalParametersTest : TestBase
 		Assert.NotEqual(Key.None, _globalParameters.OKey);
 
 		Assert.NotEqual(Key.None, _globalParameters.F4Key);
-		
+
 		Assert.NotEqual(Key.None, _globalParameters.NKey);
 		Assert.NotEqual(Key.None, _globalParameters.MKey);
-		
+
 		Assert.NotEqual(Key.None, _globalParameters.RKey);
-		
+
 		Assert.NotEqual(Key.None, _globalParameters.TKey);
 		Assert.NotEqual(Key.None, _globalParameters.IKey);
-		
+
 		Assert.NotEqual(Key.None, _globalParameters.UpKey);
 		Assert.NotEqual(Key.None, _globalParameters.DownKey);
 		Assert.NotEqual(Key.None, _globalParameters.LeftKey);
 		Assert.NotEqual(Key.None, _globalParameters.RightKey);
-		
+
 		Assert.NotEqual(Key.None, _globalParameters.PlusKey);
 		Assert.NotEqual(Key.None, _globalParameters.MinusKey);
-		
+
 		Assert.NotEqual(Key.None, _globalParameters.PageUpKey);
 		Assert.NotEqual(Key.None, _globalParameters.PageDownKey);
 
@@ -83,21 +82,10 @@ public class GlobalParametersTest : TestBase
 		Assert.NotNull(_globalParameters.UserProfilePath);
 		Assert.NotEmpty(_globalParameters.UserProfilePath);
 		Assert.NotEmpty(_globalParameters.SpecialFolders);
-		Assert.Equal(
-			FileSystemEntryInfoOrdering.NameAscending,
-			_globalParameters.DefaultFileSystemEntryInfoOrdering);
 
-		Assert.Equal(400, _globalParameters.DefaultThumbnailSize);
 		Assert.Equal(50, _globalParameters.ThumbnailSizeIncrement);
-		Assert.True(_globalParameters.IsValidThumbnailSize(_globalParameters.DefaultThumbnailSize));
 
 		Assert.NotNull(_globalParameters.InvalidImage.GetBitmap());
-
-		Assert.NotNull(
-			_globalParameters.GetInvalidImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap());
-		Assert.NotNull(
-			_globalParameters.GetLoadingImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap()
-		);
 
 		Assert.Equal(17, _globalParameters.PersistentImages.Count);
 
@@ -108,22 +96,24 @@ public class GlobalParametersTest : TestBase
 			_globalParameters.InvalidImage.GetBitmap(),
 			$"{nameof(_globalParameters.InvalidImage)}{OutputFileExtension}");
 		SaveImageToDisc(
-			_globalParameters.GetInvalidImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap(),
+			_globalParameters.GetInvalidImageThumbnail(ThumbnailSize).GetBitmap(),
 			$"InvalidImageThumbnail_{OutputFileExtension}");
 
 		SaveImageToDisc(
-			_globalParameters.GetLoadingImageThumbnail(_globalParameters.DefaultThumbnailSize).GetBitmap(),
+			_globalParameters.GetLoadingImageThumbnail(ThumbnailSize).GetBitmap(),
 			$"LoadingImageThumbnail_{OutputFileExtension}");
 
 		SaveImageToDisc(
 			_globalParameters.DriveIcon.GetBitmap(),
 			$"{nameof(_globalParameters.DriveIcon)}{OutputFileExtension}");
 		SaveImageToDisc(
-			_globalParameters.FolderIcon.GetBitmap(), 
+			_globalParameters.FolderIcon.GetBitmap(),
 			$"{nameof(_globalParameters.FolderIcon)}{OutputFileExtension}");
 	}
-	
+
 	#region Private
+
+	private const int ThumbnailSize = 400;
 
 	private readonly GlobalParameters _globalParameters;
 

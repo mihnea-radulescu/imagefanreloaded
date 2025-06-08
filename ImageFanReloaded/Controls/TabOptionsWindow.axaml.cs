@@ -22,13 +22,9 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	}
 	
 	public IGlobalParameters? GlobalParameters { get; set; }
+	public ITabOptions? TabOptions { get; set; }
 	
 	public IContentTabItem? ContentTabItem { get; set; }
-	
-	public FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; set; }
-	public int ThumbnailSize { get; set; }
-	public bool RecursiveFolderBrowsing { get; set; }
-	public bool ShowImageViewImageInfo { get; set; }
 	
 	public event EventHandler<TabOptionsChangedEventArgs>? TabOptionsChanged;
 
@@ -73,7 +69,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		var folderOrderingComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
 		var folderOrdering = (FileSystemEntryInfoOrdering)folderOrderingComboBoxItem.Tag!;
 
-		FileSystemEntryInfoOrdering = folderOrdering;
+		TabOptions!.FileSystemEntryInfoOrdering = folderOrdering;
 		_hasChangedTabOptions = true;
 	}
 	
@@ -82,7 +78,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		var thumbnailSizeComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
 		var thumbnailSize = (int)thumbnailSizeComboBoxItem.Tag!;
 
-		ThumbnailSize = thumbnailSize;
+		TabOptions!.ThumbnailSize = thumbnailSize;
 		_hasChangedTabOptions = true;
 	}
 
@@ -90,7 +86,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	{
 		var recursiveFolderBrowsing = _recursiveFolderBrowsingCheckBox.IsChecked!.Value;
 
-		RecursiveFolderBrowsing = recursiveFolderBrowsing;
+		TabOptions!.RecursiveFolderBrowsing = recursiveFolderBrowsing;
 		_hasChangedTabOptions = true;
 	}
 	
@@ -98,7 +94,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	{
 		var showImageViewImageInfo = _showImageViewImageInfoCheckBox.IsChecked!.Value;
 
-		ShowImageViewImageInfo = showImageViewImageInfo;
+		TabOptions!.ShowImageViewImageInfo = showImageViewImageInfo;
 		_hasChangedTabOptions = true;
 	}
 
@@ -130,7 +126,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 			_folderOrderingComboBox.Items.Add(aFileSystemEntryInfoOrderingItem);
 			
-			if (aFileSystemEntryInfoOrderingValue == FileSystemEntryInfoOrdering)
+			if (aFileSystemEntryInfoOrderingValue == TabOptions!.FileSystemEntryInfoOrdering)
 			{
 				_folderOrderingComboBox.SelectedItem = aFileSystemEntryInfoOrderingItem;
 			}
@@ -151,7 +147,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 			_thumbnailSizeComboBox.Items.Add(aValidThumbnailSizeItem);
 
-			if (aValidThumbnailSize == ThumbnailSize)
+			if (aValidThumbnailSize == TabOptions!.ThumbnailSize)
 			{
 				_thumbnailSizeComboBox.SelectedItem = aValidThumbnailSizeItem;
 			}
@@ -160,22 +156,18 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void SetRecursiveFolderBrowsing()
 	{
-		_recursiveFolderBrowsingCheckBox.IsChecked = RecursiveFolderBrowsing;
+		_recursiveFolderBrowsingCheckBox.IsChecked = TabOptions!.RecursiveFolderBrowsing;
 	}
 	
 	private void SetShowImageViewImageInfo()
 	{
-		_showImageViewImageInfoCheckBox.IsChecked = ShowImageViewImageInfo;
+		_showImageViewImageInfoCheckBox.IsChecked = TabOptions!.ShowImageViewImageInfo;
 	}
 
 	private void RaiseTabOptionsChanged()
 	{
-		TabOptionsChanged?.Invoke(this, new TabOptionsChangedEventArgs(
-			ContentTabItem!,
-			FileSystemEntryInfoOrdering,
-			ThumbnailSize,
-			RecursiveFolderBrowsing,
-			ShowImageViewImageInfo));
+		TabOptionsChanged?.Invoke(
+			this, new TabOptionsChangedEventArgs(ContentTabItem!, TabOptions!));
 	}
 
 	#endregion
