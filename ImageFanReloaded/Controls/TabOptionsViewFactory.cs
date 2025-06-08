@@ -13,13 +13,14 @@ public class TabOptionsViewFactory : ITabOptionsViewFactory
 	public ITabOptionsView GetTabOptionsView(IContentTabItem contentTabItem)
 	{
 		ITabOptionsView tabOptionsView = new TabOptionsWindow();
-		
+
 		tabOptionsView.GlobalParameters = _globalParameters;
 		tabOptionsView.TabOptions = contentTabItem.TabOptions;
-		
+
 		tabOptionsView.ContentTabItem = contentTabItem;
-		
+
 		tabOptionsView.PopulateTabOptions();
+		tabOptionsView.RegisterTabOptionEvents();
 
 		return tabOptionsView;
 	}

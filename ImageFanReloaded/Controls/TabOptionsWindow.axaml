@@ -38,8 +38,7 @@
 		          Grid.Row="1"
 		          Grid.Column="3"
 		          HorizontalAlignment="Stretch"
-		          VerticalContentAlignment="Center"
-		          SelectionChanged="OnFolderOrderingSelectionChanged"/>
+		          VerticalContentAlignment="Center"/>
 		
 		<TextBlock Grid.Row="3"
 		           Grid.Column="1"
@@ -50,8 +49,7 @@
 		          Grid.Row="3"
 		          Grid.Column="3"
 		          HorizontalAlignment="Stretch"
-		          VerticalContentAlignment="Center"
-		          SelectionChanged="OnThumbnailSizeSelectionChanged"/>
+		          VerticalContentAlignment="Center"/>
 		
 		<TextBlock Grid.Row="5"
 		           Grid.Column="1"
@@ -60,8 +58,7 @@
 		           Margin="0 8 0 0"/>
 		<CheckBox Name="_recursiveFolderBrowsingCheckBox"
 		          Grid.Row="5"
-		          Grid.Column="3"
-		          IsCheckedChanged="OnRecursiveFolderBrowsingIsCheckedChanged"/>
+		          Grid.Column="3"/>
 		
 		<TextBlock Grid.Row="7"
 		           Grid.Column="1"
@@ -70,7 +67,6 @@
 		           Margin="0 8 0 0"/>
 		<CheckBox Name="_showImageViewImageInfoCheckBox"
 		          Grid.Row="7"
-		          Grid.Column="3"
-		          IsCheckedChanged="OnShowImageViewImageInfoIsCheckedChanged"/>
+		          Grid.Column="3"/>
 	</Grid>
 </Window>

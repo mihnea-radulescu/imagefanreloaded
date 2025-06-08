@@ -15,6 +15,7 @@ public interface ITabOptionsView
 	public event EventHandler<TabOptionsChangedEventArgs>? TabOptionsChanged;
 
 	void PopulateTabOptions();
+	void RegisterTabOptionEvents();
     
     Task ShowDialog(IMainView owner);
 }

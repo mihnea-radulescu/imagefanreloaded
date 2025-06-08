@@ -109,15 +109,14 @@ public class MainViewPresenter
 	private static void OnTabOptionsChanged(object? sender, TabOptionsChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
+		var tabOptionChanges = e.TabOptionChanges;
 
 		var shouldRaiseFolderChangedEvent =
-			contentTabItem.TabOptions!.ThumbnailSize != e.TabOptions.ThumbnailSize ||
-			contentTabItem.TabOptions!.RecursiveFolderBrowsing != e.TabOptions.RecursiveFolderBrowsing;
-		
-		var shouldRaiseFolderOrderingChangedEvent =
-			contentTabItem.TabOptions!.FileSystemEntryInfoOrdering != e.TabOptions.FileSystemEntryInfoOrdering;
+			tabOptionChanges.HasChangedThumbnailSize ||
+			tabOptionChanges.HasChangedRecursiveFolderBrowsing;
 
-		contentTabItem.TabOptions = e.TabOptions;
+		var shouldRaiseFolderOrderingChangedEvent =
+			tabOptionChanges.HasChangedFolderOrdering;
 
 		if (shouldRaiseFolderChangedEvent)
 		{
