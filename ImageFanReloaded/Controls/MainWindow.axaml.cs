@@ -40,6 +40,24 @@ public partial class MainWindow : Window, IMainView
 		_tabControl.Items.Add(fakeTabItem);
 	}
 
+	public void AddContentTabItem()
+	{
+		var (contentTabItem, tabItem) = BuildTabItemData();
+
+		var contentTabItemCount = GetContentTabItemCount();
+		_tabControl.Items.Insert(contentTabItemCount, tabItem);
+
+		ContentTabItemAdded?.Invoke(this, new ContentTabItemEventArgs(contentTabItem));
+
+		var shouldAllowTabClose = ShouldAllowTabClose();
+		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(shouldAllowTabClose));
+	}
+
+	public void RegisterTabControlEvents()
+	{
+		_tabControl.SelectionChanged += OnTabChanged;
+	}
+
 	#region Private
 
 	private const string DefaultTabItemTitle = "New tab";
@@ -108,19 +126,6 @@ public partial class MainWindow : Window, IMainView
 		}
 		
 		FocusSelectedContentTabItem();
-	}
-
-	private void AddContentTabItem()
-	{
-		var (contentTabItem, tabItem) = BuildTabItemData();
-
-		var contentTabItemCount = GetContentTabItemCount();
-		_tabControl.Items.Insert(contentTabItemCount, tabItem);
-
-		ContentTabItemAdded?.Invoke(this, new ContentTabItemEventArgs(contentTabItem));
-
-		var shouldAllowTabClose = ShouldAllowTabClose();
-		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(shouldAllowTabClose));
 	}
 
 	private void CloseContentTabItem()

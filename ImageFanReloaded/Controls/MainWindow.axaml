@@ -11,7 +11,5 @@
 		WindowStartupLocation="CenterScreen"
 		WindowState="Maximized"
 		Focusable="True">
-	<TabControl Name="_tabControl"
-				SelectionChanged="OnTabChanged">
-	</TabControl>
+	<TabControl Name="_tabControl"/>
 </Window>

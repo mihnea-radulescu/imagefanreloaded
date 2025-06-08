@@ -15,6 +15,8 @@ public interface IMainView
 	event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
 
 	void AddFakeTabItem();
+	void AddContentTabItem();
+	void RegisterTabControlEvents();
 
 	void Show();
 }
