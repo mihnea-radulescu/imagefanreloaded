@@ -12,6 +12,8 @@ public interface IGlobalParameters
 	bool IsLinux { get; }
 	bool IsWindows { get; }
 	bool IsMacOS { get; }
+
+	int MaxRecursionDepth { get; }
 	
 	KeyModifiers NoneKeyModifier { get; }
 	KeyModifiers CtrlKeyModifier { get; }

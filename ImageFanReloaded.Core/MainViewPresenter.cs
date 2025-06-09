@@ -179,6 +179,7 @@ public class MainViewPresenter
 
 	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(IContentTabItem contentTabItem)
 	{
+		await _discQueryEngine.BuildSkipRecursionFolderPaths();
 		var rootFolders = await _discQueryEngine.GetRootFolders();
 		
 		contentTabItem.PopulateRootNodesSubFoldersTree(rootFolders);

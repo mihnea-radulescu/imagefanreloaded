@@ -40,6 +40,8 @@ public class GlobalParametersTest : TestBase
 		];
 		Assert.Single(isOperatingSystemCollection, isOperatingSystem => isOperatingSystem == true);
 
+		Assert.Equal(6, _globalParameters.MaxRecursionDepth);
+
 		Assert.Equal(KeyModifiers.None, _globalParameters.NoneKeyModifier);
 
 		Assert.NotEqual(KeyModifiers.None, _globalParameters.CtrlKeyModifier);

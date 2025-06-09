@@ -14,6 +14,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public bool IsLinux { get; }
 	public bool IsWindows { get; }
 	public bool IsMacOS { get; }
+
+	public int MaxRecursionDepth => 6;
 	
 	public KeyModifiers NoneKeyModifier { get; }
 	public KeyModifiers CtrlKeyModifier { get; }

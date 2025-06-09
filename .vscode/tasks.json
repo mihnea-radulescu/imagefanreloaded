@@ -12,6 +12,17 @@
 			"problemMatcher": "$msCompile"
 		},
 		{
+			"label": "run",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"run",
+				"--project",
+				"${workspaceFolder}/ImageFanReloaded/ImageFanReloaded.csproj"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
 			"label": "test",
 			"command": "dotnet",
 			"type": "process",

@@ -7,6 +7,8 @@ namespace ImageFanReloaded.Core.DiscAccess;
 
 public interface IDiscQueryEngine
 {
+	Task BuildSkipRecursionFolderPaths();
+
 	Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders();
 
 	Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
