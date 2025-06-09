@@ -105,7 +105,7 @@ public class MainViewPresenter
 		await contentTabItem.ShowTabOptions(tabOptionsView);
 		tabOptionsView.TabOptionsChanged -= OnTabOptionsChanged;
 	}
-	
+
 	private static void OnTabOptionsChanged(object? sender, TabOptionsChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
@@ -118,6 +118,8 @@ public class MainViewPresenter
 		var shouldRaiseFolderOrderingChangedEvent =
 			tabOptionChanges.HasChangedFolderOrdering;
 
+		var shouldSaveAsDefault = tabOptionChanges.ShouldSaveAsDefault;
+
 		if (shouldRaiseFolderChangedEvent)
 		{
 			contentTabItem.RaiseFolderChangedEvent();
@@ -126,6 +128,11 @@ public class MainViewPresenter
 		if (shouldRaiseFolderOrderingChangedEvent)
 		{
 			contentTabItem.RaiseFolderOrderingChangedEvent();
+		}
+
+		if (shouldSaveAsDefault)
+		{
+			contentTabItem.TabOptions!.SaveDefaultTabOptions();
 		}
 	}
 	

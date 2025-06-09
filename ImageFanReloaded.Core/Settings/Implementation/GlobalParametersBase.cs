@@ -183,7 +183,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	
 	#region Private
 	
-	private const int ThumbnailSizeLowerThreshold = 50;
+	private const int ThumbnailSizeLowerThreshold = 100;
 	private const int ThumbnailSizeUpperThreshold = 400;
 
 	private readonly HashSet<Key> _backwardNavigationKeys;

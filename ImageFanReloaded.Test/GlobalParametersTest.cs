@@ -87,7 +87,7 @@ public class GlobalParametersTest : TestBase
 
 		Assert.NotNull(_globalParameters.InvalidImage.GetBitmap());
 
-		Assert.Equal(17, _globalParameters.PersistentImages.Count);
+		Assert.Equal(15, _globalParameters.PersistentImages.Count);
 
 		Assert.NotNull(_globalParameters.DriveIcon.GetBitmap());
 		Assert.NotNull(_globalParameters.FolderIcon.GetBitmap());
@@ -113,7 +113,7 @@ public class GlobalParametersTest : TestBase
 
 	#region Private
 
-	private const int ThumbnailSize = 400;
+	private const int ThumbnailSize = 250;
 
 	private readonly GlobalParameters _globalParameters;
 

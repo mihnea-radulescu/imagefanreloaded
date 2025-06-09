@@ -7,11 +7,15 @@ public class TabOptionChanges : ITabOptionChanges
 	public bool HasChangedRecursiveFolderBrowsing { get; set; }
 	public bool HasChangedShowImageViewImageInfo { get; set; }
 
+	public bool ShouldSaveAsDefault { get; set; }
+
 	public TabOptionChanges()
 	{
 		HasChangedFolderOrdering = false;
 		HasChangedThumbnailSize = false;
 		HasChangedRecursiveFolderBrowsing = false;
 		HasChangedShowImageViewImageInfo = false;
+
+		ShouldSaveAsDefault = false;
 	}
 }

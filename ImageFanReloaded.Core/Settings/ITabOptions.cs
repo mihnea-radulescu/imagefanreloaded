@@ -6,4 +6,6 @@ public interface ITabOptions
 	int ThumbnailSize { get; set; }
 	bool RecursiveFolderBrowsing { get; set; }
 	bool ShowImageViewImageInfo { get; set; }
+
+	void SaveDefaultTabOptions();
 }

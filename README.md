@@ -8,7 +8,7 @@ Features:
 * support for multiple folder tabs
 * keyboard and mouse user interaction
 * folder ordering by name and last modification time
-* configurable thumbnail size, between 50 and 400 pixels
+* configurable thumbnail size, between 100 and 400 pixels
 * toggle-able recursive folder browsing
 * targeted zooming in, and moving over the zoomed image
 * fast and seamless full-screen navigation across images

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.Settings;
@@ -44,6 +45,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_thumbnailSizeComboBox.SelectionChanged += OnThumbnailSizeSelectionChanged;
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged += OnRecursiveFolderBrowsingIsCheckedChanged;
 		_showImageViewImageInfoCheckBox.IsCheckedChanged += OnShowImageViewImageInfoIsCheckedChanged;
+		_saveAsDefaultCheckBox.IsCheckedChanged += OnSaveAsDefaultIsCheckedChanged;
 	}
 
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
@@ -103,6 +105,13 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		TabOptions!.ShowImageViewImageInfo = showImageViewImageInfo;
 		_tabOptionChanges.HasChangedShowImageViewImageInfo = true;
+	}
+
+	private void OnSaveAsDefaultIsCheckedChanged(object? sender, RoutedEventArgs e)
+	{
+		var saveAsDefault = _saveAsDefaultCheckBox.IsChecked!.Value;
+
+		_tabOptionChanges.ShouldSaveAsDefault = saveAsDefault;
 	}
 
 	private bool ShouldCloseWindow(

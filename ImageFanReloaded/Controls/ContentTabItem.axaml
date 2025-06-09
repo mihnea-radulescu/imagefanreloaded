@@ -6,9 +6,9 @@
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="10*"/>
+			<ColumnDefinition Width="13*"/>
 			<ColumnDefinition Width="Auto"/>
-			<ColumnDefinition Width="90*"
+			<ColumnDefinition Width="87*"
 							  MinWidth="430"/>
 		</Grid.ColumnDefinitions>
 		<TreeView Name="_folderTreeView"

@@ -4,22 +4,24 @@
         Icon="/MainWindowIcon.ico"
         Title="Tab options"
         Width="575"
-        Height="175"
+        Height="225"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
         Focusable="True"
         Closing="OnWindowClosing">
 	<Grid Margin="4">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="4*"/>
-			<RowDefinition Height="20*"/>
-			<RowDefinition Height="4*"/>
-			<RowDefinition Height="20*"/>
-			<RowDefinition Height="4*"/>
-			<RowDefinition Height="20*"/>
-			<RowDefinition Height="4*"/>
-			<RowDefinition Height="20*"/>
-			<RowDefinition Height="4*"/>
+			<RowDefinition Height="5*"/>
+			<RowDefinition Height="14*"/>
+			<RowDefinition Height="5*"/>
+			<RowDefinition Height="14*"/>
+			<RowDefinition Height="5*"/>
+			<RowDefinition Height="14*"/>
+			<RowDefinition Height="5*"/>
+			<RowDefinition Height="14*"/>
+			<RowDefinition Height="5*"/>
+			<RowDefinition Height="14*"/>
+			<RowDefinition Height="5*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="5*"/>
@@ -67,6 +69,15 @@
 		           Margin="0 8 0 0"/>
 		<CheckBox Name="_showImageViewImageInfoCheckBox"
 		          Grid.Row="7"
+		          Grid.Column="3"/>
+
+		<TextBlock Grid.Row="9"
+		           Grid.Column="1"
+		           HorizontalAlignment="Right"
+		           Text="Save as default?"
+		           Margin="0 8 0 0"/>
+		<CheckBox Name="_saveAsDefaultCheckBox"
+		          Grid.Row="9"
 		          Grid.Column="3"/>
 	</Grid>
 </Window>
