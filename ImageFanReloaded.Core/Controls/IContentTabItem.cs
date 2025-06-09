@@ -66,6 +66,7 @@ public interface IContentTabItem
 
 	void RaiseFolderChangedEvent();
 	void RaiseFolderOrderingChangedEvent();
+	void RaisePanelsSplittingRatioChangedEvent();
 	
 	Task ShowTabOptions(ITabOptionsView tabOptionsView);
 	Task ShowAboutInfo(IAboutView aboutView);

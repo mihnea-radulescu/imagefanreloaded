@@ -39,28 +39,32 @@ public class FolderVisualState : IFolderVisualState
 	
 	public void ClearVisualState() => _contentTabItem.ClearThumbnailBoxes(false);
 
-	public async Task UpdateVisualState(
-		FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering, int thumbnailSize, bool recursiveFolderAccess)
+	public async Task UpdateVisualState(ITabOptions tabOptions)
 	{
 		await _folderChangedMutex.Wait();
 		
 		_contentTabItem.ClearThumbnailBoxes(true);
 		_contentTabItem.SetTitle(_folderName);
 
-		var subFolders = await _discQueryEngine.GetSubFolders(_folderPath, fileSystemEntryInfoOrdering);
+		var subFolders = await _discQueryEngine.GetSubFolders(
+			_folderPath, tabOptions.FileSystemEntryInfoOrdering);
 		_contentTabItem.PopulateSubFoldersTree(subFolders);
 
-		var imageFiles = await _discQueryEngine.GetImageFiles(_folderPath, recursiveFolderAccess);
+		var imageFiles = await _discQueryEngine.GetImageFiles(
+			_folderPath, tabOptions.RecursiveFolderBrowsing);
 		var imageFilesCount = imageFiles.Count;
 		
-		var imageFilesTotalSizeOnDiscInMegabytes = await GetImageFilesTotalSizeOnDiscInMegabytes(imageFiles);
+		var imageFilesTotalSizeOnDiscInMegabytes =
+			await GetImageFilesTotalSizeOnDiscInMegabytes(imageFiles);
 		
 		var folderStatusBarText = GetFolderStatusBarText(
-			imageFilesCount, imageFilesTotalSizeOnDiscInMegabytes, recursiveFolderAccess);
+			imageFilesCount,
+			imageFilesTotalSizeOnDiscInMegabytes,
+			tabOptions.RecursiveFolderBrowsing);
 		_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
 		_contentTabItem.SetImageStatusBarText(string.Empty);
 
-		var thumbnails = GetThumbnailInfoCollection(thumbnailSize, imageFiles);
+		var thumbnails = GetThumbnailInfoCollection(tabOptions.ThumbnailSize, imageFiles);
 
 		await ProcessThumbnails(thumbnails);
 

@@ -115,8 +115,10 @@ public class MainViewPresenter
 			tabOptionChanges.HasChangedThumbnailSize ||
 			tabOptionChanges.HasChangedRecursiveFolderBrowsing;
 
-		var shouldRaiseFolderOrderingChangedEvent =
-			tabOptionChanges.HasChangedFolderOrdering;
+		var shouldRaiseFolderOrderingChangedEvent = tabOptionChanges.HasChangedFolderOrdering;
+
+		var shouldRaisePanelsSplittingRatioChangedEvent =
+			tabOptionChanges.HasChangedPanelsSplittingRatio;
 
 		var shouldSaveAsDefault = tabOptionChanges.ShouldSaveAsDefault;
 
@@ -128,6 +130,11 @@ public class MainViewPresenter
 		if (shouldRaiseFolderOrderingChangedEvent)
 		{
 			contentTabItem.RaiseFolderOrderingChangedEvent();
+		}
+
+		if (shouldRaisePanelsSplittingRatioChangedEvent)
+		{
+			contentTabItem.RaisePanelsSplittingRatioChangedEvent();
 		}
 
 		if (shouldSaveAsDefault)
@@ -147,10 +154,7 @@ public class MainViewPresenter
 			e.Name,
 			e.Path);
 
-		await contentTabItem.FolderVisualState.UpdateVisualState(
-			contentTabItem.TabOptions!.FileSystemEntryInfoOrdering,
-			contentTabItem.TabOptions!.ThumbnailSize,
-			e.Recursive);
+		await contentTabItem.FolderVisualState.UpdateVisualState(contentTabItem.TabOptions!);
 	}
 	
 	private async void OnFolderOrderingChanged(object? sender, FolderOrderingChangedEventArgs e)

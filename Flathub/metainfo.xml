@@ -58,6 +58,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.06.10" date="2025-06-10">
+			<description>
+				<p>Added tab options persistence</p>
+			</description>
+		</release>
 		<release version="1.2025.02.17" date="2025-02-17">
 			<description>
 				<p>Improved thumbnail generation performance</p>

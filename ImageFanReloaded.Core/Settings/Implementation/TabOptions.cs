@@ -13,6 +13,7 @@ public class TabOptions : ITabOptions
 	public int ThumbnailSize { get; set; }
 	public bool RecursiveFolderBrowsing { get; set; }
 	public bool ShowImageViewImageInfo { get; set; }
+	public int PanelsSplittingRatio { get; set; }
 
 	static TabOptions()
 	{
@@ -100,6 +101,11 @@ public class TabOptions : ITabOptions
 				return;
 			}
 
+			if (!IsValidPanelsSplittingRatio(loadedTabOptions.PanelsSplittingRatio))
+			{
+				return;
+			}
+
 			DefaultTabOptions = loadedTabOptions;
 		}
 		catch
@@ -119,6 +125,7 @@ public class TabOptions : ITabOptions
 			ThumbnailSize = DefaultTabOptions.ThumbnailSize;
 			RecursiveFolderBrowsing = DefaultTabOptions.RecursiveFolderBrowsing;
 			ShowImageViewImageInfo = DefaultTabOptions.ShowImageViewImageInfo;
+			PanelsSplittingRatio = DefaultTabOptions.PanelsSplittingRatio;
 		}
 		else
 		{
@@ -126,6 +133,7 @@ public class TabOptions : ITabOptions
 			ThumbnailSize = 250;
 			RecursiveFolderBrowsing = false;
 			ShowImageViewImageInfo = false;
+			PanelsSplittingRatio = 15;
 		}
 	}
 
@@ -135,6 +143,7 @@ public class TabOptions : ITabOptions
 		DefaultTabOptions!.ThumbnailSize = ThumbnailSize;
 		DefaultTabOptions!.RecursiveFolderBrowsing = RecursiveFolderBrowsing;
 		DefaultTabOptions!.ShowImageViewImageInfo = ShowImageViewImageInfo;
+		DefaultTabOptions!.PanelsSplittingRatio = PanelsSplittingRatio;
 	}
 
 	private static void PersistDefaultTabOptions()
@@ -179,9 +188,12 @@ public class TabOptions : ITabOptions
 
 	private static bool IsValidFileSystemEntryInfoOrdering(FileSystemEntryInfoOrdering ordering)
 		=> Enum.IsDefined(typeof(FileSystemEntryInfoOrdering), ordering);
-	
+
 	private static bool IsValidThumbnailSize(int thumbnailSize)
 		=> ValidThumbnailSizes.Contains(thumbnailSize);
+
+	private static bool IsValidPanelsSplittingRatio(int panelsSplittingRatio)
+		=> 0 <= panelsSplittingRatio && panelsSplittingRatio <= 100;
 
 	#endregion
 }

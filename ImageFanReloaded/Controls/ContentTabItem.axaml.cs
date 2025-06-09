@@ -20,6 +20,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public ContentTabItem()
 	{
 		InitializeComponent();
+
+		AddMainGridColumnDefinitions();
 		
 		_thumbnailBoxCollection = new List<IThumbnailBox>();
 	}
@@ -317,6 +319,15 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
+	public void RaisePanelsSplittingRatioChangedEvent()
+	{
+		_folderTreeViewColumn!.Width = new GridLength(
+			TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
+
+		_thumbnailsScrollViewerColumn!.Width = new GridLength(
+			100 - TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
+	}
+
 	public async Task ShowAboutInfo(IAboutView aboutView) => await aboutView.ShowDialog(MainView!);
 	public async Task ShowTabOptions(ITabOptionsView tabOptionsView) => await tabOptionsView.ShowDialog(MainView!);
 	
@@ -324,6 +335,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
     private const string FakeTreeViewItemText = "Loading...";
     private const int ThumbnailScrollAdvanceCount = 25;
+
+	private ColumnDefinition? _folderTreeViewColumn;
+	private ColumnDefinition? _gridSplitterColumn;
+	private ColumnDefinition? _thumbnailsScrollViewerColumn;
     
     private readonly IList<IThumbnailBox> _thumbnailBoxCollection;
     
@@ -402,12 +417,28 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e) => RaiseTabOptionsRequested();
 	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e) => RaiseAboutInfoRequested();
 
-    private void SelectThumbnailBox(IThumbnailBox thumbnailBox)
+	private void AddMainGridColumnDefinitions()
+	{
+		_folderTreeViewColumn = new ColumnDefinition();
+
+		_gridSplitterColumn = new ColumnDefinition
+		{
+			Width = GridLength.Auto
+		};
+
+		_thumbnailsScrollViewerColumn = new ColumnDefinition();
+
+		_contentGrid.ColumnDefinitions.Add(_folderTreeViewColumn);
+		_contentGrid.ColumnDefinitions.Add(_gridSplitterColumn);
+		_contentGrid.ColumnDefinitions.Add(_thumbnailsScrollViewerColumn);
+	}
+
+	private void SelectThumbnailBox(IThumbnailBox thumbnailBox)
 	{
 		if (_selectedThumbnailBox != thumbnailBox)
 		{
 			UnselectThumbnail();
-			
+
 			_selectedThumbnailBox = thumbnailBox;
 			_selectedThumbnailIndex = thumbnailBox.Index;
 
@@ -631,7 +662,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem()!;
 
-			if (!folderTreeViewSelectedItem.IsFocused && !_gridSplitter.IsFocused)
+			if (!folderTreeViewSelectedItem.IsFocused)
 			{
 				return true;
 			}
@@ -703,10 +734,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		
 		if (folderTreeViewSelectedItem.IsFocused)
 		{
-			FocusGridSplitter();
-		}
-		else if (_gridSplitter.IsFocused)
-		{
 			FocusThumbnailScrollViewer();
 		}
 		else
@@ -714,8 +741,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			FocusTreeViewItem(folderTreeViewSelectedItem);
 		}
 	}
-	
-	private void FocusGridSplitter() => _gridSplitter.Focus();
+
 	private static void FocusTreeViewItem(TreeViewItem treeViewItem) => treeViewItem.Focus();
 
 	private void ToggleRecursiveFolderAccess()

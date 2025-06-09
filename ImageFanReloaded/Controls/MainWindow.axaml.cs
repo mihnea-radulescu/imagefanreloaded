@@ -157,6 +157,8 @@ public partial class MainWindow : Window, IMainView
 		contentTabItem.ContentTabItemHeader.TabClosed += CloseContentTabItem;
 		contentTabItem.RegisterMainViewEvents();
 		contentTabItem.SetTitle(DefaultTabItemTitle);
+
+		contentTabItem.RaisePanelsSplittingRatioChangedEvent();
 		
 		var tabItem = new TabItem
 		{

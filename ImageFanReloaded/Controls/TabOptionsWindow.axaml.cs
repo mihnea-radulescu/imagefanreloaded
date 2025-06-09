@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.Settings;
@@ -37,6 +37,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		SetRecursiveFolderBrowsing();
 		SetShowImageViewImageInfo();
+
+		SetPanelsSplittingRatioSlider();
 	}
 
 	public void RegisterTabOptionEvents()
@@ -45,6 +47,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_thumbnailSizeComboBox.SelectionChanged += OnThumbnailSizeSelectionChanged;
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged += OnRecursiveFolderBrowsingIsCheckedChanged;
 		_showImageViewImageInfoCheckBox.IsCheckedChanged += OnShowImageViewImageInfoIsCheckedChanged;
+		_panelsSplittingRatioSlider.ValueChanged += OnPanelsSplittingRatioChanged;
+
 		_saveAsDefaultCheckBox.IsCheckedChanged += OnSaveAsDefaultIsCheckedChanged;
 	}
 
@@ -105,6 +109,14 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		TabOptions!.ShowImageViewImageInfo = showImageViewImageInfo;
 		_tabOptionChanges.HasChangedShowImageViewImageInfo = true;
+	}
+
+	private void OnPanelsSplittingRatioChanged(object? sender, RangeBaseValueChangedEventArgs e)
+	{
+		var panelsSplittingRatio = (int)_panelsSplittingRatioSlider.Value;
+
+		TabOptions!.PanelsSplittingRatio = panelsSplittingRatio;
+		_tabOptionChanges.HasChangedPanelsSplittingRatio = true;
 	}
 
 	private void OnSaveAsDefaultIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -178,6 +190,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	private void SetShowImageViewImageInfo()
 	{
 		_showImageViewImageInfoCheckBox.IsChecked = TabOptions!.ShowImageViewImageInfo;
+	}
+
+	private void SetPanelsSplittingRatioSlider()
+	{
+		_panelsSplittingRatioSlider.Value = TabOptions!.PanelsSplittingRatio;
 	}
 	
 	#endregion

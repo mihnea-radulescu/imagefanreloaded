@@ -8,6 +8,5 @@ public interface IFolderVisualState
     void NotifyStopThumbnailGeneration();
     void ClearVisualState();
 
-    Task UpdateVisualState(
-        FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering, int thumbnailSize, bool recursiveFolderAccess);
+	Task UpdateVisualState(ITabOptions tabOptions);
 }

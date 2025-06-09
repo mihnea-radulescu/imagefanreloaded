@@ -3,25 +3,27 @@
         x:Class="ImageFanReloaded.Controls.TabOptionsWindow"
         Icon="/MainWindowIcon.ico"
         Title="Tab options"
-        Width="575"
-        Height="225"
+        Width="600"
+        Height="300"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
         Focusable="True"
         Closing="OnWindowClosing">
 	<Grid Margin="4">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="5*"/>
+			<RowDefinition Height="3*"/>
+			<RowDefinition Height="13*"/>
+			<RowDefinition Height="3*"/>
+			<RowDefinition Height="13*"/>
+			<RowDefinition Height="3*"/>
+			<RowDefinition Height="13*"/>
+			<RowDefinition Height="3*"/>
+			<RowDefinition Height="13*"/>
+			<RowDefinition Height="3*"/>
 			<RowDefinition Height="14*"/>
-			<RowDefinition Height="5*"/>
-			<RowDefinition Height="14*"/>
-			<RowDefinition Height="5*"/>
-			<RowDefinition Height="14*"/>
-			<RowDefinition Height="5*"/>
-			<RowDefinition Height="14*"/>
-			<RowDefinition Height="5*"/>
-			<RowDefinition Height="14*"/>
-			<RowDefinition Height="5*"/>
+			<RowDefinition Height="3*"/>
+			<RowDefinition Height="13*"/>
+			<RowDefinition Height="3*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="5*"/>
@@ -57,7 +59,7 @@
 		           Grid.Column="1"
 		           HorizontalAlignment="Right"
 		           Text="Recursive folder browsing?"
-		           Margin="0 8 0 0"/>
+		           Margin="0 10 0 0"/>
 		<CheckBox Name="_recursiveFolderBrowsingCheckBox"
 		          Grid.Row="5"
 		          Grid.Column="3"/>
@@ -66,7 +68,7 @@
 		           Grid.Column="1"
 		           HorizontalAlignment="Right"
 		           Text="Show image info in image view?"
-		           Margin="0 8 0 0"/>
+		           Margin="0 10 0 0"/>
 		<CheckBox Name="_showImageViewImageInfoCheckBox"
 		          Grid.Row="7"
 		          Grid.Column="3"/>
@@ -74,10 +76,21 @@
 		<TextBlock Grid.Row="9"
 		           Grid.Column="1"
 		           HorizontalAlignment="Right"
+		           Text="Panels splitting ratio:"
+		           Margin="0 16 0 0"/>
+		<Slider Name="_panelsSplittingRatioSlider"
+		        Minimum="0"
+		        Maximum="100"
+		        Grid.Row="9"
+		        Grid.Column="3"/>
+
+		<TextBlock Grid.Row="11"
+		           Grid.Column="1"
+		           HorizontalAlignment="Right"
 		           Text="Save as default?"
-		           Margin="0 8 0 0"/>
+		           Margin="0 10 0 0"/>
 		<CheckBox Name="_saveAsDefaultCheckBox"
-		          Grid.Row="9"
+		          Grid.Row="11"
 		          Grid.Column="3"/>
 	</Grid>
 </Window>
