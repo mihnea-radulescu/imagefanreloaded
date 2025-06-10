@@ -334,7 +334,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
     #region Private
 
     private const string FakeTreeViewItemText = "Loading...";
-    private const int ThumbnailScrollAdvanceCount = 25;
+    private const int ThumbnailScrollAdvanceCount = 12;
 
 	private ColumnDefinition? _folderTreeViewColumn;
 	private ColumnDefinition? _gridSplitterColumn;
