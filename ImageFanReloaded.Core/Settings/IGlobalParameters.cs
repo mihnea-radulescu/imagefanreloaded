@@ -61,11 +61,6 @@ public interface IGlobalParameters
 	
 	string UserProfilePath { get; }
 	IReadOnlyList<string> SpecialFolders { get; }
-
-	int ThumbnailSizeIncrement { get; }
-
-	IReadOnlyList<int> GetValidThumbnailSizes();
-	bool IsValidThumbnailSize(int thumbnailSize);
 	
 	IImage InvalidImage { get; }
 	HashSet<IImage> PersistentImages { get; }

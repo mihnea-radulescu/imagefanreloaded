@@ -85,8 +85,6 @@ public class GlobalParametersTest : TestBase
 		Assert.NotEmpty(_globalParameters.UserProfilePath);
 		Assert.NotEmpty(_globalParameters.SpecialFolders);
 
-		Assert.Equal(50, _globalParameters.ThumbnailSizeIncrement);
-
 		Assert.NotNull(_globalParameters.InvalidImage.GetBitmap());
 
 		Assert.Equal(15, _globalParameters.PersistentImages.Count);

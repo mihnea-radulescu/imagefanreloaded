@@ -64,11 +64,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public string UserProfilePath { get; }
 	public IReadOnlyList<string> SpecialFolders { get; }
 
-	public int ThumbnailSizeIncrement => 50;
-	
-	public IReadOnlyList<int> GetValidThumbnailSizes() => [..ValidThumbnailSizes];
-	public bool IsValidThumbnailSize(int thumbnailSize) => ValidThumbnailSizes.Contains(thumbnailSize);
-	
 	public abstract IImage InvalidImage { get; }
 	public abstract HashSet<IImage> PersistentImages { get; }
 	
@@ -173,38 +168,17 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		];
 
 		_navigationKeys = [ .._backwardNavigationKeys, .._forwardNavigationKeys ];
-
-		ValidThumbnailSizes = BuildValidThumbnailSizes();
 	}
 	
 	protected const int IconSizeSquareLength = 36;
 	
-	protected readonly HashSet<int> ValidThumbnailSizes;
-	
 	#endregion
 	
 	#region Private
-	
-	private const int ThumbnailSizeLowerThreshold = 100;
-	private const int ThumbnailSizeUpperThreshold = 400;
 
 	private readonly HashSet<Key> _backwardNavigationKeys;
 	private readonly HashSet<Key> _forwardNavigationKeys;
 	private readonly HashSet<Key> _navigationKeys;
-	
-	private HashSet<int> BuildValidThumbnailSizes()
-	{
-		var validThumbnailSizes = new HashSet<int>();
-		
-		for (var thumbnailSize = ThumbnailSizeLowerThreshold;
-		     thumbnailSize <= ThumbnailSizeUpperThreshold;
-		     thumbnailSize += ThumbnailSizeIncrement)
-		{
-			validThumbnailSizes.Add(thumbnailSize);
-		}
-
-		return validThumbnailSizes;
-	}
 
 	#endregion
 }

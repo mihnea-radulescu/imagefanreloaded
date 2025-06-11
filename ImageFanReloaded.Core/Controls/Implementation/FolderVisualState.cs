@@ -64,7 +64,7 @@ public class FolderVisualState : IFolderVisualState
 		_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
 		_contentTabItem.SetImageStatusBarText(string.Empty);
 
-		var thumbnails = GetThumbnailInfoCollection(tabOptions.ThumbnailSize, imageFiles);
+		var thumbnails = GetThumbnailInfoCollection(tabOptions.ThumbnailSize.ToInt(), imageFiles);
 
 		await ProcessThumbnails(thumbnails);
 

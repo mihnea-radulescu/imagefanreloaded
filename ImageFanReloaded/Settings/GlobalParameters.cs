@@ -6,6 +6,7 @@ using ImageFanReloaded.Core.Settings.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.OperatingSystem;
+using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Properties;
 
 namespace ImageFanReloaded.Settings;
@@ -83,10 +84,10 @@ public class GlobalParameters : GlobalParametersBase
 	{
 		var invalidImageThumbnails = new Dictionary<int, IImage>();
 
-		foreach (var thumbnailSize in ValidThumbnailSizes)
+		foreach (var thumbnailSize in ThumbnailSizeExtensions.ThumbnailSizesAsIntegers)
 		{
 			var thumbnailImageSize = new ImageSize(thumbnailSize);
-			
+
 			var invalidImageThumbnail = _imageResizer.CreateResizedImage(
 				InvalidImage, thumbnailImageSize, ImageQuality.Medium);
 
@@ -105,7 +106,7 @@ public class GlobalParameters : GlobalParametersBase
 			var loadingBitmapSize = new ImageSize(loadingBitmap.Size.Width, loadingBitmap.Size.Height);
 			var loadingImage = new Image(loadingBitmap, loadingBitmapSize);
 			
-			foreach (var thumbnailSize in ValidThumbnailSizes)
+			foreach (var thumbnailSize in ThumbnailSizeExtensions.ThumbnailSizesAsIntegers)
 			{
 				var thumbnailImageSize = new ImageSize(thumbnailSize);
 			

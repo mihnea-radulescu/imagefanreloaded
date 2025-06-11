@@ -20,7 +20,7 @@
 			<li>support for multiple folder tabs</li>
 			<li>keyboard and mouse user interaction</li>
 			<li>folder ordering by name and last modification time</li>
-			<li>configurable thumbnail size, between 50 and 400 pixels</li>
+			<li>configurable thumbnail size, between 100 and 400 pixels</li>
 			<li>toggle-able recursive folder browsing</li>
 			<li>targeted zooming in, and moving over the zoomed image</li>
 			<li>fast and seamless full-screen navigation across images</li>

@@ -1,7 +1,6 @@
 //#define FLATPAK_BUILD
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
@@ -10,7 +9,7 @@ namespace ImageFanReloaded.Core.Settings.Implementation;
 public class TabOptions : ITabOptions
 {
 	public FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; set; }
-	public int ThumbnailSize { get; set; }
+	public ThumbnailSize ThumbnailSize { get; set; }
 	public bool RecursiveFolderBrowsing { get; set; }
 	public bool ShowImageViewImageInfo { get; set; }
 	public int PanelsSplittingRatio { get; set; }
@@ -21,8 +20,6 @@ public class TabOptions : ITabOptions
 		SettingsFilePath = GetSettingsFilePath(SettingsFolderPath);
 
 		JsonSerializerOptions = BuildJsonSerializerOptions();
-
-		ValidThumbnailSizes = BuildValidThumbnailSizes();
 
 		LoadDefaultTabOptions();
 	}
@@ -44,16 +41,17 @@ public class TabOptions : ITabOptions
 	private const string SettingsFolderName = "ImageFanReloaded";
 	private const string SettingsFileName = "DefaultTabOptions.json";
 
-	private const int ThumbnailSizeLowerThreshold = 100;
-	private const int ThumbnailSizeUpperThreshold = 400;
-	private const int ThumbnailSizeIncrement = 50;
+	private const FileSystemEntryInfoOrdering DefaultFileSystemEntryInfoOrdering =
+		FileSystemEntryInfoOrdering.NameAscending;
+	private const ThumbnailSize DefaultThumbnailSize = ThumbnailSize.TwoHundredAndFixtyPixels;
+	private const bool DefaultRecursiveFolderBrowsing = false;
+	private const bool DefaultShowImageViewImageInfo = false;
+	private const int DefaultPanelsSplittingRatio = 15;
 
 	private static readonly string SettingsFolderPath;
 	private static readonly string SettingsFilePath;
 
 	private static readonly JsonSerializerOptions JsonSerializerOptions;
-
-	private static readonly HashSet<int> ValidThumbnailSizes;
 
 	private static ITabOptions? DefaultTabOptions;
 
@@ -91,19 +89,19 @@ public class TabOptions : ITabOptions
 				return;
 			}
 
-			if (!IsValidFileSystemEntryInfoOrdering(loadedTabOptions.FileSystemEntryInfoOrdering))
+			if (!IsValidEnumValue(loadedTabOptions.FileSystemEntryInfoOrdering))
 			{
-				return;
+				loadedTabOptions.FileSystemEntryInfoOrdering = DefaultFileSystemEntryInfoOrdering;
 			}
 
-			if (!IsValidThumbnailSize(loadedTabOptions.ThumbnailSize))
+			if (!IsValidEnumValue(loadedTabOptions.ThumbnailSize))
 			{
-				return;
+				loadedTabOptions.ThumbnailSize = DefaultThumbnailSize;
 			}
 
 			if (!IsValidPanelsSplittingRatio(loadedTabOptions.PanelsSplittingRatio))
 			{
-				return;
+				loadedTabOptions.PanelsSplittingRatio = DefaultPanelsSplittingRatio;
 			}
 
 			DefaultTabOptions = loadedTabOptions;
@@ -129,11 +127,11 @@ public class TabOptions : ITabOptions
 		}
 		else
 		{
-			FileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.NameAscending;
-			ThumbnailSize = 250;
-			RecursiveFolderBrowsing = false;
-			ShowImageViewImageInfo = false;
-			PanelsSplittingRatio = 15;
+			FileSystemEntryInfoOrdering = DefaultFileSystemEntryInfoOrdering;
+			ThumbnailSize = DefaultThumbnailSize;
+			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing;
+			ShowImageViewImageInfo = DefaultShowImageViewImageInfo;
+			PanelsSplittingRatio = DefaultPanelsSplittingRatio;
 		}
 	}
 
@@ -172,25 +170,8 @@ public class TabOptions : ITabOptions
 		};
 	}
 
-	private static HashSet<int> BuildValidThumbnailSizes()
-	{
-		var validThumbnailSizes = new HashSet<int>();
-
-		for (var thumbnailSize = ThumbnailSizeLowerThreshold;
-			 thumbnailSize <= ThumbnailSizeUpperThreshold;
-			 thumbnailSize += ThumbnailSizeIncrement)
-		{
-			validThumbnailSizes.Add(thumbnailSize);
-		}
-
-		return validThumbnailSizes;
-	}
-
-	private static bool IsValidFileSystemEntryInfoOrdering(FileSystemEntryInfoOrdering ordering)
-		=> Enum.IsDefined(typeof(FileSystemEntryInfoOrdering), ordering);
-
-	private static bool IsValidThumbnailSize(int thumbnailSize)
-		=> ValidThumbnailSizes.Contains(thumbnailSize);
+	private static bool IsValidEnumValue<TEnum>(TEnum enumValue) where TEnum : Enum
+		=> Enum.IsDefined(typeof(TEnum), enumValue);
 
 	private static bool IsValidPanelsSplittingRatio(int panelsSplittingRatio)
 		=> 0 <= panelsSplittingRatio && panelsSplittingRatio <= 100;

@@ -201,7 +201,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var aThumbnailBox = new ThumbnailBox();
 			aThumbnailBox.Index = _maxThumbnailIndex + i;
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
-			aThumbnailBox.SetControlProperties(TabOptions!.ThumbnailSize, GlobalParameters!);
+			aThumbnailBox.SetControlProperties(TabOptions!.ThumbnailSize.ToInt(), GlobalParameters!);
 
 			thumbnailInfo.ThumbnailBox = aThumbnailBox;
 			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
@@ -705,14 +705,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void ChangeThumbnailSize(Key keyPressing)
 	{
 		var increment = keyPressing == GlobalParameters!.PlusKey
-			? GlobalParameters!.ThumbnailSizeIncrement
-			: -GlobalParameters!.ThumbnailSizeIncrement;
+			? ThumbnailSizeExtensions.ThumbnailSizeIncrement
+			: -ThumbnailSizeExtensions.ThumbnailSizeIncrement;
 		
-		var newThumbnailSize = TabOptions!.ThumbnailSize + increment;
+		var newThumbnailSize = TabOptions!.ThumbnailSize.ToInt() + increment;
 
-		if (GlobalParameters!.IsValidThumbnailSize(newThumbnailSize))
+		if (newThumbnailSize.IsValidThumbnailSize())
 		{
-			TabOptions!.ThumbnailSize = newThumbnailSize;
+			TabOptions!.ThumbnailSize = newThumbnailSize.ToThumbnailSize();
 			
 			RaiseFolderChangedEvent();
 		}

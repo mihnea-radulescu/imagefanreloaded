@@ -32,8 +32,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	public void PopulateTabOptions()
 	{
-		PopulateFolderOrdering();
-		PopulateThumbnailSize();
+		PopulateFolderOrderings();
+		PopulateThumbnailSizes();
 
 		SetRecursiveFolderBrowsing();
 		SetShowImageViewImageInfo();
@@ -89,7 +89,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	private void OnThumbnailSizeSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
 		var thumbnailSizeComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
-		var thumbnailSize = (int)thumbnailSizeComboBoxItem.Tag!;
+		var thumbnailSize = (ThumbnailSize)thumbnailSizeComboBoxItem.Tag!;
 
 		TabOptions!.ThumbnailSize = thumbnailSize;
 		_tabOptionChanges.HasChangedThumbnailSize = true;
@@ -140,7 +140,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		return false;
 	}
 
-	private void PopulateFolderOrdering()
+	private void PopulateFolderOrderings()
 	{
 		var fileSystemEntryInfoOrderingValues = Enum.GetValues<FileSystemEntryInfoOrdering>();
 
@@ -161,23 +161,21 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		}
 	}
 
-	private void PopulateThumbnailSize()
+	private void PopulateThumbnailSizes()
 	{
-		var validThumbnailSizes = GlobalParameters!.GetValidThumbnailSizes();
-
-		foreach (var aValidThumbnailSize in validThumbnailSizes)
+		foreach (var aThumbnailSize in ThumbnailSizeExtensions.ThumbnailSizes)
 		{
-			var aValidThumbnailSizeItem = new ComboBoxItem
+			var aThumbnailSizeItem = new ComboBoxItem
 			{
-				Tag = aValidThumbnailSize,
-				Content = $"{aValidThumbnailSize}px"
+				Tag = aThumbnailSize,
+				Content = $"{aThumbnailSize.ToInt()}px"
 			};
 
-			_thumbnailSizeComboBox.Items.Add(aValidThumbnailSizeItem);
+			_thumbnailSizeComboBox.Items.Add(aThumbnailSizeItem);
 
-			if (aValidThumbnailSize == TabOptions!.ThumbnailSize)
+			if (aThumbnailSize == TabOptions!.ThumbnailSize)
 			{
-				_thumbnailSizeComboBox.SelectedItem = aValidThumbnailSizeItem;
+				_thumbnailSizeComboBox.SelectedItem = aThumbnailSizeItem;
 			}
 		}
 	}
