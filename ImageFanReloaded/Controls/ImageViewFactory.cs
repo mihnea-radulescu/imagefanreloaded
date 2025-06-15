@@ -17,8 +17,8 @@ public class ImageViewFactory : IImageViewFactory
 	{
 		IImageView imageView = new ImageWindow();
 		
-		imageView.ScreenInformation = _screenInformation;
 		imageView.GlobalParameters = _globalParameters;
+		imageView.ScreenInformation = _screenInformation;
 
 		return imageView;
 	}

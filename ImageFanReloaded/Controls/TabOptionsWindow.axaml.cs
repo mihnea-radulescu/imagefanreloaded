@@ -39,6 +39,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		SetShowImageViewImageInfo();
 
 		SetPanelsSplittingRatioSlider();
+
+		PopulateSlideshowIntervals();
 	}
 
 	public void RegisterTabOptionEvents()
@@ -48,6 +50,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged += OnRecursiveFolderBrowsingIsCheckedChanged;
 		_showImageViewImageInfoCheckBox.IsCheckedChanged += OnShowImageViewImageInfoIsCheckedChanged;
 		_panelsSplittingRatioSlider.ValueChanged += OnPanelsSplittingRatioChanged;
+		_slideshowIntervalComboBox.SelectionChanged += OnSlideshowIntervalSelectionChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged += OnSaveAsDefaultIsCheckedChanged;
 	}
@@ -117,6 +120,15 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		TabOptions!.PanelsSplittingRatio = panelsSplittingRatio;
 		_tabOptionChanges.HasChangedPanelsSplittingRatio = true;
+	}
+
+	private void OnSlideshowIntervalSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	{
+		var slideshowIntervalComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
+		var slideshowInterval = (SlideshowInterval)slideshowIntervalComboBoxItem.Tag!;
+
+		TabOptions!.SlideshowInterval = slideshowInterval;
+		_tabOptionChanges.HasChangedSlideshowInterval = true;
 	}
 
 	private void OnSaveAsDefaultIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -193,6 +205,29 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	private void SetPanelsSplittingRatioSlider()
 	{
 		_panelsSplittingRatioSlider.Value = TabOptions!.PanelsSplittingRatio;
+	}
+
+	private void PopulateSlideshowIntervals()
+	{
+		foreach (var aSlideshowInterval in SlideshowIntervalExtensions.SlideshowIntervals)
+		{
+			var aSlideshowIntervalText = aSlideshowInterval == SlideshowInterval.OneSecond
+				? $"{aSlideshowInterval.ToInt()} second"
+				: $"{aSlideshowInterval.ToInt()} seconds";
+
+			var aSlideshowIntervalItem = new ComboBoxItem
+			{
+				Tag = aSlideshowInterval,
+				Content = aSlideshowIntervalText
+			};
+
+			_slideshowIntervalComboBox.Items.Add(aSlideshowIntervalItem);
+
+			if (aSlideshowInterval == TabOptions!.SlideshowInterval)
+			{
+				_slideshowIntervalComboBox.SelectedItem = aSlideshowIntervalItem;
+			}
+		}
 	}
 	
 	#endregion

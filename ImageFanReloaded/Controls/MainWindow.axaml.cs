@@ -5,7 +5,6 @@ using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Settings;
-using ImageFanReloaded.Core.Settings.Implementation;
 using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Keyboard;
 
@@ -23,6 +22,8 @@ public partial class MainWindow : Window, IMainView
     }
 	
 	public IGlobalParameters? GlobalParameters { get; set; }
+	public ITabOptionsFactory? TabOptionsFactory { get; set; }
+
 	public IFolderChangedMutexFactory? FolderChangedMutexFactory { get; set; }
 
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
@@ -144,7 +145,7 @@ public partial class MainWindow : Window, IMainView
 		{
 			MainView = this,
 			GlobalParameters = GlobalParameters,
-			TabOptions = new TabOptions(),
+			TabOptions = TabOptionsFactory!.GetTabOptions(),
 			FolderChangedMutex = FolderChangedMutexFactory!.GetFolderChangedMutex()
 		};
 

@@ -13,6 +13,7 @@ public class TabOptions : ITabOptions
 	public bool RecursiveFolderBrowsing { get; set; }
 	public bool ShowImageViewImageInfo { get; set; }
 	public int PanelsSplittingRatio { get; set; }
+	public SlideshowInterval SlideshowInterval { get; set; }
 
 	static TabOptions()
 	{
@@ -47,6 +48,7 @@ public class TabOptions : ITabOptions
 	private const bool DefaultRecursiveFolderBrowsing = false;
 	private const bool DefaultShowImageViewImageInfo = false;
 	private const int DefaultPanelsSplittingRatio = 15;
+	private const SlideshowInterval DefaultSlideshowInterval = SlideshowInterval.OneSecond;
 
 	private static readonly string SettingsFolderPath;
 	private static readonly string SettingsFilePath;
@@ -104,6 +106,11 @@ public class TabOptions : ITabOptions
 				loadedTabOptions.PanelsSplittingRatio = DefaultPanelsSplittingRatio;
 			}
 
+			if (!IsValidEnumValue(loadedTabOptions.SlideshowInterval))
+			{
+				loadedTabOptions.SlideshowInterval = DefaultSlideshowInterval;
+			}
+
 			DefaultTabOptions = loadedTabOptions;
 		}
 		catch
@@ -124,6 +131,7 @@ public class TabOptions : ITabOptions
 			RecursiveFolderBrowsing = DefaultTabOptions.RecursiveFolderBrowsing;
 			ShowImageViewImageInfo = DefaultTabOptions.ShowImageViewImageInfo;
 			PanelsSplittingRatio = DefaultTabOptions.PanelsSplittingRatio;
+			SlideshowInterval = DefaultTabOptions.SlideshowInterval;
 		}
 		else
 		{
@@ -132,6 +140,7 @@ public class TabOptions : ITabOptions
 			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing;
 			ShowImageViewImageInfo = DefaultShowImageViewImageInfo;
 			PanelsSplittingRatio = DefaultPanelsSplittingRatio;
+			SlideshowInterval = DefaultSlideshowInterval;
 		}
 	}
 
@@ -142,6 +151,7 @@ public class TabOptions : ITabOptions
 		DefaultTabOptions!.RecursiveFolderBrowsing = RecursiveFolderBrowsing;
 		DefaultTabOptions!.ShowImageViewImageInfo = ShowImageViewImageInfo;
 		DefaultTabOptions!.PanelsSplittingRatio = PanelsSplittingRatio;
+		DefaultTabOptions!.SlideshowInterval = SlideshowInterval;
 	}
 
 	private static void PersistDefaultTabOptions()

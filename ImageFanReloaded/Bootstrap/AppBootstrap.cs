@@ -15,6 +15,7 @@ using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.OperatingSystem.Implementation;
 using ImageFanReloaded.Core.Settings;
+using ImageFanReloaded.Core.Settings.Implementation;
 using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Core.Synchronization.Implementation;
 using ImageFanReloaded.ImageHandling;
@@ -50,6 +51,7 @@ public class AppBootstrap : IAppBootstrap
 	private IGlobalParameters _globalParameters = null!;
 	private IFileSizeEngine _fileSizeEngine = null!;
 	private IDiscQueryEngine _discQueryEngine = null!;
+	private ITabOptionsFactory _tabOptionsFactory = null!;
 	private IInputPathHandlerFactory _inputPathHandlerFactory = null!;
 	private IInputPathHandler _commandLineArgsInputPathHandler = null!;
 	
@@ -68,6 +70,8 @@ public class AppBootstrap : IAppBootstrap
 		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
 			_globalParameters, _fileSizeEngine, imageFileFactory);
 		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
+
+		_tabOptionsFactory = new TabOptionsFactory();
 
 		_inputPathHandlerFactory = new InputPathHandlerFactory(_globalParameters, _discQueryEngine);
 		string? commandLineArgsInputPath = GetCommandLineArgsInputPath();
@@ -94,6 +98,7 @@ public class AppBootstrap : IAppBootstrap
 
 		IMainView mainView = mainWindow;
 		mainView.GlobalParameters = _globalParameters;
+		mainView.TabOptionsFactory = _tabOptionsFactory;
 		mainView.FolderChangedMutexFactory = folderChangedMutexFactory;
 
 		IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(_globalParameters);
@@ -128,11 +133,14 @@ public class AppBootstrap : IAppBootstrap
 		var imageWindow = new ImageWindow();
 		_desktop.MainWindow = imageWindow;
 		IScreenInformation screenInformation = new ScreenInformation(imageWindow);
-			
+
 		IImageView imageView = imageWindow;
 		imageView.GlobalParameters = _globalParameters;
 		imageView.ScreenInformation = screenInformation;
-		
+
+		ITabOptions tabOptions = _tabOptionsFactory.GetTabOptions();
+		imageView.TabOptions = tabOptions;
+
 		imageView.ViewClosing += OnImageViewClosing;
 
 		var imageViewPresenter = new ImageViewPresenter(

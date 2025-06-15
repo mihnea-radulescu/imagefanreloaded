@@ -8,20 +8,16 @@ public enum Key
 	Escape,
 	Enter,
 	
-	F1,
-	H,
+	S,
 	O,
+	H,
+	F1,
 	
 	F4,
 	
-	W,
-	A,
 	Up,
-	Left,
-	
-	S,
-	D,
 	Down,
+	Left,
 	Right,
 	
 	N,

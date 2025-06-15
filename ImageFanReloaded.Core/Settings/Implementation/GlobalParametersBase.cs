@@ -26,9 +26,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key EscapeKey { get; }
 	public Key EnterKey { get; }
 	
-	public Key F1Key { get; }
-	public Key HKey { get; }
+	public Key SKey { get; }
 	public Key OKey { get; }
+	public Key HKey { get; }
+	public Key F1Key { get; }
 	
 	public Key F4Key { get; }
 	
@@ -92,9 +93,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		EscapeKey = Key.Escape;
 		EnterKey = Key.Enter;
 		
-		F1Key = Key.F1;
-		HKey = Key.H;
+		SKey = Key.S;
 		OKey = Key.O;
+		HKey = Key.H;
+		F1Key = Key.F1;
 
 		NoneKeyModifier = KeyModifiers.None;
 		CtrlKeyModifier = KeyModifiers.Ctrl;

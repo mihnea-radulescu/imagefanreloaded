@@ -35,6 +35,8 @@ public interface IContentTabItem
 	void EnableFolderTreeViewSelectedItemChanged();
 	void DisableFolderTreeViewSelectedItemChanged();
 
+	void EnableSlideshow(bool isEnabled);
+
 	bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 	

@@ -4,7 +4,7 @@
         Icon="/MainWindowIcon.ico"
         Title="About ImageFan Reloaded"
         Width="800"
-        Height="530"
+        Height="550"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
         Focusable="True">

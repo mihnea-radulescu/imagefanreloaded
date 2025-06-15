@@ -7,6 +7,7 @@ public interface ITabOptions
 	bool RecursiveFolderBrowsing { get; set; }
 	bool ShowImageViewImageInfo { get; set; }
 	int PanelsSplittingRatio { get; set; }
+	SlideshowInterval SlideshowInterval { get; set; }
 
 	void SaveDefaultTabOptions();
 }

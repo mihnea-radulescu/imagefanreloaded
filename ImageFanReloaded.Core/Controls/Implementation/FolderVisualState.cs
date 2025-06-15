@@ -94,9 +94,11 @@ public class FolderVisualState : IFolderVisualState
 	
 	private async Task ProcessThumbnails(IReadOnlyList<IThumbnailInfo> thumbnails)
 	{
+		_contentTabItem.EnableSlideshow(thumbnails.Any());
+
 		for (var thumbnailCollection = (IEnumerable<IThumbnailInfo>)thumbnails;
-		     !_thumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
-		     thumbnailCollection = thumbnailCollection.Skip(_globalParameters.ProcessorCount))
+			 !_thumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
+			 thumbnailCollection = thumbnailCollection.Skip(_globalParameters.ProcessorCount))
 		{
 			var currentThumbnails = thumbnailCollection
 				.Take(_globalParameters.ProcessorCount)
@@ -107,7 +109,7 @@ public class FolderVisualState : IFolderVisualState
 			{
 				_contentTabItem.PopulateThumbnailBoxes(currentThumbnails);
 			}
-			
+
 			await GetThumbnails(currentThumbnails);
 			if (!_thumbnailGeneration.IsCancellationRequested)
 			{

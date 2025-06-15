@@ -7,6 +7,7 @@ public class TabOptionChanges : ITabOptionChanges
 	public bool HasChangedRecursiveFolderBrowsing { get; set; }
 	public bool HasChangedShowImageViewImageInfo { get; set; }
 	public bool HasChangedPanelsSplittingRatio { get; set; }
+	public bool HasChangedSlideshowInterval { get; set; }
 
 	public bool ShouldSaveAsDefault { get; set; }
 
@@ -17,6 +18,7 @@ public class TabOptionChanges : ITabOptionChanges
 		HasChangedRecursiveFolderBrowsing = false;
 		HasChangedShowImageViewImageInfo = false;
 		HasChangedPanelsSplittingRatio = false;
+		HasChangedSlideshowInterval = false;
 
 		ShouldSaveAsDefault = false;
 	}

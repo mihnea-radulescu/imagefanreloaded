@@ -7,6 +7,7 @@ public interface ITabOptionChanges
 	bool HasChangedRecursiveFolderBrowsing { get; set; }
 	bool HasChangedShowImageViewImageInfo { get; set; }
 	bool HasChangedPanelsSplittingRatio { get; set; }
+	bool HasChangedSlideshowInterval { get; set; }
 
 	bool ShouldSaveAsDefault { get; set; }
 }

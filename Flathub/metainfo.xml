@@ -21,6 +21,7 @@
 			<li>keyboard and mouse user interaction</li>
 			<li>folder ordering by name and last modification time</li>
 			<li>configurable thumbnail size, between 100 and 400 pixels</li>
+			<li>slideshow navigation across images</li>
 			<li>toggle-able recursive folder browsing</li>
 			<li>targeted zooming in, and moving over the zoomed image</li>
 			<li>fast and seamless full-screen navigation across images</li>
@@ -58,6 +59,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.06.16" date="2025-06-16">
+			<description>
+				<p>Added slideshow support</p>
+			</description>
+		</release>
 		<release version="1.2025.06.10" date="2025-06-10">
 			<description>
 				<p>Added tab options persistence</p>

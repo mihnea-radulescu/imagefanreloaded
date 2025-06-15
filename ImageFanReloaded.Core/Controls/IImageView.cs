@@ -10,12 +10,17 @@ public interface IImageView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
 	IScreenInformation? ScreenInformation { get; set; }
+	ITabOptions? TabOptions { get; set; }
 
 	event EventHandler<ImageViewClosingEventArgs>? ViewClosing;
 	event EventHandler<ImageChangedEventArgs>? ImageChanged;
-	event EventHandler<ImageInfoVisibilityChangedEventArgs>? ImageInfoVisibilityChanged;
 
-	void SetImage(IImageFile imageFile, bool recursiveFolderAccess, bool showImageInfo);
+	bool ContinueWithSlideshow { get; set; }
+
+	Task<bool> CanStartSlideshowFromContentTabItem();
+	Task StartSlideshowFromContentTabItem();
+
+	void SetImage(IImageFile imageFile);
 
 	void Show();
     Task ShowDialog(IMainView owner);

@@ -24,9 +24,10 @@ public interface IGlobalParameters
 	Key EscapeKey { get; }
 	Key EnterKey { get; }
 	
-	Key F1Key { get; }
-	Key HKey { get; }
+	Key SKey { get; }
 	Key OKey { get; }
+	Key HKey { get; }
+	Key F1Key { get; }
 	
 	Key F4Key { get; }
 	

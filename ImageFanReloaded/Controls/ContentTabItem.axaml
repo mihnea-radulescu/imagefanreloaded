@@ -9,10 +9,17 @@
 
 		<DockPanel Grid.Row="0"
 				   HorizontalAlignment="Right">
-			<Button Name="_optionsButton"
+			<Button Name="_slideshowButton"
 					BorderThickness="0"
 					CornerRadius="5"
 					Margin="0 0 4 8"
+					Content="Slideshow"
+					Click="OnSlideshowButtonClicked"/>
+
+			<Button Name="_optionsButton"
+					BorderThickness="0"
+					CornerRadius="5"
+					Margin="4 0 4 8"
 					Content="Tab options"
 					Click="OnTabOptionsButtonClicked"/>
 

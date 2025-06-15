@@ -1,10 +1,12 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
@@ -42,12 +44,21 @@ public partial class ImageWindow : Window, IImageView
 	}
 	
 	public IScreenInformation? ScreenInformation { get; set; }
+
+	public ITabOptions? TabOptions { get; set; }
 	
 	public event EventHandler<ImageViewClosingEventArgs>? ViewClosing;
 	public event EventHandler<ImageChangedEventArgs>? ImageChanged;
-	public event EventHandler<ImageInfoVisibilityChangedEventArgs>? ImageInfoVisibilityChanged;
 
-	public void SetImage(IImageFile imageFile, bool recursiveFolderAccess, bool showImageInfo)
+	public bool ContinueWithSlideshow { get; set; }
+
+	public async Task<bool> CanStartSlideshowFromContentTabItem()
+		=> await Dispatcher.UIThread.InvokeAsync(() => IsVisible);
+
+	public async Task StartSlideshowFromContentTabItem()
+		=> await Dispatcher.UIThread.InvokeAsync(StartSlideshow);
+
+	public void SetImage(IImageFile imageFile)
 	{
 		_imageFile = imageFile;
 
@@ -61,8 +72,8 @@ public partial class ImageWindow : Window, IImageView
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
 
-		_textBoxImageInfo.Text = _imageFile.GetImageInfo(recursiveFolderAccess);
-		_textBoxImageInfo.IsVisible = showImageInfo;
+		_textBoxImageInfo.Text = _imageFile.GetImageInfo(TabOptions!.RecursiveFolderBrowsing);
+		_textBoxImageInfo.IsVisible = TabOptions!.ShowImageViewImageInfo;
 
 		_showMainViewAfterImageViewClosing = false;
 
@@ -76,10 +87,15 @@ public partial class ImageWindow : Window, IImageView
 	private const double ImageZoomScalingFactor = 0.1;
 	private const double ImageScrollFactor = 0.1;
 	private const double NegligibleImageDragFactor = 0.025;
+
+	private const int OneImageForward = 1;
+	private const int OneImageBackward = -1;
 	
 	private static readonly Cursor ArrowCursor;
 	private static readonly Cursor HandCursor;
 	private static readonly Cursor SizeAllCursor;
+
+	private CancellationTokenSource? _slideshow;
 	
 	private IGlobalParameters? _globalParameters;
 	private Bitmap? _invalidImage;
@@ -98,75 +114,85 @@ public partial class ImageWindow : Window, IImageView
 	private ImageViewState _imageViewState;
 
 	private bool _showMainViewAfterImageViewClosing;
+	
+	private void NotifyStopSlideshow() => _slideshow?.Cancel();
 
-    private void OnKeyPressing(object? sender, KeyEventArgs e)
-    {
-	    var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
-	    var keyPressing = e.Key.ToCoreKey();
+    private async Task OnKeyPressing(object? sender, KeyEventArgs e)
+	{
+		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
+		var keyPressing = e.Key.ToCoreKey();
 
-	    if (ShouldHandleImageDrag(keyModifiers))
-	    {
-		    if (keyPressing == _globalParameters!.UpKey)
-		    {
-			    DragImage(0, -1);
-		    }
-		    else if (keyPressing == _globalParameters!.DownKey)
-		    {
-			    DragImage(0, 1);
-		    }
-		    else if (keyPressing == _globalParameters!.LeftKey)
-		    {
-			    DragImage(-1, 0);
-		    }
-		    else if (keyPressing == _globalParameters!.RightKey)
-		    {
-			    DragImage(1, 0);
-		    }
-	    }
-        else if (ShouldHandleBackwardNavigation(keyModifiers, keyPressing))
-        {
-            RaiseImageChanged(-1);
-        }
-        else if (ShouldHandleForwardNavigation(keyModifiers, keyPressing))
-        {
-            RaiseImageChanged(1);
-        }
-        else if (ShouldHandleImageZoom(keyModifiers, keyPressing))
-        {
-            if (!_canZoomToImageSize)
-            {
-                return;
-            }
+		NotifyStopSlideshow();
 
-            if (_imageViewState == ImageViewState.ResizedToScreenSize)
-            {
-                ZoomToImageSize(CoordinatesToImageSizeRatio.ImageCenter);
-            }
-            else if (_imageViewState == ImageViewState.ZoomedToImageSize)
-            {
-                ResizeToScreenSize();
-            }
-        }
-        else if (ShouldToggleImageInfo(keyModifiers, keyPressing))
-        {
-	        ToggleImageInfo();
-        }
-        else if (ShouldHandleEscapeAction(keyModifiers, keyPressing))
-        {
-	        HandleEscapeAction();
-        }
-        else if (ShouldHandleWindowClose(keyModifiers, keyPressing))
-        {
-	        _showMainViewAfterImageViewClosing = true;
-	        
-	        CloseWindow();
-        }
+		if (ShouldStartSlideshow(keyModifiers, keyPressing))
+		{
+			await StartSlideshow();
+		}
+		else if (ShouldHandleImageDrag(keyModifiers))
+		{
+			if (keyPressing == _globalParameters!.UpKey)
+			{
+				DragImage(0, -1);
+			}
+			else if (keyPressing == _globalParameters!.DownKey)
+			{
+				DragImage(0, 1);
+			}
+			else if (keyPressing == _globalParameters!.LeftKey)
+			{
+				DragImage(-1, 0);
+			}
+			else if (keyPressing == _globalParameters!.RightKey)
+			{
+				DragImage(1, 0);
+			}
+		}
+		else if (ShouldHandleBackwardNavigation(keyModifiers, keyPressing))
+		{
+			RaiseImageChanged(OneImageBackward);
+		}
+		else if (ShouldHandleForwardNavigation(keyModifiers, keyPressing))
+		{
+			RaiseImageChanged(OneImageForward);
+		}
+		else if (ShouldHandleImageZoom(keyModifiers, keyPressing))
+		{
+			if (!_canZoomToImageSize)
+			{
+				return;
+			}
 
-        e.Handled = true;
-    }
+			if (_imageViewState == ImageViewState.ResizedToScreenSize)
+			{
+				ZoomToImageSize(CoordinatesToImageSizeRatio.ImageCenter);
+			}
+			else if (_imageViewState == ImageViewState.ZoomedToImageSize)
+			{
+				ResizeToScreenSize();
+			}
+		}
+		else if (ShouldToggleImageInfo(keyModifiers, keyPressing))
+		{
+			ToggleImageInfo();
+		}
+		else if (ShouldHandleEscapeAction(keyModifiers, keyPressing))
+		{
+			HandleEscapeAction();
+		}
+		else if (ShouldHandleWindowClose(keyModifiers, keyPressing))
+		{
+			_showMainViewAfterImageViewClosing = true;
+
+			CloseWindow();
+		}
+
+		e.Handled = true;
+	}
 
     private void OnMouseDown(object? sender, PointerPressedEventArgs e)
 	{
+		NotifyStopSlideshow();
+
 		if (!_canZoomToImageSize || _imageViewState == ImageViewState.ResizedToScreenSize)
 		{
 			return;
@@ -224,11 +250,11 @@ public partial class ImageWindow : Window, IImageView
 
 		if (delta.Y > 0)
 		{
-			RaiseImageChanged(-1);
+			RaiseImageChanged(OneImageBackward);
 		}
 		else if (delta.Y < 0)
 		{
-			RaiseImageChanged(1);
+			RaiseImageChanged(OneImageForward);
 		}
 
 		e.Handled = true;
@@ -237,6 +263,17 @@ public partial class ImageWindow : Window, IImageView
 	private void OnClosing(object? sender, WindowClosingEventArgs e)
 	{
 		ViewClosing?.Invoke(this, new ImageViewClosingEventArgs(_showMainViewAfterImageViewClosing));
+	}
+
+	private bool ShouldStartSlideshow(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.SKey)
+		{
+			return true;
+		}
+
+		return false;
 	}
 	
 	private bool ShouldHandleImageDrag(ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
@@ -333,6 +370,38 @@ public partial class ImageWindow : Window, IImageView
 			CloseWindow();
 		}
 	}
+
+	private async Task StartSlideshow()
+	{
+		_slideshow = new CancellationTokenSource();
+
+		var slideshowInterval = TimeSpan.FromSeconds(TabOptions!.SlideshowInterval.ToInt());
+		await Task.Delay(slideshowInterval);
+
+		if (_slideshow.IsCancellationRequested)
+		{
+			return;
+		}
+
+		do
+		{
+			if (_slideshow.IsCancellationRequested)
+			{
+				return;
+			}
+
+			RaiseImageChanged(OneImageForward);
+
+			if (_slideshow.IsCancellationRequested)
+			{
+				return;
+			}
+
+			await Task.Delay(slideshowInterval);
+		} while (ContinueWithSlideshow);
+
+		CloseWindow();
+	}
 	
 	private (double, double) GetNormalizedDrag()
 	{
@@ -347,7 +416,7 @@ public partial class ImageWindow : Window, IImageView
 		{
 			normalizedDragX = dragX >= 0 ? -1 : 1;
 		}
-		
+
 		var dragY = _mouseUpCoordinates.Y - _mouseDownCoordinates.Y;
 
 		double normalizedDragY;
@@ -466,9 +535,9 @@ public partial class ImageWindow : Window, IImageView
 	
 	private void ToggleImageInfo()
 	{
-		_textBoxImageInfo.IsVisible = !_textBoxImageInfo.IsVisible;
-		
-		ImageInfoVisibilityChanged?.Invoke(this, new ImageInfoVisibilityChangedEventArgs(_textBoxImageInfo.IsVisible));
+		TabOptions!.ShowImageViewImageInfo = !TabOptions!.ShowImageViewImageInfo;
+
+		_textBoxImageInfo.IsVisible = TabOptions!.ShowImageViewImageInfo;
 	}
 
 	private void CloseWindow()
