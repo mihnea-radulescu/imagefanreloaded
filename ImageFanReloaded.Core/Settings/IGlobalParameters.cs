@@ -28,6 +28,8 @@ public interface IGlobalParameters
 	Key OKey { get; }
 	Key HKey { get; }
 	Key F1Key { get; }
+
+	Key FKey { get; }
 	
 	Key F4Key { get; }
 	

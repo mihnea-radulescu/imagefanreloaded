@@ -1,12 +1,14 @@
 using System.Threading.Tasks;
 using Avalonia.Controls.ApplicationLifetimes;
 using ImageFanReloaded.Controls;
+using ImageFanReloaded.Controls.Factories;
 using ImageFanReloaded.Core;
 using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.AboutInformation.Implementation;
 using ImageFanReloaded.Core.Bootstrap;
 using ImageFanReloaded.Core.Controls;
-using ImageFanReloaded.Core.Controls.Implementation;
+using ImageFanReloaded.Core.Controls.Factories;
+using ImageFanReloaded.Core.Controls.Factories.Implementation;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
@@ -108,15 +110,20 @@ public class AppBootstrap : IAppBootstrap
 		IImageViewFactory imageViewFactory = new ImageViewFactory(_globalParameters, screenInformation);
 		IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
 
-		IAboutViewFactory aboutViewFactory = new AboutViewFactory(aboutInformationProvider, _globalParameters);
 		ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);
+		IAboutViewFactory aboutViewFactory = new AboutViewFactory(aboutInformationProvider, _globalParameters);
+
+		IImageInfoExtractor imageInfoExtractor = new ImageInfoExtractor();
+		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(
+			_globalParameters, imageInfoExtractor);
 
 		var mainViewPresenter = new MainViewPresenter(
 			_discQueryEngine,
 			folderVisualStateFactory,
 			imageViewFactory,
-			aboutViewFactory,
 			tabOptionsViewFactory,
+			aboutViewFactory,
+			imageInfoViewFactory,
 			_inputPathHandlerFactory,
 			_commandLineArgsInputPathHandler,
 			mainView);

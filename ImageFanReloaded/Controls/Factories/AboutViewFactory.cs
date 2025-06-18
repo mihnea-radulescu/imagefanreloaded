@@ -1,35 +1,36 @@
 using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.Controls;
+using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.Settings;
 
-namespace ImageFanReloaded.Controls;
+namespace ImageFanReloaded.Controls.Factories;
 
 public class AboutViewFactory : IAboutViewFactory
 {
-    public AboutViewFactory(
-        IAboutInformationProvider aboutInformationProvider,
-        IGlobalParameters globalParameters)
-    {
-        _aboutInformationProvider = aboutInformationProvider;
-        _globalParameters = globalParameters;
-    }
-    
-    public IAboutView GetAboutView()
-    {
-        var aboutText = string.Format(
-            AboutTextTemplate, _aboutInformationProvider.VersionString, _aboutInformationProvider.Year);
+	public AboutViewFactory(
+		IAboutInformationProvider aboutInformationProvider,
+		IGlobalParameters globalParameters)
+	{
+		_aboutInformationProvider = aboutInformationProvider;
+		_globalParameters = globalParameters;
+	}
+	
+	public IAboutView GetAboutView()
+	{
+		var aboutText = string.Format(
+			AboutTextTemplate, _aboutInformationProvider.VersionString, _aboutInformationProvider.Year);
 
-        IAboutView aboutView = new AboutWindow();
-        aboutView.GlobalParameters = _globalParameters;
-        aboutView.SetAboutText(aboutText);
-        
-        return aboutView;
-    }
-    
-    #region Private
-    
-    private const string AboutTextTemplate =
-        @"Cross-platform, light-weight, tab-based image viewer, supporting multi-core processing
+		IAboutView aboutView = new AboutWindow();
+		aboutView.GlobalParameters = _globalParameters;
+		aboutView.SetAboutText(aboutText);
+		
+		return aboutView;
+	}
+	
+	#region Private
+	
+	private const string AboutTextTemplate =
+		@"Cross-platform, light-weight, tab-based image viewer, supporting multi-core processing
 
 Version {0}
 Copyright © Mihnea Rădulescu 2017 - {1}
@@ -40,7 +41,7 @@ User interface:
 
 • left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and
 	dragging images
-• right mouse button for returning from the opened image to the main view
+• right mouse button for displaying image info, and for returning from the opened image to the main view
 • mouse wheel for scrolling through folders and thumbnails, and for navigating back and forward through
 	opened images
 • key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
@@ -49,6 +50,7 @@ User interface:
 • keys N and M for changing folder ordering between name ascending and last modification time descending
 • keys + and - for changing thumbnail size by an increment of 50 pixels
 • key S for slideshow navigation
+• key F for displaying Image info view
 • key R for toggling recursive folder browsing
 • key O for displaying Tab options view
 • keys H and F1 for displaying About view
@@ -59,10 +61,11 @@ User interface:
 • key combos Ctrl+Up, Ctrl+Down, Ctrl+Left and Ctrl+Right for dragging zoomed images
 • key I for toggling image info in image view and zoomed image view modes
 • key T for switching from command-line image file access mode to thumbnail navigation mode
-• key Esc for exiting image view and zoomed image view modes, and for quitting application";
-    
-    private readonly IAboutInformationProvider _aboutInformationProvider;
-    private readonly IGlobalParameters _globalParameters;
+• key Esc for exiting image view and zoomed image view modes, and for quitting application
+";
+	
+	private readonly IAboutInformationProvider _aboutInformationProvider;
+	private readonly IGlobalParameters _globalParameters;
 
-    #endregion
+	#endregion
 }

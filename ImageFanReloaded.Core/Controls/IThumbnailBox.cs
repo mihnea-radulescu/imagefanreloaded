@@ -7,8 +7,8 @@ namespace ImageFanReloaded.Core.Controls;
 
 public interface IThumbnailBox
 {
-    event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxSelected;
-    event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxClicked;
+    event EventHandler<ThumbnailBoxSelectedEventArgs>? ThumbnailBoxSelected;
+    event EventHandler<ThumbnailBoxClickedEventArgs>? ThumbnailBoxClicked;
     
     int Index { get; set; }
     IThumbnailInfo? ThumbnailInfo { get; set; }

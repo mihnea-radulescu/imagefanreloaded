@@ -146,7 +146,7 @@ public abstract class ImageFileBase : IImageFile
 		
 		var imageInfo = _hasReadImageError
 			? $"{imageFileInfo} - invalid image"
-			: $"{imageFileInfo} - {ImageSize.Width}x{ImageSize.Height} - {SizeOnDiscInKilobytes} KB";
+			: $"{imageFileInfo} - {ImageSize} - {SizeOnDiscInKilobytes} KB";
 				
 		return imageInfo;
 	}

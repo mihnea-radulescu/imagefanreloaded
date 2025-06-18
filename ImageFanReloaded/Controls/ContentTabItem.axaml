@@ -16,6 +16,13 @@
 					Content="Slideshow"
 					Click="OnSlideshowButtonClicked"/>
 
+			<Button Name="_imageInfoButton"
+					BorderThickness="0"
+					CornerRadius="5"
+					Margin="4 0 4 8"
+					Content="Image info"
+					Click="OnImageInfoButtonClicked"/>
+
 			<Button Name="_optionsButton"
 					BorderThickness="0"
 					CornerRadius="5"

@@ -94,8 +94,6 @@ public class FolderVisualState : IFolderVisualState
 	
 	private async Task ProcessThumbnails(IReadOnlyList<IThumbnailInfo> thumbnails)
 	{
-		_contentTabItem.EnableSlideshow(thumbnails.Any());
-
 		for (var thumbnailCollection = (IEnumerable<IThumbnailInfo>)thumbnails;
 			 !_thumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
 			 thumbnailCollection = thumbnailCollection.Skip(_globalParameters.ProcessorCount))

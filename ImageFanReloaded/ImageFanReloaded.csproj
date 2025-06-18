@@ -35,6 +35,7 @@
 		<PackageReference Include="Avalonia" Version="11.3.1" />
 		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.1" />
 		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.1" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -61,6 +62,10 @@
 		</Compile>
 		<Compile Update="Controls\AboutWindow.axaml.cs">
 			<DependentUpon>AboutWindow.axaml</DependentUpon>
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Controls/ImageInfoWindow.axaml.cs">
+			<DependentUpon>ImageInfoWindow.axaml</DependentUpon>
 			<SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Controls\ImageWindow.axaml.cs">

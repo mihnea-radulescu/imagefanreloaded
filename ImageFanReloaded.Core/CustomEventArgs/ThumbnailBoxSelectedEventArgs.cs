@@ -3,9 +3,9 @@ using ImageFanReloaded.Core.Controls;
 
 namespace ImageFanReloaded.Core.CustomEventArgs;
 
-public class ThumbnailBoxEventArgs : EventArgs
+public class ThumbnailBoxSelectedEventArgs : EventArgs
 {
-	public ThumbnailBoxEventArgs(IThumbnailBox thumbnailBox)
+	public ThumbnailBoxSelectedEventArgs(IThumbnailBox thumbnailBox)
 	{
 		ThumbnailBox = thumbnailBox;
 	}

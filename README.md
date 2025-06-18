@@ -10,6 +10,7 @@ Features:
 * folder ordering by name and last modification time
 * configurable thumbnail size, between 100 and 400 pixels
 * slideshow navigation across images
+* image info based on EXIF and IPTC metadata
 * toggle-able recursive folder browsing
 * targeted zooming in, and moving over the zoomed image
 * fast and seamless full-screen navigation across images
@@ -17,7 +18,7 @@ Features:
 
 User interface:
 * left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and dragging images
-* right mouse button for returning from the opened image to the main view
+* right mouse button for displaying image info, and for returning from the opened image to the main view
 * mouse wheel for scrolling through folders and thumbnails, and for navigating back and forward through opened images
 * key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 * key combo Shift+Tab for cycling through tabs
@@ -25,6 +26,7 @@ User interface:
 * keys N and M for changing folder ordering between name ascending and last modification time descending
 * keys + and - for changing thumbnail size by an increment of 50 pixels
 * key S for slideshow navigation
+* key F for displaying Image info view
 * key R for toggling recursive folder browsing
 * key O for displaying Tab options view
 * keys H and F1 for displaying About view

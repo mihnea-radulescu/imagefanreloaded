@@ -8,9 +8,9 @@ using ImageFanReloaded.Keyboard;
 
 namespace ImageFanReloaded.Controls;
 
-public partial class AboutWindow : Window, IAboutView
+public partial class ImageInfoWindow : Window, IImageInfoView
 {
-	public AboutWindow()
+	public ImageInfoWindow()
 	{
 		InitializeComponent();
 		
@@ -19,7 +19,7 @@ public partial class AboutWindow : Window, IAboutView
 	
 	public IGlobalParameters? GlobalParameters { get; set; }
 
-	public void SetAboutText(string text) => _textBoxAbout.Text = text;
+	public void SetImageInfoText(string text) => _textBoxImageInfo.Text = text;
 	
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
 	
@@ -44,8 +44,7 @@ public partial class AboutWindow : Window, IAboutView
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 		    (keyPressing == GlobalParameters!.EscapeKey ||
 		     keyPressing == GlobalParameters!.EnterKey ||
-		     keyPressing == GlobalParameters!.HKey ||
-			 keyPressing == GlobalParameters!.F1Key))
+		     keyPressing == GlobalParameters!.FKey))
 		{
 			return true;
 		}

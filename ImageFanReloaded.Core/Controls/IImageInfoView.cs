@@ -3,11 +3,11 @@ using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.Controls;
 
-public interface IAboutView
+public interface IImageInfoView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
 	
-	void SetAboutText(string text);
+	void SetImageInfoText(string text);
 
 	Task ShowDialog(IMainView owner);
 }

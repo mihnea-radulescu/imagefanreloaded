@@ -5,6 +5,7 @@ using Avalonia.Media;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.ImageHandling;
 
@@ -23,8 +24,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		InitializeComponent();
 	}
 
-	public event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxSelected;
-	public event EventHandler<ThumbnailBoxEventArgs>? ThumbnailBoxClicked;
+	public event EventHandler<ThumbnailBoxSelectedEventArgs>? ThumbnailBoxSelected;
+	public event EventHandler<ThumbnailBoxClickedEventArgs>? ThumbnailBoxClicked;
 	
 	public int Index { get; set; }
 
@@ -59,7 +60,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 		BringThumbnailIntoView();
 		
-		ThumbnailBoxSelected?.Invoke(this, new ThumbnailBoxEventArgs(this));
+		ThumbnailBoxSelected?.Invoke(this, new ThumbnailBoxSelectedEventArgs(this));
 	}
 
 	public void UnselectThumbnail()
@@ -93,7 +94,11 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	{
 		if (e.InitialPressMouseButton == MouseButton.Left)
 		{
-			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxEventArgs(this));
+			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxClickedEventArgs(this, ClickType.Left));
+		}
+		else if (e.InitialPressMouseButton == MouseButton.Right)
+		{
+			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxClickedEventArgs(this, ClickType.Right));
 		}
 	}
 

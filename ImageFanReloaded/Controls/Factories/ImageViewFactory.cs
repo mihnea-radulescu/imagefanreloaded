@@ -1,7 +1,8 @@
 using ImageFanReloaded.Core.Controls;
+using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.Settings;
 
-namespace ImageFanReloaded.Controls;
+namespace ImageFanReloaded.Controls.Factories;
 
 public class ImageViewFactory : IImageViewFactory
 {

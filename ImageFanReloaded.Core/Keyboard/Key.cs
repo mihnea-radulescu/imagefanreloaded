@@ -12,6 +12,8 @@ public enum Key
 	O,
 	H,
 	F1,
+
+	F,
 	
 	F4,
 	

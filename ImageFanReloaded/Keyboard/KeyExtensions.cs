@@ -13,6 +13,8 @@ public static class KeyExtensions
 			Avalonia.Input.Key.O => Core.Keyboard.Key.O,
 			Avalonia.Input.Key.H => Core.Keyboard.Key.H,
 			Avalonia.Input.Key.F1 => Core.Keyboard.Key.F1,
+
+			Avalonia.Input.Key.F => Core.Keyboard.Key.F,
 			
 			Avalonia.Input.Key.F4 => Core.Keyboard.Key.F4,
 

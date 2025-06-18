@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls;
+using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 
@@ -12,8 +13,9 @@ public class MainViewPresenter
 		IDiscQueryEngine discQueryEngine,
 		IFolderVisualStateFactory folderVisualStateFactory,
 		IImageViewFactory imageViewFactory,
-		IAboutViewFactory aboutViewFactory,
 		ITabOptionsViewFactory tabOptionsViewFactory,
+		IAboutViewFactory aboutViewFactory,
+		IImageInfoViewFactory imageInfoViewFactory,
 		IInputPathHandlerFactory inputPathHandlerFactory,
 		IInputPathHandler commandLineArgsInputPathHandler,
 		IMainView mainView)
@@ -21,8 +23,9 @@ public class MainViewPresenter
 		_discQueryEngine = discQueryEngine;
 		_folderVisualStateFactory = folderVisualStateFactory;
 		_imageViewFactory = imageViewFactory;
-		_aboutViewFactory = aboutViewFactory;
 		_tabOptionsViewFactory = tabOptionsViewFactory;
+		_aboutViewFactory = aboutViewFactory;
+		_imageInfoViewFactory = imageInfoViewFactory;
 		_inputPathHandlerFactory = inputPathHandlerFactory;
 		
 		_commandLineArgsInputPathHandler = commandLineArgsInputPathHandler;
@@ -39,8 +42,9 @@ public class MainViewPresenter
 	private readonly IDiscQueryEngine _discQueryEngine;
 	private readonly IFolderVisualStateFactory _folderVisualStateFactory;
 	private readonly IImageViewFactory _imageViewFactory;
-	private readonly IAboutViewFactory _aboutViewFactory;
 	private readonly ITabOptionsViewFactory _tabOptionsViewFactory;
+	private readonly IAboutViewFactory _aboutViewFactory;
+	private readonly IImageInfoViewFactory _imageInfoViewFactory;
 	private readonly IInputPathHandlerFactory _inputPathHandlerFactory;
 	
 	private readonly IInputPathHandler _commandLineArgsInputPathHandler;
@@ -56,7 +60,7 @@ public class MainViewPresenter
 		var rootFolders = await PopulateRootFolders(contentTabItem);
 
 		var shouldProcessInputPath = _shouldProcessCommandLineArgsInputPath &&
-		                             _commandLineArgsInputPathHandler.CanProcessInputPath();
+									 _commandLineArgsInputPathHandler.CanProcessInputPath();
 		if (shouldProcessInputPath)
 		{
 			_shouldProcessCommandLineArgsInputPath = false;
@@ -87,14 +91,6 @@ public class MainViewPresenter
 		contentTabItem.FolderChangedMutex!.Dispose();
 	}
 	
-	private async void OnAboutInfoRequested(object? sender, ContentTabItemEventArgs e)
-	{
-		var contentTabItem = e.ContentTabItem;
-		
-		var aboutView = _aboutViewFactory.GetAboutView();
-		await contentTabItem.ShowAboutInfo(aboutView);
-	}
-	
 	private async void OnTabOptionsRequested(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
@@ -104,6 +100,23 @@ public class MainViewPresenter
 		tabOptionsView.TabOptionsChanged += OnTabOptionsChanged;
 		await contentTabItem.ShowTabOptions(tabOptionsView);
 		tabOptionsView.TabOptionsChanged -= OnTabOptionsChanged;
+	}
+
+	private async void OnAboutInfoRequested(object? sender, ContentTabItemEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+		
+		var aboutView = _aboutViewFactory.GetAboutView();
+		await contentTabItem.ShowAboutInfo(aboutView);
+	}
+
+	private async void OnImageInfoRequested(object? sender, ImageSelectedEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+		var imageFile = e.ImageFile;
+		
+		var imageInfoView = await _imageInfoViewFactory.GetImageInfoView(imageFile);
+		await contentTabItem.ShowImageInfo(imageInfoView);
 	}
 
 	private static void OnTabOptionsChanged(object? sender, TabOptionsChangedEventArgs e)
@@ -219,10 +232,11 @@ public class MainViewPresenter
 		contentTabItem.FolderChanged += OnFolderChanged;
 		contentTabItem.FolderOrderingChanged += OnFolderOrderingChanged;
 
-		contentTabItem.AboutInfoRequested += OnAboutInfoRequested;
 		contentTabItem.TabOptionsRequested += OnTabOptionsRequested;
+		contentTabItem.AboutInfoRequested += OnAboutInfoRequested;
+		contentTabItem.ImageInfoRequested += OnImageInfoRequested;
 	}
-	
+
 	private void DisableContentTabEventHandling(IContentTabItem contentTabItem)
 	{
 		contentTabItem.DisableFolderTreeViewSelectedItemChanged();
@@ -230,8 +244,9 @@ public class MainViewPresenter
 		contentTabItem.FolderChanged -= OnFolderChanged;
 		contentTabItem.FolderOrderingChanged -= OnFolderOrderingChanged;
 
-		contentTabItem.AboutInfoRequested -= OnAboutInfoRequested;
 		contentTabItem.TabOptionsRequested -= OnTabOptionsRequested;
+		contentTabItem.AboutInfoRequested -= OnAboutInfoRequested;
+		contentTabItem.ImageInfoRequested -= OnImageInfoRequested;
 	}
 
 	#endregion

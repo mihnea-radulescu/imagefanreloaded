@@ -1,8 +1,9 @@
+using ImageFanReloaded.Core.Controls.Implementation;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Settings;
 
-namespace ImageFanReloaded.Core.Controls.Implementation;
+namespace ImageFanReloaded.Core.Controls.Factories.Implementation;
 
 public class FolderVisualStateFactory : IFolderVisualStateFactory
 {

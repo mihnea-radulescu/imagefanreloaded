@@ -30,6 +30,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key OKey { get; }
 	public Key HKey { get; }
 	public Key F1Key { get; }
+
+	public Key FKey { get; }
 	
 	public Key F4Key { get; }
 	
@@ -97,6 +99,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		OKey = Key.O;
 		HKey = Key.H;
 		F1Key = Key.F1;
+
+		FKey = Key.F;
 
 		NoneKeyModifier = KeyModifiers.None;
 		CtrlKeyModifier = KeyModifiers.Ctrl;

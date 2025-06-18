@@ -1,4 +1,4 @@
-namespace ImageFanReloaded.Core.Controls;
+namespace ImageFanReloaded.Core.Controls.Factories;
 
 public interface IImageViewFactory
 {

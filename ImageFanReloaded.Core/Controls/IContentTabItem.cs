@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling;
@@ -13,33 +14,32 @@ namespace ImageFanReloaded.Core.Controls;
 public interface IContentTabItem
 {
 	IMainView? MainView { get; set; }
-	
+
 	IGlobalParameters? GlobalParameters { get; set; }
 	ITabOptions? TabOptions { get; set; }
-	
+
 	IFolderChangedMutex? FolderChangedMutex { get; set; }
 
 	object? WrapperTabItem { get; set; }
 	IContentTabItemHeader? ContentTabItemHeader { get; set; }
-	
-    IImageViewFactory? ImageViewFactory { get; set; }
-	
+
+	IImageViewFactory? ImageViewFactory { get; set; }
+
 	IFolderVisualState? FolderVisualState { get; set; }
 
 	event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	event EventHandler<FolderOrderingChangedEventArgs>? FolderOrderingChanged;
 
-	event EventHandler<ContentTabItemEventArgs>? AboutInfoRequested;
+	event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
 	event EventHandler<ContentTabItemEventArgs>? TabOptionsRequested;
+	event EventHandler<ContentTabItemEventArgs>? AboutInfoRequested;
 
 	void EnableFolderTreeViewSelectedItemChanged();
 	void DisableFolderTreeViewSelectedItemChanged();
 
-	void EnableSlideshow(bool isEnabled);
-
 	bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
-	
+
 	void SetFocusOnSelectedFolderTreeViewItem();
 
 	bool? GetFolderTreeViewSelectedItemExpandedState();
@@ -69,7 +69,8 @@ public interface IContentTabItem
 	void RaiseFolderChangedEvent();
 	void RaiseFolderOrderingChangedEvent();
 	void RaisePanelsSplittingRatioChangedEvent();
-	
+
 	Task ShowTabOptions(ITabOptionsView tabOptionsView);
 	Task ShowAboutInfo(IAboutView aboutView);
+	Task ShowImageInfo(IImageInfoView imageInfoView);
 }
