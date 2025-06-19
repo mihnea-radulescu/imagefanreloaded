@@ -60,7 +60,7 @@ public class ImageInfoExtractor : IImageInfoExtractor
 
 		return (bitsPerPixel, imageMetadata);
 	}
-	
+
 	private static void BuildExifInfo(
 		ImageMetadata imageMetadata, StringBuilder imageInfoBuilder)
 	{
@@ -73,8 +73,7 @@ public class ImageInfoExtractor : IImageInfoExtractor
 					ValueContent = aMetadataValue.GetValue()
 				})
 				.Where(aMetadataValuePair =>
-					aMetadataValuePair.ValueContent is not null &&
-					aMetadataValuePair.ValueContent is not Array)
+					aMetadataValuePair.ValueContent is not null)
 				.ToList();
 
 			if (metadataValuePairs.Any())
@@ -85,7 +84,15 @@ public class ImageInfoExtractor : IImageInfoExtractor
 
 				foreach (var aMetadataValuePair in metadataValuePairs)
 				{
-					imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t{aMetadataValuePair.ValueContent}");
+					if (aMetadataValuePair.ValueContent is Array valueContentArray)
+					{
+						var valueContentText = GetValueContentText(valueContentArray);
+						imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t[{valueContentText}]");
+					}
+					else
+					{
+						imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t{aMetadataValuePair.ValueContent}");
+					}
 				}
 			}
 		}
@@ -118,6 +125,15 @@ public class ImageInfoExtractor : IImageInfoExtractor
 				}
 			}
 		}
+	}
+
+	private static string GetValueContentText(Array valueContentArray)
+	{
+		var valueContentItems = new object[valueContentArray.Length];
+		Array.Copy(valueContentArray, valueContentItems, valueContentArray.Length);
+
+		var valueContentText = string.Join(", ", valueContentItems);
+		return valueContentText;
 	}
 
 	#endregion
