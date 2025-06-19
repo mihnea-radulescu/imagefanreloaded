@@ -8,6 +8,8 @@ public interface IImageFile
     decimal SizeOnDiscInKilobytes { get; }
 	ImageSize ImageSize { get; }
 
+	ImageInfo? ImageInfo { get; }
+
 	IImage GetImage();
 	IImage GetResizedImage(ImageSize viewPortSize);
 

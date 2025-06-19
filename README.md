@@ -7,7 +7,7 @@ Features:
 * quick concurrent thumbnail generation, scaling to the number of processor cores present
 * support for multiple folder tabs
 * keyboard and mouse user interaction
-* supported image formats: bmp, cr2, cur, dng, gif, ico, jfif, jpe, jpeg, jpg, jps, nef, nrw, pef, png, raf, rw2, wbmp, webp
+* supported image formats: bmp, cr2, cur, dng, gif, ico, jfif, jpe/jpeg/jpg, jps, nef, nrw, pbm, pef, png, qoi, raf, rw2, tga, tif/tiff, wbmp, webp
 * folder ordering by name and last modification time
 * configurable thumbnail size, between 100 and 400 pixels
 * slideshow navigation across images

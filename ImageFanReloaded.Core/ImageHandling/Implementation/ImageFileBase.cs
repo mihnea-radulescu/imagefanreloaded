@@ -31,25 +31,27 @@ public abstract class ImageFileBase : IImageFile
     public decimal SizeOnDiscInKilobytes { get; }
 	public ImageSize ImageSize { get; private set; }
 
-	public IImage GetImage()
-    {
-        IImage image;
+	public abstract ImageInfo? ImageInfo { get; protected set; }
 
-        try
-        {
-	        image = GetImageFromDisc(ImageFilePath);
-	        ImageSize = image.Size;
-        }
-        catch
-        {
-	        ImageSize = _globalParameters.InvalidImage.Size;
+	public IImage GetImage()
+	{
+		IImage image;
+
+		try
+		{
+			image = GetImageFromDisc(ImageFilePath);
+			ImageSize = image.Size;
+		}
+		catch
+		{
+			ImageSize = _globalParameters.InvalidImage.Size;
 			image = _globalParameters.InvalidImage;
-			
+
 			_hasReadImageError = true;
 		}
 
-        return image;
-    }
+		return image;
+	}
 
     public IImage GetResizedImage(ImageSize viewPortSize)
     {

@@ -145,10 +145,14 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".jps",
 			".nef",
 			".nrw",
+			".pbm",
 			".pef",
 			".png",
+			".qoi",
 			".raf",
 			".rw2",
+			".tga",
+			".tif", ".tiff",
 			".wbmp",
 			".webp"
 		};

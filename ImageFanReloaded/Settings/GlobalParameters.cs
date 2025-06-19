@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Avalonia.Media.Imaging;
-using ImageFanReloaded.Core.Settings.Implementation;
+using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.Settings;
+using ImageFanReloaded.Core.Settings.Implementation;
 using ImageFanReloaded.Properties;
 
 namespace ImageFanReloaded.Settings;
@@ -64,7 +65,7 @@ public class GlobalParameters : GlobalParametersBase
 	private static Bitmap GetBitmapFromResource(byte[] resourceData)
 	{
 		using Stream stream = new MemoryStream(resourceData);
-		stream.Position = 0;
+		stream.Reset();
 
 		var image = new Bitmap(stream);
 		return image;

@@ -67,8 +67,11 @@ public class AppBootstrap : IAppBootstrap
 		_globalParameters = new GlobalParameters(operatingSystemSettings, imageResizer);
 		
 		_fileSizeEngine = new FileSizeEngine();
-		
-		IImageFileFactory imageFileFactory = new ImageFileFactory(_globalParameters, imageResizer);
+
+		IImageInfoBuilder imageInfoBuilder = new ImageInfoBuilder();
+		IImageFileFactory imageFileFactory = new ImageFileFactory(
+			_globalParameters, imageResizer, imageInfoBuilder);
+
 		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
 			_globalParameters, _fileSizeEngine, imageFileFactory);
 		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
@@ -113,9 +116,7 @@ public class AppBootstrap : IAppBootstrap
 		ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);
 		IAboutViewFactory aboutViewFactory = new AboutViewFactory(aboutInformationProvider, _globalParameters);
 
-		IImageInfoExtractor imageInfoExtractor = new ImageInfoExtractor();
-		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(
-			_globalParameters, imageInfoExtractor);
+		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(_globalParameters);
 
 		var mainViewPresenter = new MainViewPresenter(
 			_discQueryEngine,
