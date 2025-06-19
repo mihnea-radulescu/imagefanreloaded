@@ -1,16 +1,22 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="ImageFanReloaded.Controls.ImageInfoWindow"
-        Icon="/MainWindowIcon.ico"
-        Title="Image info"
-        Width="800"
-        Height="600"
-        WindowStartupLocation="CenterOwner"
-        CanResize="False"
-        Focusable="True">
-	<TextBox Name="_textBoxImageInfo"
-	         IsReadOnly="True"
-	         Background="Transparent"
-	         BorderThickness="0"
-	         Margin="3"/>
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Class="ImageFanReloaded.Controls.ImageInfoWindow"
+		Icon="/MainWindowIcon.ico"
+		Title="Image info"
+		Width="800"
+		Height="600"
+		WindowStartupLocation="CenterOwner"
+		CanResize="False"
+		Focusable="True"
+		Loaded="OnWindowLoaded">
+	<ScrollViewer Name="_imageInfoScrollViewer"
+				  HorizontalScrollBarVisibility="Auto"
+				  VerticalScrollBarVisibility="Auto"
+				  Focusable="True">
+		<TextBox Name="_textBoxImageInfo"
+			 	 IsReadOnly="True"
+			 	 Background="Transparent"
+			 	 BorderThickness="0"
+			 	 Margin="3"/>
+	</ScrollViewer>
 </Window>

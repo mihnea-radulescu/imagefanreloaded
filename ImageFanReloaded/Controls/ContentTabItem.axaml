@@ -58,11 +58,6 @@
 							  Grid.Row="0"
 							  VerticalScrollBarVisibility="Auto"
 							  Focusable="True">
-					<ScrollViewer.Styles>
-						<Style Selector="ScrollViewer">
-							<Setter Property="FocusAdorner" Value="{x:Null}" />
-						</Style>
-					</ScrollViewer.Styles>
 					<WrapPanel Name="_thumbnailWrapPanel"
 							   Orientation="Horizontal"
 							   Margin="4 0 4 0"/>

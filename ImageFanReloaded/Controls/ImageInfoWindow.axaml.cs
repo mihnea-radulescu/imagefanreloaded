@@ -22,8 +22,10 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 	public void SetImageInfoText(string text) => _textBoxImageInfo.Text = text;
 	
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
-	
+
 	#region Private
+
+	private void OnWindowLoaded(object? sender, RoutedEventArgs e) => _imageInfoScrollViewer.Focus();
 
 	private void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -33,7 +35,7 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 		if (ShouldCloseWindow(keyModifiers, keyPressing))
 		{
 			Close();
-			
+
 			e.Handled = true;
 		}
 	}
