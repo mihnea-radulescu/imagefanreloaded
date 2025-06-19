@@ -69,8 +69,9 @@ public class AppBootstrap : IAppBootstrap
 		_fileSizeEngine = new FileSizeEngine();
 
 		IImageInfoBuilder imageInfoBuilder = new ImageInfoBuilder();
+		IImageOrientationHandler imageOrientationHandler = new ImageOrientationHandler();
 		IImageFileFactory imageFileFactory = new ImageFileFactory(
-			_globalParameters, imageResizer, imageInfoBuilder);
+			_globalParameters, imageResizer, imageInfoBuilder, imageOrientationHandler);
 
 		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
 			_globalParameters, _fileSizeEngine, imageFileFactory);

@@ -20,10 +20,12 @@ public class ImageFile : ImageFileBase
 		string imageFileName,
 		string imageFilePath,
 		decimal sizeOnDiscInKilobytes,
-		IImageInfoBuilder imageInfoBuilder)
+		IImageInfoBuilder imageInfoBuilder,
+		IImageOrientationHandler imageOrientationHandler)
 		: base(globalParameters, imageResizer, imageFileName, imageFilePath, sizeOnDiscInKilobytes)
 	{
 		_imageInfoBuilder = imageInfoBuilder;
+		_imageOrientationHandler = imageOrientationHandler;
 	}
 
 	#region Protected
@@ -44,14 +46,23 @@ public class ImageFile : ImageFileBase
 				ImageFileName, ImageFilePath, SizeOnDiscInKilobytes, image);
 
 			var imageFormat = ImageInfo.ImageFormat;
+			var imageOrientation = ImageInfo.ImageOrientation;
+			var isChangeImageOrientationRequired = ImageInfo.IsChangeImageOrientationRequired;
 
-			if (IsAvaloniaSupportedImageFormat(imageFormat))
+			if (IsAvaloniaSupportedImageFormat(imageFormat) &&
+				!isChangeImageOrientationRequired)
 			{
 				return BuildImageFromStream(readOnlyImageStream);
 			}
 			else
 			{
 				using var readWriteImageStream = new MemoryStream();
+
+				if (isChangeImageOrientationRequired)
+				{
+					_imageOrientationHandler.ChangeImageOrientation(image, imageOrientation);
+				}
+
 				SixLabors.ImageSharp.ImageExtensions.SaveAsJpeg(image, readWriteImageStream);
 
 				return BuildImageFromStream(readWriteImageStream);
@@ -73,6 +84,7 @@ public class ImageFile : ImageFileBase
 	private static readonly HashSet<string> AvaloniaUnsupportedImageFormats;
 
 	private readonly IImageInfoBuilder _imageInfoBuilder;
+	private readonly IImageOrientationHandler _imageOrientationHandler;
 
 	private static bool IsAvaloniaSupportedImageFormat(string? imageFormat)
 		=> imageFormat is null || !AvaloniaUnsupportedImageFormats.Contains(imageFormat);

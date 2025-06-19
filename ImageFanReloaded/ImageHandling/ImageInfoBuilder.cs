@@ -33,6 +33,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 			if (imageMetadata is not null)
 			{
+				BuildImageResolutionInfo(imageMetadata, imageInfoBuilder);
 				BuildImageFormatInfo(imageMetadata, imageInfoBuilder);
 				BuildExifInfo(imageMetadata, imageInfoBuilder);
 				BuildIptcInfo(imageMetadata, imageInfoBuilder);
@@ -50,6 +51,17 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	#region Private
 
 	private const string ImageOrientationExifTag = "Orientation";
+
+	private static void BuildImageResolutionInfo(
+		SixLabors.ImageSharp.Metadata.ImageMetadata imageMetadata, StringBuilder imageInfoBuilder)
+	{
+		var horizontalResolution = imageMetadata.HorizontalResolution;
+		var verticalResolution = imageMetadata.VerticalResolution;
+		var resolutionUnits = Enum.GetName(imageMetadata.ResolutionUnits);
+
+		imageInfoBuilder.AppendLine($"\tResolution:\t{horizontalResolution}x{verticalResolution}");
+		imageInfoBuilder.AppendLine($"\tResolution units:\t{resolutionUnits}");
+	}
 
 	private static void BuildImageFormatInfo(
 		SixLabors.ImageSharp.Metadata.ImageMetadata imageMetadata, StringBuilder imageInfoBuilder)

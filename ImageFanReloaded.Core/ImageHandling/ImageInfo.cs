@@ -13,7 +13,7 @@ public record ImageInfo
 	public ushort ImageOrientation { get; }
 	public string ImageInfoText { get; }
 
-	public bool IsImageFlipOrRotateRequired => ImageOrientation != DefaultImageOrientation;
+	public bool IsChangeImageOrientationRequired => ImageOrientation != DefaultImageOrientation;
 
 	#region Private
 
