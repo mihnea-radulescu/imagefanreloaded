@@ -87,7 +87,7 @@ public class ImageInfoExtractor : IImageInfoExtractor
 					if (aMetadataValuePair.ValueContent is Array valueContentArray)
 					{
 						var valueContentText = GetValueContentText(valueContentArray);
-						imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t[{valueContentText}]");
+						imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t[ {valueContentText} ]");
 					}
 					else
 					{
