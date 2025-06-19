@@ -11,7 +11,7 @@ Features:
 * folder ordering by name and last modification time
 * configurable thumbnail size, between 100 and 400 pixels
 * slideshow navigation across images
-* image info based on EXIF and IPTC metadata
+* image info based on EXIF and IPTC metadata, and automatic image orientation according to the EXIF Orientation tag
 * toggle-able recursive folder browsing
 * targeted zooming in, and moving over the zoomed image
 * fast and seamless full-screen navigation across images
