@@ -2,7 +2,13 @@ namespace ImageFanReloaded.Core.ImageHandling;
 
 public interface IImageInfoBuilder
 {
-	ImageInfo BuildImageInfo(
+	ImageInfo BuildBasicImageInfo(
+		string imageFileName,
+		string imageFilePath,
+		decimal sizeOnDiscInKilobytes,
+		ImageSize? imageSize);
+
+	ImageInfo BuildExtendedImageInfo(
 		string imageFileName,
 		string imageFilePath,
 		decimal sizeOnDiscInKilobytes,

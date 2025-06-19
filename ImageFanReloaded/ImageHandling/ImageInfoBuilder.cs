@@ -7,7 +7,29 @@ namespace ImageFanReloaded.ImageHandling;
 
 public class ImageInfoBuilder : IImageInfoBuilder
 {
-	public ImageInfo BuildImageInfo(
+	public ImageInfo BuildBasicImageInfo(
+		string imageFileName,
+		string imageFilePath,
+		decimal sizeOnDiscInKilobytes,
+		ImageSize? imageSize)
+	{
+		var imageInfoBuilder = new StringBuilder();
+
+		BuildGeneralInfoCommonEntries(
+			imageFileName, imageFilePath, sizeOnDiscInKilobytes, imageInfoBuilder);
+
+		if (imageSize is not null)
+		{
+			imageInfoBuilder.AppendLine($"\tImage size:\t{imageSize} pixels");
+		}
+
+		var imageInfoText = imageInfoBuilder.ToString();
+
+		var imageInfo = new ImageInfo(default, default, imageInfoText);
+		return imageInfo;
+	}
+
+	public ImageInfo BuildExtendedImageInfo(
 		string imageFileName,
 		string imageFilePath,
 		decimal sizeOnDiscInKilobytes,
@@ -15,11 +37,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	{
 		var imageInfoBuilder = new StringBuilder();
 
-		imageInfoBuilder.AppendLine("General info");
-		imageInfoBuilder.AppendLine();
-		imageInfoBuilder.AppendLine($"\tFile name:\t{imageFileName}");
-		imageInfoBuilder.AppendLine($"\tFile path:\t{imageFilePath}");
-		imageInfoBuilder.AppendLine($"\tFile size:\t{sizeOnDiscInKilobytes} KB");
+		BuildGeneralInfoCommonEntries(
+			imageFileName, imageFilePath, sizeOnDiscInKilobytes, imageInfoBuilder);
 
 		var image = (SixLabors.ImageSharp.Image?)imageObject;
 		var imageMetadata = image?.Metadata;
@@ -51,6 +70,19 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	#region Private
 
 	private const string ImageOrientationExifTag = "Orientation";
+
+	private static void BuildGeneralInfoCommonEntries(
+		string imageFileName,
+		string imageFilePath,
+		decimal sizeOnDiscInKilobytes,
+		StringBuilder imageInfoBuilder)
+	{
+		imageInfoBuilder.AppendLine("General info");
+		imageInfoBuilder.AppendLine();
+		imageInfoBuilder.AppendLine($"\tFile name:\t{imageFileName}");
+		imageInfoBuilder.AppendLine($"\tFile path:\t{imageFilePath}");
+		imageInfoBuilder.AppendLine($"\tFile size:\t{sizeOnDiscInKilobytes} KB");
+	}
 
 	private static void BuildImageResolutionInfo(
 		SixLabors.ImageSharp.Metadata.ImageMetadata imageMetadata, StringBuilder imageInfoBuilder)

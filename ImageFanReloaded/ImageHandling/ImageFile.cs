@@ -34,23 +34,40 @@ public class ImageFile : ImageFileBase
 
 	protected override IImage GetImageFromDisc(string imageFilePath)
 	{
+		var image = default(SixLabors.ImageSharp.Image?);
+
 		try
 		{
 			var imageFileContent = File.ReadAllBytes(imageFilePath);
 			using var readOnlyImageStream = new MemoryStream(
 				imageFileContent, 0, imageFileContent.Length, false, false);
 
-			var image = SixLabors.ImageSharp.Image.Load(readOnlyImageStream);
+			var isAvaloniaSupportedImageFormat = true;
+			var isChangeImageOrientationRequired = false;
 
-			ImageInfo = _imageInfoBuilder.BuildImageInfo(
-				ImageFileName, ImageFilePath, SizeOnDiscInKilobytes, image);
+			try
+			{
+				image = SixLabors.ImageSharp.Image.Load(readOnlyImageStream);
 
-			var imageFormat = ImageInfo.ImageFormat;
-			var imageOrientation = ImageInfo.ImageOrientation;
-			var isChangeImageOrientationRequired = ImageInfo.IsChangeImageOrientationRequired;
+				ImageInfo = _imageInfoBuilder.BuildExtendedImageInfo(
+					ImageFileName, ImageFilePath, SizeOnDiscInKilobytes, image);
 
-			if (IsAvaloniaSupportedImageFormat(imageFormat) &&
-				!isChangeImageOrientationRequired)
+				isAvaloniaSupportedImageFormat = IsAvaloniaSupportedImageFormat(
+					ImageInfo.ImageFormat);
+				isChangeImageOrientationRequired = ImageInfo.IsChangeImageOrientationRequired;
+			}
+			catch
+			{
+				var builtImage = BuildImageFromStream(readOnlyImageStream);
+				var builtImageSize = builtImage.Size;
+
+				ImageInfo = _imageInfoBuilder.BuildBasicImageInfo(
+					ImageFileName, ImageFilePath, SizeOnDiscInKilobytes, builtImageSize);
+
+				return builtImage;
+			}
+
+			if (isAvaloniaSupportedImageFormat && !isChangeImageOrientationRequired)
 			{
 				return BuildImageFromStream(readOnlyImageStream);
 			}
@@ -60,7 +77,8 @@ public class ImageFile : ImageFileBase
 
 				if (isChangeImageOrientationRequired)
 				{
-					_imageOrientationHandler.ChangeImageOrientation(image, imageOrientation);
+					_imageOrientationHandler.ChangeImageOrientation(
+						image!, ImageInfo.ImageOrientation);
 				}
 
 				SixLabors.ImageSharp.ImageExtensions.SaveAsJpeg(image, readWriteImageStream);
@@ -70,7 +88,7 @@ public class ImageFile : ImageFileBase
 		}
 		catch
 		{
-			ImageInfo = _imageInfoBuilder.BuildImageInfo(
+			ImageInfo = _imageInfoBuilder.BuildBasicImageInfo(
 				ImageFileName, ImageFilePath, SizeOnDiscInKilobytes, default);
 
 			throw;
