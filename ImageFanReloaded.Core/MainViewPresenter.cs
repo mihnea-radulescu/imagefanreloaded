@@ -119,7 +119,7 @@ public class MainViewPresenter
 		await contentTabItem.ShowImageInfo(imageInfoView);
 	}
 
-	private static void OnTabOptionsChanged(object? sender, TabOptionsChangedEventArgs e)
+	private static async void OnTabOptionsChanged(object? sender, TabOptionsChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 		var tabOptionChanges = e.TabOptionChanges;
@@ -152,7 +152,7 @@ public class MainViewPresenter
 
 		if (shouldSaveAsDefault)
 		{
-			contentTabItem.TabOptions!.SaveDefaultTabOptions();
+			await contentTabItem.TabOptions!.SaveDefaultTabOptions();
 		}
 	}
 	

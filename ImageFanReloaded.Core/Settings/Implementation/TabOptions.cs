@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace ImageFanReloaded.Core.Settings.Implementation;
 
@@ -30,11 +31,11 @@ public class TabOptions : ITabOptions
 		InitializeWithDefaultValues();
 	}
 
-	public void SaveDefaultTabOptions()
+	public async Task SaveDefaultTabOptions()
 	{
 		SetDefaultTabOptions();
 
-		PersistDefaultTabOptions();
+		await PersistDefaultTabOptions();
 	}
 
 	#region Private
@@ -154,7 +155,7 @@ public class TabOptions : ITabOptions
 		DefaultTabOptions!.SlideshowInterval = SlideshowInterval;
 	}
 
-	private static void PersistDefaultTabOptions()
+	private static async Task PersistDefaultTabOptions()
 	{
 		try
 		{
@@ -165,7 +166,7 @@ public class TabOptions : ITabOptions
 				Directory.CreateDirectory(SettingsFolderPath);
 			}
 
-			File.WriteAllText(SettingsFilePath, jsonContent);
+			await File.WriteAllTextAsync(SettingsFilePath, jsonContent);
 		}
 		catch
 		{

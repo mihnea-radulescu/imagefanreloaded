@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace ImageFanReloaded.Core.Settings;
 
 public interface ITabOptions
@@ -9,5 +11,5 @@ public interface ITabOptions
 	int PanelsSplittingRatio { get; set; }
 	SlideshowInterval SlideshowInterval { get; set; }
 
-	void SaveDefaultTabOptions();
+	Task SaveDefaultTabOptions();
 }

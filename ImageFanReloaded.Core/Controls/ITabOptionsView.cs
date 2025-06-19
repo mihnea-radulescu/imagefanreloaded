@@ -12,7 +12,7 @@ public interface ITabOptionsView
 
 	IContentTabItem? ContentTabItem { get; set; }
 	
-	public event EventHandler<TabOptionsChangedEventArgs>? TabOptionsChanged;
+	event EventHandler<TabOptionsChangedEventArgs>? TabOptionsChanged;
 
 	void PopulateTabOptions();
 	void RegisterTabOptionEvents();
