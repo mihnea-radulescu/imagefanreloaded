@@ -18,16 +18,18 @@ public class ImageViewPresenter
 		IDiscQueryEngine discQueryEngine,
 		IInputPathHandler inputPathHandler,
 		IGlobalParameters globalParameters,
+		ITabOptions tabOptions,
 		IImageView imageView)
 	{
 		_discQueryEngine = discQueryEngine;
 		_inputPathHandler = inputPathHandler;
+		_tabOptions = tabOptions;
 
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
-		
+
 		_imageView = imageView;
 		_imageView.ImageChanged += OnImageChanged;
-		
+
 		_imageFiles = new List<IImageFile>();
 		_currentImageFileIndex = 0;
 	}
@@ -35,12 +37,13 @@ public class ImageViewPresenter
 	public async Task SetUpAccessToImages()
 	{
 		_imageFiles = await _discQueryEngine.GetImageFiles(_inputPathHandler.FolderPath!, false);
-			
+
 		(_currentImageFile, _currentImageFileIndex) = _imageFiles
 			.Select((anImageFile, index) => (anImageFile, index))
-			.Single(anImageFileWithIndex => anImageFileWithIndex.anImageFile.ImageFilePath.Equals(
-				_inputPathHandler.FilePath,
-				_nameComparison));
+			.Single(anImageFileWithIndex =>
+				anImageFileWithIndex.anImageFile.ImageFileData.ImageFilePath.Equals(
+					_inputPathHandler.FilePath,
+					_nameComparison));
 		
 		LoadCurrentImage();
 	}
@@ -49,9 +52,10 @@ public class ImageViewPresenter
 	
 	private readonly IDiscQueryEngine _discQueryEngine;
 	private readonly IInputPathHandler _inputPathHandler;
-	
+	private readonly ITabOptions _tabOptions;
+
 	private readonly StringComparison _nameComparison;
-	
+
 	private readonly IImageView _imageView;
 
 	private IReadOnlyList<IImageFile> _imageFiles;
@@ -60,7 +64,7 @@ public class ImageViewPresenter
 
 	private void LoadCurrentImage()
 	{
-		_currentImageFile!.ReadImageDataFromDisc();
+		_currentImageFile!.ReadImageDataFromDisc(_tabOptions.ApplyImageOrientation);
 		
 		_imageView.SetImage(_currentImageFile);
 	}

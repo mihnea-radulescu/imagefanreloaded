@@ -62,7 +62,7 @@ public partial class ImageWindow : Window, IImageView
 	{
 		_imageFile = imageFile;
 
-		Title = _imageFile.ImageFileName;
+		Title = _imageFile.ImageFileData.ImageFileName;
 
 		_negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
 		_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
@@ -497,7 +497,7 @@ public partial class ImageWindow : Window, IImageView
 
 	private void ResizeToScreenSize()
 	{
-		var image = _imageFile!.GetResizedImage(_screenSize!);
+		var image = _imageFile!.GetResizedImage(_screenSize!, TabOptions!.ApplyImageOrientation);
 		var bitmap = image.GetBitmap();
 		SetImageSource(bitmap);
 
@@ -507,7 +507,7 @@ public partial class ImageWindow : Window, IImageView
 
 	private void ZoomToImageSize(CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
 	{
-		var image = _imageFile!.GetImage();
+		var image = _imageFile!.GetImage(TabOptions!.ApplyImageOrientation);
 		var bitmap = image.GetBitmap();
 		SetImageSource(bitmap);
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.IO;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
@@ -9,89 +9,46 @@ namespace ImageFanReloaded.ImageHandling;
 
 public class ImageFile : ImageFileBase
 {
-	static ImageFile()
-	{
-		AvaloniaUnsupportedImageFormats = ["pbm", "qoi", "tga", "tiff"];
-	}
-
 	public ImageFile(
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
-		string imageFileName,
-		string imageFilePath,
-		decimal sizeOnDiscInKilobytes,
-		IImageInfoBuilder imageInfoBuilder,
+		ImageFileData imageFileData,
 		IImageOrientationHandler imageOrientationHandler)
-		: base(globalParameters, imageResizer, imageFileName, imageFilePath, sizeOnDiscInKilobytes)
+		: base(globalParameters, imageResizer, imageFileData)
 	{
-		_imageInfoBuilder = imageInfoBuilder;
 		_imageOrientationHandler = imageOrientationHandler;
+
+		_applyImageOrientation = (image) =>
+		{
+			var imageOrientation = _imageOrientationHandler.GetImageOrientation(image);
+
+			_imageOrientationHandler.ApplyImageOrientation(image, imageOrientation);
+		};
 	}
 
 	#region Protected
 
-	public override ImageInfo? ImageInfo { get; protected set; }
-
-	protected override IImage GetImageFromDisc(string imageFilePath)
+	protected override IImage GetImageFromDisc(bool applyImageOrientation)
 	{
-		var image = default(SixLabors.ImageSharp.Image?);
-
-		try
+		if (applyImageOrientation)
 		{
-			var imageFileContent = File.ReadAllBytes(imageFilePath);
-			using var readOnlyImageStream = new MemoryStream(
-				imageFileContent, 0, imageFileContent.Length, false, false);
-
-			var isAvaloniaSupportedImageFormat = true;
-			var isChangeImageOrientationRequired = false;
-
 			try
 			{
-				image = SixLabors.ImageSharp.Image.Load(readOnlyImageStream);
-
-				ImageInfo = _imageInfoBuilder.BuildExtendedImageInfo(
-					ImageFileName, ImageFilePath, SizeOnDiscInKilobytes, image);
-
-				isAvaloniaSupportedImageFormat = IsAvaloniaSupportedImageFormat(
-					ImageInfo.ImageFormat);
-				isChangeImageOrientationRequired = ImageInfo.IsChangeImageOrientationRequired;
+				return BuildAndTransformImage(ImageFileData.ImageFilePath, _applyImageOrientation);
 			}
 			catch
 			{
-				var builtImage = BuildImageFromStream(readOnlyImageStream);
-				var builtImageSize = builtImage.Size;
-
-				ImageInfo = _imageInfoBuilder.BuildBasicImageInfo(
-					ImageFileName, ImageFilePath, SizeOnDiscInKilobytes, builtImageSize);
-
-				return builtImage;
-			}
-
-			if (isAvaloniaSupportedImageFormat && !isChangeImageOrientationRequired)
-			{
-				return BuildImageFromStream(readOnlyImageStream);
-			}
-			else
-			{
-				using var readWriteImageStream = new MemoryStream();
-
-				if (isChangeImageOrientationRequired)
-				{
-					_imageOrientationHandler.ChangeImageOrientation(
-						image!, ImageInfo.ImageOrientation);
-				}
-
-				SixLabors.ImageSharp.ImageExtensions.SaveAsJpeg(image, readWriteImageStream);
-
-				return BuildImageFromStream(readWriteImageStream);
+				return BuildImageFromFile(ImageFileData.ImageFilePath);
 			}
 		}
-		catch
-		{
-			ImageInfo = _imageInfoBuilder.BuildBasicImageInfo(
-				ImageFileName, ImageFilePath, SizeOnDiscInKilobytes, default);
 
-			throw;
+		if (IsAvaloniaSupportedImageFileExtension)
+		{
+			return BuildImageFromFile(ImageFileData.ImageFilePath);
+		}
+		else
+		{
+			return BuildAndTransformImage(ImageFileData.ImageFilePath, default);
 		}
 	}
 
@@ -99,23 +56,51 @@ public class ImageFile : ImageFileBase
 
 	#region Private
 
-	private static readonly HashSet<string> AvaloniaUnsupportedImageFormats;
-
-	private readonly IImageInfoBuilder _imageInfoBuilder;
 	private readonly IImageOrientationHandler _imageOrientationHandler;
 
-	private static bool IsAvaloniaSupportedImageFormat(string? imageFormat)
-		=> imageFormat is null || !AvaloniaUnsupportedImageFormats.Contains(imageFormat);
+	private readonly Action<SixLabors.ImageSharp.Image> _applyImageOrientation;
+
+	private bool IsAvaloniaSupportedImageFileExtension
+		=> _globalParameters.DirectlySupportedImageFileExtensions.Contains(
+			ImageFileData.ImageFileExtension);
+
+	private static IImage BuildAndTransformImage(
+		string inputFilePath,
+		Action<SixLabors.ImageSharp.Image>? transformImage)
+	{
+		var image = SixLabors.ImageSharp.Image.Load(inputFilePath);
+
+		if (transformImage is not null)
+		{
+			transformImage(image);
+		}
+
+		using var imageStream = new MemoryStream();
+		SixLabors.ImageSharp.ImageExtensions.SaveAsJpeg(image, imageStream);
+
+		return BuildImageFromStream(imageStream);
+	}
+
+	private static Image BuildImageFromFile(string inputFilePath)
+	{
+		var bitmap = new Avalonia.Media.Imaging.Bitmap(inputFilePath);
+
+		return BuildImage(bitmap);
+	}
 
 	private static Image BuildImageFromStream(Stream inputStream)
 	{
 		inputStream.Reset();
-
 		var bitmap = new Avalonia.Media.Imaging.Bitmap(inputStream);
+
+		return BuildImage(bitmap);
+	}
+
+	private static Image BuildImage(Avalonia.Media.Imaging.Bitmap bitmap)
+	{
 		var bitmapSize = new ImageSize(bitmap.Size.Width, bitmap.Size.Height);
 
-		var imageFromStream = new Image(bitmap, bitmapSize);
-		return imageFromStream;
+		return new Image(bitmap, bitmapSize);
 	}
 
 	#endregion

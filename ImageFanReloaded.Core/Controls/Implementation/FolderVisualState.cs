@@ -64,7 +64,7 @@ public class FolderVisualState : IFolderVisualState
 		_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
 		_contentTabItem.SetImageStatusBarText(string.Empty);
 
-		var thumbnails = GetThumbnailInfoCollection(tabOptions.ThumbnailSize.ToInt(), imageFiles);
+		var thumbnails = GetThumbnailInfoCollection(tabOptions, imageFiles);
 
 		await ProcessThumbnails(thumbnails);
 
@@ -87,9 +87,9 @@ public class FolderVisualState : IFolderVisualState
 	private readonly CancellationTokenSource _thumbnailGeneration;
 	
 	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(
-		int thumbnailSize, IReadOnlyList<IImageFile> imageFiles)
+		ITabOptions tabOptions, IReadOnlyList<IImageFile> imageFiles)
 		=> imageFiles
-			.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(thumbnailSize, anImageFile))
+			.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(tabOptions, anImageFile))
 			.ToList();
 	
 	private async Task ProcessThumbnails(IReadOnlyList<IThumbnailInfo> thumbnails)
@@ -161,7 +161,7 @@ public class FolderVisualState : IFolderVisualState
 		=> await Task.Run(() =>
 		{
 			var imageFilesTotalSizeOnDiscInKilobytes = imageFiles
-				.Sum(anImageFile => anImageFile.SizeOnDiscInKilobytes);
+				.Sum(anImageFile => anImageFile.ImageFileData.SizeOnDiscInKilobytes);
 
 			var imageFilesTotalSizeOnDiscInMegabytes = _fileSizeEngine.ConvertToMegabytes(
 				imageFilesTotalSizeOnDiscInKilobytes);

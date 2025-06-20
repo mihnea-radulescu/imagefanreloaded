@@ -68,10 +68,9 @@ public class AppBootstrap : IAppBootstrap
 		
 		_fileSizeEngine = new FileSizeEngine();
 
-		IImageInfoBuilder imageInfoBuilder = new ImageInfoBuilder();
 		IImageOrientationHandler imageOrientationHandler = new ImageOrientationHandler();
 		IImageFileFactory imageFileFactory = new ImageFileFactory(
-			_globalParameters, imageResizer, imageInfoBuilder, imageOrientationHandler);
+			_globalParameters, imageResizer, imageOrientationHandler);
 
 		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
 			_globalParameters, _fileSizeEngine, imageFileFactory);
@@ -117,7 +116,9 @@ public class AppBootstrap : IAppBootstrap
 		ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);
 		IAboutViewFactory aboutViewFactory = new AboutViewFactory(aboutInformationProvider, _globalParameters);
 
-		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(_globalParameters);
+		IImageInfoBuilder imageInfoBuilder = new ImageInfoBuilder();
+		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(
+			_globalParameters, imageInfoBuilder);
 
 		var mainViewPresenter = new MainViewPresenter(
 			_discQueryEngine,
@@ -153,10 +154,14 @@ public class AppBootstrap : IAppBootstrap
 		imageView.ViewClosing += OnImageViewClosing;
 
 		var imageViewPresenter = new ImageViewPresenter(
-			_discQueryEngine, _commandLineArgsInputPathHandler, _globalParameters, imageView);
-			
+			_discQueryEngine,
+			_commandLineArgsInputPathHandler,
+			_globalParameters,
+			tabOptions,
+			imageView);
+
 		await imageViewPresenter.SetUpAccessToImages();
-		
+
 		imageView.Show();
 	}
 

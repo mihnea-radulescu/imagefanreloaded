@@ -10,66 +10,68 @@ namespace ImageFanReloaded.Core.Settings.Implementation;
 public abstract class GlobalParametersBase : IGlobalParameters
 {
 	public int ProcessorCount { get; }
-	
+
 	public bool IsLinux { get; }
 	public bool IsWindows { get; }
 	public bool IsMacOS { get; }
 
 	public int MaxRecursionDepth => 6;
-	
+
 	public KeyModifiers NoneKeyModifier { get; }
 	public KeyModifiers CtrlKeyModifier { get; }
 	public KeyModifiers AltKeyModifier { get; }
 	public KeyModifiers ShiftKeyModifier { get; }
-	
+
 	public Key TabKey { get; }
 	public Key EscapeKey { get; }
 	public Key EnterKey { get; }
-	
+
 	public Key SKey { get; }
 	public Key OKey { get; }
 	public Key HKey { get; }
 	public Key F1Key { get; }
 
 	public Key FKey { get; }
-	
+
 	public Key F4Key { get; }
-	
+
 	public Key NKey { get; }
 	public Key MKey { get; }
-	
+
 	public Key RKey { get; }
-	
+
 	public Key TKey { get; }
 	public Key IKey { get; }
-	
+
 	public Key UpKey { get; }
 	public Key DownKey { get; }
 	public Key LeftKey { get; }
 	public Key RightKey { get; }
-	
+
 	public Key PlusKey { get; }
 	public Key MinusKey { get; }
-	
+
 	public Key PageUpKey { get; }
 	public Key PageDownKey { get; }
 
 	public bool IsBackwardNavigationKey(Key aKey) => _backwardNavigationKeys.Contains(aKey);
 	public bool IsForwardNavigationKey(Key aKey) => _forwardNavigationKeys.Contains(aKey);
 	public bool IsNavigationKey(Key aKey) => _navigationKeys.Contains(aKey);
-	
+
 	public StringComparer NameComparer { get; }
 
 	public bool CanDisposeImage(IImage image) => !PersistentImages.Contains(image);
-	
+
+	public HashSet<string> DirectlySupportedImageFileExtensions { get; }
+	public HashSet<string> IndirectlySupportedImageFileExtensions { get; }
 	public HashSet<string> ImageFileExtensions { get; }
-	
+
 	public string UserProfilePath { get; }
 	public IReadOnlyList<string> SpecialFolders { get; }
 
 	public abstract IImage InvalidImage { get; }
 	public abstract HashSet<IImage> PersistentImages { get; }
-	
+
 	public abstract IImage DesktopFolderIcon { get; }
 	public abstract IImage DocumentsFolderIcon { get; }
 	public abstract IImage DownloadsFolderIcon { get; }
@@ -77,7 +79,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public abstract IImage FolderIcon { get; }
 	public abstract IImage HomeFolderIcon { get; }
 	public abstract IImage PicturesFolderIcon { get; }
-	
+
 	public abstract IImage GetInvalidImageThumbnail(int thumbnailSize);
 	public abstract IImage GetLoadingImageThumbnail(int thumbnailSize);
 
@@ -132,7 +134,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)
 			: new NaturalSortingComparer(StringComparer.InvariantCulture);
 		
-		ImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
+		DirectlySupportedImageFileExtensions = new HashSet<string>(
+			StringComparer.InvariantCultureIgnoreCase)
 		{
 			".bmp",
 			".cr2",
@@ -145,17 +148,25 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".jps",
 			".nef",
 			".nrw",
-			".pbm",
 			".pef",
 			".png",
-			".qoi",
 			".raf",
 			".rw2",
-			".tga",
-			".tif", ".tiff",
 			".wbmp",
 			".webp"
 		};
+
+		IndirectlySupportedImageFileExtensions = new HashSet<string>(
+			StringComparer.InvariantCultureIgnoreCase)
+		{
+			".pbm",
+			".qoi",
+			".tga",
+			".tif", ".tiff"
+		};
+
+		ImageFileExtensions = new HashSet<string>(
+			[.. DirectlySupportedImageFileExtensions, ..IndirectlySupportedImageFileExtensions]);
 		
 		UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 

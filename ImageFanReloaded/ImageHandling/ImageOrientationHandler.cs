@@ -1,3 +1,4 @@
+using System.Linq;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using ImageFanReloaded.Core.ImageHandling;
@@ -6,7 +7,36 @@ namespace ImageFanReloaded.ImageHandling;
 
 public class ImageOrientationHandler : IImageOrientationHandler
 {
-	public void ChangeImageOrientation(object imageObject, ushort imageOrientation)
+	public ushort GetImageOrientation(object imageObject)
+	{
+		var image = (Image)imageObject;
+
+		if (image.Metadata.ExifProfile is null)
+		{
+			return DefaultImageOrientation;
+		}
+
+		var exifValues = image.Metadata.ExifProfile.Values;
+
+		var imageOrientation = exifValues
+			.FirstOrDefault(anExifValue => anExifValue.Tag.ToString() == ExifOrientationTag);
+
+		if (imageOrientation is not null)
+		{
+			var imageOrientationValue = imageOrientation.GetValue();
+
+			if (imageOrientationValue is not null)
+			{
+				var imageOrientationNumericValue = (ushort)imageOrientationValue;
+
+				return imageOrientationNumericValue;
+			}
+		}
+
+		return DefaultImageOrientation;
+	}
+
+	public void ApplyImageOrientation(object imageObject, ushort imageOrientation)
 	{
 		var image = (Image)imageObject;
 
@@ -41,4 +71,12 @@ public class ImageOrientationHandler : IImageOrientationHandler
 				break;
 		}
 	}
+
+	#region Private
+
+	private const string ExifOrientationTag = "Orientation";
+
+	private const ushort DefaultImageOrientation = 1;
+
+	#endregion
 }

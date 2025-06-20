@@ -1,87 +1,81 @@
 using System;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.ImageHandling;
 
 public class ImageInfoBuilder : IImageInfoBuilder
 {
-	public ImageInfo BuildBasicImageInfo(
-		string imageFileName,
-		string imageFilePath,
-		decimal sizeOnDiscInKilobytes,
-		ImageSize? imageSize)
+	public async Task<string> BuildImageInfo(IImageFile imageFile)
+	{
+		if (imageFile.HasReadImageError)
+		{
+			return BuildBasicImageInfo(imageFile.ImageFileData, default);
+		}
+
+		try
+		{
+			return await BuildExtendedImageInfo(imageFile.ImageFileData, imageFile.ImageSize);
+		}
+		catch
+		{
+			return BuildBasicImageInfo(imageFile.ImageFileData, imageFile.ImageSize);
+		}
+	}
+
+	#region Private
+
+	private static string BuildBasicImageInfo(ImageFileData imageFileData, ImageSize? imageSize)
 	{
 		var imageInfoBuilder = new StringBuilder();
 
-		BuildGeneralInfoCommonEntries(
-			imageFileName, imageFilePath, sizeOnDiscInKilobytes, imageInfoBuilder);
+		BuildGeneralInfoCommonEntries(imageFileData, imageInfoBuilder);
 
 		if (imageSize is not null)
 		{
 			imageInfoBuilder.AppendLine($"\tImage size:\t{imageSize} pixels");
 		}
 
-		var imageInfoText = imageInfoBuilder.ToString();
-
-		var imageInfo = new ImageInfo(default, default, imageInfoText);
+		var imageInfo = imageInfoBuilder.ToString();
 		return imageInfo;
 	}
 
-	public ImageInfo BuildExtendedImageInfo(
-		string imageFileName,
-		string imageFilePath,
-		decimal sizeOnDiscInKilobytes,
-		object? imageObject)
+	private static async Task<string> BuildExtendedImageInfo(
+		ImageFileData imageFileData, ImageSize imageSize)
 	{
+		var image = await SixLabors.ImageSharp.Image.LoadAsync(imageFileData.ImageFilePath);
+		
 		var imageInfoBuilder = new StringBuilder();
+		
+		BuildGeneralInfoCommonEntries(imageFileData, imageInfoBuilder);
 
-		BuildGeneralInfoCommonEntries(
-			imageFileName, imageFilePath, sizeOnDiscInKilobytes, imageInfoBuilder);
+		imageInfoBuilder.AppendLine($"\tImage size:\t{imageSize} pixels");
 
-		var image = (SixLabors.ImageSharp.Image?)imageObject;
-		var imageMetadata = image?.Metadata;
+		var bitsPerPixel = image.PixelType.BitsPerPixel;
+		imageInfoBuilder.AppendLine($"\tBits per pixel:\t{bitsPerPixel}");
 
-		if (image is not null)
-		{
-			var bitsPerPixel = image.PixelType.BitsPerPixel;
+		var imageMetadata = image.Metadata;
 
-			imageInfoBuilder.AppendLine($"\tImage size:\t{image.Size.Width}x{image.Size.Height} pixels");
-			imageInfoBuilder.AppendLine($"\tBits per pixel:\t{bitsPerPixel}");
+		BuildImageResolutionInfo(imageMetadata, imageInfoBuilder);
+		BuildImageFormatInfo(imageMetadata, imageInfoBuilder);
+		BuildExifInfo(imageMetadata, imageInfoBuilder);
+		BuildIptcInfo(imageMetadata, imageInfoBuilder);
 
-			if (imageMetadata is not null)
-			{
-				BuildImageResolutionInfo(imageMetadata, imageInfoBuilder);
-				BuildImageFormatInfo(imageMetadata, imageInfoBuilder);
-				BuildExifInfo(imageMetadata, imageInfoBuilder);
-				BuildIptcInfo(imageMetadata, imageInfoBuilder);
-			}
-		}
-
-		var imageFormat = GetImageFormat(imageMetadata);
-		var imageOrientation = GetImageOrientation(imageMetadata);
-		var imageInfoText = imageInfoBuilder.ToString();
-
-		var imageInfo = new ImageInfo(imageFormat, imageOrientation, imageInfoText);
+		var imageInfo = imageInfoBuilder.ToString();
 		return imageInfo;
 	}
-
-	#region Private
-
-	private const string ImageOrientationExifTag = "Orientation";
 
 	private static void BuildGeneralInfoCommonEntries(
-		string imageFileName,
-		string imageFilePath,
-		decimal sizeOnDiscInKilobytes,
+		ImageFileData imageFileData,
 		StringBuilder imageInfoBuilder)
 	{
 		imageInfoBuilder.AppendLine("General info");
 		imageInfoBuilder.AppendLine();
-		imageInfoBuilder.AppendLine($"\tFile name:\t{imageFileName}");
-		imageInfoBuilder.AppendLine($"\tFile path:\t{imageFilePath}");
-		imageInfoBuilder.AppendLine($"\tFile size:\t{sizeOnDiscInKilobytes} KB");
+		imageInfoBuilder.AppendLine($"\tFile name:\t{imageFileData.ImageFileName}");
+		imageInfoBuilder.AppendLine($"\tFile path:\t{imageFileData.ImageFilePath}");
+		imageInfoBuilder.AppendLine($"\tFile size:\t{imageFileData.SizeOnDiscInKilobytes} KB");
 	}
 
 	private static void BuildImageResolutionInfo(
@@ -100,7 +94,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	{
 		if (imageMetadata.DecodedImageFormat is not null)
 		{
-			var imageFormat = GetImageFormat(imageMetadata);
+			var imageFormat = imageMetadata.DecodedImageFormat?.Name.ToLower();
 			imageInfoBuilder.AppendLine($"\tImage format:\t{imageFormat}");
 		}
 	}
@@ -179,37 +173,6 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		var valueContentText = string.Join(", ", valueContentItems);
 		return valueContentText;
 	}
-
-	private static ushort? GetImageOrientation(
-		SixLabors.ImageSharp.Metadata.ImageMetadata? imageMetadata)
-	{
-		if (imageMetadata is null || imageMetadata.ExifProfile is null)
-		{
-			return default;
-		}
-
-		var exifValues = imageMetadata.ExifProfile.Values;
-
-		var imageOrientation = exifValues
-			.FirstOrDefault(anExifValue => anExifValue.Tag.ToString() == ImageOrientationExifTag);
-
-		if (imageOrientation is not null)
-		{
-			var imageOrientationValue = imageOrientation.GetValue();
-
-			if (imageOrientationValue is not null)
-			{
-				var imageOrientationNumericValue = (ushort)imageOrientationValue;
-
-				return imageOrientationNumericValue;
-			}
-		}
-
-		return default;
-	}
-
-	private static string? GetImageFormat(SixLabors.ImageSharp.Metadata.ImageMetadata? imageMetadata)
-		=> imageMetadata?.DecodedImageFormat?.Name.ToLower();
 
 	#endregion
 }

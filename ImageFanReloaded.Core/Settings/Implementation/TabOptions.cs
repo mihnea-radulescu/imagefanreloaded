@@ -15,6 +15,7 @@ public class TabOptions : ITabOptions
 	public bool ShowImageViewImageInfo { get; set; }
 	public int PanelsSplittingRatio { get; set; }
 	public SlideshowInterval SlideshowInterval { get; set; }
+	public bool ApplyImageOrientation { get; set; }
 
 	static TabOptions()
 	{
@@ -50,6 +51,7 @@ public class TabOptions : ITabOptions
 	private const bool DefaultShowImageViewImageInfo = false;
 	private const int DefaultPanelsSplittingRatio = 15;
 	private const SlideshowInterval DefaultSlideshowInterval = SlideshowInterval.OneSecond;
+	private const bool DefaultApplyImageOrientation = false;
 
 	private static readonly string SettingsFolderPath;
 	private static readonly string SettingsFilePath;
@@ -133,6 +135,7 @@ public class TabOptions : ITabOptions
 			ShowImageViewImageInfo = DefaultTabOptions.ShowImageViewImageInfo;
 			PanelsSplittingRatio = DefaultTabOptions.PanelsSplittingRatio;
 			SlideshowInterval = DefaultTabOptions.SlideshowInterval;
+			ApplyImageOrientation = DefaultTabOptions.ApplyImageOrientation;
 		}
 		else
 		{
@@ -142,6 +145,7 @@ public class TabOptions : ITabOptions
 			ShowImageViewImageInfo = DefaultShowImageViewImageInfo;
 			PanelsSplittingRatio = DefaultPanelsSplittingRatio;
 			SlideshowInterval = DefaultSlideshowInterval;
+			ApplyImageOrientation = DefaultApplyImageOrientation;
 		}
 	}
 
@@ -153,6 +157,7 @@ public class TabOptions : ITabOptions
 		DefaultTabOptions!.ShowImageViewImageInfo = ShowImageViewImageInfo;
 		DefaultTabOptions!.PanelsSplittingRatio = PanelsSplittingRatio;
 		DefaultTabOptions!.SlideshowInterval = SlideshowInterval;
+		DefaultTabOptions!.ApplyImageOrientation = ApplyImageOrientation;
 	}
 
 	private static async Task PersistDefaultTabOptions()

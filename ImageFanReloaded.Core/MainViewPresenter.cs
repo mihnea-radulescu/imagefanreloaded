@@ -115,7 +115,7 @@ public class MainViewPresenter
 		var contentTabItem = e.ContentTabItem;
 		var imageFile = e.ImageFile;
 		
-		var imageInfoView = _imageInfoViewFactory.GetImageInfoView(imageFile);
+		var imageInfoView = await _imageInfoViewFactory.GetImageInfoView(imageFile);
 		await contentTabItem.ShowImageInfo(imageInfoView);
 	}
 
@@ -126,7 +126,8 @@ public class MainViewPresenter
 
 		var shouldRaiseFolderChangedEvent =
 			tabOptionChanges.HasChangedThumbnailSize ||
-			tabOptionChanges.HasChangedRecursiveFolderBrowsing;
+			tabOptionChanges.HasChangedRecursiveFolderBrowsing ||
+			tabOptionChanges.HasChangedApplyImageOrientation;
 
 		var shouldRaiseFolderOrderingChangedEvent = tabOptionChanges.HasChangedFolderOrdering;
 

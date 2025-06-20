@@ -7,39 +7,31 @@ public abstract class ImageFileBase : IImageFile
 	protected ImageFileBase(
 	    IGlobalParameters globalParameters,
 	    IImageResizer imageResizer,
-	    string imageFileName,
-	    string imageFilePath,
-	    decimal sizeOnDiscInKilobytes)
+	    ImageFileData imageFileData)
     {
 	    _globalParameters = globalParameters;
 	    _imageResizer = imageResizer;
-        
-        ImageFileName = imageFileName;
-        ImageFilePath = imageFilePath;
-        
-        SizeOnDiscInKilobytes = sizeOnDiscInKilobytes;
+
+		ImageFileData = imageFileData;
+
         ImageSize = _globalParameters.InvalidImage.Size;
 
 		_thumbnailGenerationLockObject = new object();
-
-		_hasReadImageError = false;
     }
 
-    public string ImageFileName { get; }
-    public string ImageFilePath { get; }
-    
-    public decimal SizeOnDiscInKilobytes { get; }
+	public ImageFileData ImageFileData { get; }
+
 	public ImageSize ImageSize { get; private set; }
 
-	public abstract ImageInfo? ImageInfo { get; protected set; }
+	public bool HasReadImageError { get; private set; }
 
-	public IImage GetImage()
+	public IImage GetImage(bool applyImageOrientation)
 	{
 		IImage image;
 
 		try
 		{
-			image = GetImageFromDisc(ImageFilePath);
+			image = GetImageFromDisc(applyImageOrientation);
 			ImageSize = image.Size;
 		}
 		catch
@@ -47,20 +39,20 @@ public abstract class ImageFileBase : IImageFile
 			ImageSize = _globalParameters.InvalidImage.Size;
 			image = _globalParameters.InvalidImage;
 
-			_hasReadImageError = true;
+			HasReadImageError = true;
 		}
 
 		return image;
 	}
 
-    public IImage GetResizedImage(ImageSize viewPortSize)
+    public IImage GetResizedImage(ImageSize viewPortSize, bool applyImageOrientation)
     {
         IImage? image = null;
         IImage resizedImage;
 
         try
 		{
-			image = GetImageFromDisc(ImageFilePath);
+			image = GetImageFromDisc(applyImageOrientation);
 			ImageSize = image.Size;
 			
 			resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize, ImageQuality.High);
@@ -70,7 +62,7 @@ public abstract class ImageFileBase : IImageFile
 	        ImageSize = _globalParameters.InvalidImage.Size;
 	        resizedImage = _globalParameters.InvalidImage;
 			
-			_hasReadImageError = true;
+			HasReadImageError = true;
 		}
         finally
         {
@@ -80,13 +72,13 @@ public abstract class ImageFileBase : IImageFile
         return resizedImage;
     }
 
-	public void ReadImageDataFromDisc()
+	public void ReadImageDataFromDisc(bool applyImageOrientation)
 	{
 		IImage imageData;
 
 		try
 		{
-			imageData = GetImageFromDisc(ImageFilePath);
+			imageData = GetImageFromDisc(applyImageOrientation);
 			ImageSize = imageData.Size;
 		}
 		catch
@@ -94,12 +86,12 @@ public abstract class ImageFileBase : IImageFile
 			ImageSize = _globalParameters.InvalidImage.Size;
 			imageData = _globalParameters.InvalidImage;
 
-			_hasReadImageError = true;
+			HasReadImageError = true;
 		}
 		
 		lock (_thumbnailGenerationLockObject)
 		{
-			_imageData = imageData;
+			_imageInstance = imageData;
 		}
 	}
 
@@ -114,7 +106,7 @@ public abstract class ImageFileBase : IImageFile
                 var thumbnailImageSize = new ImageSize(thumbnailSize);
 
 	            thumbnail = _imageResizer.CreateResizedImage(
-					_imageData!, thumbnailImageSize, ImageQuality.Medium);
+					_imageInstance!, thumbnailImageSize, ImageQuality.Medium);
             }
             catch
             {
@@ -133,40 +125,40 @@ public abstract class ImageFileBase : IImageFile
 	{
 		lock (_thumbnailGenerationLockObject)
 		{
-			if (_imageData is not null &&
-			    _globalParameters.CanDisposeImage(_imageData))
+			if (_imageInstance is not null &&
+			    _globalParameters.CanDisposeImage(_imageInstance))
 			{
-				_imageData.Dispose();
-				_imageData = null;
+				_imageInstance.Dispose();
+				_imageInstance = null;
 			}
 		}
 	}
 
 	public string GetImageInfo(bool longFormat)
 	{
-		var imageFileInfo = longFormat ? ImageFilePath : ImageFileName;
+		var imageFileInfo = longFormat ? ImageFileData.ImageFilePath : ImageFileData.ImageFileName;
 		
-		var imageInfo = _hasReadImageError
+		var imageInfo = HasReadImageError
 			? $"{imageFileInfo} - invalid image"
-			: $"{imageFileInfo} - {ImageSize} - {SizeOnDiscInKilobytes} KB";
+			: $"{imageFileInfo} - {ImageSize} - {ImageFileData.SizeOnDiscInKilobytes} KB";
 				
 		return imageInfo;
 	}
-	
-	#region Protected
 
-	protected abstract IImage GetImageFromDisc(string imageFilePath);
+	#region Protected
 	
+	protected readonly IGlobalParameters _globalParameters;
+
+	protected abstract IImage GetImageFromDisc(bool applyImageOrientation);
+
 	#endregion
 
 	#region Private
 
-	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageResizer _imageResizer;
     private readonly object _thumbnailGenerationLockObject;
 
-    private IImage? _imageData;
-    private bool _hasReadImageError;
+    private IImage? _imageInstance;
 
     #endregion
 }

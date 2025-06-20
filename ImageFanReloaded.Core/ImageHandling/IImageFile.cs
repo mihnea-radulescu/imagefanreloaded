@@ -2,20 +2,18 @@ namespace ImageFanReloaded.Core.ImageHandling;
 
 public interface IImageFile
 {
-    string ImageFileName { get; }
-    string ImageFilePath { get; }
-    
-    decimal SizeOnDiscInKilobytes { get; }
+	ImageFileData ImageFileData { get; }
+
 	ImageSize ImageSize { get; }
 
-	ImageInfo? ImageInfo { get; }
+	bool HasReadImageError { get; }
 
-	IImage GetImage();
-	IImage GetResizedImage(ImageSize viewPortSize);
+	IImage GetImage(bool applyImageOrientation);
+	IImage GetResizedImage(ImageSize viewPortSize, bool applyImageOrientation);
+	void ReadImageDataFromDisc(bool applyImageOrientation);
 
-    void ReadImageDataFromDisc();
-    IImage GetThumbnail(int thumbnailSize);
-    void DisposeImageData();
+	IImage GetThumbnail(int thumbnailSize);
+	void DisposeImageData();
 
-    string GetImageInfo(bool longFormat);
+	string GetImageInfo(bool longFormat);
 }

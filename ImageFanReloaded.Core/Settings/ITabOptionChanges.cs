@@ -8,6 +8,7 @@ public interface ITabOptionChanges
 	bool HasChangedShowImageViewImageInfo { get; set; }
 	bool HasChangedPanelsSplittingRatio { get; set; }
 	bool HasChangedSlideshowInterval { get; set; }
+	bool HasChangedApplyImageOrientation { get; set; }
 
 	bool ShouldSaveAsDefault { get; set; }
 }

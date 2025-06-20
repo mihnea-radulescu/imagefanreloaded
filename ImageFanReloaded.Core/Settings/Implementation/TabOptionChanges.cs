@@ -8,18 +8,7 @@ public class TabOptionChanges : ITabOptionChanges
 	public bool HasChangedShowImageViewImageInfo { get; set; }
 	public bool HasChangedPanelsSplittingRatio { get; set; }
 	public bool HasChangedSlideshowInterval { get; set; }
+	public bool HasChangedApplyImageOrientation { get; set; }
 
 	public bool ShouldSaveAsDefault { get; set; }
-
-	public TabOptionChanges()
-	{
-		HasChangedFolderOrdering = false;
-		HasChangedThumbnailSize = false;
-		HasChangedRecursiveFolderBrowsing = false;
-		HasChangedShowImageViewImageInfo = false;
-		HasChangedPanelsSplittingRatio = false;
-		HasChangedSlideshowInterval = false;
-
-		ShouldSaveAsDefault = false;
-	}
 }

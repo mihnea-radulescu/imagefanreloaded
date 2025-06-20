@@ -212,10 +212,14 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 				.Where(aFileInfo =>
 					_globalParameters.ImageFileExtensions.Contains(aFileInfo.Extension))
 				.Select(aFileInfo => _imageFileFactory.GetImageFile(
-					aFileInfo.Name,
-					aFileInfo.FullName,
-					_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length)))
-				.OrderBy(aFileInfo => aFileInfo.ImageFileName, _globalParameters.NameComparer)
+					new ImageFileData(
+						aFileInfo.Name,
+						aFileInfo.FullName,
+						aFileInfo.Extension,
+						_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length)))
+				)
+				.OrderBy(anImageFile =>
+					anImageFile.ImageFileData.ImageFileName, _globalParameters.NameComparer)
 				.ToList();
 
 			var shouldRecursivelySearchSubFolders =

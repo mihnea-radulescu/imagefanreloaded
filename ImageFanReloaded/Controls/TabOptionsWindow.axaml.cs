@@ -41,6 +41,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		SetPanelsSplittingRatioSlider();
 
 		PopulateSlideshowIntervals();
+
+		SetApplyImageOrientation();
 	}
 
 	public void RegisterTabOptionEvents()
@@ -51,6 +53,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_showImageViewImageInfoCheckBox.IsCheckedChanged += OnShowImageViewImageInfoIsCheckedChanged;
 		_panelsSplittingRatioSlider.ValueChanged += OnPanelsSplittingRatioChanged;
 		_slideshowIntervalComboBox.SelectionChanged += OnSlideshowIntervalSelectionChanged;
+		_applyImageOrientationCheckBox.IsCheckedChanged += OnApplyImageOrientationIsCheckedChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged += OnSaveAsDefaultIsCheckedChanged;
 	}
@@ -129,6 +132,14 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		TabOptions!.SlideshowInterval = slideshowInterval;
 		_tabOptionChanges.HasChangedSlideshowInterval = true;
+	}
+
+	private void OnApplyImageOrientationIsCheckedChanged(object? sender, RoutedEventArgs e)
+	{
+		var applyImageOrientation = _applyImageOrientationCheckBox.IsChecked!.Value;
+
+		TabOptions!.ApplyImageOrientation = applyImageOrientation;
+		_tabOptionChanges.HasChangedApplyImageOrientation = true;
 	}
 
 	private void OnSaveAsDefaultIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -228,6 +239,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 				_slideshowIntervalComboBox.SelectedItem = aSlideshowIntervalItem;
 			}
 		}
+	}
+
+	private void SetApplyImageOrientation()
+	{
+		_applyImageOrientationCheckBox.IsChecked = TabOptions!.ApplyImageOrientation;
 	}
 	
 	#endregion

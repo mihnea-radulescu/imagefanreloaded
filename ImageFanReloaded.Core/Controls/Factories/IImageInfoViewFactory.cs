@@ -1,8 +1,9 @@
+using System.Threading.Tasks;
 using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.Core.Controls.Factories;
 
 public interface IImageInfoViewFactory
 {
-	IImageInfoView GetImageInfoView(IImageFile imageFile);
+	Task<IImageInfoView> GetImageInfoView(IImageFile imageFile);
 }

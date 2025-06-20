@@ -8,24 +8,19 @@ public class ImageFileFactory : IImageFileFactory
 	public ImageFileFactory(
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
-		IImageInfoBuilder imageInfoBuilder,
 		IImageOrientationHandler imageOrientationHandler)
 	{
 		_globalParameters = globalParameters;
 		_imageResizer = imageResizer;
 
-		_imageInfoBuilder = imageInfoBuilder;
 		_imageOrientationHandler = imageOrientationHandler;
 	}
 
-	public IImageFile GetImageFile(string fileName, string filePath, decimal sizeOnDiscInKilobytes)
+	public IImageFile GetImageFile(ImageFileData imageFileData)
 		=> new ImageFile(
 			_globalParameters,
 			_imageResizer,
-			fileName,
-			filePath,
-			sizeOnDiscInKilobytes,
-			_imageInfoBuilder,
+			imageFileData,
 			_imageOrientationHandler);
 
 	#region Private
@@ -33,7 +28,6 @@ public class ImageFileFactory : IImageFileFactory
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageResizer _imageResizer;
 
-	private readonly IImageInfoBuilder _imageInfoBuilder;
 	private readonly IImageOrientationHandler _imageOrientationHandler;
 
 	#endregion

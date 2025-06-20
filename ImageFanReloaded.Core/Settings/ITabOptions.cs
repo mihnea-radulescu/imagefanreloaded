@@ -10,6 +10,7 @@ public interface ITabOptions
 	bool ShowImageViewImageInfo { get; set; }
 	int PanelsSplittingRatio { get; set; }
 	SlideshowInterval SlideshowInterval { get; set; }
+	bool ApplyImageOrientation { get; set; }
 
 	Task SaveDefaultTabOptions();
 }
