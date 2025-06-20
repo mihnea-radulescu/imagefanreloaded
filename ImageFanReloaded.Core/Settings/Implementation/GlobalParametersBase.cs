@@ -39,6 +39,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key MKey { get; }
 
 	public Key RKey { get; }
+	public Key EKey { get; }
 
 	public Key TKey { get; }
 	public Key IKey { get; }
@@ -115,6 +116,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		MKey = Key.M;
 
 		RKey = Key.R;
+		EKey = Key.E;
 
 		TKey = Key.T;
 		IKey = Key.I;

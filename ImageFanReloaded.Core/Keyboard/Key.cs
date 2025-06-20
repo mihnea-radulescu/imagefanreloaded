@@ -3,11 +3,11 @@ namespace ImageFanReloaded.Core.Keyboard;
 public enum Key
 {
 	None = 0,
-	
+
 	Tab,
 	Escape,
 	Enter,
-	
+
 	S,
 	O,
 	H,
@@ -21,18 +21,19 @@ public enum Key
 	Down,
 	Left,
 	Right,
-	
+
 	N,
 	M,
-	
+
 	R,
-	
+	E,
+
 	T,
 	I,
-	
+
 	Plus,
 	Minus,
-	
+
 	PageUp,
 	PageDown
 }

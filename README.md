@@ -29,6 +29,7 @@ User interface:
 * key S for slideshow navigation
 * key F for displaying Image info view
 * key R for toggling recursive folder browsing
+* key E for applying EXIF image orientation
 * key O for displaying Tab options view
 * keys H and F1 for displaying About view
 * keys Up, Down, Left and Right for back and forward navigation through the folders tree, thumbnails and opened images
