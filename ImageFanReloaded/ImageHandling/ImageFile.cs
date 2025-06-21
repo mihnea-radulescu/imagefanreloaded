@@ -30,7 +30,7 @@ public class ImageFile : ImageFileBase
 
 	protected override IImage GetImageFromDisc(bool applyImageOrientation)
 	{
-		if (applyImageOrientation)
+		if (applyImageOrientation && IsExifEnabledImageFormat)
 		{
 			try
 			{
@@ -41,8 +41,7 @@ public class ImageFile : ImageFileBase
 				return BuildImageFromFile(ImageFileData.ImageFilePath);
 			}
 		}
-
-		if (IsAvaloniaSupportedImageFileExtension)
+		else if (IsAvaloniaSupportedImageFileExtension)
 		{
 			return BuildImageFromFile(ImageFileData.ImageFilePath);
 		}
@@ -59,10 +58,6 @@ public class ImageFile : ImageFileBase
 	private readonly IImageOrientationHandler _imageOrientationHandler;
 
 	private readonly Action<SixLabors.ImageSharp.Image> _applyImageOrientation;
-
-	private bool IsAvaloniaSupportedImageFileExtension
-		=> _globalParameters.DirectlySupportedImageFileExtensions.Contains(
-			ImageFileData.ImageFileExtension);
 
 	private static IImage BuildAndTransformImage(
 		string inputFilePath,

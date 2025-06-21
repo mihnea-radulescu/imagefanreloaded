@@ -168,7 +168,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		};
 
 		ImageFileExtensions = new HashSet<string>(
-			[.. DirectlySupportedImageFileExtensions, ..IndirectlySupportedImageFileExtensions]);
+			[.. DirectlySupportedImageFileExtensions, .. IndirectlySupportedImageFileExtensions],
+			StringComparer.InvariantCultureIgnoreCase);
 		
 		UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
