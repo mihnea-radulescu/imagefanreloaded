@@ -166,8 +166,12 @@ public abstract class ImageFileBase : IImageFile
 	protected bool IsExifEnabledImageFormat
 		=> ExifEnabledImageFormats.Contains(ImageFileData.ImageFileExtension);
 
-	protected bool IsAvaloniaSupportedImageFileExtension
+	protected bool IsDirectlySupportedImageFileExtension
 		=> _globalParameters.DirectlySupportedImageFileExtensions.Contains(
+			ImageFileData.ImageFileExtension);
+
+	protected bool IsIndirectlySupported2ImageFileExtension
+		=> _globalParameters.IndirectlySupportedImageFileExtensions.Contains(
 			ImageFileData.ImageFileExtension);
 
 	#endregion

@@ -161,14 +161,38 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		IndirectlySupportedImageFileExtensions = new HashSet<string>(
 			StringComparer.InvariantCultureIgnoreCase)
 		{
+			".dds",
+			".exr",
+			".fts",
+			".hdr",
+			".heic",
+			".heif",
+			".jp2",
+			".mng",
+			".orf",
+			".pam",
 			".pbm",
+			".pcd",
+			".pcx",
+			".pes",
+			".pfm",
+			".pgm",
+			".picon",
+			".pict",
+			".ppm",
+			".psd",
 			".qoi",
+			".sgi",
+			".svg",
 			".tga",
-			".tif", ".tiff"
+			".tif", ".tiff",
+			".xbm",
+			".xpm"
 		};
 
 		ImageFileExtensions = new HashSet<string>(
-			[.. DirectlySupportedImageFileExtensions, .. IndirectlySupportedImageFileExtensions],
+			[.. DirectlySupportedImageFileExtensions,
+			 .. IndirectlySupportedImageFileExtensions],
 			StringComparer.InvariantCultureIgnoreCase);
 		
 		UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);

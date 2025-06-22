@@ -1,4 +1,6 @@
 using System.IO;
+using Avalonia.Media.Imaging;
+using ImageMagick;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -24,22 +26,15 @@ public class ImageFile : ImageFileBase
 	{
 		if (applyImageOrientation && IsExifEnabledImageFormat)
 		{
-			try
-			{
-				return BuildAndTransformImage(ImageFileData.ImageFilePath, true);
-			}
-			catch
-			{
-				return BuildImageFromFile(ImageFileData.ImageFilePath);
-			}
+			return BuildIndirectlySupportedImage(ImageFileData.ImageFilePath, true);
 		}
-		else if (IsAvaloniaSupportedImageFileExtension)
+		else if (IsDirectlySupportedImageFileExtension)
 		{
 			return BuildImageFromFile(ImageFileData.ImageFilePath);
 		}
 		else
 		{
-			return BuildAndTransformImage(ImageFileData.ImageFilePath, false);
+			return BuildIndirectlySupportedImage(ImageFileData.ImageFilePath, false);
 		}
 	}
 
@@ -49,9 +44,11 @@ public class ImageFile : ImageFileBase
 
 	private readonly IImageOrientationHandler _imageOrientationHandler;
 
-	private IImage BuildAndTransformImage(string inputFilePath, bool applyImageOrientation)
+	private IImage BuildIndirectlySupportedImage(string inputFilePath, bool applyImageOrientation)
 	{
-		var image = SixLabors.ImageSharp.Image.Load(inputFilePath);
+		var image = new MagickImage(inputFilePath);
+
+		image.Format = MagickFormat.Jpg;
 
 		if (applyImageOrientation)
 		{
@@ -59,14 +56,14 @@ public class ImageFile : ImageFileBase
 		}
 
 		using var imageStream = new MemoryStream();
-		SixLabors.ImageSharp.ImageExtensions.SaveAsJpeg(image, imageStream);
+		image.Write(imageStream);
 
 		return BuildImageFromStream(imageStream);
 	}
 
 	private static Image BuildImageFromFile(string inputFilePath)
 	{
-		var bitmap = new Avalonia.Media.Imaging.Bitmap(inputFilePath);
+		var bitmap = new Bitmap(inputFilePath);
 
 		return BuildImage(bitmap);
 	}
@@ -74,12 +71,12 @@ public class ImageFile : ImageFileBase
 	private static Image BuildImageFromStream(Stream inputStream)
 	{
 		inputStream.Reset();
-		var bitmap = new Avalonia.Media.Imaging.Bitmap(inputStream);
+		var bitmap = new Bitmap(inputStream);
 
 		return BuildImage(bitmap);
 	}
 
-	private static Image BuildImage(Avalonia.Media.Imaging.Bitmap bitmap)
+	private static Image BuildImage(Bitmap bitmap)
 	{
 		var bitmapSize = new ImageSize(bitmap.Size.Width, bitmap.Size.Height);
 

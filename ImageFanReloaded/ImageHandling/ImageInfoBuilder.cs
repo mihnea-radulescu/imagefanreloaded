@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ImageMagick;
 using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.ImageHandling;
@@ -31,7 +32,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	{
 		var imageInfoBuilder = new StringBuilder();
 
-		BuildGeneralInfoCommonEntries(imageFileData, imageInfoBuilder);
+		BuildGeneralInfo(imageFileData, imageInfoBuilder);
 
 		if (imageSize is not null)
 		{
@@ -44,30 +45,28 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 	private static async Task<string> BuildExtendedImageInfo(
 		ImageFileData imageFileData, ImageSize imageSize)
+		=> await Task.Run(() => BuildExtendedImageInfoInternal(imageFileData, imageSize));
+
+	private static string BuildExtendedImageInfoInternal(
+		ImageFileData imageFileData, ImageSize imageSize)
 	{
-		var image = await SixLabors.ImageSharp.Image.LoadAsync(imageFileData.ImageFilePath);
-		
 		var imageInfoBuilder = new StringBuilder();
-		
-		BuildGeneralInfoCommonEntries(imageFileData, imageInfoBuilder);
+
+		BuildGeneralInfo(imageFileData, imageInfoBuilder);
+
+		var image = new MagickImage(imageFileData.ImageFilePath);
 
 		imageInfoBuilder.AppendLine($"\tImage size:\t{imageSize} pixels");
+		imageInfoBuilder.AppendLine($"\tImage format:\t{image.Format}");
 
-		var bitsPerPixel = image.PixelType.BitsPerPixel;
-		imageInfoBuilder.AppendLine($"\tBits per pixel:\t{bitsPerPixel}");
-
-		var imageMetadata = image.Metadata;
-
-		BuildImageResolutionInfo(imageMetadata, imageInfoBuilder);
-		BuildImageFormatInfo(imageMetadata, imageInfoBuilder);
-		BuildExifInfo(imageMetadata, imageInfoBuilder);
-		BuildIptcInfo(imageMetadata, imageInfoBuilder);
+		BuildExifInfo(image, imageInfoBuilder);
+		BuildIptcInfo(image, imageInfoBuilder);
 
 		var imageInfo = imageInfoBuilder.ToString();
 		return imageInfo;
 	}
 
-	private static void BuildGeneralInfoCommonEntries(
+	private static void BuildGeneralInfo(
 		ImageFileData imageFileData,
 		StringBuilder imageInfoBuilder)
 	{
@@ -78,33 +77,14 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		imageInfoBuilder.AppendLine($"\tFile size:\t{imageFileData.SizeOnDiscInKilobytes} KB");
 	}
 
-	private static void BuildImageResolutionInfo(
-		SixLabors.ImageSharp.Metadata.ImageMetadata imageMetadata, StringBuilder imageInfoBuilder)
-	{
-		var horizontalResolution = imageMetadata.HorizontalResolution;
-		var verticalResolution = imageMetadata.VerticalResolution;
-		var resolutionUnits = Enum.GetName(imageMetadata.ResolutionUnits);
-
-		imageInfoBuilder.AppendLine($"\tResolution:\t{horizontalResolution}x{verticalResolution}");
-		imageInfoBuilder.AppendLine($"\tResolution units:\t{resolutionUnits}");
-	}
-
-	private static void BuildImageFormatInfo(
-		SixLabors.ImageSharp.Metadata.ImageMetadata imageMetadata, StringBuilder imageInfoBuilder)
-	{
-		if (imageMetadata.DecodedImageFormat is not null)
-		{
-			var imageFormat = imageMetadata.DecodedImageFormat?.Name.ToLower();
-			imageInfoBuilder.AppendLine($"\tImage format:\t{imageFormat}");
-		}
-	}
-
 	private static void BuildExifInfo(
-		SixLabors.ImageSharp.Metadata.ImageMetadata imageMetadata, StringBuilder imageInfoBuilder)
+		MagickImage image, StringBuilder imageInfoBuilder)
 	{
-		if (imageMetadata.ExifProfile is not null)
+		var exifProfile = image.GetExifProfile();
+
+		if (exifProfile is not null)
 		{
-			var metadataValuePairs = imageMetadata.ExifProfile.Values
+			var metadataValuePairs = exifProfile.Values
 				.Select(aMetadataValue => new
 				{
 					ValueTag = aMetadataValue.Tag,
@@ -137,11 +117,13 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	}
 
 	private static void BuildIptcInfo(
-		SixLabors.ImageSharp.Metadata.ImageMetadata imageMetadata, StringBuilder imageInfoBuilder)
+		MagickImage image, StringBuilder imageInfoBuilder)
 	{
-		if (imageMetadata.IptcProfile is not null)
+		var iptcProfile = image.GetIptcProfile();
+
+		if (iptcProfile is not null)
 		{
-			var metadataValuePairs = imageMetadata.IptcProfile.Values
+			var metadataValuePairs = iptcProfile.Values
 				.Select(aMetadataValue => new
 				{
 					ValueTag = aMetadataValue.Tag,

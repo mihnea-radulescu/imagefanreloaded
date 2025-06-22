@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
+using ImageMagick;
 using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.ImageHandling;
@@ -15,11 +14,13 @@ public class ImageOrientationHandler : IImageOrientationHandler
 
 	public void ApplyImageOrientation(object imageObject)
 	{
-		var imageOrientation = GetImageOrientation(imageObject);
+		var image = (MagickImage)imageObject;
+
+		var imageOrientation = GetImageOrientation(image);
 
 		if (ShouldUpdateImage(imageOrientation))
 		{
-			UpdateImage(imageObject, imageOrientation);
+			UpdateImage(image, imageOrientation);
 		}
 	}
 
@@ -30,18 +31,16 @@ public class ImageOrientationHandler : IImageOrientationHandler
 
 	private static readonly HashSet<ushort> ImageOrientationsToProcess;
 
-	private static ushort GetImageOrientation(object imageObject)
+	private static ushort GetImageOrientation(MagickImage image)
 	{
-		var image = (Image)imageObject;
+		var exifProfile = image.GetExifProfile();
 
-		if (image.Metadata.ExifProfile is null)
+		if (exifProfile is null)
 		{
 			return DefaultImageOrientation;
 		}
 
-		var exifValues = image.Metadata.ExifProfile.Values;
-
-		var imageOrientation = exifValues
+		var imageOrientation = exifProfile.Values
 			.FirstOrDefault(anExifValue => anExifValue.Tag.ToString() == ExifOrientationTag);
 
 		if (imageOrientation is not null)
@@ -62,38 +61,38 @@ public class ImageOrientationHandler : IImageOrientationHandler
 	private static bool ShouldUpdateImage(ushort imageOrientation)
 		=> ImageOrientationsToProcess.Contains(imageOrientation);
 
-	private static void UpdateImage(object imageObject, ushort imageOrientation)
+	private static void UpdateImage(MagickImage image, ushort imageOrientation)
 	{
-		var image = (Image)imageObject;
-
 		switch (imageOrientation)
 		{
 			case 2:
-				image.Mutate(context => context.Flip(FlipMode.Horizontal));
+				image.Flop();
 				break;
 
 			case 3:
-				image.Mutate(context => context.Rotate(RotateMode.Rotate180));
+				image.Rotate(180);
 				break;
 
 			case 4:
-				image.Mutate(context => context.Flip(FlipMode.Vertical));
+				image.Flip();
 				break;
 
 			case 5:
-				image.Mutate(context => context.RotateFlip(RotateMode.Rotate90, FlipMode.Horizontal));
+				image.Rotate(90);
+				image.Flop();
 				break;
 
 			case 6:
-				image.Mutate(context => context.Rotate(RotateMode.Rotate90));
+				image.Rotate(90);
 				break;
 
 			case 7:
-				image.Mutate(context => context.RotateFlip(RotateMode.Rotate270, FlipMode.Horizontal));
+				image.Rotate(270);
+				image.Flop();
 				break;
 
 			case 8:
-				image.Mutate(context => context.Rotate(RotateMode.Rotate270));
+				image.Rotate(270);
 				break;
 		}
 	}
