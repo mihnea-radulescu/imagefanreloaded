@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
@@ -17,13 +16,6 @@ public class ImageFile : ImageFileBase
 		: base(globalParameters, imageResizer, imageFileData)
 	{
 		_imageOrientationHandler = imageOrientationHandler;
-
-		_applyImageOrientation = (image) =>
-		{
-			var imageOrientation = _imageOrientationHandler.GetImageOrientation(image);
-
-			_imageOrientationHandler.ApplyImageOrientation(image, imageOrientation);
-		};
 	}
 
 	#region Protected
@@ -34,7 +26,7 @@ public class ImageFile : ImageFileBase
 		{
 			try
 			{
-				return BuildAndTransformImage(ImageFileData.ImageFilePath, _applyImageOrientation);
+				return BuildAndTransformImage(ImageFileData.ImageFilePath, true);
 			}
 			catch
 			{
@@ -47,7 +39,7 @@ public class ImageFile : ImageFileBase
 		}
 		else
 		{
-			return BuildAndTransformImage(ImageFileData.ImageFilePath, default);
+			return BuildAndTransformImage(ImageFileData.ImageFilePath, false);
 		}
 	}
 
@@ -57,17 +49,13 @@ public class ImageFile : ImageFileBase
 
 	private readonly IImageOrientationHandler _imageOrientationHandler;
 
-	private readonly Action<SixLabors.ImageSharp.Image> _applyImageOrientation;
-
-	private static IImage BuildAndTransformImage(
-		string inputFilePath,
-		Action<SixLabors.ImageSharp.Image>? transformImage)
+	private IImage BuildAndTransformImage(string inputFilePath, bool applyImageOrientation)
 	{
 		var image = SixLabors.ImageSharp.Image.Load(inputFilePath);
 
-		if (transformImage is not null)
+		if (applyImageOrientation)
 		{
-			transformImage(image);
+			_imageOrientationHandler.ApplyImageOrientation(image);
 		}
 
 		using var imageStream = new MemoryStream();
