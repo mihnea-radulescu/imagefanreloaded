@@ -107,6 +107,11 @@ public class ImageInfoBuilder : IImageInfoBuilder
 						var valueContentText = GetValueContentText(valueContentArray);
 						imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t[ {valueContentText} ]");
 					}
+					else if (aMetadataValuePair.ValueContent is Number valueContentNumber)
+					{
+						var valueContentText = (uint)valueContentNumber;
+						imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t{valueContentText}");
+					}
 					else
 					{
 						imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t{aMetadataValuePair.ValueContent}");
