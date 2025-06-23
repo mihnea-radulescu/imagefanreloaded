@@ -24,7 +24,7 @@ public class ImageFile : ImageFileBase
 
 	protected override IImage GetImageFromDisc(bool applyImageOrientation)
 	{
-		if (applyImageOrientation && IsExifEnabledImageFormat)
+		if (applyImageOrientation)
 		{
 			return BuildIndirectlySupportedImage(ImageFileData.ImageFilePath, true);
 		}

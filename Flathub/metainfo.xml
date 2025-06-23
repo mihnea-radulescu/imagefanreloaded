@@ -62,6 +62,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.06.24" date="2025-06-24">
+			<description>
+				<p>Expanded supported image formats, and enhanced image info content</p>
+			</description>
+		</release>
 		<release version="1.2025.06.22" date="2025-06-22">
 			<description>
 				<p>Optimized EXIF image orientation handling</p>

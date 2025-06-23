@@ -1,23 +1,9 @@
-using System;
-using System.Collections.Generic;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
 public abstract class ImageFileBase : IImageFile
 {
-	static ImageFileBase()
-	{
-		ExifEnabledImageFormats = new HashSet<string>(
-			StringComparer.InvariantCultureIgnoreCase)
-		{
-			".jpe", ".jpeg", ".jpg",
-			".png",
-			".tif", ".tiff",
-			".webp"
-		};
-	}
-
 	protected ImageFileBase(
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
@@ -163,9 +149,6 @@ public abstract class ImageFileBase : IImageFile
 
 	protected abstract IImage GetImageFromDisc(bool applyImageOrientation);
 
-	protected bool IsExifEnabledImageFormat
-		=> ExifEnabledImageFormats.Contains(ImageFileData.ImageFileExtension);
-
 	protected bool IsDirectlySupportedImageFileExtension
 		=> _globalParameters.DirectlySupportedImageFileExtensions.Contains(
 			ImageFileData.ImageFileExtension);
@@ -177,8 +160,6 @@ public abstract class ImageFileBase : IImageFile
 	#endregion
 
 	#region Private
-
-	private static readonly HashSet<string> ExifEnabledImageFormats;
 
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageResizer _imageResizer;
