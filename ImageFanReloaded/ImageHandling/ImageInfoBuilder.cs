@@ -1,9 +1,13 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 using ImageMagick;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.DiscAccess.Implementation;
 
 namespace ImageFanReloaded.ImageHandling;
 
@@ -13,7 +17,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	{
 		if (imageFile.HasReadImageError)
 		{
-			return BuildBasicImageInfo(imageFile.ImageFileData, default);
+			return BuildBasicImageInfo(imageFile.ImageFileData);
 		}
 
 		try
@@ -22,22 +26,17 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		}
 		catch
 		{
-			return BuildBasicImageInfo(imageFile.ImageFileData, imageFile.ImageSize);
+			return BuildBasicImageInfo(imageFile.ImageFileData);
 		}
 	}
 
 	#region Private
 
-	private static string BuildBasicImageInfo(ImageFileData imageFileData, ImageSize? imageSize)
+	private static string BuildBasicImageInfo(ImageFileData imageFileData)
 	{
 		var imageInfoBuilder = new StringBuilder();
 
-		BuildGeneralInfo(imageFileData, imageInfoBuilder);
-
-		if (imageSize is not null)
-		{
-			imageInfoBuilder.AppendLine($"\tImage size:\t{imageSize} pixels");
-		}
+		BuildFileProfile(imageFileData, imageInfoBuilder);
 
 		var imageInfo = imageInfoBuilder.ToString();
 		return imageInfo;
@@ -51,104 +50,176 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		ImageFileData imageFileData, ImageSize imageSize)
 	{
 		var imageInfoBuilder = new StringBuilder();
-
-		BuildGeneralInfo(imageFileData, imageInfoBuilder);
-
 		var image = new MagickImage(imageFileData.ImageFilePath);
 
-		imageInfoBuilder.AppendLine($"\tImage size:\t{imageSize} pixels");
-		imageInfoBuilder.AppendLine($"\tImage format:\t{image.Format}");
+		BuildFileProfile(imageFileData, imageInfoBuilder);
 
-		BuildExifInfo(image, imageInfoBuilder);
-		BuildIptcInfo(image, imageInfoBuilder);
+		BuildImageProfile(image, imageSize, imageInfoBuilder);
+		BuildColorProfile(image, imageInfoBuilder);
+
+		BuildExifProfile(image, imageInfoBuilder);
+		BuildIptcProfile(image, imageInfoBuilder);
+		BuildXmpProfile(image, imageInfoBuilder);
 
 		var imageInfo = imageInfoBuilder.ToString();
 		return imageInfo;
 	}
 
-	private static void BuildGeneralInfo(
-		ImageFileData imageFileData,
-		StringBuilder imageInfoBuilder)
+	private static void BuildFileProfile(ImageFileData imageFileData, StringBuilder imageInfoBuilder)
 	{
-		imageInfoBuilder.AppendLine("General info");
+		imageInfoBuilder.AppendLine("File profile");
 		imageInfoBuilder.AppendLine();
+
 		imageInfoBuilder.AppendLine($"\tFile name:\t{imageFileData.ImageFileName}");
 		imageInfoBuilder.AppendLine($"\tFile path:\t{imageFileData.ImageFilePath}");
 		imageInfoBuilder.AppendLine($"\tFile size:\t{imageFileData.SizeOnDiscInKilobytes} KB");
 	}
 
-	private static void BuildExifInfo(
-		MagickImage image, StringBuilder imageInfoBuilder)
+	private static void BuildImageProfile(
+		MagickImage image, ImageSize imageSize, StringBuilder imageInfoBuilder)
+	{
+		imageInfoBuilder.AppendLine();
+		imageInfoBuilder.AppendLine("Image profile");
+		imageInfoBuilder.AppendLine();
+
+		imageInfoBuilder.AppendLine($"\tImage size:\t{imageSize}");
+		imageInfoBuilder.AppendLine($"\tImage format:\t{image.Format}");
+		imageInfoBuilder.AppendLine($"\tImage depth:\t{image.Depth} bpp");
+	}
+
+	private static void BuildColorProfile(MagickImage image, StringBuilder imageInfoBuilder)
+	{
+		var colorProfile = image.GetColorProfile();
+
+		if (colorProfile is not null)
+		{
+			imageInfoBuilder.AppendLine();
+			imageInfoBuilder.AppendLine("Color profile");
+			imageInfoBuilder.AppendLine();
+
+			imageInfoBuilder.AppendLine($"\tName:\t{colorProfile.Name}");
+			imageInfoBuilder.AppendLine($"\tColor space:\t{colorProfile.ColorSpace.ToString()}");
+
+			if (colorProfile.Manufacturer is not null)
+			{
+				imageInfoBuilder.AppendLine($"\tManufacturer:\t{colorProfile.Manufacturer}");
+			}
+
+			if (colorProfile.Model is not null)
+			{
+				imageInfoBuilder.AppendLine($"\tModel:\t{colorProfile.Model}");
+			}
+
+			if (colorProfile.Description is not null)
+			{
+				imageInfoBuilder.AppendLine($"\tDescription:\t{colorProfile.Description}");
+			}
+
+			if (colorProfile.Copyright is not null)
+			{
+				imageInfoBuilder.AppendLine($"\tCopyright:\t{colorProfile.Copyright}");
+			}
+		}
+	}
+
+	private static void BuildExifProfile(MagickImage image, StringBuilder imageInfoBuilder)
 	{
 		var exifProfile = image.GetExifProfile();
 
 		if (exifProfile is not null)
 		{
-			var metadataValuePairs = exifProfile.Values
-				.Select(aMetadataValue => new
+			var valueTagValueContentPairs = exifProfile.Values
+				.Select(aValueTagValueContentPair => new
 				{
-					ValueTag = aMetadataValue.Tag,
-					ValueContent = aMetadataValue.GetValue()
+					ValueTag = aValueTagValueContentPair.Tag,
+					ValueContent = aValueTagValueContentPair.GetValue()
 				})
-				.Where(aMetadataValuePair =>
-					aMetadataValuePair.ValueContent is not null)
+				.Where(aValueTagValueContentPair =>
+					aValueTagValueContentPair.ValueContent is not null)
 				.ToList();
 
-			if (metadataValuePairs.Any())
+			if (valueTagValueContentPairs.Any())
 			{
 				imageInfoBuilder.AppendLine();
-				imageInfoBuilder.AppendLine("EXIF info");
+				imageInfoBuilder.AppendLine("EXIF profile");
 				imageInfoBuilder.AppendLine();
 
-				foreach (var aMetadataValuePair in metadataValuePairs)
+				foreach (var aValueTagValueContentPair in valueTagValueContentPairs)
 				{
-					if (aMetadataValuePair.ValueContent is Array valueContentArray)
+					if (aValueTagValueContentPair.ValueContent is Array valueContentArray)
 					{
 						var valueContentText = GetValueContentText(valueContentArray);
-						imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t[ {valueContentText} ]");
+						imageInfoBuilder.AppendLine($"\t{aValueTagValueContentPair.ValueTag}:\t[ {valueContentText} ]");
 					}
-					else if (aMetadataValuePair.ValueContent is Number valueContentNumber)
+					else if (aValueTagValueContentPair.ValueContent is Number valueContentNumber)
 					{
 						var valueContentText = (uint)valueContentNumber;
-						imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t{valueContentText}");
+						imageInfoBuilder.AppendLine($"\t{aValueTagValueContentPair.ValueTag}:\t{valueContentText}");
 					}
 					else
 					{
-						imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t{aMetadataValuePair.ValueContent}");
+						imageInfoBuilder.AppendLine($"\t{aValueTagValueContentPair.ValueTag}:\t{aValueTagValueContentPair.ValueContent}");
 					}
 				}
 			}
 		}
 	}
 
-	private static void BuildIptcInfo(
-		MagickImage image, StringBuilder imageInfoBuilder)
+	private static void BuildIptcProfile(MagickImage image, StringBuilder imageInfoBuilder)
 	{
 		var iptcProfile = image.GetIptcProfile();
 
 		if (iptcProfile is not null)
 		{
-			var metadataValuePairs = iptcProfile.Values
-				.Select(aMetadataValue => new
+			var valueTagValueContentPairs = iptcProfile.Values
+				.Select(aValueTagValueContentPair => new
 				{
-					ValueTag = aMetadataValue.Tag,
-					ValueContent = aMetadataValue.Value
+					ValueTag = aValueTagValueContentPair.Tag,
+					ValueContent = aValueTagValueContentPair.Value
 				})
-				.Where(aMetadataValuePair =>
-					!aMetadataValuePair.ValueContent.Contains('\0'))
+				.Where(aValueTagValueContentPair =>
+					!aValueTagValueContentPair.ValueContent.Contains('\0'))
 				.ToList();
 
-			if (metadataValuePairs.Any())
+			if (valueTagValueContentPairs.Any())
 			{
 				imageInfoBuilder.AppendLine();
-				imageInfoBuilder.AppendLine("IPTC info");
+				imageInfoBuilder.AppendLine("IPTC profile");
 				imageInfoBuilder.AppendLine();
 
-				foreach (var aMetadataValuePair in metadataValuePairs)
+				foreach (var aValueTagValueContentPair in valueTagValueContentPairs)
 				{
-					imageInfoBuilder.AppendLine($"\t{aMetadataValuePair.ValueTag}:\t{aMetadataValuePair.ValueContent}");
+					imageInfoBuilder.AppendLine($"\t{aValueTagValueContentPair.ValueTag}:\t{aValueTagValueContentPair.ValueContent}");
 				}
 			}
+		}
+	}
+
+	private static void BuildXmpProfile(MagickImage image, StringBuilder imageInfoBuilder)
+	{
+		var xmpProfile = image.GetXmpProfile();
+
+		XDocument? xmpProfileXmlContent;
+		try
+		{
+			xmpProfileXmlContent = xmpProfile?.ToXDocument();
+		}
+		catch
+		{
+			return;
+		}
+
+		if (xmpProfileXmlContent is not null)
+		{
+			var xmpProfileXmlContentString = xmpProfileXmlContent.ToString();
+			var xmlContentForDisplay = FormatXmlContentForDisplay(xmpProfileXmlContentString);
+			var indentedXmlContentForDisplay = IndentText(xmlContentForDisplay, "\t");
+
+			imageInfoBuilder.AppendLine();
+			imageInfoBuilder.AppendLine("XMP profile");
+			imageInfoBuilder.AppendLine();
+
+			imageInfoBuilder.Append(indentedXmlContentForDisplay);
 		}
 	}
 
@@ -159,6 +230,45 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 		var valueContentText = string.Join(", ", valueContentItems);
 		return valueContentText;
+	}
+
+	private static string FormatXmlContentForDisplay(string xmlContent)
+	{
+		using var xmlContentStream = new MemoryStream();
+		using var xmlTextWriter = new XmlTextWriter(xmlContentStream, Encoding.UTF8);
+
+		var xmlDocument = new XmlDocument();
+		xmlDocument.LoadXml(xmlContent);
+
+		xmlTextWriter.Formatting = Formatting.Indented;
+		xmlTextWriter.Indentation = 1;
+		xmlTextWriter.IndentChar = '\t';
+
+		xmlDocument.WriteContentTo(xmlTextWriter);
+
+		xmlTextWriter.Flush();
+		xmlContentStream.Flush();
+		xmlContentStream.Reset();
+
+		var formattedXmlContentStreamReader = new StreamReader(xmlContentStream);
+		var formattedXmlContent = formattedXmlContentStreamReader.ReadToEnd();
+
+		return formattedXmlContent;
+	}
+
+	private static string IndentText(string text, string indentation)
+	{
+		var indentedTextBuilder = new StringBuilder();
+
+		var textLines = text.Split(Environment.NewLine);
+
+		foreach (var aTextLine in textLines)
+		{
+			indentedTextBuilder.AppendLine($"{indentation}{aTextLine}");
+		}
+
+		var indentedText = indentedTextBuilder.ToString();
+		return indentedText;
 	}
 
 	#endregion
