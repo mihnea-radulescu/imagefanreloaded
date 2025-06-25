@@ -13,11 +13,9 @@ public class ImageFile : ImageFileBase
 	public ImageFile(
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
-		ImageFileData imageFileData,
-		IImageOrientationHandler imageOrientationHandler)
+		ImageFileData imageFileData)
 		: base(globalParameters, imageResizer, imageFileData)
 	{
-		_imageOrientationHandler = imageOrientationHandler;
 	}
 
 	#region Protected
@@ -26,7 +24,7 @@ public class ImageFile : ImageFileBase
 	{
 		if (applyImageOrientation)
 		{
-			return BuildIndirectlySupportedImage(ImageFileData.ImageFilePath, true);
+			return BuildIndirectlySupportedImage(ImageFileData.ImageFilePath);
 		}
 		else if (IsDirectlySupportedImageFileExtension)
 		{
@@ -34,7 +32,7 @@ public class ImageFile : ImageFileBase
 		}
 		else
 		{
-			return BuildIndirectlySupportedImage(ImageFileData.ImageFilePath, false);
+			return BuildIndirectlySupportedImage(ImageFileData.ImageFilePath);
 		}
 	}
 
@@ -42,18 +40,13 @@ public class ImageFile : ImageFileBase
 
 	#region Private
 
-	private readonly IImageOrientationHandler _imageOrientationHandler;
-
-	private IImage BuildIndirectlySupportedImage(string inputFilePath, bool applyImageOrientation)
+	private static IImage BuildIndirectlySupportedImage(string inputFilePath)
 	{
 		var image = new MagickImage(inputFilePath);
 
 		image.Format = MagickFormat.Jpg;
 
-		if (applyImageOrientation)
-		{
-			_imageOrientationHandler.ApplyImageOrientation(image);
-		}
+		image.AutoOrient();
 
 		using var imageStream = new MemoryStream();
 		image.Write(imageStream);

@@ -31,7 +31,7 @@ public class AppBootstrap : IAppBootstrap
 	{
 		_desktop = desktop;
 	}
-	
+
 	public async Task BootstrapApplication()
 	{
 		BootstrapTypes();
@@ -47,30 +47,28 @@ public class AppBootstrap : IAppBootstrap
 	}
 
 	#region Private
-	
+
 	private readonly IClassicDesktopStyleApplicationLifetime _desktop;
-	
+
 	private IGlobalParameters _globalParameters = null!;
 	private IFileSizeEngine _fileSizeEngine = null!;
 	private IDiscQueryEngine _discQueryEngine = null!;
 	private ITabOptionsFactory _tabOptionsFactory = null!;
 	private IInputPathHandlerFactory _inputPathHandlerFactory = null!;
 	private IInputPathHandler _commandLineArgsInputPathHandler = null!;
-	
+
 	private void BootstrapTypes()
 	{
 		IOperatingSystemSettings operatingSystemSettings = new OperatingSystemSettings();
-		
+
 		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
-		
-		_globalParameters = new GlobalParameters(operatingSystemSettings, imageResizer);
-		
-		_fileSizeEngine = new FileSizeEngine();
 
-		IImageOrientationHandler imageOrientationHandler = new ImageOrientationHandler();
-		IImageFileFactory imageFileFactory = new ImageFileFactory(
-			_globalParameters, imageResizer, imageOrientationHandler);
+		_globalParameters = new GlobalParameters(operatingSystemSettings, imageResizer);
+
+		IImageFileFactory imageFileFactory = new ImageFileFactory(_globalParameters, imageResizer);
+
+		_fileSizeEngine = new FileSizeEngine();
 
 		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
 			_globalParameters, _fileSizeEngine, imageFileFactory);
@@ -90,13 +88,13 @@ public class AppBootstrap : IAppBootstrap
 
 		return inputPath;
 	}
-	
+
 	private bool IsMainViewAccess() => _commandLineArgsInputPathHandler.InputPathType != InputPathType.File;
-	
+
 	private void ShowMainView()
 	{
 		IFolderChangedMutexFactory folderChangedMutexFactory = new FolderChangedMutexFactory();
-		
+
 		var mainWindow = new MainWindow();
 		_desktop.MainWindow = mainWindow;
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
