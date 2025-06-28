@@ -1,3 +1,5 @@
+//#define FLATPAK_BUILD
+
 using System.Threading.Tasks;
 using Avalonia.Controls.ApplicationLifetimes;
 using ImageFanReloaded.Controls;
@@ -74,7 +76,11 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters, _fileSizeEngine, imageFileFactory);
 		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 
-		_tabOptionsFactory = new TabOptionsFactory();
+#if FLATPAK_BUILD
+		_tabOptionsFactory = new FlatpakTabOptionsFactory();
+#else
+		_tabOptionsFactory = new StandardTabOptionsFactory();
+#endif
 
 		_inputPathHandlerFactory = new InputPathHandlerFactory(_globalParameters, _discQueryEngine);
 		string? commandLineArgsInputPath = GetCommandLineArgsInputPath();

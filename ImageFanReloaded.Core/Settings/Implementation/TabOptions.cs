@@ -1,5 +1,3 @@
-//#define FLATPAK_BUILD
-
 using System;
 using System.IO;
 using System.Text.Json;
@@ -19,12 +17,29 @@ public class TabOptions : ITabOptions
 
 	static TabOptions()
 	{
-		SettingsFolderPath = GetSettingsFolderPath();
-		SettingsFilePath = GetSettingsFilePath(SettingsFolderPath);
+		AppDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
 		JsonSerializerOptions = BuildJsonSerializerOptions();
+	}
 
-		LoadDefaultTabOptions();
+	public static void LoadDefaultTabOptions(string settingsFolderName)
+	{
+		SettingsFolderPath = GetSettingsFolderPath(settingsFolderName);
+		SettingsFilePath = GetSettingsFilePath(SettingsFolderPath);
+
+		var tabOptions = default(ITabOptions?);
+
+		try
+		{
+			tabOptions = GetTabOptions();
+		}
+		catch
+		{
+		}
+		finally
+		{
+			DefaultTabOptions = tabOptions ?? new TabOptions();
+		}
 	}
 
 	public TabOptions()
@@ -41,7 +56,6 @@ public class TabOptions : ITabOptions
 
 	#region Private
 
-	private const string SettingsFolderName = "ImageFanReloaded";
 	private const string SettingsFileName = "DefaultTabOptions.json";
 
 	private const FileSystemEntryInfoOrdering DefaultFileSystemEntryInfoOrdering =
@@ -53,76 +67,60 @@ public class TabOptions : ITabOptions
 	private const SlideshowInterval DefaultSlideshowInterval = SlideshowInterval.OneSecond;
 	private const bool DefaultApplyImageOrientation = false;
 
-	private static readonly string SettingsFolderPath;
-	private static readonly string SettingsFilePath;
+	private static readonly string AppDataFolderPath;
 
 	private static readonly JsonSerializerOptions JsonSerializerOptions;
 
+	private static string? SettingsFolderPath;
+	private static string? SettingsFilePath;
+
 	private static ITabOptions? DefaultTabOptions;
 
-	private static string GetSettingsFolderPath()
-	{
-		var appDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
-#if FLATPAK_BUILD
-		var settingsFolderPath = appDataFolderPath;
-#else
-		var settingsFolderPath = Path.Combine(appDataFolderPath, SettingsFolderName);
-#endif
-
-		return settingsFolderPath;
-	}
+	private static string GetSettingsFolderPath(string settingsFolderName)
+		=> Path.Combine(AppDataFolderPath, settingsFolderName);
 
 	private static string GetSettingsFilePath(string settingsFolderPath)
 		=> Path.Combine(settingsFolderPath, SettingsFileName);
 
-	private static void LoadDefaultTabOptions()
+	private static ITabOptions? GetTabOptions()
 	{
-		try
+		var tabOptions = default(ITabOptions?);
+
+		if (!File.Exists(SettingsFilePath))
 		{
-			if (!File.Exists(SettingsFilePath))
-			{
-				return;
-			}
-
-			var jsonContent = File.ReadAllText(SettingsFilePath);
-			var loadedTabOptions = JsonSerializer.Deserialize<TabOptions>(
-				jsonContent, JsonSerializerOptions);
-
-			if (loadedTabOptions is null)
-			{
-				return;
-			}
-
-			if (!IsValidEnumValue(loadedTabOptions.FileSystemEntryInfoOrdering))
-			{
-				loadedTabOptions.FileSystemEntryInfoOrdering = DefaultFileSystemEntryInfoOrdering;
-			}
-
-			if (!IsValidEnumValue(loadedTabOptions.ThumbnailSize))
-			{
-				loadedTabOptions.ThumbnailSize = DefaultThumbnailSize;
-			}
-
-			if (!IsValidPanelsSplittingRatio(loadedTabOptions.PanelsSplittingRatio))
-			{
-				loadedTabOptions.PanelsSplittingRatio = DefaultPanelsSplittingRatio;
-			}
-
-			if (!IsValidEnumValue(loadedTabOptions.SlideshowInterval))
-			{
-				loadedTabOptions.SlideshowInterval = DefaultSlideshowInterval;
-			}
-
-			DefaultTabOptions = loadedTabOptions;
+			return tabOptions;
 		}
-		catch
+
+		var jsonContent = File.ReadAllText(SettingsFilePath);
+		tabOptions = JsonSerializer.Deserialize<TabOptions>(
+			jsonContent, JsonSerializerOptions);
+
+		if (tabOptions is null)
 		{
+			return tabOptions;
 		}
-		finally
+
+		if (!IsValidEnumValue(tabOptions.FileSystemEntryInfoOrdering))
 		{
-			DefaultTabOptions ??= new TabOptions();
+			tabOptions.FileSystemEntryInfoOrdering = DefaultFileSystemEntryInfoOrdering;
 		}
+
+		if (!IsValidEnumValue(tabOptions.ThumbnailSize))
+		{
+			tabOptions.ThumbnailSize = DefaultThumbnailSize;
+		}
+
+		if (!IsValidPanelsSplittingRatio(tabOptions.PanelsSplittingRatio))
+		{
+			tabOptions.PanelsSplittingRatio = DefaultPanelsSplittingRatio;
+		}
+
+		if (!IsValidEnumValue(tabOptions.SlideshowInterval))
+		{
+			tabOptions.SlideshowInterval = DefaultSlideshowInterval;
+		}
+
+		return tabOptions;
 	}
 
 	private void InitializeWithDefaultValues()
@@ -168,10 +166,10 @@ public class TabOptions : ITabOptions
 
 			if (!Directory.Exists(SettingsFolderPath))
 			{
-				Directory.CreateDirectory(SettingsFolderPath);
+				Directory.CreateDirectory(SettingsFolderPath!);
 			}
 
-			await File.WriteAllTextAsync(SettingsFilePath, jsonContent);
+			await File.WriteAllTextAsync(SettingsFilePath!, jsonContent);
 		}
 		catch
 		{
