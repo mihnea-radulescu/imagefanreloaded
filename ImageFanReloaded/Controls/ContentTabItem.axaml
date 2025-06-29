@@ -1,6 +1,13 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="ImageFanReloaded.Controls.ContentTabItem">
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="ImageFanReloaded.Controls.ContentTabItem">
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="CornerRadius" Value="5"/>
+		</Style>
+	</UserControl.Styles>
+
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -13,26 +20,18 @@
 					Spacing="8"
 					HorizontalAlignment="Right">
 			<Button Name="_slideshowButton"
-					BorderThickness="0"
-					CornerRadius="5"
 					Content="Slideshow"
 					Click="OnSlideshowButtonClicked"/>
 
 			<Button Name="_imageInfoButton"
-					BorderThickness="0"
-					CornerRadius="5"
 					Content="Image info"
 					Click="OnImageInfoButtonClicked"/>
 
 			<Button Name="_optionsButton"
-					BorderThickness="0"
-					CornerRadius="5"
 					Content="Tab options"
 					Click="OnTabOptionsButtonClicked"/>
 
 			<Button Name="_aboutButton"
-					BorderThickness="0"
-					CornerRadius="5"
 					Content="About"
 					Click="OnAboutButtonClicked"/>
 		</StackPanel>
