@@ -40,11 +40,14 @@ public class ImageFile : ImageFileBase
 
 	#region Private
 
+	private const uint ImageQualityLevel = 80; 
+
 	private static IImage BuildIndirectlySupportedImage(string inputFilePath)
 	{
 		var image = new MagickImage(inputFilePath);
 
 		image.Format = MagickFormat.Jpg;
+		image.Quality = ImageQualityLevel;
 
 		image.AutoOrient();
 
