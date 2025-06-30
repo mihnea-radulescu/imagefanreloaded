@@ -1,22 +1,23 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="ImageFanReloaded.Controls.ContentTabItemHeader">
-	<StackPanel Orientation="Horizontal">
-		
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="ImageFanReloaded.Controls.ContentTabItemHeader">
+	<StackPanel Orientation="Horizontal"
+				Margin="4"
+				Spacing="8">
 		<TextBlock Name="_textBlockTabTitle"
-		           VerticalAlignment="Center"/>
-		
+				   VerticalAlignment="Center"/>
+
 		<Border Name="_borderTabClose"
 				CornerRadius="50"
-		        Width="20"
-		        Height="20"
-		        Margin="3 0 3 0"
-		        Background="#0087bd"
-		        BorderThickness="1.5"
+				Width="20"
+				Height="20"
+				Margin="0 2 0 0"
+				Background="#0087bd"
+				BorderThickness="1.5"
 				PointerPressed="OnTabClose">
 			<TextBlock Text="✕"
-			           TextAlignment="Center"
-			           VerticalAlignment="Center"/>
+					   TextAlignment="Center"
+					   VerticalAlignment="Center"/>
 		</Border>
 		
 	</StackPanel>
