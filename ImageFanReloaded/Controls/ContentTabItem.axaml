@@ -1,13 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 x:Class="ImageFanReloaded.Controls.ContentTabItem">
-	<UserControl.Styles>
-		<Style Selector="Button">
-			<Setter Property="BorderThickness" Value="0"/>
-			<Setter Property="CornerRadius" Value="5"/>
-		</Style>
-	</UserControl.Styles>
-
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -71,13 +64,11 @@
 							Grid.Column="0"
 							IsReadOnly="True"
 							Background="Transparent"
-							BorderThickness="0"
 							TextAlignment="Left"/>
 					<TextBox Name="_textBoxImageInfo"
 							Grid.Column="1"
 							IsReadOnly="True"
 							Background="Transparent"
-							BorderThickness="0"
 							TextAlignment="Right"/>
 				</Grid>
 

@@ -1,8 +1,16 @@
 <Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="ImageFanReloaded.App"
-             RequestedThemeVariant="Default">
-    <Application.Styles>
-        <FluentTheme/>
-    </Application.Styles>
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="ImageFanReloaded.App"
+			 RequestedThemeVariant="Default">
+	<Application.Styles>
+		<FluentTheme/>
+		<Style Selector="Button">
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="CornerRadius" Value="5"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="CornerRadius" Value="5"/>
+		</Style>
+	</Application.Styles>
 </Application>

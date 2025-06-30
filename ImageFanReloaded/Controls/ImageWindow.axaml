@@ -1,36 +1,35 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        x:Class="ImageFanReloaded.Controls.ImageWindow"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Class="ImageFanReloaded.Controls.ImageWindow"
 		Icon="/MainWindowIcon.ico"
 		WindowStartupLocation="CenterScreen"
 		WindowState="FullScreen"
-        Background="Black"
+		Background="Black"
 		Focusable="True"
-        Closing="OnClosing">
+		Closing="OnClosing">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<ScrollViewer Name="_imageScrollViewer"
-		              Grid.Row="0"
-		              HorizontalScrollBarVisibility="Hidden"
-		              VerticalScrollBarVisibility="Hidden"
-		              PointerPressed="OnMouseDown"
-		              PointerReleased="OnMouseUp">
+					  Grid.Row="0"
+					  HorizontalScrollBarVisibility="Hidden"
+					  VerticalScrollBarVisibility="Hidden"
+					  PointerPressed="OnMouseDown"
+					  PointerReleased="OnMouseUp">
 			<Image Name="_imageControl"
-			       Stretch="None"/>
+				   Stretch="None"/>
 		</ScrollViewer>
 		<Canvas Grid.Row="0">
 			<TextBox Name="_textBoxImageInfo"
-			         Canvas.Bottom="0"
-			         Canvas.Right="0"
-			         IsReadOnly="True"
-			         Background="Transparent"
-			         BorderThickness="0"
-			         Foreground="Lime"
-			         FontWeight="Bold"
-			         TextAlignment="Right"
-			         IsVisible="False"/>
+					 Canvas.Bottom="0"
+					 Canvas.Right="0"
+					 IsReadOnly="True"
+					 Background="Transparent"
+					 Foreground="Lime"
+					 FontWeight="Bold"
+					 TextAlignment="Right"
+					 IsVisible="False"/>
 		</Canvas>
 	</Grid>
 </Window>

@@ -16,7 +16,6 @@
 		<TextBox Name="_textBoxImageInfo"
 			 	 IsReadOnly="True"
 			 	 Background="Transparent"
-			 	 BorderThickness="0"
-			 	 Margin="3"/>
+			 	 Margin="4"/>
 	</ScrollViewer>
 </Window>
