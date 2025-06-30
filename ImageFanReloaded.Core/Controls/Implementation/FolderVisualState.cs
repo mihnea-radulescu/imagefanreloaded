@@ -44,7 +44,7 @@ public class FolderVisualState : IFolderVisualState
 		await _folderChangedMutex.Wait();
 		
 		_contentTabItem.ClearThumbnailBoxes(true);
-		_contentTabItem.SetTitle(_folderName);
+		_contentTabItem.SetTabInfo(_folderName, _folderPath);
 
 		var subFolders = await _discQueryEngine.GetSubFolders(
 			_folderPath, tabOptions.FileSystemEntryInfoOrdering);

@@ -8,8 +8,8 @@ public interface IContentTabItemHeader
 	public IContentTabItem? ContentTabItem { get; set; }
 
 	public event EventHandler<ContentTabItemEventArgs>? TabClosed;
-	
-	void SetTabTitle(string tabTitle);
+
+	void SetTabHeader(string tabTitle, string tabTooltip);
 
 	void ShowTabCloseButton(bool showTabCloseButton);
 }

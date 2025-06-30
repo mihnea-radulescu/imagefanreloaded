@@ -45,7 +45,7 @@ public interface IContentTabItem
 	bool? GetFolderTreeViewSelectedItemExpandedState();
 	void SetFolderTreeViewSelectedItemExpandedState(bool isExpanded);
 
-	void SetTitle(string title);
+	void SetTabInfo(string folderName, string folderPath);
 
 	void RegisterMainViewEvents();
 	void UnregisterMainViewEvents();

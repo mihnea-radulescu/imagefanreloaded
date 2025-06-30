@@ -173,7 +173,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void SetTitle(string title) => ContentTabItemHeader!.SetTabTitle(title);
+	public void SetTabInfo(string folderName, string folderPath)
+		=> ContentTabItemHeader!.SetTabHeader(folderName, folderPath);
 
 	public void RegisterMainViewEvents() => MainView!.TabCountChanged += OnTabCountChanged;
 	public void UnregisterMainViewEvents() => MainView!.TabCountChanged -= OnTabCountChanged;

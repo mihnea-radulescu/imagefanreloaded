@@ -13,13 +13,13 @@ namespace ImageFanReloaded.Controls;
 public partial class MainWindow : Window, IMainView
 {
 	public MainWindow()
-    {
-        InitializeComponent();
+	{
+		InitializeComponent();
 
 		_windowFontSize = FontSize;
 		
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
-    }
+	}
 	
 	public IGlobalParameters? GlobalParameters { get; set; }
 	public ITabOptionsFactory? TabOptionsFactory { get; set; }
@@ -157,7 +157,7 @@ public partial class MainWindow : Window, IMainView
 		contentTabItem.ContentTabItemHeader = contentTabItemHeader;
 		contentTabItem.ContentTabItemHeader.TabClosed += CloseContentTabItem;
 		contentTabItem.RegisterMainViewEvents();
-		contentTabItem.SetTitle(DefaultTabItemTitle);
+		contentTabItem.SetTabInfo(DefaultTabItemTitle, string.Empty);
 
 		contentTabItem.RaisePanelsSplittingRatioChangedEvent();
 		
@@ -180,12 +180,12 @@ public partial class MainWindow : Window, IMainView
 	private bool ShouldAllowTabClose() => GetContentTabItemCount() > 1;
 
 	private IContentTabItem? GetActiveContentTabItem()
-    {
-	    var tabItem = (TabItem)_tabControl.SelectedItem!;
-	    var contentTabItem = tabItem.Content as IContentTabItem;
+	{
+		var tabItem = (TabItem)_tabControl.SelectedItem!;
+		var contentTabItem = tabItem.Content as IContentTabItem;
 
-	    return contentTabItem;
-    }
+		return contentTabItem;
+	}
 
 	private void SelectLastTabItem()
 	{
@@ -217,73 +217,73 @@ public partial class MainWindow : Window, IMainView
 		selectedContentTabItem.SetFocusOnSelectedFolderTreeViewItem();
 	}
 
-    private bool ShouldHandleEscapeAction(KeyModifiers keyModifiers, Key keyPressing)
-    {
-        if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EscapeKey)
-        {
-            return true;
-        }
+	private bool ShouldHandleEscapeAction(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EscapeKey)
+		{
+			return true;
+		}
 
 		return false;
-    }
+	}
 
-    private bool ShouldWindowsOsCloseWindow(KeyModifiers keyModifiers, Key keyPressing)
-    {
-	    if (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressing == GlobalParameters!.F4Key)
-	    {
-		    return true;
-	    }
-	        
-	    return false;
-    }
-    
-    private bool ShouldAddNewTab(KeyModifiers keyModifiers, Key keyPressing)
-    {
-	    if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.PlusKey)
-	    {
-		    return true;
-	    }
+	private bool ShouldWindowsOsCloseWindow(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressing == GlobalParameters!.F4Key)
+		{
+			return true;
+		}
+			
+		return false;
+	}
+	
+	private bool ShouldAddNewTab(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.PlusKey)
+		{
+			return true;
+		}
 
-	    return false;
-    }
-    
-    private bool ShouldCloseSelectedTab(KeyModifiers keyModifiers, Key keyPressing)
-    {
-	    if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.MinusKey)
-	    {
-		    return HasAtLeastOneContentTabItem();
-	    }
+		return false;
+	}
+	
+	private bool ShouldCloseSelectedTab(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.MinusKey)
+		{
+			return HasAtLeastOneContentTabItem();
+		}
 
-	    return false;
-    }
+		return false;
+	}
 
-    private bool ShouldNavigateToNextTab(KeyModifiers keyModifiers, Key keyPressing)
-    {
-	    if (keyModifiers == GlobalParameters!.ShiftKeyModifier && keyPressing == GlobalParameters!.TabKey)
-	    {
-		    return HasAtLeastOneContentTabItem();
-	    }
+	private bool ShouldNavigateToNextTab(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.ShiftKeyModifier && keyPressing == GlobalParameters!.TabKey)
+		{
+			return HasAtLeastOneContentTabItem();
+		}
 
-	    return false;
-    }
+		return false;
+	}
 
-    private bool ShouldAllowKeyPressingEventPropagation(KeyModifiers keyModifiers, Key keyPressing)
-    {
-	    if (keyModifiers == GlobalParameters!.NoneKeyModifier && GlobalParameters!.IsNavigationKey(keyPressing))
-	    {
-		    return true;
-	    }
+	private bool ShouldAllowKeyPressingEventPropagation(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && GlobalParameters!.IsNavigationKey(keyPressing))
+		{
+			return true;
+		}
 
-	    return false;
-    }
-    
-    private bool HasAtLeastOneContentTabItem()
-    {
-	    var contentTabItemCount = GetContentTabItemCount();
-	    
-	    var hasAtLeastOneTabItem = contentTabItemCount > 1;
-	    return hasAtLeastOneTabItem;
-    }
+		return false;
+	}
+	
+	private bool HasAtLeastOneContentTabItem()
+	{
+		var contentTabItemCount = GetContentTabItemCount();
+		
+		var hasAtLeastOneTabItem = contentTabItemCount > 1;
+		return hasAtLeastOneTabItem;
+	}
 
 	private void CloseWindow() => Close();
 

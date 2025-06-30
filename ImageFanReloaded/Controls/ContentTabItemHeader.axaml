@@ -1,6 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 x:Class="ImageFanReloaded.Controls.ContentTabItemHeader">
+			 x:Class="ImageFanReloaded.Controls.ContentTabItemHeader"
+			 ToolTip.ShowDelay="500"
+			 Loaded="OnLoaded">
+	<ToolTip.Tip>
+		<TextBlock Name="_textBlockTabTooltip"/>
+	</ToolTip.Tip>
 	<StackPanel Orientation="Horizontal"
 				Margin="4"
 				Spacing="8">
