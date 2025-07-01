@@ -153,10 +153,6 @@ public abstract class ImageFileBase : IImageFile
 		=> _globalParameters.DirectlySupportedImageFileExtensions.Contains(
 			ImageFileData.ImageFileExtension);
 
-	protected bool IsIndirectlySupported2ImageFileExtension
-		=> _globalParameters.IndirectlySupportedImageFileExtensions.Contains(
-			ImageFileData.ImageFileExtension);
-
 	#endregion
 
 	#region Private

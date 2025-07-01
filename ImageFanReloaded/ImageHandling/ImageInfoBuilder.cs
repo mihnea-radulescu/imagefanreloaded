@@ -50,7 +50,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		ImageFileData imageFileData, ImageSize imageSize)
 	{
 		var imageInfoBuilder = new StringBuilder();
-		var image = new MagickImage(imageFileData.ImageFilePath);
+		IMagickImage image = new MagickImage(imageFileData.ImageFilePath);
 
 		BuildFileProfile(imageFileData, imageInfoBuilder);
 
@@ -76,7 +76,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	}
 
 	private static void BuildImageProfile(
-		MagickImage image, ImageSize imageSize, StringBuilder imageInfoBuilder)
+		IMagickImage image, ImageSize imageSize, StringBuilder imageInfoBuilder)
 	{
 		imageInfoBuilder.AppendLine();
 		imageInfoBuilder.AppendLine("Image profile");
@@ -87,7 +87,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		imageInfoBuilder.AppendLine($"\tImage depth:\t{image.Depth} bpp");
 	}
 
-	private static void BuildColorProfile(MagickImage image, StringBuilder imageInfoBuilder)
+	private static void BuildColorProfile(IMagickImage image, StringBuilder imageInfoBuilder)
 	{
 		var colorProfile = image.GetColorProfile();
 
@@ -122,7 +122,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		}
 	}
 
-	private static void BuildExifProfile(MagickImage image, StringBuilder imageInfoBuilder)
+	private static void BuildExifProfile(IMagickImage image, StringBuilder imageInfoBuilder)
 	{
 		var exifProfile = image.GetExifProfile();
 
@@ -165,7 +165,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		}
 	}
 
-	private static void BuildIptcProfile(MagickImage image, StringBuilder imageInfoBuilder)
+	private static void BuildIptcProfile(IMagickImage image, StringBuilder imageInfoBuilder)
 	{
 		var iptcProfile = image.GetIptcProfile();
 
@@ -195,7 +195,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		}
 	}
 
-	private static void BuildXmpProfile(MagickImage image, StringBuilder imageInfoBuilder)
+	private static void BuildXmpProfile(IMagickImage image, StringBuilder imageInfoBuilder)
 	{
 		var xmpProfile = image.GetXmpProfile();
 

@@ -44,7 +44,7 @@ public class ImageFile : ImageFileBase
 
 	private static IImage BuildIndirectlySupportedImage(string inputFilePath)
 	{
-		var image = new MagickImage(inputFilePath);
+		IMagickImage image = new MagickImage(inputFilePath);
 
 		image.Format = MagickFormat.Jpg;
 		image.Quality = ImageQualityLevel;
