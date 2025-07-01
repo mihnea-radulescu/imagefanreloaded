@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
@@ -6,10 +7,15 @@ public class Image : IImage
 {
 	public Image(IDisposable imageImplementationInstance, ImageSize imageSize)
 	{
-		_imageImplementationInstance = imageImplementationInstance;
-		_imageSize = imageSize;
+		IImageFrame singleImageFrame = new ImageFrame(
+			imageImplementationInstance, imageSize, TimeSpan.Zero);
 
-		_hasBeenDisposed = false;
+		_imageFrames = new List<IImageFrame> { singleImageFrame };
+	}
+
+	public Image(IReadOnlyList<IImageFrame> imageFrames)
+	{
+		_imageFrames = imageFrames;
 	}
 
 	public ImageSize Size
@@ -18,7 +24,7 @@ public class Image : IImage
 		{
 			ThrowObjectDisposedExceptionIfNecessary();
 
-			return _imageSize;
+			return _imageFrames[0].Size;
 		}
 	}
 
@@ -27,24 +33,26 @@ public class Image : IImage
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 		
-		return (TImageImplementation)_imageImplementationInstance;
+		return _imageFrames[0].GetInstance<TImageImplementation>();
 	}
-	
+
 	public void Dispose()
 	{
 		if (!_hasBeenDisposed)
 		{
-			_imageImplementationInstance.Dispose();
+			foreach (var anImageFrame in _imageFrames)
+			{
+				anImageFrame.Dispose();
+			}
 
 			_hasBeenDisposed = true;
 			GC.SuppressFinalize(this);
 		}
 	}
-	
+
 	#region Private
 
-	private readonly IDisposable _imageImplementationInstance;
-	private readonly ImageSize _imageSize;
+	private readonly IReadOnlyList<IImageFrame> _imageFrames;
 
 	private bool _hasBeenDisposed;
 

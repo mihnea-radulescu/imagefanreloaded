@@ -57,14 +57,14 @@ public class ImageFile : ImageFileBase
 		return BuildImageFromStream(imageStream);
 	}
 
-	private static Image BuildImageFromFile(string inputFilePath)
+	private static IImage BuildImageFromFile(string inputFilePath)
 	{
 		var bitmap = new Bitmap(inputFilePath);
 
 		return BuildImage(bitmap);
 	}
 
-	private static Image BuildImageFromStream(Stream inputStream)
+	private static IImage BuildImageFromStream(Stream inputStream)
 	{
 		inputStream.Reset();
 		var bitmap = new Bitmap(inputStream);
@@ -72,7 +72,7 @@ public class ImageFile : ImageFileBase
 		return BuildImage(bitmap);
 	}
 
-	private static Image BuildImage(Bitmap bitmap)
+	private static IImage BuildImage(Bitmap bitmap)
 	{
 		var bitmapSize = new ImageSize(bitmap.Size.Width, bitmap.Size.Height);
 
