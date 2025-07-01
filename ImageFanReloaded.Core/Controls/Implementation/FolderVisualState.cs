@@ -83,7 +83,7 @@ public class FolderVisualState : IFolderVisualState
 	private readonly string _folderName;
 	private readonly string _folderPath;
 	
-	private readonly IFolderChangedMutex _folderChangedMutex;
+	private readonly IAsyncMutex _folderChangedMutex;
 	private readonly CancellationTokenSource _thumbnailGeneration;
 	
 	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(

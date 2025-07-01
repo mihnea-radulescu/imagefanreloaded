@@ -10,7 +10,7 @@ public interface IMainView
 	IGlobalParameters? GlobalParameters { get; set; }
 	ITabOptionsFactory? TabOptionsFactory { get; set; }
 
-	IFolderChangedMutexFactory? FolderChangedMutexFactory { get; set; }
+	IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 	
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;

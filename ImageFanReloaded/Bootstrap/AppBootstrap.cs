@@ -99,7 +99,7 @@ public class AppBootstrap : IAppBootstrap
 
 	private void ShowMainView()
 	{
-		IFolderChangedMutexFactory folderChangedMutexFactory = new FolderChangedMutexFactory();
+		IAsyncMutexFactory asyncMutexFactory = new AsyncMutexFactory();
 
 		var mainWindow = new MainWindow();
 		_desktop.MainWindow = mainWindow;
@@ -108,7 +108,7 @@ public class AppBootstrap : IAppBootstrap
 		IMainView mainView = mainWindow;
 		mainView.GlobalParameters = _globalParameters;
 		mainView.TabOptionsFactory = _tabOptionsFactory;
-		mainView.FolderChangedMutexFactory = folderChangedMutexFactory;
+		mainView.AsyncMutexFactory = asyncMutexFactory;
 
 		IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(_globalParameters);
 		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(

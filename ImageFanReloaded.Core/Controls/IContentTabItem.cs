@@ -18,7 +18,7 @@ public interface IContentTabItem
 	IGlobalParameters? GlobalParameters { get; set; }
 	ITabOptions? TabOptions { get; set; }
 
-	IFolderChangedMutex? FolderChangedMutex { get; set; }
+	IAsyncMutex? FolderChangedMutex { get; set; }
 
 	object? WrapperTabItem { get; set; }
 	IContentTabItemHeader? ContentTabItemHeader { get; set; }

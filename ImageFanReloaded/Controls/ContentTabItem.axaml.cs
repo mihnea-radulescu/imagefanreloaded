@@ -38,7 +38,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public IGlobalParameters? GlobalParameters { get; set; }
 	public ITabOptions? TabOptions { get; set; }
 
-	public IFolderChangedMutex? FolderChangedMutex { get; set; }
+	public IAsyncMutex? FolderChangedMutex { get; set; }
 
 	public object? WrapperTabItem { get; set; }
 	public IContentTabItemHeader? ContentTabItemHeader { get; set; }

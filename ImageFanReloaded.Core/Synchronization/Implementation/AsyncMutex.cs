@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace ImageFanReloaded.Core.Synchronization.Implementation;
 
-public class FolderChangedMutex : IFolderChangedMutex
+public class AsyncMutex : IAsyncMutex
 {
-	public FolderChangedMutex()
+	public AsyncMutex()
 	{
 		_mutexSlim = new MutexSlim();
 

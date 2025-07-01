@@ -24,7 +24,7 @@ public partial class MainWindow : Window, IMainView
 	public IGlobalParameters? GlobalParameters { get; set; }
 	public ITabOptionsFactory? TabOptionsFactory { get; set; }
 
-	public IFolderChangedMutexFactory? FolderChangedMutexFactory { get; set; }
+	public IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
@@ -146,7 +146,7 @@ public partial class MainWindow : Window, IMainView
 			MainView = this,
 			GlobalParameters = GlobalParameters,
 			TabOptions = TabOptionsFactory!.GetTabOptions(),
-			FolderChangedMutex = FolderChangedMutexFactory!.GetFolderChangedMutex()
+			FolderChangedMutex = AsyncMutexFactory!.GetAsyncMutex()
 		};
 
 		var contentTabItemHeader = new ContentTabItemHeader

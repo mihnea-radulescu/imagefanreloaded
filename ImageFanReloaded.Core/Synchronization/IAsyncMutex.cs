@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace ImageFanReloaded.Core.Synchronization;
 
-public interface IFolderChangedMutex : IDisposable
+public interface IAsyncMutex : IDisposable
 {
 	Task Wait();
 
