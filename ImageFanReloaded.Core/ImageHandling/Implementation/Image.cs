@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using ImageFanReloaded.Core.BaseTypes;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
-public class Image : IImage
+public class Image : DisposableBase, IImage
 {
 	public Image(IDisposable imageImplementationInstance, ImageSize imageSize)
 	{
@@ -48,33 +49,21 @@ public class Image : IImage
 
 	public IReadOnlyList<IImageFrame> GetImageFrames() => _imageFrames;
 
-	public void Dispose()
-	{
-		if (!_hasBeenDisposed)
-		{
-			foreach (var anImageFrame in _imageFrames)
-			{
-				anImageFrame.Dispose();
-			}
+	#region Protected
 
-			_hasBeenDisposed = true;
-			GC.SuppressFinalize(this);
+	protected override void DisposeSpecific()
+	{
+		foreach (var anImageFrame in _imageFrames)
+		{
+			anImageFrame.Dispose();
 		}
 	}
+
+	#endregion
 
 	#region Private
 
 	private readonly IReadOnlyList<IImageFrame> _imageFrames;
-
-	private bool _hasBeenDisposed;
-
-	private void ThrowObjectDisposedExceptionIfNecessary()
-	{
-		if (_hasBeenDisposed)
-		{
-			throw new ObjectDisposedException(nameof(Image));
-		}
-	}
 
 	#endregion
 }

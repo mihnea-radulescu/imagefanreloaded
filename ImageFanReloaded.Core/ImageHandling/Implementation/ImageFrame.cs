@@ -1,8 +1,9 @@
 using System;
+using ImageFanReloaded.Core.BaseTypes;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
-public class ImageFrame : IImageFrame
+public class ImageFrame : DisposableBase, IImageFrame
 {
 	public ImageFrame(
 		IDisposable imageImplementationInstance,
@@ -42,32 +43,20 @@ public class ImageFrame : IImageFrame
 		return (TImageImplementation)_imageImplementationInstance;
 	}
 
-	public void Dispose()
-	{
-		if (!_hasBeenDisposed)
-		{
-			_imageImplementationInstance.Dispose();
+	#region Protected
 
-			_hasBeenDisposed = true;
-			GC.SuppressFinalize(this);
-		}
+	protected override void DisposeSpecific()
+	{
+		_imageImplementationInstance.Dispose();
 	}
+
+	#endregion
 
 	#region Private
 
 	private readonly IDisposable _imageImplementationInstance;
 	private readonly ImageSize _imageSize;
 	private readonly TimeSpan _delayUntilNextFrame;
-
-	private bool _hasBeenDisposed;
-
-	private void ThrowObjectDisposedExceptionIfNecessary()
-	{
-		if (_hasBeenDisposed)
-		{
-			throw new ObjectDisposedException(nameof(ImageFrame));
-		}
-	}
 
 	#endregion
 }
