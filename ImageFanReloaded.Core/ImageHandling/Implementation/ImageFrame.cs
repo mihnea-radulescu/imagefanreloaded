@@ -6,11 +6,11 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 public class ImageFrame : DisposableBase, IImageFrame
 {
 	public ImageFrame(
-		IDisposable imageImplementationInstance,
+		IDisposable imageFrameImplementationInstance,
 		ImageSize imageSize,
 		TimeSpan delayUntilNextFrame)
 	{
-		_imageImplementationInstance = imageImplementationInstance;
+		_imageFrameImplementationInstance = imageFrameImplementationInstance;
 		_imageSize = imageSize;
 		_delayUntilNextFrame = delayUntilNextFrame;
 	}
@@ -40,21 +40,21 @@ public class ImageFrame : DisposableBase, IImageFrame
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		return (TImageImplementation)_imageImplementationInstance;
+		return (TImageImplementation)_imageFrameImplementationInstance;
 	}
 
 	#region Protected
 
 	protected override void DisposeSpecific()
 	{
-		_imageImplementationInstance.Dispose();
+		_imageFrameImplementationInstance.Dispose();
 	}
 
 	#endregion
 
 	#region Private
 
-	private readonly IDisposable _imageImplementationInstance;
+	private readonly IDisposable _imageFrameImplementationInstance;
 	private readonly ImageSize _imageSize;
 	private readonly TimeSpan _delayUntilNextFrame;
 

@@ -11,20 +11,24 @@ public class ImageResizer : ImageResizerBase
 		: base(imageResizeCalculator)
 	{
 	}
-	
+
 	#region Protected
 
-	protected override IImage BuildResizedImage(
-		IImage image, ImageSize resizedImageSize, ImageQuality imageQuality)
+	protected override IImageFrame BuildResizedImageFrame(
+		IImageFrame imageFrame,
+		ImageSize resizedImageFrameSize,
+		ImageQuality imageQuality)
 	{
-		var destinationSize = new PixelSize(resizedImageSize.Width, resizedImageSize.Height);
+		var destinationSize = new PixelSize(
+			resizedImageFrameSize.Width, resizedImageFrameSize.Height);
 		var bitmapInterpolationMode = ConvertToBitmapInterpolationMode(imageQuality);
 
-		var bitmap = image.GetBitmap();
+		var bitmap = imageFrame.GetBitmap();
 		var resizedBitmap = bitmap.CreateScaledBitmap(destinationSize, bitmapInterpolationMode);
-		
-		var resizedImage = new Image(resizedBitmap, resizedImageSize);
-		return resizedImage;
+
+		var resizedImageFrame = new ImageFrame(
+			resizedBitmap, resizedImageFrameSize, imageFrame.DelayUntilNextFrame);
+		return resizedImageFrame;
 	}
 
 	#endregion

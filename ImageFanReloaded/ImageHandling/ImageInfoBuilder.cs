@@ -22,7 +22,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 		try
 		{
-			return await BuildExtendedImageInfo(imageFile.ImageFileData, imageFile.ImageSize);
+			return await BuildExtendedImageInfo(
+				imageFile.ImageFileData, imageFile.ImageSize, imageFile.IsAnimatedImage);
 		}
 		catch
 		{
@@ -43,18 +44,19 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	}
 
 	private static async Task<string> BuildExtendedImageInfo(
-		ImageFileData imageFileData, ImageSize imageSize)
-		=> await Task.Run(() => BuildExtendedImageInfoInternal(imageFileData, imageSize));
+		ImageFileData imageFileData, ImageSize imageSize, bool isAnimatedImage)
+		=> await Task.Run(
+			() => BuildExtendedImageInfoInternal(imageFileData, imageSize, isAnimatedImage));
 
 	private static string BuildExtendedImageInfoInternal(
-		ImageFileData imageFileData, ImageSize imageSize)
+		ImageFileData imageFileData, ImageSize imageSize, bool isAnimatedImage)
 	{
 		var imageInfoBuilder = new StringBuilder();
 		IMagickImage image = new MagickImage(imageFileData.ImageFilePath);
 
 		BuildFileProfile(imageFileData, imageInfoBuilder);
 
-		BuildImageProfile(image, imageSize, imageInfoBuilder);
+		BuildImageProfile(image, imageSize, imageInfoBuilder, isAnimatedImage);
 		BuildColorProfile(image, imageInfoBuilder);
 
 		BuildExifProfile(image, imageInfoBuilder);
@@ -76,7 +78,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	}
 
 	private static void BuildImageProfile(
-		IMagickImage image, ImageSize imageSize, StringBuilder imageInfoBuilder)
+		IMagickImage image, ImageSize imageSize, StringBuilder imageInfoBuilder, bool isAnimatedImage)
 	{
 		imageInfoBuilder.AppendLine();
 		imageInfoBuilder.AppendLine("Image profile");
@@ -85,6 +87,9 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		imageInfoBuilder.AppendLine($"\tImage size:\t{imageSize}");
 		imageInfoBuilder.AppendLine($"\tImage format:\t{image.Format}");
 		imageInfoBuilder.AppendLine($"\tImage depth:\t{image.Depth} bpp");
+
+		var isAnimatedImageInfo = isAnimatedImage ? "yes" : "no";
+		imageInfoBuilder.AppendLine($"\tImage animation:\t{isAnimatedImageInfo}");
 	}
 
 	private static void BuildColorProfile(IMagickImage image, StringBuilder imageInfoBuilder)

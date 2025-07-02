@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using Avalonia.Media.Imaging;
 using ImageMagick;
@@ -22,7 +24,11 @@ public class ImageFile : ImageFileBase
 
 	protected override IImage GetImageFromDisc(bool applyImageOrientation)
 	{
-		if (applyImageOrientation)
+		if (IsAnimationEnabledImageFileExtension)
+		{
+			return BuildAnimatedImage(ImageFileData.ImageFilePath);
+		}
+		else if (applyImageOrientation)
 		{
 			return BuildIndirectlySupportedImage(ImageFileData.ImageFilePath);
 		}
@@ -40,19 +46,35 @@ public class ImageFile : ImageFileBase
 
 	#region Private
 
-	private const uint ImageQualityLevel = 80; 
+	private const uint ImageQualityLevel = 80;
+
+	private static IImage BuildAnimatedImage(string inputFilePath)
+	{
+		var animatedImageFrames = new List<IImageFrame>();
+
+		var imageCollection = new MagickImageCollection(inputFilePath);
+
+		foreach (var image in imageCollection)
+		{
+			var animationDelayInMilliseconds = image.AnimationDelay * 10;
+			var delayUntilNextFrame = TimeSpan.FromMilliseconds(animationDelayInMilliseconds);
+
+			using var imageStream = new MemoryStream();
+			WriteImageToStream(image, imageStream);
+
+			var imageFrame = BuildImageFrameFromStream(imageStream, delayUntilNextFrame);
+			animatedImageFrames.Add(imageFrame);
+		}
+
+		return new Image(animatedImageFrames);
+	}
 
 	private static IImage BuildIndirectlySupportedImage(string inputFilePath)
 	{
 		IMagickImage image = new MagickImage(inputFilePath);
 
-		image.Format = MagickFormat.Jpg;
-		image.Quality = ImageQualityLevel;
-
-		image.AutoOrient();
-
 		using var imageStream = new MemoryStream();
-		image.Write(imageStream);
+		WriteImageToStream(image, imageStream);
 
 		return BuildImageFromStream(imageStream);
 	}
@@ -62,6 +84,22 @@ public class ImageFile : ImageFileBase
 		var bitmap = new Bitmap(inputFilePath);
 
 		return BuildImage(bitmap);
+	}
+
+	private static IImageFrame BuildImageFrameFromStream(
+		Stream inputStream, TimeSpan delayUntilNextFrame)
+	{
+		inputStream.Reset();
+		var bitmap = new Bitmap(inputStream);
+
+		return BuildImageFrame(bitmap, delayUntilNextFrame);
+	}
+
+	private static IImageFrame BuildImageFrame(Bitmap bitmap, TimeSpan delayUntilNextFrame)
+	{
+		var bitmapSize = new ImageSize(bitmap.Size.Width, bitmap.Size.Height);
+
+		return new ImageFrame(bitmap, bitmapSize, delayUntilNextFrame);
 	}
 
 	private static IImage BuildImageFromStream(Stream inputStream)
@@ -77,6 +115,16 @@ public class ImageFile : ImageFileBase
 		var bitmapSize = new ImageSize(bitmap.Size.Width, bitmap.Size.Height);
 
 		return new Image(bitmap, bitmapSize);
+	}
+
+	private static void WriteImageToStream(IMagickImage image, Stream imageStream)
+	{
+		image.Format = MagickFormat.Jpg;
+		image.Quality = ImageQualityLevel;
+
+		image.AutoOrient();
+
+		image.Write(imageStream);
 	}
 
 	#endregion

@@ -22,6 +22,7 @@ public abstract class ImageFileBase : IImageFile
 	public ImageFileData ImageFileData { get; }
 
 	public ImageSize ImageSize { get; private set; }
+	public bool IsAnimatedImage { get; private set; }
 
 	public bool HasReadImageError { get; private set; }
 
@@ -32,7 +33,9 @@ public abstract class ImageFileBase : IImageFile
 		try
 		{
 			image = GetImageFromDisc(applyImageOrientation);
+
 			ImageSize = image.Size;
+			IsAnimatedImage = image.IsAnimated;
 		}
 		catch
 		{
@@ -53,7 +56,9 @@ public abstract class ImageFileBase : IImageFile
 		try
 		{
 			image = GetImageFromDisc(applyImageOrientation);
+
 			ImageSize = image.Size;
+			IsAnimatedImage = image.IsAnimated;
 			
 			resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize, ImageQuality.High);
 		}
@@ -79,7 +84,9 @@ public abstract class ImageFileBase : IImageFile
 		try
 		{
 			imageData = GetImageFromDisc(applyImageOrientation);
+
 			ImageSize = imageData.Size;
+			IsAnimatedImage = imageData.IsAnimated;
 		}
 		catch
 		{
@@ -134,7 +141,7 @@ public abstract class ImageFileBase : IImageFile
 		}
 	}
 
-	public string GetImageInfo(bool longFormat)
+	public string GetBasicImageInfo(bool longFormat)
 	{
 		var imageFileInfo = longFormat ? ImageFileData.ImageFilePath : ImageFileData.ImageFileName;
 		
@@ -151,6 +158,10 @@ public abstract class ImageFileBase : IImageFile
 
 	protected bool IsDirectlySupportedImageFileExtension
 		=> _globalParameters.DirectlySupportedImageFileExtensions.Contains(
+			ImageFileData.ImageFileExtension);
+
+	protected bool IsAnimationEnabledImageFileExtension
+		=> _globalParameters.AnimationEnabledImageFileExtensions.Contains(
 			ImageFileData.ImageFileExtension);
 
 	#endregion

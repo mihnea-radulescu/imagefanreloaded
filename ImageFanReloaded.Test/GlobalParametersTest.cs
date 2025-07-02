@@ -85,6 +85,7 @@ public class GlobalParametersTest : TestBase
 
 		Assert.NotEmpty(_globalParameters.DirectlySupportedImageFileExtensions);
 		Assert.NotEmpty(_globalParameters.IndirectlySupportedImageFileExtensions);
+		Assert.NotEmpty(_globalParameters.AnimationEnabledImageFileExtensions);
 		Assert.NotEmpty(_globalParameters.ImageFileExtensions);
 
 		Assert.NotNull(_globalParameters.UserProfilePath);

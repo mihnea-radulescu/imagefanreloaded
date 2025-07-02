@@ -5,6 +5,7 @@ public interface IImageFile
 	ImageFileData ImageFileData { get; }
 
 	ImageSize ImageSize { get; }
+	bool IsAnimatedImage { get; }
 
 	bool HasReadImageError { get; }
 
@@ -15,5 +16,5 @@ public interface IImageFile
 	IImage GetThumbnail(int thumbnailSize);
 	void DisposeImageData();
 
-	string GetImageInfo(bool longFormat);
+	string GetBasicImageInfo(bool longFormat);
 }

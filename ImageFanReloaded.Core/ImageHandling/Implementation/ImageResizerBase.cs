@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
 public abstract class ImageResizerBase : IImageResizer
@@ -9,19 +11,34 @@ public abstract class ImageResizerBase : IImageResizer
 
 	public IImage CreateResizedImage(IImage image, ImageSize viewPortSize, ImageQuality imageQuality)
 	{
-		var imageSize = new ImageSize(image.Size.Width, image.Size.Height);
+		var imageFrames = image.GetImageFrames();
+		var resizedImageFrames = new List<IImageFrame>(imageFrames.Count);
 
-		var resizedImageSize = _imageResizeCalculator
-			.GetResizedImageSize(imageSize, viewPortSize);
+		foreach (var anImageFrame in imageFrames)
+		{
+			var anImageFrameSize = new ImageSize(anImageFrame.Size.Width, anImageFrame.Size.Height);
 
-		var resizedImage = BuildResizedImage(image, resizedImageSize, imageQuality);
+			var aResizedImageFrameSize = _imageResizeCalculator
+				.GetResizedImageSize(anImageFrameSize, viewPortSize);
+
+			var aResizedImageFrame = BuildResizedImageFrame(
+				anImageFrame,
+				aResizedImageFrameSize,
+				imageQuality);
+
+			resizedImageFrames.Add(aResizedImageFrame);
+		}
+
+		var resizedImage = new Image(resizedImageFrames);
 		return resizedImage;
 	}
 	
 	#region Protected
 
-	protected abstract IImage BuildResizedImage(
-		IImage image, ImageSize resizedImageSize, ImageQuality imageQuality);
+	protected abstract IImageFrame BuildResizedImageFrame(
+		IImageFrame imageFrame,
+		ImageSize resizedImageFrameSize,
+		ImageQuality imageQuality);
 
 	#endregion
 	

@@ -65,6 +65,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 	public HashSet<string> DirectlySupportedImageFileExtensions { get; }
 	public HashSet<string> IndirectlySupportedImageFileExtensions { get; }
+	public HashSet<string> AnimationEnabledImageFileExtensions { get; }
 	public HashSet<string> ImageFileExtensions { get; }
 
 	public string UserProfilePath { get; }
@@ -143,7 +144,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".cr2",
 			".cur",
 			".dng",
-			".gif",
 			".ico",
 			".jfif",
 			".jpe", ".jpeg", ".jpg",
@@ -154,8 +154,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".png",
 			".raf",
 			".rw2",
-			".wbmp",
-			".webp"
+			".wbmp"
 		};
 
 		IndirectlySupportedImageFileExtensions = new HashSet<string>(
@@ -168,7 +167,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".heic",
 			".heif",
 			".jp2",
-			".mng",
 			".orf",
 			".pam",
 			".pbm",
@@ -190,9 +188,18 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".xpm"
 		};
 
+		AnimationEnabledImageFileExtensions = new HashSet<string>(
+			StringComparer.InvariantCultureIgnoreCase)
+		{
+			".gif",
+			".mng",
+			".webp"
+		};
+
 		ImageFileExtensions = new HashSet<string>(
 			[.. DirectlySupportedImageFileExtensions,
-			 .. IndirectlySupportedImageFileExtensions],
+			 .. IndirectlySupportedImageFileExtensions,
+			 .. AnimationEnabledImageFileExtensions],
 			StringComparer.InvariantCultureIgnoreCase);
 		
 		UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);

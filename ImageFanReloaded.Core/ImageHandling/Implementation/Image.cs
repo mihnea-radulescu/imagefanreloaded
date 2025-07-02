@@ -47,6 +47,8 @@ public class Image : DisposableBase, IImage
 		return _imageFrames[0].GetInstance<TImageImplementation>();
 	}
 
+	public bool IsAnimated => _imageFrames.Count > 1;
+
 	public IReadOnlyList<IImageFrame> GetImageFrames() => _imageFrames;
 
 	#region Protected

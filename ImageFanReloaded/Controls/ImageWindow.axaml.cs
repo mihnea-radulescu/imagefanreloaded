@@ -72,7 +72,7 @@ public partial class ImageWindow : Window, IImageView
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
 
-		_textBoxImageInfo.Text = _imageFile.GetImageInfo(TabOptions!.RecursiveFolderBrowsing);
+		_textBoxImageInfo.Text = _imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
 		_textBoxImageInfo.IsVisible = TabOptions!.ShowImageViewImageInfo;
 
 		_showMainViewAfterImageViewClosing = false;

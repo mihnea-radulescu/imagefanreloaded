@@ -387,9 +387,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxSelectedEventArgs e)
 	{
 		var imageFile = e.ThumbnailBox.ImageFile!;
-		var imageInfo = imageFile.GetImageInfo(TabOptions!.RecursiveFolderBrowsing);
+		var basicImageInfo = imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
 		
-		SetImageStatusBarText(imageInfo);
+		SetImageStatusBarText(basicImageInfo);
 	}
 
 	private void OnThumbnailBoxClicked(object? sender, ThumbnailBoxClickedEventArgs e)
