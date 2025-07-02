@@ -28,13 +28,25 @@ public class Image : IImage
 		}
 	}
 
+	public TimeSpan DelayUntilNextFrame
+	{
+		get
+		{
+			ThrowObjectDisposedExceptionIfNecessary();
+
+			return TimeSpan.Zero;
+		}
+	}
+
 	public TImageImplementation GetInstance<TImageImplementation>()
 		where TImageImplementation : class, IDisposable
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
-		
+
 		return _imageFrames[0].GetInstance<TImageImplementation>();
 	}
+
+	public IReadOnlyList<IImageFrame> GetImageFrames() => _imageFrames;
 
 	public void Dispose()
 	{

@@ -1,10 +1,8 @@
-using System;
+using System.Collections.Generic;
 
 namespace ImageFanReloaded.Core.ImageHandling;
 
-public interface IImage : IDisposable
+public interface IImage : IImageFrame
 {
-	ImageSize Size { get; }
-
-	TImageImpl GetInstance<TImageImpl>() where TImageImpl : class, IDisposable;
+	IReadOnlyList<IImageFrame> GetImageFrames();
 }
