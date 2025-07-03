@@ -50,7 +50,7 @@ public partial class ImageWindow : Window, IImageView
 	public event EventHandler<ImageViewClosingEventArgs>? ViewClosing;
 	public event EventHandler<ImageChangedEventArgs>? ImageChanged;
 
-	public bool ContinueWithSlideshow { get; set; }
+	public bool CanAdvanceToDesignatedImage { get; set; }
 
 	public async Task<bool> CanStartSlideshowFromContentTabItem()
 		=> await Dispatcher.UIThread.InvokeAsync(() => IsVisible);
@@ -117,7 +117,7 @@ public partial class ImageWindow : Window, IImageView
 	
 	private void NotifyStopSlideshow() => _slideshow?.Cancel();
 
-    private async Task OnKeyPressing(object? sender, KeyEventArgs e)
+	private async Task OnKeyPressing(object? sender, KeyEventArgs e)
 	{
 		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 		var keyPressing = e.Key.ToCoreKey();
@@ -149,11 +149,11 @@ public partial class ImageWindow : Window, IImageView
 		}
 		else if (ShouldHandleBackwardNavigation(keyModifiers, keyPressing))
 		{
-			RaiseImageChanged(OneImageBackward);
+			RaiseImageChanged(OneImageBackward, false);
 		}
 		else if (ShouldHandleForwardNavigation(keyModifiers, keyPressing))
 		{
-			RaiseImageChanged(OneImageForward);
+			RaiseImageChanged(OneImageForward, false);
 		}
 		else if (ShouldHandleImageZoom(keyModifiers, keyPressing))
 		{
@@ -189,7 +189,7 @@ public partial class ImageWindow : Window, IImageView
 		e.Handled = true;
 	}
 
-    private void OnMouseDown(object? sender, PointerPressedEventArgs e)
+	private void OnMouseDown(object? sender, PointerPressedEventArgs e)
 	{
 		NotifyStopSlideshow();
 
@@ -250,11 +250,11 @@ public partial class ImageWindow : Window, IImageView
 
 		if (delta.Y > 0)
 		{
-			RaiseImageChanged(OneImageBackward);
+			RaiseImageChanged(OneImageBackward, false);
 		}
 		else if (delta.Y < 0)
 		{
-			RaiseImageChanged(OneImageForward);
+			RaiseImageChanged(OneImageForward, false);
 		}
 
 		e.Handled = true;
@@ -290,11 +290,11 @@ public partial class ImageWindow : Window, IImageView
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
-		    _globalParameters!.IsBackwardNavigationKey(keyPressing))
+			_globalParameters!.IsBackwardNavigationKey(keyPressing))
 		{
 			return true;
 		}
-	    
+		
 		return false;
 	}
 
@@ -302,11 +302,11 @@ public partial class ImageWindow : Window, IImageView
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
-		    _globalParameters!.IsForwardNavigationKey(keyPressing))
+			_globalParameters!.IsForwardNavigationKey(keyPressing))
 		{
 			return true;
 		}
-	    
+		
 		return false;
 	}
 	
@@ -339,7 +339,7 @@ public partial class ImageWindow : Window, IImageView
 		{
 			return true;
 		}
-	    
+		
 		return false;
 	}
 	
@@ -354,11 +354,16 @@ public partial class ImageWindow : Window, IImageView
 		return false;
 	}
 
-	private void RaiseImageChanged(int increment)
+	private void RaiseImageChanged(int increment, bool isSlideshow)
 	{
 		ImageChanged?.Invoke(this, new ImageChangedEventArgs(this, increment));
+
+		if (!isSlideshow && !CanAdvanceToDesignatedImage)
+		{
+			CloseWindow();
+		}
 	}
-	
+
 	private void HandleEscapeAction()
 	{
 		if (_textBoxImageInfo.IsFocused)
@@ -390,7 +395,7 @@ public partial class ImageWindow : Window, IImageView
 				return;
 			}
 
-			RaiseImageChanged(OneImageForward);
+			RaiseImageChanged(OneImageForward, true);
 
 			if (_slideshow.IsCancellationRequested)
 			{
@@ -398,7 +403,7 @@ public partial class ImageWindow : Window, IImageView
 			}
 
 			await Task.Delay(slideshowInterval);
-		} while (ContinueWithSlideshow);
+		} while (CanAdvanceToDesignatedImage);
 
 		CloseWindow();
 	}
@@ -468,9 +473,9 @@ public partial class ImageWindow : Window, IImageView
 			(int)mousePositionToImage.X, (int)mousePositionToImage.Y);
 
 		if (mousePoint.X >= 0 &&
-		    mousePoint.X <= _imageControl.Source!.Size.Width &&
-		    mousePoint.Y >= 0 &&
-		    mousePoint.Y <= _imageControl.Source!.Size.Height)
+			mousePoint.X <= _imageControl.Source!.Size.Width &&
+			mousePoint.Y >= 0 &&
+			mousePoint.Y <= _imageControl.Source!.Size.Height)
 		{
 			coordinatesToImageSizeRatio =
 				new CoordinatesToImageSizeRatio(mousePoint, imageSize);

@@ -15,7 +15,7 @@ public interface IImageView
 	event EventHandler<ImageViewClosingEventArgs>? ViewClosing;
 	event EventHandler<ImageChangedEventArgs>? ImageChanged;
 
-	bool ContinueWithSlideshow { get; set; }
+	bool CanAdvanceToDesignatedImage { get; set; }
 
 	Task<bool> CanStartSlideshowFromContentTabItem();
 	Task StartSlideshowFromContentTabItem();

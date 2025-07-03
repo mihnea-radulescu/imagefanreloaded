@@ -448,10 +448,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		var imageView = e.ImageView;
 		var increment = e.Increment;
 
-		var canAdvanceToNextImage = AdvanceFromSelectedThumbnail(increment);
-		imageView.ContinueWithSlideshow = canAdvanceToNextImage;
+		var canAdvanceToDesignatedImage = AdvanceFromSelectedThumbnail(increment);
+		imageView.CanAdvanceToDesignatedImage = canAdvanceToDesignatedImage;
 		
-		if (canAdvanceToNextImage)
+		if (canAdvanceToDesignatedImage)
 		{
 			imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
 		}

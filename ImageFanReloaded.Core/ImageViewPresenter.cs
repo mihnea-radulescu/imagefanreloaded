@@ -73,10 +73,10 @@ public class ImageViewPresenter
 	{
 		var newImageFileIndex = _currentImageFileIndex + e.Increment;
 
-		var canAdvanceToNextImage = _imageFiles.IsIndexWithinBounds(newImageFileIndex);
-		_imageView.ContinueWithSlideshow = canAdvanceToNextImage;
+		var canAdvanceToDesignatedImage = _imageFiles.IsIndexWithinBounds(newImageFileIndex);
+		_imageView.CanAdvanceToDesignatedImage = canAdvanceToDesignatedImage;
 
-		if (canAdvanceToNextImage)
+		if (canAdvanceToDesignatedImage)
 		{
 			_currentImageFileIndex = newImageFileIndex;
 			_currentImageFile = _imageFiles[_currentImageFileIndex];
