@@ -58,6 +58,7 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto"/>
 						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
 
 					<TextBox Name="_textBoxFolderInfo"
@@ -66,7 +67,7 @@
 							Background="Transparent"
 							TextAlignment="Left"/>
 					<TextBox Name="_textBoxImageInfo"
-							Grid.Column="1"
+							Grid.Column="2"
 							IsReadOnly="True"
 							Background="Transparent"
 							TextAlignment="Right"/>
