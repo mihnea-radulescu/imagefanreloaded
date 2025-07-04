@@ -32,10 +32,10 @@ public class FolderVisualState : IFolderVisualState
 		_folderPath = folderPath;
 		
 		_folderChangedMutex = _contentTabItem.FolderChangedMutex!;
-		_thumbnailGeneration = new CancellationTokenSource();
+		_ctsThumbnailGeneration = new CancellationTokenSource();
 	}
 
-	public void NotifyStopThumbnailGeneration() => _thumbnailGeneration.Cancel();
+	public void NotifyStopThumbnailGeneration() => _ctsThumbnailGeneration.Cancel();
 	
 	public void ClearVisualState() => _contentTabItem.ClearThumbnailBoxes(false);
 
@@ -84,7 +84,7 @@ public class FolderVisualState : IFolderVisualState
 	private readonly string _folderPath;
 	
 	private readonly IAsyncMutex _folderChangedMutex;
-	private readonly CancellationTokenSource _thumbnailGeneration;
+	private readonly CancellationTokenSource _ctsThumbnailGeneration;
 	
 	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(
 		ITabOptions tabOptions, IReadOnlyList<IImageFile> imageFiles)
@@ -95,7 +95,7 @@ public class FolderVisualState : IFolderVisualState
 	private async Task ProcessThumbnails(IReadOnlyList<IThumbnailInfo> thumbnails)
 	{
 		for (var thumbnailCollection = (IEnumerable<IThumbnailInfo>)thumbnails;
-			 !_thumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
+			 !_ctsThumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
 			 thumbnailCollection = thumbnailCollection.Skip(_globalParameters.ProcessorCount))
 		{
 			var currentThumbnails = thumbnailCollection
@@ -103,13 +103,13 @@ public class FolderVisualState : IFolderVisualState
 				.ToList();
 
 			await ReadThumbnailInput(currentThumbnails);
-			if (!_thumbnailGeneration.IsCancellationRequested)
+			if (!_ctsThumbnailGeneration.IsCancellationRequested)
 			{
 				_contentTabItem.PopulateThumbnailBoxes(currentThumbnails);
 			}
 
 			await GetThumbnails(currentThumbnails);
-			if (!_thumbnailGeneration.IsCancellationRequested)
+			if (!_ctsThumbnailGeneration.IsCancellationRequested)
 			{
 				_contentTabItem.RefreshThumbnailBoxes(currentThumbnails);
 			}
@@ -119,7 +119,7 @@ public class FolderVisualState : IFolderVisualState
 	private async Task ReadThumbnailInput(IReadOnlyList<IThumbnailInfo> currentThumbnails)
 		=> await Task.Run(() =>
 			{
-				for (var i = 0; !_thumbnailGeneration.IsCancellationRequested && i < currentThumbnails.Count; i++)
+				for (var i = 0; !_ctsThumbnailGeneration.IsCancellationRequested && i < currentThumbnails.Count; i++)
 				{
 					currentThumbnails[i].ReadThumbnailInputFromDisc();
 				}
@@ -142,7 +142,7 @@ public class FolderVisualState : IFolderVisualState
 
 				foreach (var aThumbnailGenerationTask in thumbnailGenerationTasks)
 				{
-					if (!_thumbnailGeneration.IsCancellationRequested)
+					if (!_ctsThumbnailGeneration.IsCancellationRequested)
 					{
 						aThumbnailGenerationTask.Start();
 					}
@@ -150,7 +150,7 @@ public class FolderVisualState : IFolderVisualState
 
 				try
 				{
-					Task.WaitAll(thumbnailGenerationTasks, _thumbnailGeneration.Token);
+					Task.WaitAll(thumbnailGenerationTasks, _ctsThumbnailGeneration.Token);
 				}
 				catch (OperationCanceledException)
 				{

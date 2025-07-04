@@ -95,7 +95,7 @@ public partial class ImageWindow : Window, IImageView
 	private static readonly Cursor HandCursor;
 	private static readonly Cursor SizeAllCursor;
 
-	private CancellationTokenSource? _slideshow;
+	private CancellationTokenSource? _ctsSlideshow;
 	
 	private IGlobalParameters? _globalParameters;
 	private Bitmap? _invalidImage;
@@ -115,7 +115,7 @@ public partial class ImageWindow : Window, IImageView
 
 	private bool _showMainViewAfterImageViewClosing;
 	
-	private void NotifyStopSlideshow() => _slideshow?.Cancel();
+	private void NotifyStopSlideshow() => _ctsSlideshow?.Cancel();
 
 	private async Task OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -378,31 +378,31 @@ public partial class ImageWindow : Window, IImageView
 
 	private async Task StartSlideshow()
 	{
-		_slideshow = new CancellationTokenSource();
+		_ctsSlideshow = new CancellationTokenSource();
 
 		var slideshowInterval = TimeSpan.FromSeconds(TabOptions!.SlideshowInterval.ToInt());
-		await Task.Delay(slideshowInterval);
+		await Task.Delay(slideshowInterval, _ctsSlideshow.Token);
 
-		if (_slideshow.IsCancellationRequested)
+		if (_ctsSlideshow.IsCancellationRequested)
 		{
 			return;
 		}
 
 		do
 		{
-			if (_slideshow.IsCancellationRequested)
+			if (_ctsSlideshow.IsCancellationRequested)
 			{
 				return;
 			}
 
 			RaiseImageChanged(OneImageForward, true);
 
-			if (_slideshow.IsCancellationRequested)
+			if (_ctsSlideshow.IsCancellationRequested)
 			{
 				return;
 			}
 
-			await Task.Delay(slideshowInterval);
+			await Task.Delay(slideshowInterval, _ctsSlideshow.Token);
 		} while (CanAdvanceToDesignatedImage);
 
 		CloseWindow();

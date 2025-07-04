@@ -26,11 +26,11 @@ public class ImageFile : ImageFileBase
 	{
 		if (IsAnimationEnabledImageFileExtension)
 		{
-			return BuildAnimatedImage(ImageFileData.ImageFilePath);
+			return BuildAnimatedImageFromFile(ImageFileData.ImageFilePath);
 		}
 		else if (applyImageOrientation)
 		{
-			return BuildIndirectlySupportedImage(ImageFileData.ImageFilePath);
+			return BuildIndirectlySupportedImageFromFile(ImageFileData.ImageFilePath);
 		}
 		else if (IsDirectlySupportedImageFileExtension)
 		{
@@ -38,7 +38,7 @@ public class ImageFile : ImageFileBase
 		}
 		else
 		{
-			return BuildIndirectlySupportedImage(ImageFileData.ImageFilePath);
+			return BuildIndirectlySupportedImageFromFile(ImageFileData.ImageFilePath);
 		}
 	}
 
@@ -48,11 +48,25 @@ public class ImageFile : ImageFileBase
 
 	private const uint ImageQualityLevel = 80;
 
-	private static IImage BuildAnimatedImage(string inputFilePath)
+	private static IImage BuildAnimatedImageFromFile(string inputFilePath)
+	{
+		var imageCollection = new MagickImageCollection(inputFilePath);
+
+		if (imageCollection.Count == 1)
+		{
+			return BuildIndirectlySupportedImage(imageCollection[0]);
+		}
+		else
+		{
+			return BuildAnimatedImage(imageCollection);
+		}
+	}
+
+	private static IImage BuildAnimatedImage(MagickImageCollection imageCollection)
 	{
 		var animatedImageFrames = new List<IImageFrame>();
 
-		var imageCollection = new MagickImageCollection(inputFilePath);
+		imageCollection.Coalesce();
 
 		foreach (var image in imageCollection)
 		{
@@ -60,7 +74,7 @@ public class ImageFile : ImageFileBase
 			var delayUntilNextFrame = TimeSpan.FromMilliseconds(animationDelayInMilliseconds);
 
 			using var imageStream = new MemoryStream();
-			WriteImageToStream(image, imageStream);
+			WriteImageToStream(image, imageStream, false);
 
 			var imageFrame = BuildImageFrameFromStream(imageStream, delayUntilNextFrame);
 			animatedImageFrames.Add(imageFrame);
@@ -69,12 +83,17 @@ public class ImageFile : ImageFileBase
 		return new Image(animatedImageFrames);
 	}
 
-	private static IImage BuildIndirectlySupportedImage(string inputFilePath)
+	private static IImage BuildIndirectlySupportedImageFromFile(string inputFilePath)
 	{
 		IMagickImage image = new MagickImage(inputFilePath);
 
+		return BuildIndirectlySupportedImage(image);
+	}
+
+	private static IImage BuildIndirectlySupportedImage(IMagickImage image)
+	{
 		using var imageStream = new MemoryStream();
-		WriteImageToStream(image, imageStream);
+		WriteImageToStream(image, imageStream, true);
 
 		return BuildImageFromStream(imageStream);
 	}
@@ -117,12 +136,16 @@ public class ImageFile : ImageFileBase
 		return new Image(bitmap, bitmapSize);
 	}
 
-	private static void WriteImageToStream(IMagickImage image, Stream imageStream)
+	private static void WriteImageToStream(
+		IMagickImage image, Stream imageStream, bool autoOrientImage)
 	{
 		image.Format = MagickFormat.Jpg;
 		image.Quality = ImageQualityLevel;
 
-		image.AutoOrient();
+		if (autoOrientImage)
+		{
+			image.AutoOrient();
+		}
 
 		image.Write(imageStream);
 	}

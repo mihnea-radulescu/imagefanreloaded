@@ -1,7 +1,10 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Threading;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
@@ -18,7 +21,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		HandCursor = new Cursor(StandardCursorType.Hand);
 		ArrowCursor = new Cursor(StandardCursorType.Arrow);
 	}
-	
+
 	public ThumbnailBox()
 	{
 		InitializeComponent();
@@ -26,7 +29,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	public event EventHandler<ThumbnailBoxSelectedEventArgs>? ThumbnailBoxSelected;
 	public event EventHandler<ThumbnailBoxClickedEventArgs>? ThumbnailBoxClicked;
-	
+
 	public int Index { get; set; }
 
 	public IThumbnailInfo? ThumbnailInfo
@@ -42,10 +45,10 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 			_thumbnailTextBlock.Text = _thumbnailInfo.ThumbnailText;
 		}
 	}
-	
+
 	public IImageFile? ImageFile { get; private set; }
 	public bool IsSelected { get; private set; }
-	
+
 	public void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters)
 	{
 		_thumbnailImage.MaxWidth = thumbnailSize;
@@ -59,7 +62,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		IsSelected = true;
 
 		BringThumbnailIntoView();
-		
+
 		ThumbnailBoxSelected?.Invoke(this, new ThumbnailBoxSelectedEventArgs(this));
 	}
 
@@ -74,21 +77,63 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	public void RefreshThumbnail()
 	{
-		_thumbnailImage.Source = _thumbnailInfo!.ThumbnailImage!.GetBitmap();
+		var thumbnailImage = _thumbnailInfo!.ThumbnailImage!;
+
+		if (thumbnailImage.IsAnimated)
+		{
+			_ctsAnimation = new CancellationTokenSource();
+			var thumbnailImageFrames = _thumbnailInfo!.ThumbnailImage!.GetImageFrames();
+
+			Task.Run(async () =>
+			{
+				while (!_ctsAnimation.IsCancellationRequested)
+				{
+					foreach (var aThumbnailImageFrame in thumbnailImageFrames)
+					{
+						var anImageFrameBitmap = aThumbnailImageFrame.GetBitmap();
+
+						if (_ctsAnimation.IsCancellationRequested)
+						{
+							break;
+						}
+
+						await Dispatcher.UIThread.InvokeAsync(() =>
+						{
+							_thumbnailImage.Source = anImageFrameBitmap;
+						});
+
+						if (_ctsAnimation.IsCancellationRequested)
+						{
+							break;
+						}
+
+						await Task.Delay(aThumbnailImageFrame.DelayUntilNextFrame, _ctsAnimation.Token);
+					}
+				}
+			});
+		}
+		else
+		{
+			_thumbnailImage.Source = _thumbnailInfo!.ThumbnailImage!.GetBitmap();
+		}
 	}
 
 	public void DisposeThumbnail()
 	{
+		NotifyStopAnimation();
+
 		_thumbnailInfo!.DisposeThumbnail();
 		ImageFile!.DisposeImageData();
 	}
 
 	#region Private
-	
+
 	private static readonly Cursor HandCursor;
 	private static readonly Cursor ArrowCursor;
 
 	private IThumbnailInfo? _thumbnailInfo;
+
+	private CancellationTokenSource? _ctsAnimation;
 
 	private void OnMouseClick(object? sender, PointerReleasedEventArgs e)
 	{
@@ -101,6 +146,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxClickedEventArgs(this, ClickType.Right));
 		}
 	}
+	
+	private void NotifyStopAnimation() => _ctsAnimation?.Cancel();
 
 	#endregion
 }
