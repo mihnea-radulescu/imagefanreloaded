@@ -649,6 +649,8 @@ public partial class ImageWindow : Window, IImageView
 		if (_animationTask is not null)
 		{
 			await _animationTask;
+
+			_animationTask = null;
 		}
 	}
 
