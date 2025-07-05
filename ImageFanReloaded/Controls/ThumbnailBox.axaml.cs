@@ -120,38 +120,41 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	private async Task AnimateImage()
 	{
-		_ctsAnimation = new CancellationTokenSource();
-
-		var thumbnailImageFrames = _thumbnailInfo!.ThumbnailImage!.GetImageFrames();
-
-		while (!_ctsAnimation.IsCancellationRequested)
+		try
 		{
-			foreach (var aThumbnailImageFrame in thumbnailImageFrames)
+			_ctsAnimation = new CancellationTokenSource();
+
+			while (!_ctsAnimation.IsCancellationRequested)
 			{
-				if (_ctsAnimation.IsCancellationRequested)
+				var thumbnailImageFrames = _thumbnailInfo!.ThumbnailImage!.ImageFrames;
+				foreach (var aThumbnailImageFrame in thumbnailImageFrames)
 				{
-					break;
+					if (_ctsAnimation.IsCancellationRequested)
+					{
+						break;
+					}
+
+					var anImageFrameBitmap = aThumbnailImageFrame.GetBitmap();
+
+					if (_ctsAnimation.IsCancellationRequested)
+					{
+						break;
+					}
+
+					await Dispatcher.UIThread.InvokeAsync(()
+						=> _thumbnailImage.Source = anImageFrameBitmap);
+
+					if (_ctsAnimation.IsCancellationRequested)
+					{
+						break;
+					}
+
+					await Task.Delay(aThumbnailImageFrame.DelayUntilNextFrame, _ctsAnimation.Token);
 				}
-
-				var anImageFrameBitmap = aThumbnailImageFrame.GetBitmap();
-
-				if (_ctsAnimation.IsCancellationRequested)
-				{
-					break;
-				}
-
-				await Dispatcher.UIThread.InvokeAsync(() =>
-				{
-					_thumbnailImage.Source = anImageFrameBitmap;
-				});
-
-				if (_ctsAnimation.IsCancellationRequested)
-				{
-					break;
-				}
-
-				await Task.Delay(aThumbnailImageFrame.DelayUntilNextFrame, _ctsAnimation.Token);
 			}
+		}
+		catch (TaskCanceledException)
+		{
 		}
 	}
 

@@ -1,3 +1,4 @@
+using System;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -23,6 +24,7 @@ public abstract class ImageFileBase : IImageFile
 
 	public ImageSize ImageSize { get; private set; }
 	public bool IsAnimatedImage { get; private set; }
+	public TimeSpan AnimatedImageSlideshowDelay { get; private set; }
 
 	public bool HasReadImageError { get; private set; }
 
@@ -34,12 +36,12 @@ public abstract class ImageFileBase : IImageFile
 		{
 			image = GetImageFromDisc(applyImageOrientation);
 
-			ImageSize = image.Size;
-			IsAnimatedImage = image.IsAnimated;
+			SetImageProperties(image);
 		}
 		catch
 		{
-			ImageSize = _globalParameters.InvalidImage.Size;
+			SetImageProperties(_globalParameters.InvalidImage);
+
 			image = _globalParameters.InvalidImage;
 
 			HasReadImageError = true;
@@ -57,16 +59,16 @@ public abstract class ImageFileBase : IImageFile
 		{
 			image = GetImageFromDisc(applyImageOrientation);
 
-			ImageSize = image.Size;
-			IsAnimatedImage = image.IsAnimated;
-			
+			SetImageProperties(image);
+
 			resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize, ImageQuality.High);
 		}
 		catch
 		{
-			ImageSize = _globalParameters.InvalidImage.Size;
+			SetImageProperties(_globalParameters.InvalidImage);
+
 			resizedImage = _globalParameters.InvalidImage;
-			
+
 			HasReadImageError = true;
 		}
 		finally
@@ -85,17 +87,17 @@ public abstract class ImageFileBase : IImageFile
 		{
 			imageData = GetImageFromDisc(applyImageOrientation);
 
-			ImageSize = imageData.Size;
-			IsAnimatedImage = imageData.IsAnimated;
+			SetImageProperties(imageData);
 		}
 		catch
 		{
-			ImageSize = _globalParameters.InvalidImage.Size;
+			SetImageProperties(_globalParameters.InvalidImage);
+
 			imageData = _globalParameters.InvalidImage;
 
 			HasReadImageError = true;
 		}
-		
+
 		lock (_thumbnailGenerationLockObject)
 		{
 			_imageInstance = imageData;
@@ -144,11 +146,11 @@ public abstract class ImageFileBase : IImageFile
 	public string GetBasicImageInfo(bool longFormat)
 	{
 		var imageFileInfo = longFormat ? ImageFileData.ImageFilePath : ImageFileData.ImageFileName;
-		
+
 		var imageInfo = HasReadImageError
 			? $"{imageFileInfo} - invalid image"
 			: $"{imageFileInfo} - {ImageSize} - {ImageFileData.SizeOnDiscInKilobytes} KB";
-				
+
 		return imageInfo;
 	}
 
@@ -173,6 +175,13 @@ public abstract class ImageFileBase : IImageFile
 	private readonly object _thumbnailGenerationLockObject;
 
 	private IImage? _imageInstance;
+	
+	private void SetImageProperties(IImage image)
+	{
+		ImageSize = image.Size;
+		IsAnimatedImage = image.IsAnimated;
+		AnimatedImageSlideshowDelay = image.TotalImageFramesDelay;
+	}
 
 	#endregion
 }

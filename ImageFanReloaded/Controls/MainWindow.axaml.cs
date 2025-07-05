@@ -66,7 +66,7 @@ public partial class MainWindow : Window, IMainView
 
 	private readonly double _windowFontSize;
 
-	private void OnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
+	private async void OnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
 	{
 		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 		var keyPressing = e.Key.ToCoreKey();
@@ -107,7 +107,7 @@ public partial class MainWindow : Window, IMainView
 		}
 		else if (contentTabItem.ShouldHandleControlKeyFunctions(keyModifiers, keyPressing))
 		{
-			contentTabItem.HandleControlKeyFunctions(keyModifiers, keyPressing);
+			await contentTabItem.HandleControlKeyFunctions(keyModifiers, keyPressing);
 			e.Handled = true;
 		}
 		else if (!ShouldAllowKeyPressingEventPropagation(keyModifiers, keyPressing))

@@ -99,11 +99,11 @@ public class AppBootstrap : IAppBootstrap
 
 	private void ShowMainView()
 	{
-		IAsyncMutexFactory asyncMutexFactory = new AsyncMutexFactory();
-
 		var mainWindow = new MainWindow();
 		_desktop.MainWindow = mainWindow;
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
+
+		IAsyncMutexFactory asyncMutexFactory = new AsyncMutexFactory();
 
 		IMainView mainView = mainWindow;
 		mainView.GlobalParameters = _globalParameters;
@@ -114,7 +114,9 @@ public class AppBootstrap : IAppBootstrap
 		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
 			_globalParameters, _fileSizeEngine, thumbnailInfoFactory, _discQueryEngine);
 
-		IImageViewFactory imageViewFactory = new ImageViewFactory(_globalParameters, screenInformation);
+		IImageViewFactory imageViewFactory = new ImageViewFactory(
+			_globalParameters, screenInformation);
+
 		IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
 
 		ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);

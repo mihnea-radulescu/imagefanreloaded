@@ -10,6 +10,7 @@ public interface IImageView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
 	IScreenInformation? ScreenInformation { get; set; }
+
 	ITabOptions? TabOptions { get; set; }
 
 	event EventHandler<ImageViewClosingEventArgs>? ViewClosing;
@@ -20,8 +21,8 @@ public interface IImageView
 	Task<bool> CanStartSlideshowFromContentTabItem();
 	Task StartSlideshowFromContentTabItem();
 
-	void SetImage(IImageFile imageFile);
+	Task SetImage(IImageFile imageFile);
 
 	void Show();
-    Task ShowDialog(IMainView owner);
+	Task ShowDialog(IMainView owner);
 }

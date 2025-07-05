@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ImageFanReloaded.Core.BaseTypes;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -12,11 +13,19 @@ public class Image : DisposableBase, IImage
 			imageImplementationInstance, imageSize, TimeSpan.Zero);
 
 		_imageFrames = new List<IImageFrame> { singleImageFrame };
+
+		_isAnimated = false;
+		_totalImageFramesDelay = TimeSpan.Zero;
 	}
 
 	public Image(IReadOnlyList<IImageFrame> imageFrames)
 	{
 		_imageFrames = imageFrames;
+
+		_isAnimated = _imageFrames.Count > 1;
+		_totalImageFramesDelay = TimeSpan.FromMilliseconds(
+			_imageFrames.Sum(
+				anImageFrame => anImageFrame.DelayUntilNextFrame.TotalMilliseconds));
 	}
 
 	public ImageSize Size
@@ -47,9 +56,35 @@ public class Image : DisposableBase, IImage
 		return _imageFrames[0].GetInstance<TImageImplementation>();
 	}
 
-	public bool IsAnimated => _imageFrames.Count > 1;
+	public bool IsAnimated
+	{
+		get
+		{
+			ThrowObjectDisposedExceptionIfNecessary();
 
-	public IReadOnlyList<IImageFrame> GetImageFrames() => _imageFrames;
+			return _isAnimated;
+		}
+	}
+
+	public TimeSpan TotalImageFramesDelay
+	{
+		get
+		{
+			ThrowObjectDisposedExceptionIfNecessary();
+
+			return _totalImageFramesDelay;
+		}
+	}
+
+	public IReadOnlyList<IImageFrame> ImageFrames
+	{
+		get
+		{
+			ThrowObjectDisposedExceptionIfNecessary();
+
+			return _imageFrames;
+		}
+	}
 
 	#region Protected
 
@@ -64,6 +99,9 @@ public class Image : DisposableBase, IImage
 	#endregion
 
 	#region Private
+
+	private readonly bool _isAnimated;
+	private readonly TimeSpan _totalImageFramesDelay;
 
 	private readonly IReadOnlyList<IImageFrame> _imageFrames;
 

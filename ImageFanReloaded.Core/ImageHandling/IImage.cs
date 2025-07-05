@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ImageFanReloaded.Core.ImageHandling;
@@ -5,6 +6,7 @@ namespace ImageFanReloaded.Core.ImageHandling;
 public interface IImage : IImageFrame
 {
 	bool IsAnimated { get; }
+	TimeSpan TotalImageFramesDelay { get; }
 
-	IReadOnlyList<IImageFrame> GetImageFrames();
+	IReadOnlyList<IImageFrame> ImageFrames { get; }
 }

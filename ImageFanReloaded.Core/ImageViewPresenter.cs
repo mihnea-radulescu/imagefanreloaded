@@ -45,7 +45,7 @@ public class ImageViewPresenter
 					_inputPathHandler.FilePath,
 					_nameComparison));
 		
-		LoadCurrentImage();
+		await LoadCurrentImage();
 	}
 	
 	#region Private
@@ -62,14 +62,14 @@ public class ImageViewPresenter
 	private IImageFile? _currentImageFile;
 	private int _currentImageFileIndex;
 
-	private void LoadCurrentImage()
+	private async Task LoadCurrentImage()
 	{
 		_currentImageFile!.ReadImageDataFromDisc(_tabOptions.ApplyImageOrientation);
 		
-		_imageView.SetImage(_currentImageFile);
+		await _imageView.SetImage(_currentImageFile);
 	}
 
-	private void OnImageChanged(object? sender, ImageChangedEventArgs e)
+	private async void OnImageChanged(object? sender, ImageChangedEventArgs e)
 	{
 		var newImageFileIndex = _currentImageFileIndex + e.Increment;
 
@@ -81,7 +81,7 @@ public class ImageViewPresenter
 			_currentImageFileIndex = newImageFileIndex;
 			_currentImageFile = _imageFiles[_currentImageFileIndex];
 
-			LoadCurrentImage();
+			await LoadCurrentImage();
 		}
 	}
 

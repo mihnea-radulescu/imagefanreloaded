@@ -11,7 +11,7 @@ public abstract class ImageResizerBase : IImageResizer
 
 	public IImage CreateResizedImage(IImage image, ImageSize viewPortSize, ImageQuality imageQuality)
 	{
-		var imageFrames = image.GetImageFrames();
+		var imageFrames = image.ImageFrames;
 		var resizedImageFrames = new List<IImageFrame>(imageFrames.Count);
 
 		foreach (var anImageFrame in imageFrames)

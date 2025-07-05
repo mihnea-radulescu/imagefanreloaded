@@ -83,11 +83,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return shouldHandleKeyPressing;
 	}
 
-	public void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
+	public async Task HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (ShouldStartSlideshow(keyModifiers, keyPressing))
 		{
-			RaiseSlideshowRequested();
+			await RaiseSlideshowRequested();
 		}
 		else if (ShouldDisplayImageInfo(keyModifiers, keyPressing))
 		{
@@ -129,7 +129,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			FocusThumbnailScrollViewer();
 			BringThumbnailIntoView();
-			DisplayImage();
+			await DisplayImage();
 		}
 		else if (ShouldHandleThumbnailScrolling(keyModifiers, keyPressing))
 		{
@@ -392,7 +392,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		SetImageStatusBarText(basicImageInfo);
 	}
 
-	private void OnThumbnailBoxClicked(object? sender, ThumbnailBoxClickedEventArgs e)
+	private async void OnThumbnailBoxClicked(object? sender, ThumbnailBoxClickedEventArgs e)
 	{
 		var thumbnailBox = e.ThumbnailBox;
 
@@ -400,7 +400,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			if (thumbnailBox.IsSelected)
 			{
-				DisplayImage();
+				await DisplayImage();
 			}
 			else
 			{
@@ -443,7 +443,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void OnTabCountChanged(object? sender, TabCountChangedEventArgs e) => ShowCloseButton(e.ShowTabCloseButton);
 
-	private void OnImageChanged(object? sender, ImageChangedEventArgs e)
+	private async void OnImageChanged(object? sender, ImageChangedEventArgs e)
 	{
 		var imageView = e.ImageView;
 		var increment = e.Increment;
@@ -453,14 +453,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		
 		if (canAdvanceToDesignatedImage)
 		{
-			imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
+			await imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
 		}
 	}
 
-	private void OnSlideshowButtonClicked(object? sender, RoutedEventArgs e) => RaiseSlideshowRequested();
-	private void OnImageInfoButtonClicked(object? sender, RoutedEventArgs e) => RaiseImageInfoRequested();
-	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e) => RaiseTabOptionsRequested();
-	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e) => RaiseAboutInfoRequested();
+	private async void OnSlideshowButtonClicked(object? sender, RoutedEventArgs e)
+		=> await RaiseSlideshowRequested();
+	private void OnImageInfoButtonClicked(object? sender, RoutedEventArgs e)
+		=> RaiseImageInfoRequested();
+	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e)
+		=> RaiseTabOptionsRequested();
+	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e)
+		=> RaiseAboutInfoRequested();
 
 	private void AddMainGridColumnDefinitions()
 	{
@@ -533,13 +537,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void SelectThumbnail() => _selectedThumbnailBox?.SelectThumbnail();
 	private void UnselectThumbnail() => _selectedThumbnailBox?.UnselectThumbnail();
 
-	private async void DisplayImage(bool startSlideshow = false)
+	private async Task DisplayImage(bool startSlideshow = false)
 	{
 		var imageView = ImageViewFactory!.GetImageView();
 
 		imageView.TabOptions = TabOptions;
 
-		imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
+		await imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
 
 		imageView.ImageChanged += OnImageChanged;
 
@@ -764,14 +768,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
-	private void RaiseSlideshowRequested()
+	private async Task RaiseSlideshowRequested()
 	{
 		if (_selectedThumbnailBox is null)
 		{
 			return;
 		}
 
-		DisplayImage(true);
+		await DisplayImage(true);
 	}
 
 	private void RaiseImageInfoRequested()

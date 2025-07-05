@@ -1,3 +1,5 @@
+using System;
+
 namespace ImageFanReloaded.Core.ImageHandling;
 
 public interface IImageFile
@@ -6,6 +8,7 @@ public interface IImageFile
 
 	ImageSize ImageSize { get; }
 	bool IsAnimatedImage { get; }
+	TimeSpan AnimatedImageSlideshowDelay { get; }
 
 	bool HasReadImageError { get; }
 

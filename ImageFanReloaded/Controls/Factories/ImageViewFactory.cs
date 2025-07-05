@@ -6,9 +6,7 @@ namespace ImageFanReloaded.Controls.Factories;
 
 public class ImageViewFactory : IImageViewFactory
 {
-	public ImageViewFactory(
-		IGlobalParameters globalParameters,
-		IScreenInformation screenInformation)
+	public ImageViewFactory(IGlobalParameters globalParameters, IScreenInformation screenInformation)
 	{
 		_globalParameters = globalParameters;
 		_screenInformation = screenInformation;
@@ -17,7 +15,7 @@ public class ImageViewFactory : IImageViewFactory
 	public IImageView GetImageView()
 	{
 		IImageView imageView = new ImageWindow();
-		
+
 		imageView.GlobalParameters = _globalParameters;
 		imageView.ScreenInformation = _screenInformation;
 

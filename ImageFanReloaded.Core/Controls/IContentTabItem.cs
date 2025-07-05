@@ -38,7 +38,7 @@ public interface IContentTabItem
 	void DisableFolderTreeViewSelectedItemChanged();
 
 	bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
-	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
+	Task HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 
 	void SetFocusOnSelectedFolderTreeViewItem();
 
