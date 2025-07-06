@@ -81,14 +81,17 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 		if (thumbnailImage.IsAnimated)
 		{
+			_isAnimated = true;
 			_ctsAnimation = new CancellationTokenSource();
 			_animationTask = Task.Run(() => AnimateImage(_ctsAnimation), _ctsAnimation.Token);
 		}
 		else
 		{
-			_thumbnailImage.Source = _thumbnailInfo!.ThumbnailImage!.GetBitmap();
+			_thumbnailImage.Source = thumbnailImage.GetBitmap();
 		}
 	}
+
+	public bool IsAnimated => _isAnimated;
 
 	public Task AnimationTask => _animationTask ?? Task.CompletedTask;
 
@@ -109,6 +112,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	private IThumbnailInfo? _thumbnailInfo;
 
+	private bool _isAnimated;
 	private CancellationTokenSource? _ctsAnimation;
 	private Task? _animationTask;
 

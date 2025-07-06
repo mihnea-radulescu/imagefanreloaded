@@ -57,10 +57,16 @@ public class MainViewPresenter
 	{
 		var contentTabItemCollection = e.ContentTabItemCollection;
 
-		await Parallel.ForEachAsync(
-			contentTabItemCollection,
-			async (contentTabItem, cancellationToken) =>
-				await ClearFolderVisualState(contentTabItem.FolderVisualState));
+		try
+		{
+			await Parallel.ForEachAsync(
+				contentTabItemCollection,
+				async (contentTabItem, cancellationToken) =>
+					await ClearFolderVisualState(contentTabItem.FolderVisualState));
+		}
+		catch
+		{
+		}
 	}
 
 	private async void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
@@ -264,7 +270,7 @@ public class MainViewPresenter
 		contentTabItem.ImageInfoRequested -= OnImageInfoRequested;
 	}
 
-	private async Task ClearFolderVisualState(IFolderVisualState? folderVisualState)
+	private static async Task ClearFolderVisualState(IFolderVisualState? folderVisualState)
 	{
 		if (folderVisualState is not null)
 		{

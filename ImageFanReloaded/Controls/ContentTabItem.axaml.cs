@@ -150,7 +150,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			_folderTreeView.SelectedItem = _folderTreeView.Items.FirstOrDefault();
 		}
-		
+
 		if (_folderTreeView.SelectedItem is not null)
 		{
 			var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem()!;
@@ -185,7 +185,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public void PopulateRootNodesSubFoldersTree(IReadOnlyList<FileSystemEntryInfo> rootFolders)
 	{
 		var itemCollection = _folderTreeView.Items;
-		
+
 		ClearItemCollection(itemCollection);
 		AddSubFoldersToTreeView(itemCollection, rootFolders);
 	}
@@ -196,7 +196,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			var selectedItem = GetFolderTreeViewSelectedItem()!;
 			var itemCollection = selectedItem.Items;
-			
+
 			ClearItemCollection(itemCollection);
 			AddSubFoldersToTreeView(itemCollection, subFolders);
 		}
@@ -207,7 +207,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		if (_activeFolderTreeViewItem is not null)
 		{
 			var itemCollection = _activeFolderTreeViewItem.Items;
-			
+
 			ClearItemCollection(itemCollection);
 			AddSubFoldersToTreeView(itemCollection, subFolders);
 
@@ -220,7 +220,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public void PopulateThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection)
 	{
 		var thumbnailCount = thumbnailInfoCollection.Count;
-		
+
 		for (var i = 0; i < thumbnailCount; i++)
 		{
 			var thumbnailInfo = thumbnailInfoCollection[i];
@@ -251,7 +251,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public async Task ClearThumbnailBoxes(bool resetContent)
 	{
-		await Dispatcher.UIThread.InvokeAsync(async () =>
+		await Dispatcher.UIThread.InvokeAsync(() =>
 		{
 			_thumbnailWrapPanel.Children.Clear();
 
@@ -262,27 +262,21 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 			_slideshowButton.IsEnabled = false;
 			_imageInfoButton.IsEnabled = false;
+		});
 
-			if (_thumbnailBoxCollection.Any())
+		var thumbnailBoxCollectionToClear = await Dispatcher.UIThread.InvokeAsync(
+			() => _thumbnailBoxCollection.ToList());
+
+		var areThumbnailsToClear = await Dispatcher.UIThread.InvokeAsync(
+			() => thumbnailBoxCollectionToClear.Any());
+
+		if (areThumbnailsToClear)
+		{
+			await StopThumbnailAnimation(thumbnailBoxCollectionToClear);
+
+			await Dispatcher.UIThread.InvokeAsync(() =>
 			{
-				var animationTasks = _thumbnailBoxCollection
-					.Select(aThumbnailBox => aThumbnailBox.AnimationTask)
-					.ToList();
-
-				foreach (var aThumbnailBox in _thumbnailBoxCollection)
-				{
-					aThumbnailBox.NotifyStopAnimation();
-				}
-
-				try
-				{
-					await Task.WhenAll(animationTasks);
-				}
-				catch
-				{
-				}
-
-				foreach (var aThumbnailBox in _thumbnailBoxCollection)
+				foreach (var aThumbnailBox in thumbnailBoxCollectionToClear)
 				{
 					aThumbnailBox.DisposeThumbnail();
 
@@ -291,13 +285,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				}
 
 				_thumbnailBoxCollection.Clear();
-			}
+			});
+		}
 
-			if (resetContent)
-			{
-				_thumbnailScrollViewer.Offset = new Vector(_thumbnailScrollViewer.Offset.X, 0);
-			}
-		});
+		if (resetContent)
+		{
+			await Dispatcher.UIThread.InvokeAsync(() =>
+				_thumbnailScrollViewer.Offset = new Vector(_thumbnailScrollViewer.Offset.X, 0));
+		}
 	}
 
 	public void RefreshThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection)
@@ -365,7 +360,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
 			var selectedFolderPath = fileSystemEntryInfo.Path;
-			
+
 			var folderOrderingChangedEventArgs = new FolderOrderingChangedEventArgs(this, selectedFolderPath);
 
 			FolderOrderingChanged?.Invoke(this, folderOrderingChangedEventArgs);
@@ -412,7 +407,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		var imageFile = e.ThumbnailBox.ImageFile!;
 		var basicImageInfo = imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
-		
+
 		SetImageStatusBarText(basicImageInfo);
 	}
 
@@ -445,7 +440,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void OnFolderTreeViewSelectedItemChanged(object? sender, SelectionChangedEventArgs e)
 	{
 		_activeFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
-		
+
 		RaiseFolderChangedEvent();
 	}
 
@@ -459,7 +454,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		if (e.Property.Name == "IsExpanded" && (bool)e.OldValue! == false && (bool)e.NewValue! == true)
 		{
 			var selectedItem = (TreeViewItem)sender!;
-			
+
 			selectedItem.IsSelected = true;
 			_folderTreeView.SelectedItem = selectedItem;
 		}
@@ -474,7 +469,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		var canAdvanceToDesignatedImage = AdvanceFromSelectedThumbnail(increment);
 		imageView.CanAdvanceToDesignatedImage = canAdvanceToDesignatedImage;
-		
+
 		if (canAdvanceToDesignatedImage)
 		{
 			await imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
@@ -526,7 +521,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private bool AdvanceFromSelectedThumbnail(int increment)
 	{
 		var canAdvanceToNewSelectedThumbnailIndex = false;
-		
+
 		if (_selectedThumbnailBox is not null)
 		{
 			var newSelectedThumbnailIndex = _selectedThumbnailIndex + increment;
@@ -543,7 +538,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			if (_selectedThumbnailIndex != newSelectedThumbnailIndex)
 			{
 				canAdvanceToNewSelectedThumbnailIndex = true;
-				
+
 				UnselectThumbnail();
 
 				_selectedThumbnailIndex = newSelectedThumbnailIndex;
@@ -597,7 +592,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			var treeViewItem = GetTreeViewItem(aSubFolder);
 			treeViewItem.PropertyChanged += OnTreeViewItemPropertyChanged;
-			
+
 			itemCollection.Add(treeViewItem);
 		}
 	}
@@ -620,7 +615,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			{
 				Header = FakeTreeViewItemText
 			};
-			
+
 			treeViewItem.Items.Add(fakeTreeViewItem);
 		}
 
@@ -630,12 +625,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void ClearItemCollection(ItemCollection itemCollection)
 	{
 		var treeViewItems = itemCollection.Cast<TreeViewItem>().ToList();
-		
+
 		foreach (var aTreeViewItem in treeViewItems)
 		{
 			aTreeViewItem.PropertyChanged -= OnTreeViewItemPropertyChanged;
 		}
-		
+
 		itemCollection.Clear();
 	}
 
@@ -852,13 +847,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		var increment = keyPressing == GlobalParameters!.PlusKey
 			? ThumbnailSizeExtensions.ThumbnailSizeIncrement
 			: -ThumbnailSizeExtensions.ThumbnailSizeIncrement;
-		
+
 		var newThumbnailSize = TabOptions!.ThumbnailSize.ToInt() + increment;
 
 		if (newThumbnailSize.IsValidThumbnailSize())
 		{
 			TabOptions!.ThumbnailSize = newThumbnailSize.ToThumbnailSize();
-			
+
 			RaiseFolderChangedEvent();
 		}
 	}
@@ -874,9 +869,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			return;
 		}
-		
+
 		var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem()!;
-		
+
 		if (folderTreeViewSelectedItem.IsFocused)
 		{
 			FocusThumbnailScrollViewer();
@@ -892,14 +887,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void ToggleRecursiveFolderAccess()
 	{
 		TabOptions!.RecursiveFolderBrowsing = !TabOptions!.RecursiveFolderBrowsing;
-		
+
 		RaiseFolderChangedEvent();
 	}
 
 	private void ChangeApplyImageOrientation()
 	{
 		TabOptions!.ApplyImageOrientation = !TabOptions!.ApplyImageOrientation;
-		
+
 		RaiseFolderChangedEvent();
 	}
 
@@ -930,7 +925,46 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	private TreeViewItem? GetFolderTreeViewSelectedItem() => (TreeViewItem?)_folderTreeView.SelectedItem;
+	private TreeViewItem? GetFolderTreeViewSelectedItem()
+		=> (TreeViewItem?)_folderTreeView.SelectedItem;
+
+	private static async Task StopThumbnailAnimation(
+		IReadOnlyList<IThumbnailBox> thumbnailBoxCollectionToClear)
+	{
+		var animatedThumbnailBoxes = await Dispatcher.UIThread.InvokeAsync(() =>
+		{
+			var animatedThumbnailBoxes = thumbnailBoxCollectionToClear
+				.Where(aThumbnailBox => aThumbnailBox.IsAnimated)
+				.ToList();
+
+			return animatedThumbnailBoxes;
+		});
+
+		await Dispatcher.UIThread.InvokeAsync(() =>
+		{
+			foreach (var aThumbnailBox in animatedThumbnailBoxes)
+			{
+				aThumbnailBox.NotifyStopAnimation();
+			}
+		});
+
+		var runningAnimationTasks = await Dispatcher.UIThread.InvokeAsync(() =>
+		{
+			var runningAnimationTasks = animatedThumbnailBoxes
+				.Select(aThumbnailBox => aThumbnailBox.AnimationTask)
+				.ToList();
+
+			return runningAnimationTasks;
+		});
+
+		try
+		{
+			await Task.WhenAll(runningAnimationTasks);
+		}
+		catch
+		{
+		}
+	}
 
 	#endregion
 }

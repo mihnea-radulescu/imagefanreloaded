@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -76,10 +75,7 @@ public class FolderVisualState : IFolderVisualState
 		}
 	}
 
-	public void DisposeCancellationTokenSource()
-	{
-		_ctsThumbnailGeneration?.Dispose();
-	}
+	public void DisposeCancellationTokenSource() => _ctsThumbnailGeneration.Dispose();
 
 	#region Private
 
@@ -112,17 +108,28 @@ public class FolderVisualState : IFolderVisualState
 				.Take(_globalParameters.ProcessorCount)
 				.ToList();
 
-			await ReadThumbnailInput(currentThumbnails);
-			if (!_ctsThumbnailGeneration.IsCancellationRequested)
+			if (_ctsThumbnailGeneration.IsCancellationRequested)
 			{
-				_contentTabItem.PopulateThumbnailBoxes(currentThumbnails);
+				return;
 			}
 
-			await GetThumbnails(currentThumbnails);
-			if (!_ctsThumbnailGeneration.IsCancellationRequested)
+			await ReadThumbnailInput(currentThumbnails);
+
+			if (_ctsThumbnailGeneration.IsCancellationRequested)
 			{
-				_contentTabItem.RefreshThumbnailBoxes(currentThumbnails);
+				return;
 			}
+
+			_contentTabItem.PopulateThumbnailBoxes(currentThumbnails);
+
+			await GetThumbnails(currentThumbnails);
+
+			if (_ctsThumbnailGeneration.IsCancellationRequested)
+			{
+				return;
+			}
+
+			_contentTabItem.RefreshThumbnailBoxes(currentThumbnails);
 		}
 	}
 
@@ -162,7 +169,7 @@ public class FolderVisualState : IFolderVisualState
 				{
 					Task.WaitAll(thumbnailGenerationTasks, _ctsThumbnailGeneration.Token);
 				}
-				catch (OperationCanceledException)
+				catch
 				{
 				}
 			});
