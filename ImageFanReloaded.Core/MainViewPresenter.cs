@@ -59,7 +59,7 @@ public class MainViewPresenter
 
 		foreach (var aContentTabItem in contentTabItemCollection)
 		{
-			await ClearFolderVisualState(aContentTabItem.FolderVisualState);
+			await ClearContentTabItem(aContentTabItem);
 		}
 	}
 
@@ -93,13 +93,8 @@ public class MainViewPresenter
 	private async void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		var folderVisualState = contentTabItem.FolderVisualState;
 
-		await ClearFolderVisualState(folderVisualState);
-
-		DisableContentTabEventHandling(contentTabItem);
-
-		contentTabItem.DisposeFolderChangedMutex();
+		await ClearContentTabItem(contentTabItem);
 	}
 
 	private async void OnTabOptionsRequested(object? sender, ContentTabItemEventArgs e)
@@ -262,6 +257,16 @@ public class MainViewPresenter
 		contentTabItem.TabOptionsRequested -= OnTabOptionsRequested;
 		contentTabItem.AboutInfoRequested -= OnAboutInfoRequested;
 		contentTabItem.ImageInfoRequested -= OnImageInfoRequested;
+	}
+
+	private async Task ClearContentTabItem(IContentTabItem contentTabItem)
+	{
+		var folderVisualState = contentTabItem.FolderVisualState;
+		await ClearFolderVisualState(folderVisualState);
+
+		DisableContentTabEventHandling(contentTabItem);
+
+		contentTabItem.DisposeFolderChangedMutex();
 	}
 
 	private static async Task ClearFolderVisualState(IFolderVisualState? folderVisualState)

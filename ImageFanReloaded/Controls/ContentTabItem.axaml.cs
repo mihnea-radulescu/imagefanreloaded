@@ -131,7 +131,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			FocusThumbnailScrollViewer();
 			BringThumbnailIntoView();
 
-			DisplayImage();
+			DisplayImage(false);
 		}
 		else if (ShouldHandleThumbnailScrolling(keyModifiers, keyPressing))
 		{
@@ -407,7 +407,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			if (thumbnailBox.IsSelected)
 			{
-				DisplayImage();
+				DisplayImage(false);
 			}
 			else
 			{
@@ -544,7 +544,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void SelectThumbnail() => _selectedThumbnailBox?.SelectThumbnail();
 	private void UnselectThumbnail() => _selectedThumbnailBox?.UnselectThumbnail();
 
-	private async void DisplayImage(bool startSlideshow = false)
+	private async void DisplayImage(bool startSlideshow)
 	{
 		var imageView = ImageViewFactory!.GetImageView();
 
@@ -794,6 +794,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			return;
 		}
+
+		FocusThumbnailScrollViewer();
+		BringThumbnailIntoView();
 
 		var imageFile = _selectedThumbnailBox!.ImageFile!;
 		ImageInfoRequested?.Invoke(this, new ImageSelectedEventArgs(this, imageFile));

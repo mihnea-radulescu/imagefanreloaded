@@ -104,6 +104,11 @@ public class FolderVisualState : IFolderVisualState
 			 !_ctsThumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
 			 thumbnailCollection = thumbnailCollection.Skip(_globalParameters.ProcessorCount))
 		{
+			if (_ctsThumbnailGeneration.IsCancellationRequested)
+			{
+				return;
+			}
+
 			var currentThumbnails = thumbnailCollection
 				.Take(_globalParameters.ProcessorCount)
 				.ToList();
@@ -130,6 +135,11 @@ public class FolderVisualState : IFolderVisualState
 			}
 
 			_contentTabItem.RefreshThumbnailBoxes(currentThumbnails);
+
+			if (_ctsThumbnailGeneration.IsCancellationRequested)
+			{
+				return;
+			}
 		}
 	}
 
