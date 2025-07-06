@@ -146,7 +146,9 @@ public class FolderVisualState : IFolderVisualState
 	private async Task ReadThumbnailInput(IReadOnlyList<IThumbnailInfo> currentThumbnails)
 		=> await Task.Run(() =>
 			{
-				for (var i = 0; !_ctsThumbnailGeneration.IsCancellationRequested && i < currentThumbnails.Count; i++)
+				for (var i = 0;
+					 !_ctsThumbnailGeneration.IsCancellationRequested && i < currentThumbnails.Count;
+					 i++)
 				{
 					currentThumbnails[i].ReadThumbnailInputFromDisc();
 				}
@@ -184,7 +186,8 @@ public class FolderVisualState : IFolderVisualState
 				}
 			});
 
-	private async Task<decimal> GetImageFilesTotalSizeOnDiscInMegabytes(IReadOnlyList<IImageFile> imageFiles)
+	private async Task<decimal> GetImageFilesTotalSizeOnDiscInMegabytes(
+		IReadOnlyList<IImageFile> imageFiles)
 		=> await Task.Run(() =>
 		{
 			var imageFilesTotalSizeOnDiscInKilobytes = imageFiles

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
@@ -53,14 +54,10 @@ public class MainViewPresenter
 
 	private readonly IMainView _mainView;
 
-	private async void OnWindowClosing(object? sender, ContentTabItemCollectionEventArgs e)
+	private void OnWindowClosing(object? sender, ContentTabItemCollectionEventArgs e)
 	{
-		var contentTabItemCollection = e.ContentTabItemCollection;
-
-		foreach (var aContentTabItem in contentTabItemCollection)
-		{
-			await ClearContentTabItem(aContentTabItem);
-		}
+		var runningProcess = Process.GetCurrentProcess();
+		runningProcess.Kill();
 	}
 
 	private async void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
