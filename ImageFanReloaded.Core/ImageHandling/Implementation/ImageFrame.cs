@@ -12,7 +12,9 @@ public class ImageFrame : DisposableBase, IImageFrame
 	{
 		_imageFrameImplementationInstance = imageFrameImplementationInstance;
 		_imageSize = imageSize;
-		_delayUntilNextFrame = delayUntilNextFrame;
+		_delayUntilNextFrame = delayUntilNextFrame >= MinimumDelayUntilNextFrame
+			? delayUntilNextFrame
+			: MinimumDelayUntilNextFrame;
 	}
 
 	public ImageSize Size
@@ -53,6 +55,8 @@ public class ImageFrame : DisposableBase, IImageFrame
 	#endregion
 
 	#region Private
+
+	private static TimeSpan MinimumDelayUntilNextFrame => TimeSpan.FromMilliseconds(50);
 
 	private readonly IDisposable _imageFrameImplementationInstance;
 	private readonly ImageSize _imageSize;

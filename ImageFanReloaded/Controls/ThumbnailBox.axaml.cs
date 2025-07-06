@@ -81,7 +81,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 		if (thumbnailImage.IsAnimated)
 		{
-			Task.Run(AnimateImage);
+			_ctsAnimation = new CancellationTokenSource();
+			_animationTask = Task.Run(() => AnimateImage(_ctsAnimation), _ctsAnimation.Token);
 		}
 		else
 		{
@@ -89,9 +90,13 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		}
 	}
 
+	public Task AnimationTask => _animationTask ?? Task.CompletedTask;
+
+	public void NotifyStopAnimation() => _ctsAnimation?.Cancel();
+
 	public void DisposeThumbnail()
 	{
-		NotifyStopAnimation();
+		_ctsAnimation?.Dispose();
 
 		_thumbnailInfo!.DisposeThumbnail();
 		ImageFile!.DisposeImageData();
@@ -105,6 +110,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	private IThumbnailInfo? _thumbnailInfo;
 
 	private CancellationTokenSource? _ctsAnimation;
+	private Task? _animationTask;
 
 	private void OnMouseClick(object? sender, PointerReleasedEventArgs e)
 	{
@@ -118,47 +124,43 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		}
 	}
 
-	private async Task AnimateImage()
+	private async Task AnimateImage(CancellationTokenSource ctsAnimation)
 	{
 		try
 		{
-			_ctsAnimation = new CancellationTokenSource();
-
-			while (!_ctsAnimation.IsCancellationRequested)
+			while (!ctsAnimation.IsCancellationRequested)
 			{
 				var thumbnailImageFrames = _thumbnailInfo!.ThumbnailImage!.ImageFrames;
 				foreach (var aThumbnailImageFrame in thumbnailImageFrames)
 				{
-					if (_ctsAnimation.IsCancellationRequested)
+					if (ctsAnimation.IsCancellationRequested)
 					{
-						break;
+						return;
 					}
 
 					var anImageFrameBitmap = aThumbnailImageFrame.GetBitmap();
 
-					if (_ctsAnimation.IsCancellationRequested)
+					if (ctsAnimation.IsCancellationRequested)
 					{
-						break;
+						return;
 					}
 
 					await Dispatcher.UIThread.InvokeAsync(()
 						=> _thumbnailImage.Source = anImageFrameBitmap);
 
-					if (_ctsAnimation.IsCancellationRequested)
+					if (ctsAnimation.IsCancellationRequested)
 					{
-						break;
+						return;
 					}
 
-					await Task.Delay(aThumbnailImageFrame.DelayUntilNextFrame, _ctsAnimation.Token);
+					await Task.Delay(aThumbnailImageFrame.DelayUntilNextFrame, ctsAnimation.Token);
 				}
 			}
 		}
-		catch (TaskCanceledException)
+		catch
 		{
 		}
 	}
-
-	private void NotifyStopAnimation() => _ctsAnimation?.Cancel();
 
 	#endregion
 }

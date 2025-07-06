@@ -23,9 +23,7 @@ public class Image : DisposableBase, IImage
 		_imageFrames = imageFrames;
 
 		_isAnimated = _imageFrames.Count > 1;
-		_totalImageFramesDelay = TimeSpan.FromMilliseconds(
-			_imageFrames.Sum(
-				anImageFrame => anImageFrame.DelayUntilNextFrame.TotalMilliseconds));
+		_totalImageFramesDelay = GetTotalImageFramesDelay();
 	}
 
 	public ImageSize Size
@@ -104,6 +102,11 @@ public class Image : DisposableBase, IImage
 	private readonly TimeSpan _totalImageFramesDelay;
 
 	private readonly IReadOnlyList<IImageFrame> _imageFrames;
+
+	private TimeSpan GetTotalImageFramesDelay()
+		=> TimeSpan.FromMilliseconds(
+			_imageFrames.Sum(
+				anImageFrame => anImageFrame.DelayUntilNextFrame.TotalMilliseconds));
 
 	#endregion
 }

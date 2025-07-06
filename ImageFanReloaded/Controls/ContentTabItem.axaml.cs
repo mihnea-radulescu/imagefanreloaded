@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
@@ -39,6 +40,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public ITabOptions? TabOptions { get; set; }
 
 	public IAsyncMutex? FolderChangedMutex { get; set; }
+	public void DisposeFolderChangedMutex() => FolderChangedMutex?.Dispose();
 
 	public object? WrapperTabItem { get; set; }
 	public IContentTabItemHeader? ContentTabItemHeader { get; set; }
@@ -83,11 +85,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return shouldHandleKeyPressing;
 	}
 
-	public async Task HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
+	public void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (ShouldStartSlideshow(keyModifiers, keyPressing))
 		{
-			await RaiseSlideshowRequested();
+			RaiseSlideshowRequested();
 		}
 		else if (ShouldDisplayImageInfo(keyModifiers, keyPressing))
 		{
@@ -129,7 +131,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			FocusThumbnailScrollViewer();
 			BringThumbnailIntoView();
-			await DisplayImage();
+
+			DisplayImage();
 		}
 		else if (ShouldHandleThumbnailScrolling(keyModifiers, keyPressing))
 		{
@@ -246,34 +249,55 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_maxThumbnailIndex += thumbnailCount;
 	}
 
-	public void ClearThumbnailBoxes(bool resetContent)
+	public async Task ClearThumbnailBoxes(bool resetContent)
 	{
-		_thumbnailWrapPanel.Children.Clear();
-
-		_selectedThumbnailIndex = -1;
-		_maxThumbnailIndex = 0;
-
-		_selectedThumbnailBox = null;
-
-		_slideshowButton.IsEnabled = false;
-		_imageInfoButton.IsEnabled = false;
-
-		if (_thumbnailBoxCollection.Any())
+		await Dispatcher.UIThread.InvokeAsync(async () =>
 		{
-			foreach (var aThumbnailBox in _thumbnailBoxCollection)
+			_thumbnailWrapPanel.Children.Clear();
+
+			_selectedThumbnailIndex = -1;
+			_maxThumbnailIndex = 0;
+
+			_selectedThumbnailBox = null;
+
+			_slideshowButton.IsEnabled = false;
+			_imageInfoButton.IsEnabled = false;
+
+			if (_thumbnailBoxCollection.Any())
 			{
-				aThumbnailBox.DisposeThumbnail();
-				aThumbnailBox.ThumbnailBoxSelected -= OnThumbnailBoxSelected;
-				aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
+				var animationTasks = _thumbnailBoxCollection
+					.Select(aThumbnailBox => aThumbnailBox.AnimationTask)
+					.ToList();
+
+				foreach (var aThumbnailBox in _thumbnailBoxCollection)
+				{
+					aThumbnailBox.NotifyStopAnimation();
+				}
+
+				try
+				{
+					await Task.WhenAll(animationTasks);
+				}
+				catch
+				{
+				}
+
+				foreach (var aThumbnailBox in _thumbnailBoxCollection)
+				{
+					aThumbnailBox.DisposeThumbnail();
+
+					aThumbnailBox.ThumbnailBoxSelected -= OnThumbnailBoxSelected;
+					aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
+				}
+
+				_thumbnailBoxCollection.Clear();
 			}
 
-			_thumbnailBoxCollection.Clear();
-		}
-		
-		if (resetContent)
-		{
-			_thumbnailScrollViewer.Offset = new Vector(_thumbnailScrollViewer.Offset.X, 0);
-		}
+			if (resetContent)
+			{
+				_thumbnailScrollViewer.Offset = new Vector(_thumbnailScrollViewer.Offset.X, 0);
+			}
+		});
 	}
 
 	public void RefreshThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection)
@@ -392,7 +416,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		SetImageStatusBarText(basicImageInfo);
 	}
 
-	private async void OnThumbnailBoxClicked(object? sender, ThumbnailBoxClickedEventArgs e)
+	private void OnThumbnailBoxClicked(object? sender, ThumbnailBoxClickedEventArgs e)
 	{
 		var thumbnailBox = e.ThumbnailBox;
 
@@ -400,7 +424,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			if (thumbnailBox.IsSelected)
 			{
-				await DisplayImage();
+				DisplayImage();
 			}
 			else
 			{
@@ -457,8 +481,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	private async void OnSlideshowButtonClicked(object? sender, RoutedEventArgs e)
-		=> await RaiseSlideshowRequested();
+	private void OnSlideshowButtonClicked(object? sender, RoutedEventArgs e)
+		=> RaiseSlideshowRequested();
 	private void OnImageInfoButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseImageInfoRequested();
 	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e)
@@ -537,7 +561,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void SelectThumbnail() => _selectedThumbnailBox?.SelectThumbnail();
 	private void UnselectThumbnail() => _selectedThumbnailBox?.UnselectThumbnail();
 
-	private async Task DisplayImage(bool startSlideshow = false)
+	private async void DisplayImage(bool startSlideshow = false)
 	{
 		var imageView = ImageViewFactory!.GetImageView();
 
@@ -768,14 +792,17 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
-	private async Task RaiseSlideshowRequested()
+	private void RaiseSlideshowRequested()
 	{
 		if (_selectedThumbnailBox is null)
 		{
 			return;
 		}
 
-		await DisplayImage(true);
+		FocusThumbnailScrollViewer();
+		BringThumbnailIntoView();
+
+		DisplayImage(true);
 	}
 
 	private void RaiseImageInfoRequested()

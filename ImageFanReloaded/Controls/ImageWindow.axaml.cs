@@ -419,30 +419,28 @@ public partial class ImageWindow : Window, IImageView
 
 			await CloseWindow();
 		}
-		catch (TaskCanceledException)
+		catch
 		{
 		}
 	}
 
-	private async Task AnimateImage(IImage image)
+	private async Task AnimateImage(IImage image, CancellationTokenSource ctsAnimation)
 	{
 		try
 		{
-			_ctsAnimation = new CancellationTokenSource();
-
-			while (!_ctsAnimation.IsCancellationRequested)
+			while (!ctsAnimation.IsCancellationRequested)
 			{
 				var thumbnailImageFrames = image.ImageFrames;
 				foreach (var aThumbnailImageFrame in thumbnailImageFrames)
 				{
-					if (_ctsAnimation.IsCancellationRequested)
+					if (ctsAnimation.IsCancellationRequested)
 					{
 						break;
 					}
 
 					var anImageFrameBitmap = aThumbnailImageFrame.GetBitmap();
 
-					if (_ctsAnimation.IsCancellationRequested)
+					if (ctsAnimation.IsCancellationRequested)
 					{
 						break;
 					}
@@ -450,16 +448,16 @@ public partial class ImageWindow : Window, IImageView
 					await Dispatcher.UIThread.InvokeAsync(()
 						=> _imageControl.Source = anImageFrameBitmap);
 
-					if (_ctsAnimation.IsCancellationRequested)
+					if (ctsAnimation.IsCancellationRequested)
 					{
 						break;
 					}
 
-					await Task.Delay(aThumbnailImageFrame.DelayUntilNextFrame, _ctsAnimation.Token);
+					await Task.Delay(aThumbnailImageFrame.DelayUntilNextFrame, ctsAnimation.Token);
 				}
 			}
 		}
-		catch (TaskCanceledException)
+		catch
 		{
 		}
 	}
@@ -475,7 +473,8 @@ public partial class ImageWindow : Window, IImageView
 
 		if (image.IsAnimated)
 		{
-			_animationTask = Task.Run(() => AnimateImage(image));
+			_ctsAnimation = new CancellationTokenSource();
+			_animationTask = Task.Run(() => AnimateImage(image, _ctsAnimation));
 		}
 		else
 		{
@@ -649,8 +648,10 @@ public partial class ImageWindow : Window, IImageView
 		if (_animationTask is not null)
 		{
 			await _animationTask;
-
 			_animationTask = null;
+
+			_ctsAnimation?.Dispose();
+			_ctsAnimation = null;
 		}
 	}
 

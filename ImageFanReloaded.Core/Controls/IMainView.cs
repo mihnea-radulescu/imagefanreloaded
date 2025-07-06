@@ -11,7 +11,8 @@ public interface IMainView
 	ITabOptionsFactory? TabOptionsFactory { get; set; }
 
 	IAsyncMutexFactory? AsyncMutexFactory { get; set; }
-	
+
+	event EventHandler<ContentTabItemCollectionEventArgs>? WindowClosing;
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
 	event EventHandler<TabCountChangedEventArgs>? TabCountChanged;

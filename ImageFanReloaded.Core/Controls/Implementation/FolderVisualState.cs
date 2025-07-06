@@ -36,39 +36,49 @@ public class FolderVisualState : IFolderVisualState
 	}
 
 	public void NotifyStopThumbnailGeneration() => _ctsThumbnailGeneration.Cancel();
-	
-	public void ClearVisualState() => _contentTabItem.ClearThumbnailBoxes(false);
+
+	public async Task ClearVisualState() => await _contentTabItem.ClearThumbnailBoxes(false);
 
 	public async Task UpdateVisualState(ITabOptions tabOptions)
 	{
-		await _folderChangedMutex.Wait();
+		try
+		{
+			await _folderChangedMutex.Wait();
 		
-		_contentTabItem.ClearThumbnailBoxes(true);
-		_contentTabItem.SetTabInfo(_folderName, _folderPath);
+			await _contentTabItem.ClearThumbnailBoxes(true);
+			_contentTabItem.SetTabInfo(_folderName, _folderPath);
 
-		var subFolders = await _discQueryEngine.GetSubFolders(
-			_folderPath, tabOptions.FileSystemEntryInfoOrdering);
-		_contentTabItem.PopulateSubFoldersTree(subFolders);
+			var subFolders = await _discQueryEngine.GetSubFolders(
+				_folderPath, tabOptions.FileSystemEntryInfoOrdering);
+			_contentTabItem.PopulateSubFoldersTree(subFolders);
 
-		var imageFiles = await _discQueryEngine.GetImageFiles(
-			_folderPath, tabOptions.RecursiveFolderBrowsing);
-		var imageFilesCount = imageFiles.Count;
-		
-		var imageFilesTotalSizeOnDiscInMegabytes =
-			await GetImageFilesTotalSizeOnDiscInMegabytes(imageFiles);
-		
-		var folderStatusBarText = GetFolderStatusBarText(
-			imageFilesCount,
-			imageFilesTotalSizeOnDiscInMegabytes,
-			tabOptions.RecursiveFolderBrowsing);
-		_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
-		_contentTabItem.SetImageStatusBarText(string.Empty);
+			var imageFiles = await _discQueryEngine.GetImageFiles(
+				_folderPath, tabOptions.RecursiveFolderBrowsing);
+			var imageFilesCount = imageFiles.Count;
+			
+			var imageFilesTotalSizeOnDiscInMegabytes =
+				await GetImageFilesTotalSizeOnDiscInMegabytes(imageFiles);
+			
+			var folderStatusBarText = GetFolderStatusBarText(
+				imageFilesCount,
+				imageFilesTotalSizeOnDiscInMegabytes,
+				tabOptions.RecursiveFolderBrowsing);
+			_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
+			_contentTabItem.SetImageStatusBarText(string.Empty);
 
-		var thumbnails = GetThumbnailInfoCollection(tabOptions, imageFiles);
+			var thumbnails = GetThumbnailInfoCollection(tabOptions, imageFiles);
 
-		await ProcessThumbnails(thumbnails);
+			await ProcessThumbnails(thumbnails);
+		}
+		finally
+		{
+			_folderChangedMutex.Signal();
+		}
+	}
 
-		_folderChangedMutex.Signal();
+	public void DisposeCancellationTokenSource()
+	{
+		_ctsThumbnailGeneration?.Dispose();
 	}
 
 	#region Private

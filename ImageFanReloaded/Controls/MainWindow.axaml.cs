@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
@@ -17,15 +18,16 @@ public partial class MainWindow : Window, IMainView
 		InitializeComponent();
 
 		_windowFontSize = FontSize;
-		
+
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 	}
-	
+
 	public IGlobalParameters? GlobalParameters { get; set; }
 	public ITabOptionsFactory? TabOptionsFactory { get; set; }
 
 	public IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 
+	public event EventHandler<ContentTabItemCollectionEventArgs>? WindowClosing;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
 	public event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
@@ -66,11 +68,18 @@ public partial class MainWindow : Window, IMainView
 
 	private readonly double _windowFontSize;
 
-	private async void OnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
+	private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
+	{
+		var contentTabItemCollection = GetContentTabItemCollection();
+
+		WindowClosing?.Invoke(this, new ContentTabItemCollectionEventArgs(contentTabItemCollection));
+	}
+
+	private void OnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
 	{
 		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 		var keyPressing = e.Key.ToCoreKey();
-		
+
 		var contentTabItem = GetActiveContentTabItem()!;
 
 		if (ShouldWindowsOsCloseWindow(keyModifiers, keyPressing))
@@ -107,7 +116,7 @@ public partial class MainWindow : Window, IMainView
 		}
 		else if (contentTabItem.ShouldHandleControlKeyFunctions(keyModifiers, keyPressing))
 		{
-			await contentTabItem.HandleControlKeyFunctions(keyModifiers, keyPressing);
+			contentTabItem.HandleControlKeyFunctions(keyModifiers, keyPressing);
 			e.Handled = true;
 		}
 		else if (!ShouldAllowKeyPressingEventPropagation(keyModifiers, keyPressing))
@@ -125,8 +134,26 @@ public partial class MainWindow : Window, IMainView
 		{
 			AddContentTabItem();
 		}
-		
+
 		FocusSelectedContentTabItem();
+	}
+
+	private IReadOnlyList<IContentTabItem> GetContentTabItemCollection()
+	{
+		var contentTabItems = new List<IContentTabItem>();
+
+		for (var i = 0; i < _tabControl.Items.Count; i++)
+		{
+			var tabItem = (TabItem)_tabControl.Items[i]!;
+			var aContentTabItem = tabItem.Content as IContentTabItem;
+
+			if (aContentTabItem is not null)
+			{
+				contentTabItems.Add(aContentTabItem);
+			}
+		}
+
+		return contentTabItems;
 	}
 
 	private void CloseContentTabItem()
@@ -160,7 +187,7 @@ public partial class MainWindow : Window, IMainView
 		contentTabItem.SetTabInfo(DefaultTabItemTitle, string.Empty);
 
 		contentTabItem.RaisePanelsSplittingRatioChangedEvent();
-		
+
 		var tabItem = new TabItem
 		{
 			FontSize = _windowFontSize,
@@ -168,11 +195,11 @@ public partial class MainWindow : Window, IMainView
 			Content = contentTabItem,
 			IsSelected = true
 		};
-		
+
 		tabItem.KeyDown += (_, e) => e.Handled = true;
 
 		contentTabItem.WrapperTabItem = tabItem;
-		
+
 		return (contentTabItem, tabItem);
 	}
 
@@ -192,7 +219,7 @@ public partial class MainWindow : Window, IMainView
 		var lastTabItemIndex = GetContentTabItemCount() - 1;
 		var lastTabItem = (TabItem)_tabControl.Items[lastTabItemIndex]!;
 		lastTabItem.IsSelected = true;
-		
+
 		FocusSelectedContentTabItem();
 	}
 
@@ -200,17 +227,17 @@ public partial class MainWindow : Window, IMainView
 	{
 		var contentTabItem = e.ContentTabItem;
 		ContentTabItemClosed?.Invoke(this, new ContentTabItemEventArgs(contentTabItem));
-		
+
 		var tabItem = contentTabItem.WrapperTabItem;
 		_tabControl.Items.Remove(tabItem);
 		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
-		
+
 		contentTabItem.ContentTabItemHeader!.TabClosed -= CloseContentTabItem;
 		contentTabItem.UnregisterMainViewEvents();
 
 		SelectLastTabItem();
 	}
-	
+
 	private void FocusSelectedContentTabItem()
 	{
 		var selectedContentTabItem = GetActiveContentTabItem()!;
@@ -233,10 +260,10 @@ public partial class MainWindow : Window, IMainView
 		{
 			return true;
 		}
-			
+
 		return false;
 	}
-	
+
 	private bool ShouldAddNewTab(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.PlusKey)
@@ -246,7 +273,7 @@ public partial class MainWindow : Window, IMainView
 
 		return false;
 	}
-	
+
 	private bool ShouldCloseSelectedTab(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.MinusKey)
@@ -276,11 +303,11 @@ public partial class MainWindow : Window, IMainView
 
 		return false;
 	}
-	
+
 	private bool HasAtLeastOneContentTabItem()
 	{
 		var contentTabItemCount = GetContentTabItemCount();
-		
+
 		var hasAtLeastOneTabItem = contentTabItemCount > 1;
 		return hasAtLeastOneTabItem;
 	}

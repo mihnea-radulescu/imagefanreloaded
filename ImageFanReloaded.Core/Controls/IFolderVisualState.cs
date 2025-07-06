@@ -5,8 +5,10 @@ namespace ImageFanReloaded.Core.Controls;
 
 public interface IFolderVisualState
 {
-    void NotifyStopThumbnailGeneration();
-    void ClearVisualState();
+	void NotifyStopThumbnailGeneration();
 
+	Task ClearVisualState();
 	Task UpdateVisualState(ITabOptions tabOptions);
+
+	void DisposeCancellationTokenSource();
 }

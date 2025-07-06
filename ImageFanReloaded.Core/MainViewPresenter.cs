@@ -27,18 +27,19 @@ public class MainViewPresenter
 		_aboutViewFactory = aboutViewFactory;
 		_imageInfoViewFactory = imageInfoViewFactory;
 		_inputPathHandlerFactory = inputPathHandlerFactory;
-		
+
 		_commandLineArgsInputPathHandler = commandLineArgsInputPathHandler;
 		_shouldProcessCommandLineArgsInputPath = true;
 
 		_mainView = mainView;
-		
+
+		_mainView.WindowClosing += OnWindowClosing;
 		_mainView.ContentTabItemAdded += OnContentTabItemAdded;
 		_mainView.ContentTabItemClosed += OnContentTabItemClosed;
 	}
 
 	#region Private
-	
+
 	private readonly IDiscQueryEngine _discQueryEngine;
 	private readonly IFolderVisualStateFactory _folderVisualStateFactory;
 	private readonly IImageViewFactory _imageViewFactory;
@@ -46,11 +47,21 @@ public class MainViewPresenter
 	private readonly IAboutViewFactory _aboutViewFactory;
 	private readonly IImageInfoViewFactory _imageInfoViewFactory;
 	private readonly IInputPathHandlerFactory _inputPathHandlerFactory;
-	
+
 	private readonly IInputPathHandler _commandLineArgsInputPathHandler;
 	private bool _shouldProcessCommandLineArgsInputPath;
 
 	private readonly IMainView _mainView;
+
+	private async void OnWindowClosing(object? sender, ContentTabItemCollectionEventArgs e)
+	{
+		var contentTabItemCollection = e.ContentTabItemCollection;
+
+		await Parallel.ForEachAsync(
+			contentTabItemCollection,
+			async (contentTabItem, cancellationToken) =>
+				await ClearFolderVisualState(contentTabItem.FolderVisualState));
+	}
 
 	private async void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
 	{
@@ -64,39 +75,39 @@ public class MainViewPresenter
 		if (shouldProcessInputPath)
 		{
 			_shouldProcessCommandLineArgsInputPath = false;
-			
+
 			await BuildInputFolderTreeView(contentTabItem, rootFolders, _commandLineArgsInputPathHandler);
-			
+
 			EnableContentTabEventHandling(contentTabItem);
-			
+
 			contentTabItem.RaiseFolderChangedEvent();
 		}
 		else
 		{
 			EnableContentTabEventHandling(contentTabItem);
-			
+
 			contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
 		}
 	}
-	
-	private void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
+
+	private async void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		
-		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
-		contentTabItem.FolderVisualState?.ClearVisualState();
-		
+		var folderVisualState = contentTabItem.FolderVisualState;
+
+		await ClearFolderVisualState(folderVisualState);
+
 		DisableContentTabEventHandling(contentTabItem);
-		
-		contentTabItem.FolderChangedMutex!.Dispose();
+
+		contentTabItem.DisposeFolderChangedMutex();
 	}
-	
+
 	private async void OnTabOptionsRequested(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		
+
 		var tabOptionsView = _tabOptionsViewFactory.GetTabOptionsView(contentTabItem);
-		
+
 		tabOptionsView.TabOptionsChanged += OnTabOptionsChanged;
 		await contentTabItem.ShowTabOptions(tabOptionsView);
 		tabOptionsView.TabOptionsChanged -= OnTabOptionsChanged;
@@ -105,7 +116,7 @@ public class MainViewPresenter
 	private async void OnAboutInfoRequested(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		
+
 		var aboutView = _aboutViewFactory.GetAboutView();
 		await contentTabItem.ShowAboutInfo(aboutView);
 	}
@@ -114,7 +125,7 @@ public class MainViewPresenter
 	{
 		var contentTabItem = e.ContentTabItem;
 		var imageFile = e.ImageFile;
-		
+
 		var imageInfoView = await _imageInfoViewFactory.GetImageInfoView(imageFile);
 		await contentTabItem.ShowImageInfo(imageInfoView);
 	}
@@ -156,12 +167,13 @@ public class MainViewPresenter
 			await contentTabItem.TabOptions!.SaveDefaultTabOptions();
 		}
 	}
-	
+
 	private async void OnFolderChanged(object? sender, FolderChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		
-		contentTabItem.FolderVisualState?.NotifyStopThumbnailGeneration();
+
+		var previousFolderVisualState = contentTabItem.FolderVisualState;
+		previousFolderVisualState?.NotifyStopThumbnailGeneration();
 
 		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
 			contentTabItem,
@@ -169,12 +181,14 @@ public class MainViewPresenter
 			e.Path);
 
 		await contentTabItem.FolderVisualState.UpdateVisualState(contentTabItem.TabOptions!);
+
+		previousFolderVisualState?.DisposeCancellationTokenSource();
 	}
-	
+
 	private async void OnFolderOrderingChanged(object? sender, FolderOrderingChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		
+
 		var isExpandedFolderTreeViewSelectedItem = contentTabItem.GetFolderTreeViewSelectedItemExpandedState()
 			?? false;
 
@@ -195,12 +209,12 @@ public class MainViewPresenter
 	{
 		await _discQueryEngine.BuildSkipRecursionFolderPaths();
 		var rootFolders = await _discQueryEngine.GetRootFolders();
-		
+
 		contentTabItem.PopulateRootNodesSubFoldersTree(rootFolders);
 
 		return rootFolders;
 	}
-	
+
 	private async Task BuildInputFolderTreeView(
 		IContentTabItem contentTabItem,
 		IReadOnlyList<FileSystemEntryInfo> rootFolders,
@@ -218,7 +232,7 @@ public class MainViewPresenter
 			{
 				contentTabItem.SaveMatchingTreeViewItem(matchingFileSystemEntryInfo, startAtRootFolders);
 				startAtRootFolders = false;
-				
+
 				subFolders = await _discQueryEngine.GetSubFolders(
 					matchingFileSystemEntryInfo.Path, contentTabItem.TabOptions!.FileSystemEntryInfoOrdering);
 				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(subFolders);
@@ -248,6 +262,17 @@ public class MainViewPresenter
 		contentTabItem.TabOptionsRequested -= OnTabOptionsRequested;
 		contentTabItem.AboutInfoRequested -= OnAboutInfoRequested;
 		contentTabItem.ImageInfoRequested -= OnImageInfoRequested;
+	}
+
+	private async Task ClearFolderVisualState(IFolderVisualState? folderVisualState)
+	{
+		if (folderVisualState is not null)
+		{
+			folderVisualState.NotifyStopThumbnailGeneration();
+			await folderVisualState.ClearVisualState();
+
+			folderVisualState.DisposeCancellationTokenSource();
+		}
 	}
 
 	#endregion

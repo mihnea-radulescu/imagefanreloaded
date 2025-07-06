@@ -19,6 +19,7 @@ public interface IContentTabItem
 	ITabOptions? TabOptions { get; set; }
 
 	IAsyncMutex? FolderChangedMutex { get; set; }
+	void DisposeFolderChangedMutex();
 
 	object? WrapperTabItem { get; set; }
 	IContentTabItemHeader? ContentTabItemHeader { get; set; }
@@ -38,7 +39,7 @@ public interface IContentTabItem
 	void DisableFolderTreeViewSelectedItemChanged();
 
 	bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
-	Task HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
+	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 
 	void SetFocusOnSelectedFolderTreeViewItem();
 
@@ -54,7 +55,7 @@ public interface IContentTabItem
 	void PopulateSubFoldersTree(IReadOnlyList<FileSystemEntryInfo> subFolders);
 	void PopulateSubFoldersTreeOfParentTreeViewItem(IReadOnlyList<FileSystemEntryInfo> subFolders);
 
-	void ClearThumbnailBoxes(bool resetContent);
+	Task ClearThumbnailBoxes(bool resetContent);
 	void PopulateThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
 	void RefreshThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
 
