@@ -63,7 +63,7 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
-		<release version="1.2025.07.06" date="2025-07-06">
+		<release version="1.2025.07.07" date="2025-07-07">
 			<description>
 				<p>Added image animation support for the formats gif, mng and webp</p>
 			</description>

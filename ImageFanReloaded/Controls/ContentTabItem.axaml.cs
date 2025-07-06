@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
@@ -251,47 +250,36 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public async Task ClearThumbnailBoxes(bool resetContent)
 	{
-		await Dispatcher.UIThread.InvokeAsync(() =>
-		{
-			_thumbnailWrapPanel.Children.Clear();
+		_thumbnailWrapPanel.Children.Clear();
 
-			_selectedThumbnailIndex = -1;
-			_maxThumbnailIndex = 0;
+		_selectedThumbnailIndex = -1;
+		_maxThumbnailIndex = 0;
 
-			_selectedThumbnailBox = null;
+		_selectedThumbnailBox = null;
 
-			_slideshowButton.IsEnabled = false;
-			_imageInfoButton.IsEnabled = false;
-		});
+		_slideshowButton.IsEnabled = false;
+		_imageInfoButton.IsEnabled = false;
 
-		var thumbnailBoxCollectionToClear = await Dispatcher.UIThread.InvokeAsync(
-			() => _thumbnailBoxCollection.ToList());
+		var thumbnailBoxCollectionToClear = _thumbnailBoxCollection.ToList();
 
-		var areThumbnailsToClear = await Dispatcher.UIThread.InvokeAsync(
-			() => thumbnailBoxCollectionToClear.Any());
-
-		if (areThumbnailsToClear)
+		if (thumbnailBoxCollectionToClear.Any())
 		{
 			await StopThumbnailAnimation(thumbnailBoxCollectionToClear);
 
-			await Dispatcher.UIThread.InvokeAsync(() =>
+			foreach (var aThumbnailBox in thumbnailBoxCollectionToClear)
 			{
-				foreach (var aThumbnailBox in thumbnailBoxCollectionToClear)
-				{
-					aThumbnailBox.DisposeThumbnail();
+				aThumbnailBox.DisposeThumbnail();
 
-					aThumbnailBox.ThumbnailBoxSelected -= OnThumbnailBoxSelected;
-					aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
-				}
+				aThumbnailBox.ThumbnailBoxSelected -= OnThumbnailBoxSelected;
+				aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
+			}
 
-				_thumbnailBoxCollection.Clear();
-			});
+			_thumbnailBoxCollection.Clear();
 		}
 
 		if (resetContent)
 		{
-			await Dispatcher.UIThread.InvokeAsync(() =>
-				_thumbnailScrollViewer.Offset = new Vector(_thumbnailScrollViewer.Offset.X, 0));
+			_thumbnailScrollViewer.Offset = new Vector(_thumbnailScrollViewer.Offset.X, 0);
 		}
 	}
 
@@ -931,31 +919,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private static async Task StopThumbnailAnimation(
 		IReadOnlyList<IThumbnailBox> thumbnailBoxCollectionToClear)
 	{
-		var animatedThumbnailBoxes = await Dispatcher.UIThread.InvokeAsync(() =>
+		var animatedThumbnailBoxes = thumbnailBoxCollectionToClear
+			.Where(aThumbnailBox => aThumbnailBox.IsAnimated)
+			.ToList();
+
+		foreach (var aThumbnailBox in animatedThumbnailBoxes)
 		{
-			var animatedThumbnailBoxes = thumbnailBoxCollectionToClear
-				.Where(aThumbnailBox => aThumbnailBox.IsAnimated)
-				.ToList();
+			aThumbnailBox.NotifyStopAnimation();
+		}
 
-			return animatedThumbnailBoxes;
-		});
-
-		await Dispatcher.UIThread.InvokeAsync(() =>
-		{
-			foreach (var aThumbnailBox in animatedThumbnailBoxes)
-			{
-				aThumbnailBox.NotifyStopAnimation();
-			}
-		});
-
-		var runningAnimationTasks = await Dispatcher.UIThread.InvokeAsync(() =>
-		{
-			var runningAnimationTasks = animatedThumbnailBoxes
-				.Select(aThumbnailBox => aThumbnailBox.AnimationTask)
-				.ToList();
-
-			return runningAnimationTasks;
-		});
+		var runningAnimationTasks = animatedThumbnailBoxes
+			.Select(aThumbnailBox => aThumbnailBox.AnimationTask)
+			.ToList();
 
 		try
 		{
