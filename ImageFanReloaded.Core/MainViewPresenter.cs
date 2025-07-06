@@ -57,16 +57,10 @@ public class MainViewPresenter
 	{
 		var contentTabItemCollection = e.ContentTabItemCollection;
 
-		try
-		{
-			await Parallel.ForEachAsync(
-				contentTabItemCollection,
-				async (contentTabItem, cancellationToken) =>
-					await ClearFolderVisualState(contentTabItem.FolderVisualState));
-		}
-		catch
-		{
-		}
+		await Parallel.ForEachAsync(
+			contentTabItemCollection,
+			async (contentTabItem, cancellationToken) =>
+				await ClearFolderVisualState(contentTabItem.FolderVisualState));
 	}
 
 	private async void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
@@ -272,12 +266,18 @@ public class MainViewPresenter
 
 	private static async Task ClearFolderVisualState(IFolderVisualState? folderVisualState)
 	{
-		if (folderVisualState is not null)
+		try
 		{
-			folderVisualState.NotifyStopThumbnailGeneration();
-			await folderVisualState.ClearVisualState();
+			if (folderVisualState is not null)
+			{
+				folderVisualState.NotifyStopThumbnailGeneration();
+				await folderVisualState.ClearVisualState();
 
-			folderVisualState.DisposeCancellationTokenSource();
+				folderVisualState.DisposeCancellationTokenSource();
+			}
+		}
+		catch
+		{
 		}
 	}
 
