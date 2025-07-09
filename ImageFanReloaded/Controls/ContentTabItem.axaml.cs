@@ -261,6 +261,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_imageInfoButton.IsEnabled = false;
 
 		var thumbnailBoxCollectionToClear = _thumbnailBoxCollection.ToList();
+		_thumbnailBoxCollection.Clear();
 
 		if (thumbnailBoxCollectionToClear.Any())
 		{
@@ -273,8 +274,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				aThumbnailBox.ThumbnailBoxSelected -= OnThumbnailBoxSelected;
 				aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
 			}
-
-			_thumbnailBoxCollection.Clear();
 		}
 
 		if (resetContent)
