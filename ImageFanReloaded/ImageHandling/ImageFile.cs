@@ -46,9 +46,7 @@ public class ImageFile : ImageFileBase
 
 	#region Private
 
-	private const uint ImageQualityLevel = 80;
-
-	private static IImage BuildAnimatedImageFromFile(string inputFilePath)
+	private IImage BuildAnimatedImageFromFile(string inputFilePath)
 	{
 		var imageCollection = new MagickImageCollection(inputFilePath);
 
@@ -62,7 +60,7 @@ public class ImageFile : ImageFileBase
 		}
 	}
 
-	private static IImage BuildAnimatedImage(MagickImageCollection imageCollection)
+	private IImage BuildAnimatedImage(MagickImageCollection imageCollection)
 	{
 		var animatedImageFrames = new List<IImageFrame>();
 
@@ -83,19 +81,31 @@ public class ImageFile : ImageFileBase
 		return new Image(animatedImageFrames);
 	}
 
-	private static IImage BuildIndirectlySupportedImageFromFile(string inputFilePath)
+	private IImage BuildIndirectlySupportedImageFromFile(string inputFilePath)
 	{
 		IMagickImage image = new MagickImage(inputFilePath);
 
 		return BuildIndirectlySupportedImage(image);
 	}
 
-	private static IImage BuildIndirectlySupportedImage(IMagickImage image)
+	private IImage BuildIndirectlySupportedImage(IMagickImage image)
 	{
 		using var imageStream = new MemoryStream();
 		WriteImageToStream(image, imageStream, true);
 
 		return BuildImageFromStream(imageStream);
+	}
+
+	private void WriteImageToStream(IMagickImage image, Stream imageStream, bool autoOrientImage)
+	{
+		image.Quality = _globalParameters.ImageQualityLevel;
+
+		if (autoOrientImage)
+		{
+			image.AutoOrient();
+		}
+
+		image.Write(imageStream, MagickFormat.Jpg);
 	}
 
 	private static IImage BuildImageFromFile(string inputFilePath)
@@ -134,20 +144,6 @@ public class ImageFile : ImageFileBase
 		var bitmapSize = new ImageSize(bitmap.Size.Width, bitmap.Size.Height);
 
 		return new Image(bitmap, bitmapSize);
-	}
-
-	private static void WriteImageToStream(
-		IMagickImage image, Stream imageStream, bool autoOrientImage)
-	{
-		image.Format = MagickFormat.Jpg;
-		image.Quality = ImageQualityLevel;
-
-		if (autoOrientImage)
-		{
-			image.AutoOrient();
-		}
-
-		image.Write(imageStream);
 	}
 
 	#endregion

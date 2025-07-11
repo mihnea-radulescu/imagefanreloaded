@@ -33,7 +33,7 @@ public class ImageViewPresenter
 		_imageFiles = new List<IImageFile>();
 		_currentImageFileIndex = 0;
 	}
-	
+
 	public async Task SetUpAccessToImages()
 	{
 		_imageFiles = await _discQueryEngine.GetImageFiles(_inputPathHandler.FolderPath!, false);
@@ -44,12 +44,12 @@ public class ImageViewPresenter
 				anImageFileWithIndex.anImageFile.ImageFileData.ImageFilePath.Equals(
 					_inputPathHandler.FilePath,
 					_nameComparison));
-		
+
 		await LoadCurrentImage();
 	}
-	
+
 	#region Private
-	
+
 	private readonly IDiscQueryEngine _discQueryEngine;
 	private readonly IInputPathHandler _inputPathHandler;
 	private readonly ITabOptions _tabOptions;
@@ -65,7 +65,7 @@ public class ImageViewPresenter
 	private async Task LoadCurrentImage()
 	{
 		_currentImageFile!.ReadImageDataFromDisc(_tabOptions.ApplyImageOrientation);
-		
+
 		await _imageView.SetImage(_currentImageFile);
 	}
 

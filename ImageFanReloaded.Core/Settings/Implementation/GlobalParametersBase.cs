@@ -28,6 +28,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 	public Key SKey { get; }
 	public Key OKey { get; }
+	public Key DKey { get; }
+
 	public Key HKey { get; }
 	public Key F1Key { get; }
 
@@ -55,6 +57,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key PageUpKey { get; }
 	public Key PageDownKey { get; }
 
+	public Key LKey { get; }
+	public Key VKey { get; }
+
 	public bool IsBackwardNavigationKey(Key aKey) => _backwardNavigationKeys.Contains(aKey);
 	public bool IsForwardNavigationKey(Key aKey) => _forwardNavigationKeys.Contains(aKey);
 	public bool IsNavigationKey(Key aKey) => _navigationKeys.Contains(aKey);
@@ -67,6 +72,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public HashSet<string> IndirectlySupportedImageFileExtensions { get; }
 	public HashSet<string> AnimationEnabledImageFileExtensions { get; }
 	public HashSet<string> ImageFileExtensions { get; }
+
+	public uint ImageQualityLevel { get; }
 
 	public string UserProfilePath { get; }
 	public IReadOnlyList<string> SpecialFolders { get; }
@@ -101,6 +108,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		
 		SKey = Key.S;
 		OKey = Key.O;
+		DKey = Key.D;
+
 		HKey = Key.H;
 		F1Key = Key.F1;
 
@@ -132,6 +141,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		PageUpKey = Key.PageUp;
 		PageDownKey = Key.PageDown;
+
+		LKey = Key.L;
+		VKey = Key.V;
 		
 		NameComparer = operatingSystemSettings.IsWindows
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)
@@ -201,7 +213,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			 .. IndirectlySupportedImageFileExtensions,
 			 .. AnimationEnabledImageFileExtensions],
 			StringComparer.InvariantCultureIgnoreCase);
-		
+
+		ImageQualityLevel = 80;
+
 		UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
 		SpecialFolders = new List<string>

@@ -54,6 +54,8 @@ public class GlobalParametersTest : TestBase
 
 		Assert.NotEqual(Key.None, _globalParameters.SKey);
 		Assert.NotEqual(Key.None, _globalParameters.OKey);
+		Assert.NotEqual(Key.None, _globalParameters.DKey);
+
 		Assert.NotEqual(Key.None, _globalParameters.HKey);
 		Assert.NotEqual(Key.None, _globalParameters.F1Key);
 
@@ -81,12 +83,17 @@ public class GlobalParametersTest : TestBase
 		Assert.NotEqual(Key.None, _globalParameters.PageUpKey);
 		Assert.NotEqual(Key.None, _globalParameters.PageDownKey);
 
+		Assert.NotEqual(Key.None, _globalParameters.LKey);
+		Assert.NotEqual(Key.None, _globalParameters.VKey);
+
 		Assert.NotNull(_globalParameters.NameComparer);
 
 		Assert.NotEmpty(_globalParameters.DirectlySupportedImageFileExtensions);
 		Assert.NotEmpty(_globalParameters.IndirectlySupportedImageFileExtensions);
 		Assert.NotEmpty(_globalParameters.AnimationEnabledImageFileExtensions);
 		Assert.NotEmpty(_globalParameters.ImageFileExtensions);
+
+		Assert.NotEqual(0U, _globalParameters.ImageQualityLevel);
 
 		Assert.NotNull(_globalParameters.UserProfilePath);
 		Assert.NotEmpty(_globalParameters.UserProfilePath);

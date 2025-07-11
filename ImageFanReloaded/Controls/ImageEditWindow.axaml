@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Class="ImageFanReloaded.Controls.ImageEditWindow"
+		Icon="/MainWindowIcon.ico"
+		Title="Edit image"
+		SizeToContent="WidthAndHeight"
+		WindowStartupLocation="CenterOwner"
+		Focusable="True"
+		Closing="OnWindowClosing">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<StackPanel Grid.Row="0"
+					Classes="HorizontalStackPanel"
+					HorizontalAlignment="Center">
+			<Button Name="_rotateLeftButton"
+					Content="Rotate left"
+					Click="OnRotateLeft"/>
+			<Button Name="_rotateRightButton"
+					Content="Rotate right"
+					Click="OnRotateRight"/>
+			<Button Name="_flipHorizontallyButton"
+					Content="Flip horizontally"
+					Click="OnFlipHorizontally"/>
+			<Button Name="_flipVerticallyButton"
+					Content="Flip vertically"
+					Click="OnFlipVertically"/>
+		</StackPanel>
+
+		<StackPanel Grid.Row="1"
+					Classes="HorizontalStackPanel"
+					HorizontalAlignment="Center">
+			<Button Name="_saveButton"
+					Content="Save as (preserve format)"
+					Click="OnSaveAs"/>
+		</StackPanel>
+
+		<Grid Grid.Row="2">
+			<Image Name="_displayImage"
+				   Margin="4"
+				   Stretch="Uniform"/>
+		</Grid>
+	</Grid>
+</Window>

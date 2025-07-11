@@ -52,6 +52,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public event EventHandler<FolderOrderingChangedEventArgs>? FolderOrderingChanged;
 
 	public event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
+	public event EventHandler<ImageSelectedEventArgs>? ImageEditRequested;
 	public event EventHandler<ContentTabItemEventArgs>? TabOptionsRequested;
 	public event EventHandler<ContentTabItemEventArgs>? AboutInfoRequested;
 
@@ -69,6 +70,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		var shouldHandleKeyPressing = ShouldStartSlideshow(keyModifiers, keyPressing)
 									  || ShouldDisplayImageInfo(keyModifiers, keyPressing)
+									  || ShouldDisplayImageEdit(keyModifiers, keyPressing)
 									  || ShouldDisplayTabOptions(keyModifiers, keyPressing)
 									  || ShouldDisplayAboutInfo(keyModifiers, keyPressing)
 									  || ShouldChangeFolderOrdering(keyModifiers, keyPressing)
@@ -93,6 +95,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldDisplayImageInfo(keyModifiers, keyPressing))
 		{
 			RaiseImageInfoRequested();
+		}
+		else if (ShouldDisplayImageEdit(keyModifiers, keyPressing))
+		{
+			RaiseImageEditRequested();
 		}
 		else if (ShouldDisplayTabOptions(keyModifiers, keyPressing))
 		{
@@ -255,10 +261,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_selectedThumbnailIndex = -1;
 		_maxThumbnailIndex = 0;
 
-		_selectedThumbnailBox = null;
+		_selectedThumbnailBox = default;
 
 		_slideshowButton.IsEnabled = false;
 		_imageInfoButton.IsEnabled = false;
+		_imageEditButton.IsEnabled = false;
 
 		var thumbnailBoxCollectionToClear = _thumbnailBoxCollection.ToList();
 		_thumbnailBoxCollection.Clear();
@@ -269,7 +276,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 			foreach (var aThumbnailBox in thumbnailBoxCollectionToClear)
 			{
-				aThumbnailBox.DisposeThumbnail();
+				await aThumbnailBox.DisposeThumbnail();
 
 				aThumbnailBox.ThumbnailBoxSelected -= OnThumbnailBoxSelected;
 				aThumbnailBox.ThumbnailBoxClicked -= OnThumbnailBoxClicked;
@@ -292,12 +299,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void SetFolderStatusBarText(string folderStatusBarText)
 	{
-		_textBoxFolderInfo.Text = folderStatusBarText;
+		_folderInfoTextBox.Text = folderStatusBarText;
 	}
 
 	public void SetImageStatusBarText(string imageStatusBarText)
 	{
-		_textBoxImageInfo.Text = imageStatusBarText;
+		_imageInfoTextBox.Text = imageStatusBarText;
 	}
 
 	public void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders)
@@ -319,7 +326,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public bool AreFolderInfoOrImageInfoFocused() => _textBoxFolderInfo.IsFocused || _textBoxImageInfo.IsFocused;
+	public bool AreFolderInfoOrImageInfoFocused() => _folderInfoTextBox.IsFocused || _imageInfoTextBox.IsFocused;
 
 	public void FocusThumbnailScrollViewer() => _thumbnailScrollViewer.Focus();
 
@@ -363,6 +370,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			100 - TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
 	}
 
+	public async Task UpdateThumbnailAfterImageFileChange()
+		=> await _selectedThumbnailBox!.UpdateThumbnailAfterImageFileChange();
+
+	public async Task ShowImageEdit(IImageEditView imageEditView) => await imageEditView.ShowDialog(MainView!);
 	public async Task ShowTabOptions(ITabOptionsView tabOptionsView) => await tabOptionsView.ShowDialog(MainView!);
 	public async Task ShowAboutInfo(IAboutView aboutView) => await aboutView.ShowDialog(MainView!);
 	public async Task ShowImageInfo(IImageInfoView imageInfoView) => await imageInfoView.ShowDialog(MainView!);
@@ -467,6 +478,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		=> RaiseSlideshowRequested();
 	private void OnImageInfoButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseImageInfoRequested();
+	private void OnImageEditButtonClicked(object? sender, RoutedEventArgs e)
+		=> RaiseImageEditRequested();
+
 	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseTabOptionsRequested();
 	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e)
@@ -500,6 +514,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 			_slideshowButton.IsEnabled = true;
 			_imageInfoButton.IsEnabled = true;
+			_imageEditButton.IsEnabled = !_selectedThumbnailBox.HasImageError;
 
 			SelectThumbnail();
 		}
@@ -639,6 +654,16 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private bool ShouldDisplayImageInfo(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.FKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldDisplayImageEdit(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.DKey)
 		{
 			return true;
 		}
@@ -799,6 +824,20 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		var imageFile = _selectedThumbnailBox!.ImageFile!;
 		ImageInfoRequested?.Invoke(this, new ImageSelectedEventArgs(this, imageFile));
+	}
+
+	private void RaiseImageEditRequested()
+	{
+		if (_selectedThumbnailBox is null || _selectedThumbnailBox.HasImageError)
+		{
+			return;
+		}
+
+		FocusThumbnailScrollViewer();
+		BringThumbnailIntoView();
+
+		var imageFile = _selectedThumbnailBox!.ImageFile!;
+		ImageEditRequested?.Invoke(this, new ImageSelectedEventArgs(this, imageFile));
 	}
 
 	private void RaiseTabOptionsRequested()

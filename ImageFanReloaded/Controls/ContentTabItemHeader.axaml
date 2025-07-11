@@ -6,9 +6,8 @@
 	<ToolTip.Tip>
 		<TextBlock Name="_textBlockTabTooltip"/>
 	</ToolTip.Tip>
-	<StackPanel Orientation="Horizontal"
-				Margin="4"
-				Spacing="8">
+	<StackPanel Classes="HorizontalStackPanel"
+				HorizontalAlignment="Left">
 		<TextBlock Name="_textBlockTabTitle"
 				   VerticalAlignment="Center"/>
 
@@ -24,6 +23,6 @@
 					   TextAlignment="Center"
 					   VerticalAlignment="Center"/>
 		</Border>
-		
+
 	</StackPanel>
 </UserControl>

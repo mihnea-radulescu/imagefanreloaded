@@ -15,6 +15,8 @@ public interface IThumbnailBox
 	IThumbnailInfo? ThumbnailInfo { get; set; }
 
 	IImageFile? ImageFile { get; }
+	bool HasImageError { get; }
+
 	bool IsSelected { get; }
 
 	void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters);
@@ -25,9 +27,11 @@ public interface IThumbnailBox
 	void BringThumbnailIntoView();
 	void RefreshThumbnail();
 
+	Task UpdateThumbnailAfterImageFileChange();
+
 	bool IsAnimated { get; }
 	Task AnimationTask { get; }
 	void NotifyStopAnimation();
 
-	void DisposeThumbnail();
+	Task DisposeThumbnail();
 }

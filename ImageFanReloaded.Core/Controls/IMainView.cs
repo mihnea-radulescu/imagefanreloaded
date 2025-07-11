@@ -9,7 +9,6 @@ public interface IMainView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
 	ITabOptionsFactory? TabOptionsFactory { get; set; }
-
 	IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 
 	event EventHandler<ContentTabItemCollectionEventArgs>? WindowClosing;

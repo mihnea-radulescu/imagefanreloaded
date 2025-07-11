@@ -71,8 +71,8 @@ public partial class ImageWindow : Window, IImageView
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
 
-		_textBoxImageInfo.Text = _imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
-		_textBoxImageInfo.IsVisible = TabOptions!.ShowImageViewImageInfo;
+		_imageInfoTextBox.Text = _imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
+		_imageInfoTextBox.IsVisible = TabOptions!.ShowImageViewImageInfo;
 
 		_showMainViewAfterImageViewClosing = false;
 
@@ -363,7 +363,7 @@ public partial class ImageWindow : Window, IImageView
 
 	private async Task HandleEscapeAction()
 	{
-		if (_textBoxImageInfo.IsFocused)
+		if (_imageInfoTextBox.IsFocused)
 		{
 			Focus();
 		}
@@ -606,7 +606,7 @@ public partial class ImageWindow : Window, IImageView
 	{
 		TabOptions!.ShowImageViewImageInfo = !TabOptions!.ShowImageViewImageInfo;
 
-		_textBoxImageInfo.IsVisible = TabOptions!.ShowImageViewImageInfo;
+		_imageInfoTextBox.IsVisible = TabOptions!.ShowImageViewImageInfo;
 	}
 
 	private async Task CloseWindow()
@@ -648,10 +648,10 @@ public partial class ImageWindow : Window, IImageView
 		if (_animationTask is not null)
 		{
 			await _animationTask;
-			_animationTask = null;
+			_animationTask = default;
 
 			_ctsAnimation?.Dispose();
-			_ctsAnimation = null;
+			_ctsAnimation = default;
 		}
 	}
 

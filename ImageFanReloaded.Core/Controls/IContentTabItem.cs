@@ -32,6 +32,7 @@ public interface IContentTabItem
 	event EventHandler<FolderOrderingChangedEventArgs>? FolderOrderingChanged;
 
 	event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
+	event EventHandler<ImageSelectedEventArgs>? ImageEditRequested;
 	event EventHandler<ContentTabItemEventArgs>? TabOptionsRequested;
 	event EventHandler<ContentTabItemEventArgs>? AboutInfoRequested;
 
@@ -71,6 +72,9 @@ public interface IContentTabItem
 	void RaiseFolderOrderingChangedEvent();
 	void RaisePanelsSplittingRatioChangedEvent();
 
+	Task UpdateThumbnailAfterImageFileChange();
+
+	Task ShowImageEdit(IImageEditView imageEditView);
 	Task ShowTabOptions(ITabOptionsView tabOptionsView);
 	Task ShowAboutInfo(IAboutView aboutView);
 	Task ShowImageInfo(IImageInfoView imageInfoView);

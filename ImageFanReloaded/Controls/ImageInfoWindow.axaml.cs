@@ -19,7 +19,7 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 	
 	public IGlobalParameters? GlobalParameters { get; set; }
 
-	public void SetImageInfoText(string text) => _textBoxImageInfo.Text = text;
+	public void SetImageInfoText(string text) => _imageInfoTextBox.Text = text;
 	
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
 

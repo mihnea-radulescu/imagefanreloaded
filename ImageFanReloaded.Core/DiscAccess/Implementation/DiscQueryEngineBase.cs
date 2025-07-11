@@ -216,6 +216,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						aFileInfo.Name,
 						aFileInfo.FullName,
 						aFileInfo.Extension,
+						Path.GetDirectoryName(aFileInfo.FullName)!,
 						_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length)))
 				)
 				.OrderBy(anImageFile =>

@@ -14,19 +14,22 @@ public class MainViewPresenter
 		IDiscQueryEngine discQueryEngine,
 		IFolderVisualStateFactory folderVisualStateFactory,
 		IImageViewFactory imageViewFactory,
+		IImageInfoViewFactory imageInfoViewFactory,
+		IImageEditViewFactory imageEditViewFactory,
 		ITabOptionsViewFactory tabOptionsViewFactory,
 		IAboutViewFactory aboutViewFactory,
-		IImageInfoViewFactory imageInfoViewFactory,
 		IInputPathHandlerFactory inputPathHandlerFactory,
 		IInputPathHandler commandLineArgsInputPathHandler,
 		IMainView mainView)
 	{
 		_discQueryEngine = discQueryEngine;
+
 		_folderVisualStateFactory = folderVisualStateFactory;
 		_imageViewFactory = imageViewFactory;
+		_imageInfoViewFactory = imageInfoViewFactory;
+		_imageEditViewFactory = imageEditViewFactory;
 		_tabOptionsViewFactory = tabOptionsViewFactory;
 		_aboutViewFactory = aboutViewFactory;
-		_imageInfoViewFactory = imageInfoViewFactory;
 		_inputPathHandlerFactory = inputPathHandlerFactory;
 
 		_commandLineArgsInputPathHandler = commandLineArgsInputPathHandler;
@@ -42,11 +45,13 @@ public class MainViewPresenter
 	#region Private
 
 	private readonly IDiscQueryEngine _discQueryEngine;
+
 	private readonly IFolderVisualStateFactory _folderVisualStateFactory;
 	private readonly IImageViewFactory _imageViewFactory;
+	private readonly IImageInfoViewFactory _imageInfoViewFactory;
+	private readonly IImageEditViewFactory _imageEditViewFactory;
 	private readonly ITabOptionsViewFactory _tabOptionsViewFactory;
 	private readonly IAboutViewFactory _aboutViewFactory;
-	private readonly IImageInfoViewFactory _imageInfoViewFactory;
 	private readonly IInputPathHandlerFactory _inputPathHandlerFactory;
 
 	private readonly IInputPathHandler _commandLineArgsInputPathHandler;
@@ -94,6 +99,32 @@ public class MainViewPresenter
 		await ClearContentTabItem(contentTabItem);
 	}
 
+	private async void OnImageInfoRequested(object? sender, ImageSelectedEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+		var imageFile = e.ImageFile;
+
+		var imageInfoView = await _imageInfoViewFactory.GetImageInfoView(imageFile);
+		await contentTabItem.ShowImageInfo(imageInfoView);
+	}
+
+	private async void OnImageEditRequested(object? sender, ImageSelectedEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+		var imageFile = e.ImageFile;
+
+		var imageEditView = _imageEditViewFactory.GetImageEditView(contentTabItem, imageFile);
+		await imageEditView.LoadImage();
+
+		imageEditView.ImageChanged += OnImageEditViewImageChanged;
+		imageEditView.FolderChanged += OnImageEditViewFolderChanged;
+
+		await contentTabItem.ShowImageEdit(imageEditView);
+
+		imageEditView.ImageChanged -= OnImageEditViewImageChanged;
+		imageEditView.FolderChanged -= OnImageEditViewFolderChanged;
+	}
+
 	private async void OnTabOptionsRequested(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
@@ -113,13 +144,18 @@ public class MainViewPresenter
 		await contentTabItem.ShowAboutInfo(aboutView);
 	}
 
-	private async void OnImageInfoRequested(object? sender, ImageSelectedEventArgs e)
+	private async void OnImageEditViewImageChanged(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		var imageFile = e.ImageFile;
 
-		var imageInfoView = await _imageInfoViewFactory.GetImageInfoView(imageFile);
-		await contentTabItem.ShowImageInfo(imageInfoView);
+		await contentTabItem.UpdateThumbnailAfterImageFileChange();
+	}
+
+	private void OnImageEditViewFolderChanged(object? sender, ContentTabItemEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+
+		contentTabItem.RaiseFolderChangedEvent();
 	}
 
 	private static async void OnTabOptionsChanged(object? sender, TabOptionsChangedEventArgs e)
@@ -239,9 +275,10 @@ public class MainViewPresenter
 		contentTabItem.FolderChanged += OnFolderChanged;
 		contentTabItem.FolderOrderingChanged += OnFolderOrderingChanged;
 
+		contentTabItem.ImageInfoRequested += OnImageInfoRequested;
+		contentTabItem.ImageEditRequested += OnImageEditRequested;
 		contentTabItem.TabOptionsRequested += OnTabOptionsRequested;
 		contentTabItem.AboutInfoRequested += OnAboutInfoRequested;
-		contentTabItem.ImageInfoRequested += OnImageInfoRequested;
 	}
 
 	private void DisableContentTabEventHandling(IContentTabItem contentTabItem)
@@ -251,9 +288,10 @@ public class MainViewPresenter
 		contentTabItem.FolderChanged -= OnFolderChanged;
 		contentTabItem.FolderOrderingChanged -= OnFolderOrderingChanged;
 
+		contentTabItem.ImageInfoRequested -= OnImageInfoRequested;
+		contentTabItem.ImageEditRequested -= OnImageEditRequested;
 		contentTabItem.TabOptionsRequested -= OnTabOptionsRequested;
 		contentTabItem.AboutInfoRequested -= OnAboutInfoRequested;
-		contentTabItem.ImageInfoRequested -= OnImageInfoRequested;
 	}
 
 	private async Task ClearContentTabItem(IContentTabItem contentTabItem)

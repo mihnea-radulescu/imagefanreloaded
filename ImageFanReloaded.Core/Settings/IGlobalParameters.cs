@@ -26,6 +26,8 @@ public interface IGlobalParameters
 
 	Key SKey { get; }
 	Key OKey { get; }
+	Key DKey { get; }
+
 	Key HKey { get; }
 	Key F1Key { get; }
 
@@ -53,6 +55,9 @@ public interface IGlobalParameters
 	Key PageUpKey { get; }
 	Key PageDownKey { get; }
 
+	Key LKey { get; }
+	Key VKey { get; }
+
 	bool IsBackwardNavigationKey(Key aKey);
 	bool IsForwardNavigationKey(Key aKey);
 	bool IsNavigationKey(Key aKey);
@@ -65,6 +70,8 @@ public interface IGlobalParameters
 	HashSet<string> IndirectlySupportedImageFileExtensions { get; }
 	HashSet<string> AnimationEnabledImageFileExtensions { get; }
 	HashSet<string> ImageFileExtensions { get; }
+
+	uint ImageQualityLevel { get; }
 
 	string UserProfilePath { get; }
 	IReadOnlyList<string> SpecialFolders { get; }

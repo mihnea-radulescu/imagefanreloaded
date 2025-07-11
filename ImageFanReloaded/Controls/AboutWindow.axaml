@@ -8,7 +8,7 @@
 		WindowStartupLocation="CenterOwner"
 		CanResize="False"
 		Focusable="True">
-	<TextBox Name="_textBoxAbout"
+	<TextBox Name="_aboutTextBox"
 			 IsReadOnly="True"
 			 Background="Transparent"
 			 Margin="4"/>

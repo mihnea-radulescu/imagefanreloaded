@@ -10,7 +10,7 @@ public class TabOptionsViewFactory : ITabOptionsViewFactory
 	{
 		_globalParameters = globalParameters;
 	}
-	
+
 	public ITabOptionsView GetTabOptionsView(IContentTabItem contentTabItem)
 	{
 		ITabOptionsView tabOptionsView = new TabOptionsWindow();
@@ -25,10 +25,10 @@ public class TabOptionsViewFactory : ITabOptionsViewFactory
 
 		return tabOptionsView;
 	}
-	
+
 	#region Private
-	
+
 	private readonly IGlobalParameters _globalParameters;
-	
+
 	#endregion
 }

@@ -52,7 +52,7 @@ public abstract class ImageFileBase : IImageFile
 
 	public IImage GetResizedImage(ImageSize viewPortSize, bool applyImageOrientation)
 	{
-		IImage? image = null;
+		IImage? image = default;
 		IImage resizedImage;
 
 		try
@@ -138,7 +138,7 @@ public abstract class ImageFileBase : IImageFile
 				_globalParameters.CanDisposeImage(_imageInstance))
 			{
 				_imageInstance.Dispose();
-				_imageInstance = null;
+				_imageInstance = default;
 			}
 		}
 	}
@@ -156,6 +156,8 @@ public abstract class ImageFileBase : IImageFile
 
 	#region Protected
 
+	protected readonly IGlobalParameters _globalParameters;
+
 	protected abstract IImage GetImageFromDisc(bool applyImageOrientation);
 
 	protected bool IsDirectlySupportedImageFileExtension
@@ -170,7 +172,6 @@ public abstract class ImageFileBase : IImageFile
 
 	#region Private
 
-	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageResizer _imageResizer;
 	private readonly object _thumbnailGenerationLockObject;
 

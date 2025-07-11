@@ -52,12 +52,12 @@ public class AppBootstrap : IAppBootstrap
 
 	private readonly IClassicDesktopStyleApplicationLifetime _desktop;
 
-	private IGlobalParameters _globalParameters = null!;
-	private IFileSizeEngine _fileSizeEngine = null!;
-	private IDiscQueryEngine _discQueryEngine = null!;
-	private ITabOptionsFactory _tabOptionsFactory = null!;
-	private IInputPathHandlerFactory _inputPathHandlerFactory = null!;
-	private IInputPathHandler _commandLineArgsInputPathHandler = null!;
+	private IGlobalParameters _globalParameters = default!;
+	private IFileSizeEngine _fileSizeEngine = default!;
+	private IDiscQueryEngine _discQueryEngine = default!;
+	private ITabOptionsFactory _tabOptionsFactory = default!;
+	private IInputPathHandlerFactory _inputPathHandlerFactory = default!;
+	private IInputPathHandler _commandLineArgsInputPathHandler = default!;
 
 	private void BootstrapTypes()
 	{
@@ -103,6 +103,12 @@ public class AppBootstrap : IAppBootstrap
 		_desktop.MainWindow = mainWindow;
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
 
+#if FLATPAK_BUILD
+		ISaveFileDialogFactory saveFileDialogFactory = new DefaultSaveFileDialogFactory(mainWindow);
+#else
+		ISaveFileDialogFactory saveFileDialogFactory = new DefaultSaveFileDialogFactory(mainWindow);
+#endif
+
 		IAsyncMutexFactory asyncMutexFactory = new AsyncMutexFactory();
 
 		IMainView mainView = mainWindow;
@@ -117,10 +123,14 @@ public class AppBootstrap : IAppBootstrap
 		IImageViewFactory imageViewFactory = new ImageViewFactory(
 			_globalParameters, screenInformation);
 
-		IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
+		IImageEditViewFactory imageEditViewFactory = new ImageEditViewFactory(
+			_globalParameters, saveFileDialogFactory);
 
 		ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);
-		IAboutViewFactory aboutViewFactory = new AboutViewFactory(aboutInformationProvider, _globalParameters);
+
+		IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
+		IAboutViewFactory aboutViewFactory = new AboutViewFactory(
+			aboutInformationProvider, _globalParameters);
 
 		IImageInfoBuilder imageInfoBuilder = new ImageInfoBuilder();
 		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(
@@ -130,9 +140,10 @@ public class AppBootstrap : IAppBootstrap
 			_discQueryEngine,
 			folderVisualStateFactory,
 			imageViewFactory,
+			imageInfoViewFactory,
+			imageEditViewFactory,
 			tabOptionsViewFactory,
 			aboutViewFactory,
-			imageInfoViewFactory,
 			_inputPathHandlerFactory,
 			_commandLineArgsInputPathHandler,
 			mainView);

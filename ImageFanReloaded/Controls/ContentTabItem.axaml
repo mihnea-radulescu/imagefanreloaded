@@ -8,9 +8,7 @@
 		</Grid.RowDefinitions>
 
 		<StackPanel Grid.Row="0"
-					Orientation="Horizontal"
-					Margin="4"
-					Spacing="8"
+					Classes="HorizontalStackPanel"
 					HorizontalAlignment="Right">
 			<Button Name="_slideshowButton"
 					Content="Slideshow"
@@ -19,6 +17,10 @@
 			<Button Name="_imageInfoButton"
 					Content="Image info"
 					Click="OnImageInfoButtonClicked"/>
+
+			<Button Name="_imageEditButton"
+					Content="Edit image"
+					Click="OnImageEditButtonClicked"/>
 
 			<Button Name="_optionsButton"
 					Content="Tab options"
@@ -61,12 +63,12 @@
 						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
 
-					<TextBox Name="_textBoxFolderInfo"
+					<TextBox Name="_folderInfoTextBox"
 							Grid.Column="0"
 							IsReadOnly="True"
 							Background="Transparent"
 							TextAlignment="Left"/>
-					<TextBox Name="_textBoxImageInfo"
+					<TextBox Name="_imageInfoTextBox"
 							Grid.Column="2"
 							IsReadOnly="True"
 							Background="Transparent"

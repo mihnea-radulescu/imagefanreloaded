@@ -10,13 +10,15 @@ public enum Key
 
 	S,
 	O,
+	D,
+
 	H,
 	F1,
 
 	F,
-	
+
 	F4,
-	
+
 	Up,
 	Down,
 	Left,
@@ -35,5 +37,8 @@ public enum Key
 	Minus,
 
 	PageUp,
-	PageDown
+	PageDown,
+
+	L,
+	V
 }

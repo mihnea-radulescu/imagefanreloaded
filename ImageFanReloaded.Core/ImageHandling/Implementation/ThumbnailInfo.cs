@@ -41,7 +41,7 @@ public class ThumbnailInfo : IThumbnailInfo
 			_globalParameters.CanDisposeImage(ThumbnailImage))
 		{
 			ThumbnailImage.Dispose();
-			ThumbnailImage = null;
+			ThumbnailImage = default;
 		}
 	}
 

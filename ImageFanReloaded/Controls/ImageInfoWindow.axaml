@@ -13,7 +13,7 @@
 				  HorizontalScrollBarVisibility="Auto"
 				  VerticalScrollBarVisibility="Auto"
 				  Focusable="True">
-		<TextBox Name="_textBoxImageInfo"
+		<TextBox Name="_imageInfoTextBox"
 			 	 IsReadOnly="True"
 			 	 Background="Transparent"
 			 	 Margin="4"/>

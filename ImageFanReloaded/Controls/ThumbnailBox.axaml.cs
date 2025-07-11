@@ -40,6 +40,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 			_thumbnailInfo = value;
 
 			ImageFile = _thumbnailInfo!.ImageFile;
+			HasImageError = ImageFile.HasReadImageError;
 
 			_thumbnailImage.Source = _thumbnailInfo.ThumbnailImage!.GetBitmap();
 			_thumbnailTextBlock.Text = _thumbnailInfo.ThumbnailText;
@@ -47,6 +48,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	}
 
 	public IImageFile? ImageFile { get; private set; }
+	public bool HasImageError { get; private set; }
+
 	public bool IsSelected { get; private set; }
 
 	public void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters)
@@ -91,15 +94,29 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		}
 	}
 
+	public async Task UpdateThumbnailAfterImageFileChange()
+	{
+		NotifyStopAnimation();
+
+		await DisposeThumbnail();
+
+		_thumbnailInfo!.ReadThumbnailInputFromDisc();
+		_thumbnailInfo!.GetThumbnail();
+
+		RefreshThumbnail();
+	}
+
 	public bool IsAnimated => _isAnimated;
 
 	public Task AnimationTask => _animationTask ?? Task.CompletedTask;
 
 	public void NotifyStopAnimation() => _ctsAnimation?.Cancel();
 
-	public void DisposeThumbnail()
+	public async Task DisposeThumbnail()
 	{
-		_ctsAnimation?.Dispose();
+		await WaitForAnimationTask();
+
+		_thumbnailImage.Source = null;
 
 		_thumbnailInfo!.DisposeThumbnail();
 		ImageFile!.DisposeImageData();
@@ -163,6 +180,18 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		}
 		catch
 		{
+		}
+	}
+
+	private async Task WaitForAnimationTask()
+	{
+		if (_animationTask is not null)
+		{
+			await _animationTask;
+			_animationTask = default;
+
+			_ctsAnimation?.Dispose();
+			_ctsAnimation = default;
 		}
 	}
 

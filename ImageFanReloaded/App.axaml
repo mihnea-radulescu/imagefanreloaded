@@ -12,5 +12,10 @@
 			<Setter Property="BorderThickness" Value="0"/>
 			<Setter Property="CornerRadius" Value="5"/>
 		</Style>
+		<Style Selector="StackPanel.HorizontalStackPanel">
+			<Setter Property="Orientation" Value="Horizontal"/>
+			<Setter Property="Margin" Value="4"/>
+			<Setter Property="Spacing" Value="8"/>
+		</Style>
 	</Application.Styles>
 </Application>
