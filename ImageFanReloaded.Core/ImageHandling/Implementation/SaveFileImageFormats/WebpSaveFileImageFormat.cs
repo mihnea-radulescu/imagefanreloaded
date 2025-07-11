@@ -3,4 +3,6 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormat
 public class WebpSaveFileImageFormat : ISaveFileImageFormat
 {
 	public string Extension => ".webp";
+
+	public bool IsAnimationEnabled => true;
 }

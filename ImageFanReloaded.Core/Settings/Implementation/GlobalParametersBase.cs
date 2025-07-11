@@ -60,6 +60,12 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key LKey { get; }
 	public Key VKey { get; }
 
+	public Key JKey { get; }
+	public Key GKey { get; }
+	public Key PKey { get; }
+	public Key WKey { get; }
+	public Key BKey { get; }
+
 	public bool IsBackwardNavigationKey(Key aKey) => _backwardNavigationKeys.Contains(aKey);
 	public bool IsForwardNavigationKey(Key aKey) => _forwardNavigationKeys.Contains(aKey);
 	public bool IsNavigationKey(Key aKey) => _navigationKeys.Contains(aKey);
@@ -144,11 +150,17 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		LKey = Key.L;
 		VKey = Key.V;
-		
+
+		JKey = Key.J;
+		GKey = Key.G;
+		PKey = Key.P;
+		WKey = Key.W;
+		BKey = Key.B;
+
 		NameComparer = operatingSystemSettings.IsWindows
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)
 			: new NaturalSortingComparer(StringComparer.InvariantCulture);
-		
+
 		DirectlySupportedImageFileExtensions = new HashSet<string>(
 			StringComparer.InvariantCultureIgnoreCase)
 		{

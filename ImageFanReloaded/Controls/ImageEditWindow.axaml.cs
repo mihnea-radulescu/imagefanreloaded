@@ -112,6 +112,30 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			await SaveImageAsWithPreserveFormat();
 		}
+		else if (ShouldSaveImageAsWithFormatJpeg(keyModifiers, keyPressing))
+		{
+			await SaveImageAsWithFormat(JpegSaveFileImageFormat);
+		}
+		else if (ShouldSaveImageAsWithFormatGif(keyModifiers, keyPressing))
+		{
+			await SaveImageAsWithFormat(GifSaveFileImageFormat);
+		}
+		else if (ShouldSaveImageAsWithFormatPng(keyModifiers, keyPressing))
+		{
+			await SaveImageAsWithFormat(PngSaveFileImageFormat);
+		}
+		else if (ShouldSaveImageAsWithFormatWebp(keyModifiers, keyPressing))
+		{
+			await SaveImageAsWithFormat(WebpSaveFileImageFormat);
+		}
+		else if (ShouldSaveImageAsWithFormatTiff(keyModifiers, keyPressing))
+		{
+			await SaveImageAsWithFormat(TiffSaveFileImageFormat);
+		}
+		else if (ShouldSaveImageAsWithFormatBmp(keyModifiers, keyPressing))
+		{
+			await SaveImageAsWithFormat(BmpSaveFileImageFormat);
+		}
 
 		e.Handled = true;
 	}
@@ -207,6 +231,78 @@ public partial class ImageEditWindow : Window, IImageEditView
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.SKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldSaveImageAsWithFormatJpeg(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.JKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldSaveImageAsWithFormatGif(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.GKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldSaveImageAsWithFormatPng(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.PKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldSaveImageAsWithFormatWebp(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.WKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldSaveImageAsWithFormatTiff(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.TKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldSaveImageAsWithFormatBmp(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.BKey)
 		{
 			return true;
 		}

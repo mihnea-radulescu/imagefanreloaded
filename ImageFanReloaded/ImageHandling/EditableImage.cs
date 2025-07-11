@@ -112,7 +112,14 @@ public class EditableImage : DisposableBase
 
 		var magickFormat = saveFileImageFormat.GetMagickFormat();
 
-		await _imageFramesToEdit.WriteAsync(imageFilePath, magickFormat);
+		if (saveFileImageFormat.IsAnimationEnabled)
+		{
+			await _imageFramesToEdit.WriteAsync(imageFilePath, magickFormat);
+		}
+		else
+		{
+			await _imageFramesToEdit[0].WriteAsync(imageFilePath, magickFormat);
+		}
 	}
 
 	#region Protected

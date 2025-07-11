@@ -4,6 +4,7 @@ using Avalonia.Media.Imaging;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.ImageHandling;
+using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.Test;
 

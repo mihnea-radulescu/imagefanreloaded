@@ -40,5 +40,11 @@ public enum Key
 	PageDown,
 
 	L,
-	V
+	V,
+
+	J,
+	G,
+	P,
+	W,
+	B
 }

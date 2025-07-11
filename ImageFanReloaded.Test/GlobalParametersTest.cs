@@ -6,6 +6,7 @@ using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.OperatingSystem.Implementation;
 using ImageFanReloaded.ImageHandling;
+using ImageFanReloaded.ImageHandling.Extensions;
 using ImageFanReloaded.Settings;
 
 namespace ImageFanReloaded.Test;
@@ -85,6 +86,12 @@ public class GlobalParametersTest : TestBase
 
 		Assert.NotEqual(Key.None, _globalParameters.LKey);
 		Assert.NotEqual(Key.None, _globalParameters.VKey);
+
+		Assert.NotEqual(Key.None, _globalParameters.JKey);
+		Assert.NotEqual(Key.None, _globalParameters.GKey);
+		Assert.NotEqual(Key.None, _globalParameters.PKey);
+		Assert.NotEqual(Key.None, _globalParameters.WKey);
+		Assert.NotEqual(Key.None, _globalParameters.BKey);
 
 		Assert.NotNull(_globalParameters.NameComparer);
 

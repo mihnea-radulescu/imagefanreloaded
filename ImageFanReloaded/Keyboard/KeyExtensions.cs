@@ -45,6 +45,12 @@ public static class KeyExtensions
 			Avalonia.Input.Key.L => Core.Keyboard.Key.L,
 			Avalonia.Input.Key.V => Core.Keyboard.Key.V,
 
+			Avalonia.Input.Key.J => Core.Keyboard.Key.J,
+			Avalonia.Input.Key.G => Core.Keyboard.Key.G,
+			Avalonia.Input.Key.P => Core.Keyboard.Key.P,
+			Avalonia.Input.Key.W => Core.Keyboard.Key.W,
+			Avalonia.Input.Key.B => Core.Keyboard.Key.B,
+
 			_ => Core.Keyboard.Key.None
 		};
 }

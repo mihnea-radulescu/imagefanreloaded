@@ -3,4 +3,6 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormat
 public class JpegSaveFileImageFormat : ISaveFileImageFormat
 {
 	public string Extension => ".jpg";
+
+	public bool IsAnimationEnabled => false;
 }

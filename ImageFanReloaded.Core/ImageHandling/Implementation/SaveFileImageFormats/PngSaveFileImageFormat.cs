@@ -3,4 +3,6 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormat
 public class PngSaveFileImageFormat : ISaveFileImageFormat
 {
 	public string Extension => ".png";
+
+	public bool IsAnimationEnabled => false;
 }
