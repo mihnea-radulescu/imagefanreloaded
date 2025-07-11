@@ -78,7 +78,7 @@ public class AppBootstrap : IAppBootstrap
 #if FLATPAK_BUILD
 		_tabOptionsFactory = new FlatpakTabOptionsFactory();
 #else
-		_tabOptionsFactory = new StandardTabOptionsFactory();
+		_tabOptionsFactory = new DefaultTabOptionsFactory();
 #endif
 
 		_inputPathHandlerFactory = new InputPathHandlerFactory(_globalParameters, _discQueryEngine);

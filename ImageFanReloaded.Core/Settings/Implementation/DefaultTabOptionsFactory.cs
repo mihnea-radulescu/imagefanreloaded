@@ -1,6 +1,6 @@
 namespace ImageFanReloaded.Core.Settings.Implementation;
 
-public class StandardTabOptionsFactory : TabOptionsFactoryBase
+public class DefaultTabOptionsFactory : TabOptionsFactoryBase
 {
 	#region Protected
 
