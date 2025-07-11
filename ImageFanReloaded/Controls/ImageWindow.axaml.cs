@@ -10,7 +10,7 @@ using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Settings;
-using ImageFanReloaded.ImageHandling;
+using ImageFanReloaded.ImageHandling.Extensions;
 using ImageFanReloaded.Keyboard;
 
 namespace ImageFanReloaded.Controls;

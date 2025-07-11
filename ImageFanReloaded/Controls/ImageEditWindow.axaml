@@ -2,7 +2,6 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		x:Class="ImageFanReloaded.Controls.ImageEditWindow"
 		Icon="/MainWindowIcon.ico"
-		Title="Edit image"
 		SizeToContent="WidthAndHeight"
 		WindowStartupLocation="CenterOwner"
 		Focusable="True"
@@ -34,9 +33,27 @@
 		<StackPanel Grid.Row="1"
 					Classes="HorizontalStackPanel"
 					HorizontalAlignment="Center">
-			<Button Name="_saveButton"
+			<Button Name="_saveImageAsWithPreserveFormatButton"
 					Content="Save as (preserve format)"
-					Click="OnSaveAs"/>
+					Click="OnSaveImageAsWithPreserveFormat"/>
+			<Button Name="_saveImageAsWithFormatJpegButton"
+					Content="Save as JPEG"
+					Click="OnSaveImageAsWithFormatJpeg"/>
+			<Button Name="_saveImageAsWithFormatGifButton"
+					Content="Save as GIF"
+					Click="OnSaveImageAsWithFormatGif"/>
+			<Button Name="_saveImageAsWithFormatPngButton"
+					Content="Save as PNG"
+					Click="OnSaveImageAsWithFormatPng"/>
+			<Button Name="_saveImageAsWithFormatWebpButton"
+					Content="Save as WEBP"
+					Click="OnSaveImageAsWithFormatWebp"/>
+			<Button Name="_saveImageAsWithFormatTiffButton"
+					Content="Save as TIFF"
+					Click="OnSaveImageAsWithFormatTiff"/>
+			<Button Name="_saveImageAsWithFormatBmpButton"
+					Content="Save as BMP"
+					Click="OnSaveImageAsWithFormatBmp"/>
 		</StackPanel>
 
 		<Grid Grid.Row="2">

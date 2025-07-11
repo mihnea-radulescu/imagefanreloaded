@@ -1,8 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using ImageFanReloaded.Bootstrap;
-using ImageFanReloaded.Core.Bootstrap;
+using ImageFanReloaded.Core;
 
 namespace ImageFanReloaded;
 

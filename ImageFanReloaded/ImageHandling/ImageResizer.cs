@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Media.Imaging;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
+using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.ImageHandling;
 

@@ -7,7 +7,6 @@ using ImageFanReloaded.Controls.Factories;
 using ImageFanReloaded.Core;
 using ImageFanReloaded.Core.AboutInformation;
 using ImageFanReloaded.Core.AboutInformation.Implementation;
-using ImageFanReloaded.Core.Bootstrap;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.Controls.Factories.Implementation;
@@ -25,7 +24,7 @@ using ImageFanReloaded.Core.Synchronization.Implementation;
 using ImageFanReloaded.ImageHandling;
 using ImageFanReloaded.Settings;
 
-namespace ImageFanReloaded.Bootstrap;
+namespace ImageFanReloaded;
 
 public class AppBootstrap : IAppBootstrap
 {
@@ -103,10 +102,12 @@ public class AppBootstrap : IAppBootstrap
 		_desktop.MainWindow = mainWindow;
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
 
+		ISaveFileDialogFactory saveFileDialogFactory;
+
 #if FLATPAK_BUILD
-		ISaveFileDialogFactory saveFileDialogFactory = new DefaultSaveFileDialogFactory(mainWindow);
+		saveFileDialogFactory = new FlatpakSaveFileDialogFactory();
 #else
-		ISaveFileDialogFactory saveFileDialogFactory = new DefaultSaveFileDialogFactory(mainWindow);
+		saveFileDialogFactory = new DefaultSaveFileDialogFactory(mainWindow);
 #endif
 
 		IAsyncMutexFactory asyncMutexFactory = new AsyncMutexFactory();

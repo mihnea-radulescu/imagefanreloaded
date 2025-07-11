@@ -216,6 +216,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						aFileInfo.Name,
 						aFileInfo.FullName,
 						aFileInfo.Extension,
+						Path.GetFileNameWithoutExtension(aFileInfo.Name),
 						Path.GetDirectoryName(aFileInfo.FullName)!,
 						_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length)))
 				)

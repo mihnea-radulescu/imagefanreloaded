@@ -29,6 +29,7 @@ User interface:
 * keys N and M for changing folder ordering between name ascending and last modification time descending
 * keys + and - for changing thumbnail size by an increment of 50 pixels
 * key S for slideshow navigation
+* key D for displaying Image edit view
 * key F for displaying Image info view
 * key R for toggling recursive folder browsing
 * key E for applying EXIF image orientation

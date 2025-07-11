@@ -19,7 +19,7 @@
 					Click="OnImageInfoButtonClicked"/>
 
 			<Button Name="_imageEditButton"
-					Content="Edit image"
+					Content="Image edit"
 					Click="OnImageEditButtonClicked"/>
 
 			<Button Name="_optionsButton"

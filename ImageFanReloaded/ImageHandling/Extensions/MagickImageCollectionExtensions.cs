@@ -1,7 +1,7 @@
 using System;
 using ImageMagick;
 
-namespace ImageFanReloaded.ImageHandling;
+namespace ImageFanReloaded.ImageHandling.Extensions;
 
 public static class MagickImageCollectionExtensions
 {

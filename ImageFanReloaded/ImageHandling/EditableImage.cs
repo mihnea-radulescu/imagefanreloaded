@@ -6,6 +6,7 @@ using ImageMagick;
 using ImageFanReloaded.Core.BaseTypes;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.ImageHandling;
 
@@ -97,11 +98,21 @@ public class EditableImage : DisposableBase
 			imageColection => imageColection.ForEach(anImageFrame => anImageFrame.Flip()));
 	}
 
-	public async Task SaveImage(string imageFilePath)
+	public async Task SaveImageWithPreserveFormat(string imageFilePath)
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
 		await _imageFramesToEdit.WriteAsync(imageFilePath);
+	}
+
+	public async Task SaveImageWithFormat(
+		string imageFilePath, ISaveFileImageFormat saveFileImageFormat)
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		var magickFormat = saveFileImageFormat.GetMagickFormat();
+
+		await _imageFramesToEdit.WriteAsync(imageFilePath, magickFormat);
 	}
 
 	#region Protected

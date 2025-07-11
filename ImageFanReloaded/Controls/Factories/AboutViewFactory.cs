@@ -51,6 +51,7 @@ User interface:
 • keys + and - for changing thumbnail size by an increment of 50 pixels
 • key S for slideshow navigation
 • key F for displaying Image info view
+• key D for displaying Image edit view
 • key R for toggling recursive folder browsing
 • key E for applying EXIF image orientation
 • key O for displaying Tab options view

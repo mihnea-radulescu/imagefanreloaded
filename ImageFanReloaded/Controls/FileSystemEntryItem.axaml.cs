@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.DiscAccess;
-using ImageFanReloaded.ImageHandling;
+using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.Controls;
 
