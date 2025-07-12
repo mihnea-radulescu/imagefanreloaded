@@ -13,17 +13,19 @@ public partial class AboutWindow : Window, IAboutView
 	public AboutWindow()
 	{
 		InitializeComponent();
-		
+
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 	}
-	
+
 	public IGlobalParameters? GlobalParameters { get; set; }
 
 	public void SetAboutText(string text) => _aboutTextBox.Text = text;
-	
+
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
-	
+
 	#region Private
+
+	private void OnWindowLoaded(object? sender, RoutedEventArgs e) => _aboutScrollViewer.Focus();
 
 	private void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -33,7 +35,7 @@ public partial class AboutWindow : Window, IAboutView
 		if (ShouldCloseWindow(keyModifiers, keyPressing))
 		{
 			Close();
-			
+
 			e.Handled = true;
 		}
 	}
@@ -42,14 +44,14 @@ public partial class AboutWindow : Window, IAboutView
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-		    (keyPressing == GlobalParameters!.EscapeKey ||
-		     keyPressing == GlobalParameters!.EnterKey ||
-		     keyPressing == GlobalParameters!.HKey ||
+			(keyPressing == GlobalParameters!.EscapeKey ||
+			 keyPressing == GlobalParameters!.EnterKey ||
+			 keyPressing == GlobalParameters!.HKey ||
 			 keyPressing == GlobalParameters!.F1Key))
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
 

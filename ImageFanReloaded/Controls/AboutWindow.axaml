@@ -7,9 +7,15 @@
 		Height="600"
 		WindowStartupLocation="CenterOwner"
 		CanResize="False"
-		Focusable="True">
-	<TextBox Name="_aboutTextBox"
-			 IsReadOnly="True"
-			 Background="Transparent"
-			 Margin="4"/>
+		Focusable="True"
+		Loaded="OnWindowLoaded">
+	<ScrollViewer Name="_aboutScrollViewer"
+				  HorizontalScrollBarVisibility="Auto"
+				  VerticalScrollBarVisibility="Auto"
+				  Focusable="True">
+		<TextBox Name="_aboutTextBox"
+				 IsReadOnly="True"
+				 Background="Transparent"
+				 Margin="4"/>
+	</ScrollViewer>
 </Window>
