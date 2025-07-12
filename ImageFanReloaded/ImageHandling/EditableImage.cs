@@ -78,11 +78,30 @@ public class EditableImage : DisposableBase
 		}
 	}
 
-	public bool CanUndoLastEdit => _previousOperationsStack.Any();
-	public bool CanRedoLastEdit => _revertedOperationsStack.Any();
+	public bool CanUndoLastEdit
+	{
+		get
+		{
+			ThrowObjectDisposedExceptionIfNecessary();
+
+			return _previousOperationsStack.Any();
+		}
+	}
+
+	public bool CanRedoLastEdit
+	{
+		get
+		{
+			ThrowObjectDisposedExceptionIfNecessary();
+
+			return _revertedOperationsStack.Any();
+		}
+	}
 
 	public void UndoLastEdit()
 	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
 		if (!CanUndoLastEdit)
 		{
 			return;
@@ -94,6 +113,8 @@ public class EditableImage : DisposableBase
 
 	public void RedoLastEdit()
 	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
 		if (!CanRedoLastEdit)
 		{
 			return;
