@@ -8,7 +8,6 @@ using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
-using ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormats;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 using ImageFanReloaded.Keyboard;
@@ -18,16 +17,6 @@ namespace ImageFanReloaded.Controls;
 
 public partial class ImageEditWindow : Window, IImageEditView
 {
-	static ImageEditWindow()
-	{
-		JpegSaveFileImageFormat = new JpegSaveFileImageFormat();
-		GifSaveFileImageFormat = new GifSaveFileImageFormat();
-		PngSaveFileImageFormat = new PngSaveFileImageFormat();
-		WebpSaveFileImageFormat = new WebpSaveFileImageFormat();
-		TiffSaveFileImageFormat = new TiffSaveFileImageFormat();
-		BmpSaveFileImageFormat = new BmpSaveFileImageFormat();
-	}
-
 	public ImageEditWindow()
 	{
 		InitializeComponent();
@@ -46,6 +35,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
+	public ISaveFileImageFormatFactory? SaveFileImageFormatFactory { get; set; }
 	public ISaveFileDialogFactory? SaveFileDialogFactory { get; set; }
 
 	public ImageFileData? ImageFileData { get; set; }
@@ -58,8 +48,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			_editableImage = await Task.Run(() =>
 				new EditableImage(
-					ImageFileData!.ImageFilePath,
-					GlobalParameters!.ImageQualityLevel));
+					ImageFileData!.ImageFilePath, GlobalParameters!.ImageQualityLevel));
 		}
 		catch
 		{
@@ -70,8 +59,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		UpdateDisplayImage();
 
 		Title = IsImageEditingEnabled
-			? $"Image edit - {ImageFileData!.ImageFileName}"
-			: $"Error loading image - {ImageFileData!.ImageFileName}";
+			? ImageFileData!.ImageFileName
+			: $"Error loading image '{ImageFileData!.ImageFileName}'";
 	}
 
 	public event EventHandler<ContentTabItemEventArgs>? ImageChanged;
@@ -80,13 +69,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
 
 	#region Private
-
-	private static readonly ISaveFileImageFormat JpegSaveFileImageFormat;
-	private static readonly ISaveFileImageFormat GifSaveFileImageFormat;
-	private static readonly ISaveFileImageFormat PngSaveFileImageFormat;
-	private static readonly ISaveFileImageFormat WebpSaveFileImageFormat;
-	private static readonly ISaveFileImageFormat TiffSaveFileImageFormat;
-	private static readonly ISaveFileImageFormat BmpSaveFileImageFormat;
 
 	private IGlobalParameters? _globalParameters;
 	private StringComparison? _fileSystemStringComparison;
@@ -108,33 +90,33 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			await ExecuteImageEdit(keyPressing);
 		}
-		else if (ShouldSaveImageAsWithPreserveFormat(keyModifiers, keyPressing))
+		else if (ShouldSaveImageAsWithSameFormat(keyModifiers, keyPressing))
 		{
-			await SaveImageAsWithPreserveFormat();
+			await SaveImageAsWithSameFormat();
 		}
 		else if (ShouldSaveImageAsWithFormatJpeg(keyModifiers, keyPressing))
 		{
-			await SaveImageAsWithFormat(JpegSaveFileImageFormat);
+			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.JpegSaveFileImageFormat);
 		}
 		else if (ShouldSaveImageAsWithFormatGif(keyModifiers, keyPressing))
 		{
-			await SaveImageAsWithFormat(GifSaveFileImageFormat);
+			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.GifSaveFileImageFormat);
 		}
 		else if (ShouldSaveImageAsWithFormatPng(keyModifiers, keyPressing))
 		{
-			await SaveImageAsWithFormat(PngSaveFileImageFormat);
+			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.PngSaveFileImageFormat);
 		}
 		else if (ShouldSaveImageAsWithFormatWebp(keyModifiers, keyPressing))
 		{
-			await SaveImageAsWithFormat(WebpSaveFileImageFormat);
+			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.WebpSaveFileImageFormat);
 		}
 		else if (ShouldSaveImageAsWithFormatTiff(keyModifiers, keyPressing))
 		{
-			await SaveImageAsWithFormat(TiffSaveFileImageFormat);
+			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
 		}
 		else if (ShouldSaveImageAsWithFormatBmp(keyModifiers, keyPressing))
 		{
-			await SaveImageAsWithFormat(BmpSaveFileImageFormat);
+			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
 		}
 
 		e.Handled = true;
@@ -179,21 +161,21 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private async void OnFlipVertically(object? sender, RoutedEventArgs e)
 		=> await FlipVertically();
 
-	private async void OnSaveImageAsWithPreserveFormat(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithPreserveFormat();
+	private async void OnSaveImageAsWithSameFormat(object? sender, RoutedEventArgs e)
+		=> await SaveImageAsWithSameFormat();
 
 	private async void OnSaveImageAsWithFormatJpeg(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(JpegSaveFileImageFormat);
+		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.JpegSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatGif(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(GifSaveFileImageFormat);
+		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.GifSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatPng(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(PngSaveFileImageFormat);
+		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.PngSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatWebp(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(WebpSaveFileImageFormat);
+		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.WebpSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatTiff(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(TiffSaveFileImageFormat);
+		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatBmp(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(BmpSaveFileImageFormat);
+		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
 
 	private bool IsImageEditingEnabled => _editableImage is not null;
 
@@ -226,7 +208,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
-	private bool ShouldSaveImageAsWithPreserveFormat(
+	private bool ShouldSaveImageAsWithSameFormat(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
@@ -370,71 +352,46 @@ public partial class ImageEditWindow : Window, IImageEditView
 		await ApplyTransform(_editableImage.FlipVertically());
 	}
 
-	private async Task SaveImageAsWithPreserveFormat()
-	{
-		if (_editableImage == null)
-		{
-			return;
-		}
-
-		var imageFileName = ImageFileData!.ImageFileName;
-		var imageFilePath = ImageFileData!.ImageFilePath;
-		var imageFolderPath = ImageFileData!.ImageFolderPath;
-
-		var saveFileDialog = SaveFileDialogFactory!.GetSaveFileDialog();
-		var imageToSaveFilePath = await saveFileDialog.ShowDialog(imageFileName, imageFolderPath);
-
-		if (imageToSaveFilePath is not null)
-		{
-			try
-			{
-				await _editableImage.SaveImageWithPreserveFormat(imageToSaveFilePath);
-
-				_hasUnsavedChanges = false;
-
-				if (HasOverwrittenCurrentImageFile(imageToSaveFilePath, imageFilePath))
-				{
-					ImageChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
-				}
-				else if (HasSavedImageFileInCurrentFolder(imageToSaveFilePath, imageFolderPath))
-				{
-					FolderChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
-				}
-			}
-			catch
-			{
-				var saveImageAsErrorMessageBox = MessageBoxManager.GetMessageBoxStandard(
-					"Image file save error",
-					$"Could not save image file '{imageToSaveFilePath}'.",
-					MsBox.Avalonia.Enums.ButtonEnum.Ok,
-					MsBox.Avalonia.Enums.Icon.Error,
-					WindowStartupLocation.CenterOwner);
-
-				await saveImageAsErrorMessageBox.ShowWindowDialogAsync(this);
-			}
-		}
-	}
+	private async Task SaveImageAsWithSameFormat() => await SaveImageAs(default);
 
 	private async Task SaveImageAsWithFormat(ISaveFileImageFormat saveFileImageFormat)
+		=> await SaveImageAs(saveFileImageFormat);
+
+	private async Task SaveImageAs(ISaveFileImageFormat? saveFileImageFormat)
 	{
 		if (_editableImage == null)
 		{
 			return;
 		}
 
-		var imageFileName =
-			$"{ImageFileData!.ImageFileNameWithoutExtension}{saveFileImageFormat.Extension}";
+		var hasSameFormat = saveFileImageFormat is null;
+
+		var imageFileName = hasSameFormat
+			? ImageFileData!.ImageFileName
+			: $"{ImageFileData!.ImageFileNameWithoutExtension}{saveFileImageFormat!.Extension}";
 		var imageFilePath = ImageFileData!.ImageFilePath;
 		var imageFolderPath = ImageFileData!.ImageFolderPath;
 
 		var saveFileDialog = SaveFileDialogFactory!.GetSaveFileDialog();
-		var imageToSaveFilePath = await saveFileDialog.ShowDialog(imageFileName, imageFolderPath);
+		var saveFileDialogTitle = hasSameFormat
+			? $"Select image file"
+			: $"Select {saveFileImageFormat!.Name} image file";
+		var imageToSaveFilePath = await saveFileDialog.ShowDialog(
+			imageFileName, imageFolderPath, saveFileDialogTitle);
 
 		if (imageToSaveFilePath is not null)
 		{
 			try
 			{
-				await _editableImage.SaveImageWithFormat(imageToSaveFilePath, saveFileImageFormat);
+				if (hasSameFormat)
+				{
+					await _editableImage.SaveImageWithSameFormat(imageToSaveFilePath);
+				}
+				else
+				{
+					await _editableImage.SaveImageWithFormat(
+						imageToSaveFilePath, saveFileImageFormat!);
+				}
 
 				_hasUnsavedChanges = false;
 
@@ -498,18 +455,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void EnableButtons()
 	{
-		_rotateLeftButton.IsEnabled = IsImageEditingEnabled;
-		_rotateRightButton.IsEnabled = IsImageEditingEnabled;
-		_flipHorizontallyButton.IsEnabled = IsImageEditingEnabled;
-		_flipVerticallyButton.IsEnabled = IsImageEditingEnabled;
-
-		_saveImageAsWithPreserveFormatButton.IsEnabled = IsImageEditingEnabled;
-		_saveImageAsWithFormatJpegButton.IsEnabled = IsImageEditingEnabled;
-		_saveImageAsWithFormatGifButton.IsEnabled = IsImageEditingEnabled;
-		_saveImageAsWithFormatPngButton.IsEnabled = IsImageEditingEnabled;
-		_saveImageAsWithFormatWebpButton.IsEnabled = IsImageEditingEnabled;
-		_saveImageAsWithFormatTiffButton.IsEnabled = IsImageEditingEnabled;
-		_saveImageAsWithFormatBmpButton.IsEnabled = IsImageEditingEnabled;
+		_rotateDropDownButton.IsEnabled = IsImageEditingEnabled;
+		_flipDropDownButton.IsEnabled = IsImageEditingEnabled;
+		_saveAsDropDownButton.IsEnabled = IsImageEditingEnabled;
 	}
 
 	private void UpdateDisplayImage()

@@ -102,6 +102,8 @@ public class AppBootstrap : IAppBootstrap
 		_desktop.MainWindow = mainWindow;
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
 
+		ISaveFileImageFormatFactory saveFileImageFormatFactory = new SaveFileImageFormatFactory();
+
 		ISaveFileDialogFactory saveFileDialogFactory;
 
 #if FLATPAK_BUILD
@@ -125,7 +127,7 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters, screenInformation);
 
 		IImageEditViewFactory imageEditViewFactory = new ImageEditViewFactory(
-			_globalParameters, saveFileDialogFactory);
+			_globalParameters, saveFileImageFormatFactory, saveFileDialogFactory);
 
 		ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);
 

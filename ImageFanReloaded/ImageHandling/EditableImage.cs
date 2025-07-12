@@ -98,7 +98,7 @@ public class EditableImage : DisposableBase
 			imageColection => imageColection.ForEach(anImageFrame => anImageFrame.Flip()));
 	}
 
-	public async Task SaveImageWithPreserveFormat(string imageFilePath)
+	public async Task SaveImageWithSameFormat(string imageFilePath)
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 

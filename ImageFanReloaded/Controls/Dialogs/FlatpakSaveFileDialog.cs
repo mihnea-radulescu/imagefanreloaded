@@ -3,13 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tmds.DBus;
 using ImageFanReloaded.Controls.Dialogs.FlatpakTypes;
-using ImageFanReloaded.Core.Controls.Dialogs.Implementation;
+using ImageFanReloaded.Core.Controls.Dialogs;
 
 namespace ImageFanReloaded.Controls.Dialogs;
 
-public class FlatpakSaveFileDialog : SaveFileDialogBase
+public class FlatpakSaveFileDialog : ISaveFileDialog
 {
-	public override async Task<string?> ShowDialog(string imageFileName, string imageFolderPath)
+	public async Task<string?> ShowDialog(
+		string imageFileName, string imageFolderPath, string saveFileDialogTitle)
 	{
 		using var connection = new Connection(Address.Session);
 		await connection.ConnectAsync();
@@ -18,7 +19,6 @@ public class FlatpakSaveFileDialog : SaveFileDialogBase
 			FreedesktopPortalServiceName, FreedesktopPortalPath);
 
 		var saveFileDialogParentWindow = string.Empty;
-		var saveFileDialogTitle = SaveFileDialogTitle;
 		var saveFileDialogOptions = new Dictionary<string, object>
 		{
 			["current_name"] = imageFileName

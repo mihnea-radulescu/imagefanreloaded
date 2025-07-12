@@ -4,5 +4,6 @@ namespace ImageFanReloaded.Core.Controls.Dialogs;
 
 public interface ISaveFileDialog
 {
-	Task<string?> ShowDialog(string imageFileName, string imageFolderPath);
+	Task<string?> ShowDialog(
+		string imageFileName, string imageFolderPath, string saveFileDialogTitle);
 }

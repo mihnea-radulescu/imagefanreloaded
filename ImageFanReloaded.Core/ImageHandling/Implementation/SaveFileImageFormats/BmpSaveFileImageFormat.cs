@@ -2,6 +2,7 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormat
 
 public class BmpSaveFileImageFormat : ISaveFileImageFormat
 {
+	public string Name => "BMP";
 	public string Extension => ".bmp";
 
 	public bool IsAnimationEnabled => false;

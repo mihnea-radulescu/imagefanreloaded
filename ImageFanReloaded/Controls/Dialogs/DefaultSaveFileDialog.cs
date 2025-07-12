@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
-using ImageFanReloaded.Core.Controls.Dialogs.Implementation;
+using ImageFanReloaded.Core.Controls.Dialogs;
 
 namespace ImageFanReloaded.Controls.Dialogs;
 
-public class DefaultSaveFileDialog : SaveFileDialogBase
+public class DefaultSaveFileDialog : ISaveFileDialog
 {
 	static DefaultSaveFileDialog()
 	{
@@ -17,7 +17,8 @@ public class DefaultSaveFileDialog : SaveFileDialogBase
 		_storageProvider = storageProvider;
 	}
 
-	public override async Task<string?> ShowDialog(string imageFileName, string imageFolderPath)
+	public async Task<string?> ShowDialog(
+		string imageFileName, string imageFolderPath, string saveFileDialogTitle)
 	{
 		var imageStorageFolder = await GetStorageFolderFromPath(imageFolderPath);
 
@@ -27,7 +28,7 @@ public class DefaultSaveFileDialog : SaveFileDialogBase
 			ShowOverwritePrompt = true,
 			SuggestedFileName = imageFileName,
 			SuggestedStartLocation = imageStorageFolder,
-			Title = SaveFileDialogTitle
+			Title = saveFileDialogTitle
 		};
 
 		var imageToSaveStorageFile = await _storageProvider.SaveFilePickerAsync(imageFileSaveOptions);

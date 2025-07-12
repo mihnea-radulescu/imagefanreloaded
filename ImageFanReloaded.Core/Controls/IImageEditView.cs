@@ -10,7 +10,10 @@ namespace ImageFanReloaded.Core.Controls;
 public interface IImageEditView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
+
+	ISaveFileImageFormatFactory? SaveFileImageFormatFactory { get; set; }
 	ISaveFileDialogFactory? SaveFileDialogFactory { get; set; }
+
 	ImageFileData? ImageFileData { get; set; }
 
 	IContentTabItem? ContentTabItem { get; set; }

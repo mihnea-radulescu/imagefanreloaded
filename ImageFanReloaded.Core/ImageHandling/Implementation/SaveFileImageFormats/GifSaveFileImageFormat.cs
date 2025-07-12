@@ -2,6 +2,7 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormat
 
 public class GifSaveFileImageFormat : ISaveFileImageFormat
 {
+	public string Name => "GIF";
 	public string Extension => ".gif";
 
 	public bool IsAnimationEnabled => true;
