@@ -6,6 +6,8 @@ public record ImageSize
 	{
 		Width = width;
 		Height = height;
+
+		AspectRatio = (double)Width / (double)Height;
 	}
 
 	public ImageSize(double width, double height)
@@ -20,6 +22,8 @@ public record ImageSize
 
 	public int Width { get; }
 	public int Height { get; }
+
+	public double AspectRatio { get; }
 
 	public override string ToString() => $"{Width}x{Height}";
 }

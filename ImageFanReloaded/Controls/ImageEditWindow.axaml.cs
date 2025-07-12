@@ -58,7 +58,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		UpdateDisplayImage();
 
-		Title = IsImageEditingEnabled
+		Title = IsImageLoaded
 			? ImageFileData!.ImageFileName
 			: $"Error loading image '{ImageFileData!.ImageFileName}'";
 	}
@@ -86,37 +86,17 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			Close();
 		}
-		else if (ShouldExecuteImageEditing(keyModifiers, keyPressing))
+		else if (ShouldRevertChanges(keyModifiers, keyPressing))
 		{
-			await ExecuteImageEdit(keyPressing);
+			await RevertChanges(keyPressing);
 		}
-		else if (ShouldSaveImageAsWithSameFormat(keyModifiers, keyPressing))
+		else if (ShouldEditImage(keyModifiers, keyPressing))
 		{
-			await SaveImageAsWithSameFormat();
+			await EditImage(keyPressing);
 		}
-		else if (ShouldSaveImageAsWithFormatJpeg(keyModifiers, keyPressing))
+		else if (ShouldSaveImageAs(keyModifiers, keyPressing))
 		{
-			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.JpegSaveFileImageFormat);
-		}
-		else if (ShouldSaveImageAsWithFormatGif(keyModifiers, keyPressing))
-		{
-			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.GifSaveFileImageFormat);
-		}
-		else if (ShouldSaveImageAsWithFormatPng(keyModifiers, keyPressing))
-		{
-			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.PngSaveFileImageFormat);
-		}
-		else if (ShouldSaveImageAsWithFormatWebp(keyModifiers, keyPressing))
-		{
-			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.WebpSaveFileImageFormat);
-		}
-		else if (ShouldSaveImageAsWithFormatTiff(keyModifiers, keyPressing))
-		{
-			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
-		}
-		else if (ShouldSaveImageAsWithFormatBmp(keyModifiers, keyPressing))
-		{
-			await SaveImageAsWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
+			await SaveImageAs(keyPressing);
 		}
 
 		e.Handled = true;
@@ -154,6 +134,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
+	private async void OnUndo(object? sender, RoutedEventArgs e) => await Undo();
+	private async void OnRedo(object? sender, RoutedEventArgs e) => await Redo();
+
 	private async void OnRotateLeft(object? sender, RoutedEventArgs e) => await RotateLeft();
 	private async void OnRotateRight(object? sender, RoutedEventArgs e) => await RotateRight();
 	private async void OnFlipHorizontally(object? sender, RoutedEventArgs e)
@@ -162,22 +145,22 @@ public partial class ImageEditWindow : Window, IImageEditView
 		=> await FlipVertically();
 
 	private async void OnSaveImageAsWithSameFormat(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithSameFormat();
+		=> await SaveImageWithFormat(default);
 
 	private async void OnSaveImageAsWithFormatJpeg(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.JpegSaveFileImageFormat);
+		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.JpegSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatGif(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.GifSaveFileImageFormat);
+		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.GifSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatPng(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.PngSaveFileImageFormat);
+		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.PngSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatWebp(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.WebpSaveFileImageFormat);
+		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.WebpSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatTiff(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
+		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatBmp(object? sender, RoutedEventArgs e)
-		=> await SaveImageAsWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
+		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
 
-	private bool IsImageEditingEnabled => _editableImage is not null;
+	private bool IsImageLoaded => _editableImage is not null;
 
 	private bool ShouldCloseWindow(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
@@ -193,7 +176,20 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
-	private bool ShouldExecuteImageEditing(
+	private bool ShouldRevertChanges(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			(keyPressing == GlobalParameters!.UKey ||
+			 keyPressing == GlobalParameters!.IKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldEditImage(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
@@ -208,11 +204,17 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
-	private bool ShouldSaveImageAsWithSameFormat(
+	private bool ShouldSaveImageAs(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.SKey)
+			(keyPressing == GlobalParameters!.SKey ||
+			 keyPressing == GlobalParameters!.JKey ||
+			 keyPressing == GlobalParameters!.GKey ||
+			 keyPressing == GlobalParameters!.PKey ||
+			 keyPressing == GlobalParameters!.WKey ||
+			 keyPressing == GlobalParameters!.TKey ||
+			 keyPressing == GlobalParameters!.BKey))
 		{
 			return true;
 		}
@@ -220,80 +222,30 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
-	private bool ShouldSaveImageAsWithFormatJpeg(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	private async Task RevertChanges(ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.JKey)
+		if (!IsImageLoaded)
 		{
-			return true;
+			return;
 		}
 
-		return false;
+		if (keyPressing == GlobalParameters!.UKey)
+		{
+			await Undo();
+		}
+		else if (keyPressing == GlobalParameters!.IKey)
+		{
+			await Redo();
+		}
 	}
 
-	private bool ShouldSaveImageAsWithFormatGif(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	private async Task EditImage(ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.GKey)
+		if (!IsImageLoaded)
 		{
-			return true;
+			return;
 		}
 
-		return false;
-	}
-
-	private bool ShouldSaveImageAsWithFormatPng(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.PKey)
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	private bool ShouldSaveImageAsWithFormatWebp(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.WKey)
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	private bool ShouldSaveImageAsWithFormatTiff(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.TKey)
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	private bool ShouldSaveImageAsWithFormatBmp(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.BKey)
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	private async Task ExecuteImageEdit(ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
 		if (keyPressing == GlobalParameters!.LKey)
 		{
 			await RotateLeft();
@@ -312,54 +264,66 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
-	private async Task RotateLeft()
+	private async Task SaveImageAs(ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (_editableImage == null)
+		if (!IsImageLoaded)
 		{
 			return;
 		}
 
-		await ApplyTransform(_editableImage.RotateLeft());
-	}
-
-	private async Task RotateRight()
-	{
-		if (_editableImage == null)
+		if (keyPressing == GlobalParameters!.SKey)
 		{
-			return;
+			await SaveImageWithFormat(default);
 		}
-
-		await ApplyTransform(_editableImage.RotateRight());
+		else if (keyPressing == GlobalParameters!.JKey)
+		{
+			await SaveImageWithFormat(SaveFileImageFormatFactory!.JpegSaveFileImageFormat);
+		}
+		else if (keyPressing == GlobalParameters!.GKey)
+		{
+			await SaveImageWithFormat(SaveFileImageFormatFactory!.GifSaveFileImageFormat);
+		}
+		else if (keyPressing == GlobalParameters!.PKey)
+		{
+			await SaveImageWithFormat(SaveFileImageFormatFactory!.PngSaveFileImageFormat);
+		}
+		else if (keyPressing == GlobalParameters!.WKey)
+		{
+			await SaveImageWithFormat(SaveFileImageFormatFactory!.WebpSaveFileImageFormat);
+		}
+		else if (keyPressing == GlobalParameters!.TKey)
+		{
+			await SaveImageWithFormat(SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
+		}
+		else if (keyPressing == GlobalParameters!.BKey)
+		{
+			await SaveImageWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
+		}
 	}
+
+	private async Task Undo()
+	{
+		_editableImage!.UndoLastEdit();
+		await ApplyTransform(default);
+	}
+
+	private async Task Redo()
+	{
+		_editableImage!.RedoLastEdit();
+		await ApplyTransform(default);
+	}
+
+	private async Task RotateLeft() => await ApplyTransform(() => _editableImage!.RotateLeft());
+	private async Task RotateRight() => await ApplyTransform(() => _editableImage!.RotateRight());
 
 	private async Task FlipHorizontally()
-	{
-		if (_editableImage == null)
-		{
-			return;
-		}
-
-		await ApplyTransform(_editableImage.FlipHorizontally());
-	}
-
+		=> await ApplyTransform(() => _editableImage!.FlipHorizontally());
 	private async Task FlipVertically()
+		=> await ApplyTransform(() => _editableImage!.FlipVertically());
+
+	private async Task SaveImageWithFormat(ISaveFileImageFormat? saveFileImageFormat)
 	{
-		if (_editableImage == null)
-		{
-			return;
-		}
-
-		await ApplyTransform(_editableImage.FlipVertically());
-	}
-
-	private async Task SaveImageAsWithSameFormat() => await SaveImageAs(default);
-
-	private async Task SaveImageAsWithFormat(ISaveFileImageFormat saveFileImageFormat)
-		=> await SaveImageAs(saveFileImageFormat);
-
-	private async Task SaveImageAs(ISaveFileImageFormat? saveFileImageFormat)
-	{
-		if (_editableImage == null)
+		if (!IsImageLoaded)
 		{
 			return;
 		}
@@ -385,11 +349,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 			{
 				if (hasSameFormat)
 				{
-					await _editableImage.SaveImageWithSameFormat(imageToSaveFilePath);
+					await _editableImage!.SaveImageWithSameFormat(imageToSaveFilePath);
 				}
 				else
 				{
-					await _editableImage.SaveImageWithFormat(
+					await _editableImage!.SaveImageWithFormat(
 						imageToSaveFilePath, saveFileImageFormat!);
 				}
 
@@ -418,16 +382,16 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
-	private async Task ApplyTransform(Task<EditableImage> transformEditableImage)
+	private async Task ApplyTransform(Action? transformImageAction)
 	{
 		try
 		{
-			var transformedEditableImage = await transformEditableImage;
+			if (transformImageAction is not null)
+			{
+				await Task.Run(transformImageAction);
+			}
 
-			_displayImage.Source = transformedEditableImage.ImageToDisplay;
-
-			_editableImage!.Dispose();
-			_editableImage = transformedEditableImage;
+			_displayImage.Source = _editableImage!.ImageToDisplay;
 
 			UpdateDisplayImage();
 
@@ -455,19 +419,28 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void EnableButtons()
 	{
-		_rotateDropDownButton.IsEnabled = IsImageEditingEnabled;
-		_flipDropDownButton.IsEnabled = IsImageEditingEnabled;
-		_saveAsDropDownButton.IsEnabled = IsImageEditingEnabled;
+		_undoButton.IsEnabled = IsImageLoaded;
+		_redoButton.IsEnabled = IsImageLoaded;
+
+		_rotateDropDownButton.IsEnabled = IsImageLoaded;
+		_flipDropDownButton.IsEnabled = IsImageLoaded;
+
+		_saveAsDropDownButton.IsEnabled = IsImageLoaded;
 	}
 
 	private void UpdateDisplayImage()
 	{
-		if (IsImageEditingEnabled)
+		if (!IsImageLoaded)
 		{
-			_displayImage.MaxWidth = _editableImage!.ImageSize.Width;
-			_displayImage.MaxHeight = _editableImage!.ImageSize.Height;
-			_displayImage.Source = _editableImage!.ImageToDisplay;
+			return;
 		}
+
+		_displayImage.MaxWidth = _editableImage!.ImageSize.Width;
+		_displayImage.MaxHeight = _editableImage!.ImageSize.Height;
+		_displayImage.Source = _editableImage!.ImageToDisplay;
+
+		_undoButton.IsEnabled = _editableImage!.CanUndoLastEdit;
+		_redoButton.IsEnabled = _editableImage!.CanRedoLastEdit;
 	}
 
 	#endregion

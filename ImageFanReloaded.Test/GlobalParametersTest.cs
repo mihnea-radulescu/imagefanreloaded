@@ -93,6 +93,8 @@ public class GlobalParametersTest : TestBase
 		Assert.NotEqual(Key.None, _globalParameters.WKey);
 		Assert.NotEqual(Key.None, _globalParameters.BKey);
 
+		Assert.NotEqual(Key.None, _globalParameters.UKey);
+
 		Assert.NotNull(_globalParameters.NameComparer);
 
 		Assert.NotEmpty(_globalParameters.DirectlySupportedImageFileExtensions);

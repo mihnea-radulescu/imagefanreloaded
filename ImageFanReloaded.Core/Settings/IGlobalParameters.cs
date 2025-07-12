@@ -64,6 +64,8 @@ public interface IGlobalParameters
 	Key WKey { get; }
 	Key BKey { get; }
 
+	Key UKey { get; }
+
 	bool IsBackwardNavigationKey(Key aKey);
 	bool IsForwardNavigationKey(Key aKey);
 	bool IsNavigationKey(Key aKey);

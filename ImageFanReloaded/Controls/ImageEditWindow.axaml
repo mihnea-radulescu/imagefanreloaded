@@ -15,6 +15,12 @@
 		<StackPanel Grid.Row="0"
 					Classes="HorizontalStackPanel"
 					HorizontalAlignment="Center">
+			<Button Name="_undoButton"
+					Content="Undo"
+					Click="OnUndo"/>
+			<Button Name="_redoButton"
+					Content="Redo"
+					Click="OnRedo"/>
 			<DropDownButton Name="_rotateDropDownButton"
 							Content="Rotate">
 				<DropDownButton.Flyout>

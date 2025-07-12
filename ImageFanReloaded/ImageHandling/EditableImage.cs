@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using ImageMagick;
@@ -14,33 +16,43 @@ public class EditableImage : DisposableBase
 {
 	public EditableImage(string imageFilePath, uint imageQualityLevel)
 	{
+		MagickImageCollection? imageFramesToEdit = default;
+		Bitmap? imageToDisplay = default;
+
 		try
 		{
-			_imageFramesToEdit = new MagickImageCollection(imageFilePath);
+			imageFramesToEdit = new MagickImageCollection(imageFilePath);
 
-			if (_imageFramesToEdit.Count > 1)
+			if (imageFramesToEdit.Count > 1)
 			{
-				_imageFramesToEdit.Coalesce();
+				imageFramesToEdit.Coalesce();
 			}
 			else
 			{
-				_imageFramesToEdit[0].AutoOrient();
+				imageFramesToEdit[0].AutoOrient();
 			}
 
-			_imageFramesToEdit.ForEach(anImageFrameToEdit
+			imageFramesToEdit.ForEach(anImageFrameToEdit
 				=> anImageFrameToEdit.Quality = imageQualityLevel);
 
 			using var imageToDisplayStream = new MemoryStream();
-			_imageFramesToEdit[0].Write(imageToDisplayStream, MagickFormat.Jpg);
+			imageFramesToEdit[0].Write(imageToDisplayStream, MagickFormat.Jpg);
 			imageToDisplayStream.Reset();
 
-			_imageToDisplay = new Bitmap(imageToDisplayStream);
-			_imageSize = new ImageSize(_imageToDisplay.Size.Width, _imageToDisplay.Size.Height);
+			imageToDisplay = new Bitmap(imageToDisplayStream);
+
+			var imageSize = new ImageSize(imageToDisplay.Size.Width, imageToDisplay.Size.Height);
+
+			_editableImageData = new EditableImageData(
+				imageFramesToEdit, imageToDisplay, imageSize);
+
+			_previousOperationsStack = new Stack<EditableImageData>();
+			_revertedOperationsStack = new Stack<EditableImageData>();
 		}
 		catch
 		{
-			_imageFramesToEdit?.Dispose();
-			_imageToDisplay?.Dispose();
+			imageFramesToEdit?.Dispose();
+			imageToDisplay?.Dispose();
 
 			throw;
 		}
@@ -52,7 +64,7 @@ public class EditableImage : DisposableBase
 		{
 			ThrowObjectDisposedExceptionIfNecessary();
 
-			return _imageToDisplay;
+			return _editableImageData.ImageToDisplay;
 		}
 	}
 
@@ -62,39 +74,64 @@ public class EditableImage : DisposableBase
 		{
 			ThrowObjectDisposedExceptionIfNecessary();
 
-			return _imageSize;
+			return _editableImageData.ImageSize;
 		}
 	}
 
-	public async Task<EditableImage> RotateLeft()
+	public bool CanUndoLastEdit => _previousOperationsStack.Any();
+	public bool CanRedoLastEdit => _revertedOperationsStack.Any();
+
+	public void UndoLastEdit()
+	{
+		if (!CanUndoLastEdit)
+		{
+			return;
+		}
+
+		_revertedOperationsStack.Push(_editableImageData);
+		_editableImageData = _previousOperationsStack.Pop();
+	}
+
+	public void RedoLastEdit()
+	{
+		if (!CanRedoLastEdit)
+		{
+			return;
+		}
+
+		_previousOperationsStack.Push(_editableImageData);
+		_editableImageData = _revertedOperationsStack.Pop();
+	}
+
+	public void RotateLeft()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		return await CreateTransformedImage(
+		CreateTransformedImage(
 			imageColection => imageColection.ForEach(anImageFrame => anImageFrame.Rotate(270)));
 	}
 
-	public async Task<EditableImage> RotateRight()
+	public void RotateRight()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		return await CreateTransformedImage(
+		CreateTransformedImage(
 			imageColection => imageColection.ForEach(anImageFrame => anImageFrame.Rotate(90)));
 	}
 
-	public async Task<EditableImage> FlipHorizontally()
+	public void FlipHorizontally()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		return await CreateTransformedImage(
+		CreateTransformedImage(
 			imageColection => imageColection.ForEach(anImageFrame => anImageFrame.Flop()));
 	}
 
-	public async Task<EditableImage> FlipVertically()
+	public void FlipVertically()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		return await CreateTransformedImage(
+		CreateTransformedImage(
 			imageColection => imageColection.ForEach(anImageFrame => anImageFrame.Flip()));
 	}
 
@@ -102,7 +139,7 @@ public class EditableImage : DisposableBase
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		await _imageFramesToEdit.WriteAsync(imageFilePath);
+		await _editableImageData.ImageFramesToEdit.WriteAsync(imageFilePath);
 	}
 
 	public async Task SaveImageWithFormat(
@@ -114,11 +151,11 @@ public class EditableImage : DisposableBase
 
 		if (saveFileImageFormat.IsAnimationEnabled)
 		{
-			await _imageFramesToEdit.WriteAsync(imageFilePath, magickFormat);
+			await _editableImageData.ImageFramesToEdit.WriteAsync(imageFilePath, magickFormat);
 		}
 		else
 		{
-			await _imageFramesToEdit[0].WriteAsync(imageFilePath, magickFormat);
+			await _editableImageData.ImageFramesToEdit[0].WriteAsync(imageFilePath, magickFormat);
 		}
 	}
 
@@ -126,45 +163,58 @@ public class EditableImage : DisposableBase
 
 	protected override void DisposeSpecific()
 	{
-		_imageFramesToEdit.Dispose();
-		_imageToDisplay.Dispose();
+		_editableImageData.Dispose();
+
+		foreach (var editableImageData in _previousOperationsStack)
+		{
+			editableImageData.Dispose();
+		}
+
+		foreach (var editableImageData in _revertedOperationsStack)
+		{
+			editableImageData.Dispose();
+		}
 	}
 
 	#endregion
 
 	#region Private
 
-	private readonly MagickImageCollection _imageFramesToEdit;
-	private readonly Bitmap _imageToDisplay;
+	private EditableImageData _editableImageData;
 
-	private readonly ImageSize _imageSize;
+	private readonly Stack<EditableImageData> _previousOperationsStack;
+	private readonly Stack<EditableImageData> _revertedOperationsStack;
 
-	private EditableImage(MagickImageCollection imageFramesToEdit, Bitmap imageToDisplay)
+	private void CreateTransformedImage(Action<MagickImageCollection> transformAction)
 	{
-		_imageFramesToEdit = imageFramesToEdit;
-		_imageToDisplay = imageToDisplay;
-		_imageSize = new ImageSize(_imageToDisplay.Size.Width, _imageToDisplay.Size.Height);
-	}
+		var transformedImageFramesToEdit = CopyMagickImage(_editableImageData.ImageFramesToEdit);
 
-	private async Task<EditableImage> CreateTransformedImage(
-		Action<MagickImageCollection> transformAction)
-	{
-		return await Task.Run(() =>
+		try
 		{
-			var transformedImageFramesToEdit = CopyMagickImage(_imageFramesToEdit);
-
 			transformAction(transformedImageFramesToEdit);
+		}
+		catch
+		{
+			transformedImageFramesToEdit.Dispose();
 
-			using var imageToDisplayStream = new MemoryStream();
-			transformedImageFramesToEdit[0].Write(imageToDisplayStream, MagickFormat.Jpg);
-			imageToDisplayStream.Reset();
+			throw;
+		}
 
-			var transformedImageToDisplay = new Bitmap(imageToDisplayStream);
+		using var imageToDisplayStream = new MemoryStream();
+		transformedImageFramesToEdit[0].Write(imageToDisplayStream, MagickFormat.Jpg);
+		imageToDisplayStream.Reset();
 
-			var transformedEditableImage = new EditableImage(
-				transformedImageFramesToEdit, transformedImageToDisplay);
-			return transformedEditableImage;
-		});
+		var transformedImageToDisplay = new Bitmap(imageToDisplayStream);
+
+		var transformedImageSize = new ImageSize(
+			transformedImageToDisplay.Size.Width, transformedImageToDisplay.Size.Height);
+
+		var transformedEditableImageData = new EditableImageData(
+			transformedImageFramesToEdit, transformedImageToDisplay, transformedImageSize);
+
+		_previousOperationsStack.Push(_editableImageData);
+		_revertedOperationsStack.Clear();
+		_editableImageData = transformedEditableImageData;
 	}
 
 	private static MagickImageCollection CopyMagickImage(MagickImageCollection sourceImageFrames)

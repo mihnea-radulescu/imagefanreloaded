@@ -46,5 +46,7 @@ public enum Key
 	G,
 	P,
 	W,
-	B
+	B,
+
+	U
 }

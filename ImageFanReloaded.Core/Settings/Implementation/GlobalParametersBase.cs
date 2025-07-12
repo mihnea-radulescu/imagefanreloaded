@@ -66,6 +66,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key WKey { get; }
 	public Key BKey { get; }
 
+	public Key UKey { get; }
+
 	public bool IsBackwardNavigationKey(Key aKey) => _backwardNavigationKeys.Contains(aKey);
 	public bool IsForwardNavigationKey(Key aKey) => _forwardNavigationKeys.Contains(aKey);
 	public bool IsNavigationKey(Key aKey) => _navigationKeys.Contains(aKey);
@@ -156,6 +158,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		PKey = Key.P;
 		WKey = Key.W;
 		BKey = Key.B;
+
+		UKey = Key.U;
 
 		NameComparer = operatingSystemSettings.IsWindows
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)
