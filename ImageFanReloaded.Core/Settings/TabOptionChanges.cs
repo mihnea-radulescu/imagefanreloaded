@@ -1,8 +1,9 @@
-namespace ImageFanReloaded.Core.Settings.Implementation;
+namespace ImageFanReloaded.Core.Settings;
 
-public class TabOptionChanges : ITabOptionChanges
+public record TabOptionChanges
 {
 	public bool HasChangedFolderOrdering { get; set; }
+	public bool HasChangedFolderOrderingDirection { get; set; }
 	public bool HasChangedThumbnailSize { get; set; }
 	public bool HasChangedRecursiveFolderBrowsing { get; set; }
 	public bool HasChangedShowImageViewImageInfo { get; set; }

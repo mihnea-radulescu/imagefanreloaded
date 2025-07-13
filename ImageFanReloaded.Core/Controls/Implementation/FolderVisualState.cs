@@ -48,7 +48,9 @@ public class FolderVisualState : IFolderVisualState
 			_contentTabItem.SetTabInfo(_folderName, _folderPath);
 
 			var subFolders = await _discQueryEngine.GetSubFolders(
-				_folderPath, tabOptions.FileSystemEntryInfoOrdering);
+				_folderPath,
+				tabOptions.FileSystemEntryInfoOrdering,
+				tabOptions.FileSystemEntryInfoOrderingDirection);
 			_contentTabItem.PopulateSubFoldersTree(subFolders);
 
 			var imageFiles = await _discQueryEngine.GetImageFiles(

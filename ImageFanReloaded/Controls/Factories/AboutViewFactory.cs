@@ -47,11 +47,13 @@ User interface:
 • key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 • key combo Shift+Tab for cycling through tabs
 • key Tab for cycling through controls in the active tab
-• keys N and M for changing folder ordering between name ascending and last modification time descending
+• keys N and M for changing folder ordering between name and modification time
+• keys A and D for changing folder ordering direction between ascending and descending
 • keys + and - for changing thumbnail size by an increment of 50 pixels
 • key S for slideshow navigation
 • key F for displaying Image info view
-• key D for displaying Image edit view
+• key T for displaying Image edit view, and for switching from command-line image file access mode to
+	thumbnail navigation mode
 • key R for toggling recursive folder browsing
 • key E for applying EXIF image orientation
 • key O for displaying Tab options view
@@ -62,7 +64,6 @@ User interface:
 • key Enter for entering image view and zoomed image view modes
 • key combos Ctrl+Up, Ctrl+Down, Ctrl+Left and Ctrl+Right for dragging zoomed images
 • key I for toggling image info in image view and zoomed image view modes
-• key T for switching from command-line image file access mode to thumbnail navigation mode
 • key Esc for exiting image view and zoomed image view modes, and for quitting application
 ";
 	

@@ -10,7 +10,6 @@ public enum Key
 
 	S,
 	O,
-	D,
 
 	H,
 	F1,
@@ -26,6 +25,9 @@ public enum Key
 
 	N,
 	M,
+
+	A,
+	D,
 
 	R,
 	E,

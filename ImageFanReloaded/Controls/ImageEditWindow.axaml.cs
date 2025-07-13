@@ -85,21 +85,27 @@ public partial class ImageEditWindow : Window, IImageEditView
 		if (ShouldCloseWindow(keyModifiers, keyPressing))
 		{
 			Close();
+
+			e.Handled = true;
 		}
 		else if (ShouldRevertChanges(keyModifiers, keyPressing))
 		{
 			await RevertChanges(keyPressing);
+
+			e.Handled = true;
 		}
 		else if (ShouldEditImage(keyModifiers, keyPressing))
 		{
 			await EditImage(keyPressing);
+
+			e.Handled = true;
 		}
 		else if (ShouldSaveImageAs(keyModifiers, keyPressing))
 		{
 			await SaveImageAs(keyPressing);
-		}
 
-		e.Handled = true;
+			e.Handled = true;
+		}
 	}
 
 	private async void OnWindowClosing(object? sender, WindowClosingEventArgs e)

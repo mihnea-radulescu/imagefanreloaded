@@ -7,15 +7,14 @@ namespace ImageFanReloaded.Core.Controls;
 
 public interface ITabOptionsView
 {
-    IGlobalParameters? GlobalParameters { get; set; }
-    ITabOptions? TabOptions { get; set; }
+	IGlobalParameters? GlobalParameters { get; set; }
+	ITabOptions? TabOptions { get; set; }
 
 	IContentTabItem? ContentTabItem { get; set; }
-	
+
 	event EventHandler<TabOptionsChangedEventArgs>? TabOptionsChanged;
 
 	void PopulateTabOptions();
-	void RegisterTabOptionEvents();
-    
-    Task ShowDialog(IMainView owner);
+
+	Task ShowDialog(IMainView owner);
 }

@@ -26,7 +26,6 @@ public interface IGlobalParameters
 
 	Key SKey { get; }
 	Key OKey { get; }
-	Key DKey { get; }
 
 	Key HKey { get; }
 	Key F1Key { get; }
@@ -37,6 +36,9 @@ public interface IGlobalParameters
 	
 	Key NKey { get; }
 	Key MKey { get; }
+
+	Key AKey { get; }
+	Key DKey { get; }
 
 	Key RKey { get; }
 	Key EKey { get; }

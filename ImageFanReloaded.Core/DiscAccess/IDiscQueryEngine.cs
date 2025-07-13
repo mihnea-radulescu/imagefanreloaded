@@ -12,7 +12,9 @@ public interface IDiscQueryEngine
 	Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders();
 
 	Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
-		string folderPath, FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering);
+		string folderPath,
+		FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering,
+		FileSystemEntryInfoOrderingDirection fileSystemEntryInfoOrderingDirection);
 	
 	Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath);
 

@@ -45,8 +45,11 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		=> await Task.Run(GetRootFoldersInternal);
 
 	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
-		string folderPath, FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering)
-		=> await Task.Run(() => GetSubFoldersInternal(folderPath, fileSystemEntryInfoOrdering));
+		string folderPath,
+		FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering,
+		FileSystemEntryInfoOrderingDirection fileSystemEntryInfoOrderingDirection)
+		=> await Task.Run(() => GetSubFoldersInternal(
+			folderPath, fileSystemEntryInfoOrdering, fileSystemEntryInfoOrderingDirection));
 
 	public async Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath)
 		=> await Task.Run(() => GetFileSystemEntryInfoInternal(folderPath));
@@ -156,7 +159,9 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	}
 	
 	private IReadOnlyList<FileSystemEntryInfo> GetSubFoldersInternal(
-		string folderPath, FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering)
+		string folderPath,
+		FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering,
+		FileSystemEntryInfoOrderingDirection fileSystemEntryInfoOrderingDirection)
 	{
 		try
 		{
@@ -165,7 +170,9 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 				.AsQueryable();
 
 			var orderedSubFolderInfoCollection = GetOrderedFileSystemInfoCollection(
-				subFolderInfoCollection, fileSystemEntryInfoOrdering);
+				subFolderInfoCollection,
+				fileSystemEntryInfoOrdering,
+				fileSystemEntryInfoOrderingDirection);
 			
 			var subFolders = orderedSubFolderInfoCollection
 				.Select(aDirectory =>
@@ -273,16 +280,43 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
     private IQueryable<FileSystemInfo> GetOrderedFileSystemInfoCollection(
 	    IQueryable<FileSystemInfo> fileSystemInfoCollection,
-	    FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering)
+	    FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering,
+		FileSystemEntryInfoOrderingDirection fileSystemEntryInfoOrderingDirection)
     {
-	    var orderedFileSystemInfoCollection = fileSystemEntryInfoOrdering switch
-	    {
-		    FileSystemEntryInfoOrdering.LastModificationTimeDescending => fileSystemInfoCollection
-			    .OrderByDescending(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc),
-		    
-		    _ => fileSystemInfoCollection
-			    .OrderBy(aFileSystemInfo => aFileSystemInfo.Name, _globalParameters.NameComparer)
-	    };
+		IQueryable<FileSystemInfo> orderedFileSystemInfoCollection = fileSystemInfoCollection;
+
+		if (fileSystemEntryInfoOrdering == FileSystemEntryInfoOrdering.Name)
+		{
+			if (fileSystemEntryInfoOrderingDirection ==
+				FileSystemEntryInfoOrderingDirection.Ascending)
+			{
+				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
+					.OrderBy(aFileSystemInfo =>
+						aFileSystemInfo.Name, _globalParameters.NameComparer);
+			}
+			else if (fileSystemEntryInfoOrderingDirection ==
+				FileSystemEntryInfoOrderingDirection.Descending)
+			{
+				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
+					.OrderByDescending(aFileSystemInfo =>
+						aFileSystemInfo.Name, _globalParameters.NameComparer);
+			}
+		}
+		else if (fileSystemEntryInfoOrdering == FileSystemEntryInfoOrdering.ModificationTime)
+		{
+			if (fileSystemEntryInfoOrderingDirection ==
+				FileSystemEntryInfoOrderingDirection.Ascending)
+			{
+				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
+					.OrderBy(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc);
+			}
+			else if (fileSystemEntryInfoOrderingDirection ==
+				FileSystemEntryInfoOrderingDirection.Descending)
+			{
+				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
+					.OrderByDescending(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc);
+			}
+		}
 
 	    return orderedFileSystemInfoCollection;
     }

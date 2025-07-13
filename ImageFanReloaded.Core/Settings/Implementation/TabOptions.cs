@@ -8,6 +8,7 @@ namespace ImageFanReloaded.Core.Settings.Implementation;
 public class TabOptions : ITabOptions
 {
 	public FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; set; }
+	public FileSystemEntryInfoOrderingDirection FileSystemEntryInfoOrderingDirection { get; set; }
 	public ThumbnailSize ThumbnailSize { get; set; }
 	public bool RecursiveFolderBrowsing { get; set; }
 	public bool ShowImageViewImageInfo { get; set; }
@@ -59,7 +60,9 @@ public class TabOptions : ITabOptions
 	private const string SettingsFileName = "DefaultTabOptions.json";
 
 	private const FileSystemEntryInfoOrdering DefaultFileSystemEntryInfoOrdering =
-		FileSystemEntryInfoOrdering.NameAscending;
+		FileSystemEntryInfoOrdering.Name;
+	private const FileSystemEntryInfoOrderingDirection DefaultFileSystemEntryInfoOrderingDirection =
+		FileSystemEntryInfoOrderingDirection.Ascending;
 	private const ThumbnailSize DefaultThumbnailSize = ThumbnailSize.TwoHundredAndFixtyPixels;
 	private const bool DefaultRecursiveFolderBrowsing = false;
 	private const bool DefaultShowImageViewImageInfo = false;
@@ -105,6 +108,12 @@ public class TabOptions : ITabOptions
 			tabOptions.FileSystemEntryInfoOrdering = DefaultFileSystemEntryInfoOrdering;
 		}
 
+		if (!IsValidEnumValue(tabOptions.FileSystemEntryInfoOrderingDirection))
+		{
+			tabOptions.FileSystemEntryInfoOrderingDirection =
+				DefaultFileSystemEntryInfoOrderingDirection;
+		}
+
 		if (!IsValidEnumValue(tabOptions.ThumbnailSize))
 		{
 			tabOptions.ThumbnailSize = DefaultThumbnailSize;
@@ -128,6 +137,8 @@ public class TabOptions : ITabOptions
 		if (DefaultTabOptions is not null)
 		{
 			FileSystemEntryInfoOrdering = DefaultTabOptions.FileSystemEntryInfoOrdering;
+			FileSystemEntryInfoOrderingDirection =
+				DefaultTabOptions.FileSystemEntryInfoOrderingDirection;
 			ThumbnailSize = DefaultTabOptions.ThumbnailSize;
 			RecursiveFolderBrowsing = DefaultTabOptions.RecursiveFolderBrowsing;
 			ShowImageViewImageInfo = DefaultTabOptions.ShowImageViewImageInfo;
@@ -138,6 +149,7 @@ public class TabOptions : ITabOptions
 		else
 		{
 			FileSystemEntryInfoOrdering = DefaultFileSystemEntryInfoOrdering;
+			FileSystemEntryInfoOrderingDirection = DefaultFileSystemEntryInfoOrderingDirection;
 			ThumbnailSize = DefaultThumbnailSize;
 			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing;
 			ShowImageViewImageInfo = DefaultShowImageViewImageInfo;
@@ -150,6 +162,8 @@ public class TabOptions : ITabOptions
 	private void SetDefaultTabOptions()
 	{
 		DefaultTabOptions!.FileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering;
+		DefaultTabOptions!.FileSystemEntryInfoOrderingDirection =
+			FileSystemEntryInfoOrderingDirection;
 		DefaultTabOptions!.ThumbnailSize = ThumbnailSize;
 		DefaultTabOptions!.RecursiveFolderBrowsing = RecursiveFolderBrowsing;
 		DefaultTabOptions!.ShowImageViewImageInfo = ShowImageViewImageInfo;

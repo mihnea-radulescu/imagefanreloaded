@@ -74,6 +74,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 									  || ShouldDisplayTabOptions(keyModifiers, keyPressing)
 									  || ShouldDisplayAboutInfo(keyModifiers, keyPressing)
 									  || ShouldChangeFolderOrdering(keyModifiers, keyPressing)
+									  || ShouldChangeFolderOrderingDirection(
+											keyModifiers, keyPressing)
 									  || ShouldChangeThumbnailSize(keyModifiers, keyPressing)
 									  || ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing)
 									  || ShouldChangeApplyImageOrientation(keyModifiers, keyPressing)
@@ -111,6 +113,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldChangeFolderOrdering(keyModifiers, keyPressing))
 		{
 			ChangeFolderOrdering(keyPressing);
+		}
+		else if (ShouldChangeFolderOrderingDirection(keyModifiers, keyPressing))
+		{
+			ChangeFolderOrderingDirection(keyPressing);
 		}
 		else if (ShouldChangeThumbnailSize(keyModifiers, keyPressing))
 		{
@@ -663,7 +669,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldDisplayImageEdit(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.DKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.TKey)
 		{
 			return true;
 		}
@@ -696,6 +702,17 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			(keyPressing == GlobalParameters!.NKey || keyPressing == GlobalParameters!.MKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldChangeFolderOrderingDirection(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			(keyPressing == GlobalParameters!.AKey || keyPressing == GlobalParameters!.DKey))
 		{
 			return true;
 		}
@@ -856,16 +873,42 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		if (keyPressing == GlobalParameters!.NKey)
 		{
-			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.NameAscending;
+			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.Name;
 		}
 		else if (keyPressing == GlobalParameters!.MKey)
 		{
-			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.LastModificationTimeDescending;
+			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.ModificationTime;
 		}
 
 		if (newFileSystemEntryInfoOrdering != TabOptions!.FileSystemEntryInfoOrdering)
 		{
 			TabOptions!.FileSystemEntryInfoOrdering = newFileSystemEntryInfoOrdering;
+
+			RaiseFolderOrderingChangedEvent();
+		}
+	}
+
+	private void ChangeFolderOrderingDirection(Key keyPressing)
+	{
+		var newFileSystemEntryInfoOrderingDirection =
+			TabOptions!.FileSystemEntryInfoOrderingDirection;
+
+		if (keyPressing == GlobalParameters!.AKey)
+		{
+			newFileSystemEntryInfoOrderingDirection =
+				FileSystemEntryInfoOrderingDirection.Ascending;
+		}
+		else if (keyPressing == GlobalParameters!.DKey)
+		{
+			newFileSystemEntryInfoOrderingDirection =
+				FileSystemEntryInfoOrderingDirection.Descending;
+		}
+
+		if (newFileSystemEntryInfoOrderingDirection !=
+			TabOptions!.FileSystemEntryInfoOrderingDirection)
+		{
+			TabOptions!.FileSystemEntryInfoOrderingDirection =
+				newFileSystemEntryInfoOrderingDirection;
 
 			RaiseFolderOrderingChangedEvent();
 		}

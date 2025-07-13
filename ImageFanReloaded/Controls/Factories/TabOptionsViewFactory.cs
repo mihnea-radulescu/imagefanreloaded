@@ -21,7 +21,6 @@ public class TabOptionsViewFactory : ITabOptionsViewFactory
 		tabOptionsView.ContentTabItem = contentTabItem;
 
 		tabOptionsView.PopulateTabOptions();
-		tabOptionsView.RegisterTabOptionEvents();
 
 		return tabOptionsView;
 	}

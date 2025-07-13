@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Media.Imaging;
 using ImageFanReloaded.Core.ImageHandling;
@@ -41,7 +42,9 @@ public class ImageResizer : ImageResizerBase
 		return imageQuality switch
 		{
 			ImageQuality.Medium => BitmapInterpolationMode.MediumQuality,
-			_ => BitmapInterpolationMode.HighQuality,
+			ImageQuality.High => BitmapInterpolationMode.HighQuality,
+
+			_ => throw new NotSupportedException($"Enum value {imageQuality} not supported.")
 		};
 	}
 

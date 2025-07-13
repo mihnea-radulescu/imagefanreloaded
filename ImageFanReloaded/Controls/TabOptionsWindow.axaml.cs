@@ -33,6 +33,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	public void PopulateTabOptions()
 	{
 		PopulateFolderOrderings();
+		PopulateFolderOrderingDirections();
+
 		PopulateThumbnailSizes();
 
 		SetRecursiveFolderBrowsing();
@@ -43,26 +45,15 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		PopulateSlideshowIntervals();
 
 		SetApplyImageOrientation();
-	}
 
-	public void RegisterTabOptionEvents()
-	{
-		_folderOrderingComboBox.SelectionChanged += OnFolderOrderingSelectionChanged;
-		_thumbnailSizeComboBox.SelectionChanged += OnThumbnailSizeSelectionChanged;
-		_recursiveFolderBrowsingCheckBox.IsCheckedChanged += OnRecursiveFolderBrowsingIsCheckedChanged;
-		_showImageViewImageInfoCheckBox.IsCheckedChanged += OnShowImageViewImageInfoIsCheckedChanged;
-		_panelsSplittingRatioSlider.ValueChanged += OnPanelsSplittingRatioChanged;
-		_slideshowIntervalComboBox.SelectionChanged += OnSlideshowIntervalSelectionChanged;
-		_applyImageOrientationCheckBox.IsCheckedChanged += OnApplyImageOrientationIsCheckedChanged;
-
-		_saveAsDefaultCheckBox.IsCheckedChanged += OnSaveAsDefaultIsCheckedChanged;
+		RegisterTabOptionEvents();
 	}
 
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
 
 	#region Private
 
-	private ITabOptionChanges _tabOptionChanges;
+	private TabOptionChanges _tabOptionChanges;
 
 	private void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -81,6 +72,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	{
 		TabOptionsChanged?.Invoke(
 			this, new TabOptionsChangedEventArgs(ContentTabItem!, _tabOptionChanges));
+
+		UnregisterTabOptionEvents();
 	}
 
 	private void OnFolderOrderingSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -90,6 +83,17 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		TabOptions!.FileSystemEntryInfoOrdering = folderOrdering;
 		_tabOptionChanges.HasChangedFolderOrdering = true;
+	}
+
+	private void OnFolderOrderingDirectionSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
+	{
+		var folderOrderingDirectionComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
+		var folderOrderingDirection =
+			(FileSystemEntryInfoOrderingDirection)folderOrderingDirectionComboBoxItem.Tag!;
+
+		TabOptions!.FileSystemEntryInfoOrderingDirection = folderOrderingDirection;
+		_tabOptionChanges.HasChangedFolderOrderingDirection = true;
 	}
 
 	private void OnThumbnailSizeSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -184,6 +188,31 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		}
 	}
 
+	private void PopulateFolderOrderingDirections()
+	{
+		var fileSystemEntryInfoOrderingDirectionValues = Enum
+			.GetValues<FileSystemEntryInfoOrderingDirection>();
+
+		foreach (var aFileSystemEntryInfoOrderingDirectionValue in
+			fileSystemEntryInfoOrderingDirectionValues)
+		{
+			var aFileSystemEntryInfoOrderingDirectionItem = new ComboBoxItem
+			{
+				Tag = aFileSystemEntryInfoOrderingDirectionValue,
+				Content = aFileSystemEntryInfoOrderingDirectionValue.ToString()
+			};
+
+			_folderOrderingDirectionComboBox.Items.Add(aFileSystemEntryInfoOrderingDirectionItem);
+
+			if (aFileSystemEntryInfoOrderingDirectionValue ==
+				TabOptions!.FileSystemEntryInfoOrderingDirection)
+			{
+				_folderOrderingDirectionComboBox.SelectedItem =
+					aFileSystemEntryInfoOrderingDirectionItem;
+			}
+		}
+	}
+
 	private void PopulateThumbnailSizes()
 	{
 		foreach (var aThumbnailSize in ThumbnailSizeExtensions.ThumbnailSizes)
@@ -245,6 +274,36 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	{
 		_applyImageOrientationCheckBox.IsChecked = TabOptions!.ApplyImageOrientation;
 	}
-	
+
+	private void RegisterTabOptionEvents()
+	{
+		_folderOrderingComboBox.SelectionChanged += OnFolderOrderingSelectionChanged;
+		_folderOrderingDirectionComboBox.SelectionChanged +=
+			OnFolderOrderingDirectionSelectionChanged;
+		_thumbnailSizeComboBox.SelectionChanged += OnThumbnailSizeSelectionChanged;
+		_recursiveFolderBrowsingCheckBox.IsCheckedChanged += OnRecursiveFolderBrowsingIsCheckedChanged;
+		_showImageViewImageInfoCheckBox.IsCheckedChanged += OnShowImageViewImageInfoIsCheckedChanged;
+		_panelsSplittingRatioSlider.ValueChanged += OnPanelsSplittingRatioChanged;
+		_slideshowIntervalComboBox.SelectionChanged += OnSlideshowIntervalSelectionChanged;
+		_applyImageOrientationCheckBox.IsCheckedChanged += OnApplyImageOrientationIsCheckedChanged;
+
+		_saveAsDefaultCheckBox.IsCheckedChanged += OnSaveAsDefaultIsCheckedChanged;
+	}
+
+	private void UnregisterTabOptionEvents()
+	{
+		_folderOrderingComboBox.SelectionChanged -= OnFolderOrderingSelectionChanged;
+		_folderOrderingDirectionComboBox.SelectionChanged -=
+			OnFolderOrderingDirectionSelectionChanged;
+		_thumbnailSizeComboBox.SelectionChanged -= OnThumbnailSizeSelectionChanged;
+		_recursiveFolderBrowsingCheckBox.IsCheckedChanged -= OnRecursiveFolderBrowsingIsCheckedChanged;
+		_showImageViewImageInfoCheckBox.IsCheckedChanged -= OnShowImageViewImageInfoIsCheckedChanged;
+		_panelsSplittingRatioSlider.ValueChanged -= OnPanelsSplittingRatioChanged;
+		_slideshowIntervalComboBox.SelectionChanged -= OnSlideshowIntervalSelectionChanged;
+		_applyImageOrientationCheckBox.IsCheckedChanged -= OnApplyImageOrientationIsCheckedChanged;
+
+		_saveAsDefaultCheckBox.IsCheckedChanged -= OnSaveAsDefaultIsCheckedChanged;
+	}
+
 	#endregion
 }

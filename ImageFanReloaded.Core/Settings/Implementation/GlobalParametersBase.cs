@@ -28,7 +28,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 	public Key SKey { get; }
 	public Key OKey { get; }
-	public Key DKey { get; }
 
 	public Key HKey { get; }
 	public Key F1Key { get; }
@@ -39,6 +38,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 	public Key NKey { get; }
 	public Key MKey { get; }
+
+	public Key AKey { get; }
+	public Key DKey { get; }
 
 	public Key RKey { get; }
 	public Key EKey { get; }
@@ -116,7 +118,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		
 		SKey = Key.S;
 		OKey = Key.O;
-		DKey = Key.D;
 
 		HKey = Key.H;
 		F1Key = Key.F1;
@@ -132,6 +133,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		
 		NKey = Key.N;
 		MKey = Key.M;
+
+		AKey = Key.A;
+		DKey = Key.D;
 
 		RKey = Key.R;
 		EKey = Key.E;

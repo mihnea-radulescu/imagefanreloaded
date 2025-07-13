@@ -11,7 +11,6 @@ public static class KeyExtensions
 
 			Avalonia.Input.Key.S => Core.Keyboard.Key.S,
 			Avalonia.Input.Key.O => Core.Keyboard.Key.O,
-			Avalonia.Input.Key.D => Core.Keyboard.Key.D,
 
 			Avalonia.Input.Key.H => Core.Keyboard.Key.H,
 			Avalonia.Input.Key.F1 => Core.Keyboard.Key.F1,
@@ -27,6 +26,9 @@ public static class KeyExtensions
 
 			Avalonia.Input.Key.N => Core.Keyboard.Key.N,
 			Avalonia.Input.Key.M => Core.Keyboard.Key.M,
+
+			Avalonia.Input.Key.A => Core.Keyboard.Key.A,
+			Avalonia.Input.Key.D => Core.Keyboard.Key.D,
 
 			Avalonia.Input.Key.R => Core.Keyboard.Key.R,
 			Avalonia.Input.Key.E => Core.Keyboard.Key.E,
