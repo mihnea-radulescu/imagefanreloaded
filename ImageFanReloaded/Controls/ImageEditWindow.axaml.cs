@@ -441,6 +441,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		_undoButton.IsEnabled = _editableImage!.CanUndoLastEdit;
 		_redoButton.IsEnabled = _editableImage!.CanRedoLastEdit;
+
+		SizeToContent = SizeToContent.WidthAndHeight;
 	}
 
 	#endregion
