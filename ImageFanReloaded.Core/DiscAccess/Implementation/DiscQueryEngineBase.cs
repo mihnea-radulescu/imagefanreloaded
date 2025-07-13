@@ -225,7 +225,8 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						aFileInfo.Extension,
 						Path.GetFileNameWithoutExtension(aFileInfo.Name),
 						Path.GetDirectoryName(aFileInfo.FullName)!,
-						_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length)))
+						_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length),
+						aFileInfo.LastWriteTime))
 				)
 				.OrderBy(anImageFile =>
 					anImageFile.ImageFileData.ImageFileName, _globalParameters.NameComparer)
@@ -302,7 +303,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						aFileSystemInfo.Name, _globalParameters.NameComparer);
 			}
 		}
-		else if (fileSystemEntryInfoOrdering == FileSystemEntryInfoOrdering.ModificationTime)
+		else if (fileSystemEntryInfoOrdering == FileSystemEntryInfoOrdering.LastModificationTime)
 		{
 			if (fileSystemEntryInfoOrderingDirection ==
 				FileSystemEntryInfoOrderingDirection.Ascending)

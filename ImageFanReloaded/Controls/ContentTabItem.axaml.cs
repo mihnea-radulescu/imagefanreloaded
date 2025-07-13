@@ -877,7 +877,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 		else if (keyPressing == GlobalParameters!.MKey)
 		{
-			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.ModificationTime;
+			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.LastModificationTime;
 		}
 
 		if (newFileSystemEntryInfoOrdering != TabOptions!.FileSystemEntryInfoOrdering)

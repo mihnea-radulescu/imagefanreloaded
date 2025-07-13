@@ -32,8 +32,10 @@ public class EditableImage : DisposableBase
 				imageFramesToEdit[0].AutoOrient();
 			}
 
-			imageFramesToEdit.ForEach(anImageFrameToEdit
-				=> anImageFrameToEdit.Quality = imageQualityLevel);
+			foreach (var anImageFrameToEdit in imageFramesToEdit)
+			{
+				anImageFrameToEdit.Quality = imageQualityLevel;
+			}
 
 			using var imageToDisplayStream = new MemoryStream();
 			imageFramesToEdit[0].Write(imageToDisplayStream, MagickFormat.Jpg);
@@ -128,32 +130,57 @@ public class EditableImage : DisposableBase
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		CreateTransformedImage(
-			imageColection => imageColection.ForEach(anImageFrame => anImageFrame.Rotate(270)));
+		CreateTransformedImage(anImageFrame => anImageFrame.Rotate(270));
 	}
 
 	public void RotateRight()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		CreateTransformedImage(
-			imageColection => imageColection.ForEach(anImageFrame => anImageFrame.Rotate(90)));
+		CreateTransformedImage(anImageFrame => anImageFrame.Rotate(90));
 	}
 
 	public void FlipHorizontally()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		CreateTransformedImage(
-			imageColection => imageColection.ForEach(anImageFrame => anImageFrame.Flop()));
+		CreateTransformedImage(anImageFrame => anImageFrame.Flop());
 	}
 
 	public void FlipVertically()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		CreateTransformedImage(
-			imageColection => imageColection.ForEach(anImageFrame => anImageFrame.Flip()));
+		CreateTransformedImage(anImageFrame => anImageFrame.Flip());
+	}
+
+	public void DownsizeToPercentage(int percentage)
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		if (percentage < 1 || percentage >= 100)
+		{
+			throw new ArgumentOutOfRangeException(nameof(percentage));
+		}
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Resize(new Percentage(percentage)));
+	}
+
+	public void DownsizeToDimensions(int width, int height)
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		if (width < 1 || width >= _editableImageData.ImageSize.Width)
+		{
+			throw new ArgumentOutOfRangeException(nameof(width));
+		}
+
+		if (height < 1 || height >= _editableImageData.ImageSize.Height)
+		{
+			throw new ArgumentOutOfRangeException(nameof(height));
+		}
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Resize((uint)width, (uint)height));
 	}
 
 	public async Task SaveImageWithSameFormat(string imageFilePath)
@@ -206,13 +233,16 @@ public class EditableImage : DisposableBase
 	private readonly Stack<EditableImageData> _previousOperationsStack;
 	private readonly Stack<EditableImageData> _revertedOperationsStack;
 
-	private void CreateTransformedImage(Action<MagickImageCollection> transformAction)
+	private void CreateTransformedImage(Action<IMagickImage> transformImageFrameAction)
 	{
 		var transformedImageFramesToEdit = CopyMagickImage(_editableImageData.ImageFramesToEdit);
 
 		try
 		{
-			transformAction(transformedImageFramesToEdit);
+			foreach (var aTransformedImageFrameToEdit in transformedImageFramesToEdit)
+			{
+				transformImageFrameAction(aTransformedImageFrameToEdit);
+			}
 		}
 		catch
 		{

@@ -47,7 +47,7 @@ User interface:
 • key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 • key combo Shift+Tab for cycling through tabs
 • key Tab for cycling through controls in the active tab
-• keys N and M for changing folder ordering between name and modification time
+• keys N and M for changing folder ordering between name and last modification time
 • keys A and D for changing folder ordering direction between ascending and descending
 • keys + and - for changing thumbnail size by an increment of 50 pixels
 • key S for slideshow navigation

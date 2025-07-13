@@ -320,7 +320,8 @@ public partial class ImageWindow : Window, IImageView
 	private bool ShouldHandleImageZoom(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.EnterKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.EnterKey)
 		{
 			return true;
 		}
@@ -331,7 +332,8 @@ public partial class ImageWindow : Window, IImageView
 	private bool ShouldToggleImageInfo(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.IKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.IKey)
 		{
 			return true;
 		}
@@ -342,7 +344,8 @@ public partial class ImageWindow : Window, IImageView
 	private bool ShouldHandleEscapeAction(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.EscapeKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.EscapeKey)
 		{
 			return true;
 		}
@@ -353,7 +356,8 @@ public partial class ImageWindow : Window, IImageView
 	private bool ShouldHandleWindowClose(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.TKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.TKey)
 		{
 			return true;
 		}

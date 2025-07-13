@@ -157,9 +157,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.EscapeKey ||
-			 keyPressing == GlobalParameters!.EnterKey ||
-			 keyPressing == GlobalParameters!.OKey))
+			(keyPressing == GlobalParameters!.EscapeKey))
 		{
 			return true;
 		}

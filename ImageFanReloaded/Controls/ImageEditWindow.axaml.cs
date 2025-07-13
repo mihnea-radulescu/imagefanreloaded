@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -54,13 +55,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 		}
 
-		EnableButtons();
+		EnableControls();
 
-		UpdateDisplayImage();
-
-		Title = IsImageLoaded
-			? ImageFileData!.ImageFileName
-			: $"Error loading image '{ImageFileData!.ImageFileName}'";
+		RefreshContent();
 	}
 
 	public event EventHandler<ContentTabItemEventArgs>? ImageChanged;
@@ -94,15 +91,21 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 			e.Handled = true;
 		}
+		else if (ShouldSaveImageAs(keyModifiers, keyPressing))
+		{
+			await SaveImageAs(keyPressing);
+
+			e.Handled = true;
+		}
 		else if (ShouldEditImage(keyModifiers, keyPressing))
 		{
 			await EditImage(keyPressing);
 
 			e.Handled = true;
 		}
-		else if (ShouldSaveImageAs(keyModifiers, keyPressing))
+		else if (ShouldDownsizeImage(keyModifiers, keyPressing))
 		{
-			await SaveImageAs(keyPressing);
+			await DownsizeImage(keyPressing);
 
 			e.Handled = true;
 		}
@@ -136,19 +139,14 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 		else
 		{
+			UnregisterEvents();
+
 			_editableImage?.Dispose();
 		}
 	}
 
 	private async void OnUndo(object? sender, RoutedEventArgs e) => await Undo();
 	private async void OnRedo(object? sender, RoutedEventArgs e) => await Redo();
-
-	private async void OnRotateLeft(object? sender, RoutedEventArgs e) => await RotateLeft();
-	private async void OnRotateRight(object? sender, RoutedEventArgs e) => await RotateRight();
-	private async void OnFlipHorizontally(object? sender, RoutedEventArgs e)
-		=> await FlipHorizontally();
-	private async void OnFlipVertically(object? sender, RoutedEventArgs e)
-		=> await FlipVertically();
 
 	private async void OnSaveImageAsWithSameFormat(object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(default);
@@ -166,15 +164,86 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private async void OnSaveImageAsWithFormatBmp(object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
 
+	private async void OnRotateLeft(object? sender, RoutedEventArgs e) => await RotateLeft();
+	private async void OnRotateRight(object? sender, RoutedEventArgs e) => await RotateRight();
+
+	private async void OnFlipHorizontally(object? sender, RoutedEventArgs e)
+		=> await FlipHorizontally();
+	private async void OnFlipVertically(object? sender, RoutedEventArgs e)
+		=> await FlipVertically();
+
+	private void OnDownsizeToPercentageComboxBoxSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
+	{
+		var selectedDownsizePercentage = GetSelectedDownsizeValue(
+			_downsizeToPercentageComboBox);
+
+		_downsizeToPercentageButton.IsEnabled =
+			selectedDownsizePercentage != GetLastDownsizeValue(_downsizeToPercentageComboBox);
+	}
+
+	private void OnDownsizeToDimensionsComboBoxSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
+	{
+		var selectedDownsizeDimensionsWidth = GetSelectedDownsizeValue(
+			_downsizeToDimensionsWidthComboBox);
+		var computedDownsizeDimensionsWidth = selectedDownsizeDimensionsWidth;
+
+		var selectedDownsizeDimensionsHeight = GetSelectedDownsizeValue(
+			_downsizeToDimensionsHeightComboBox);
+		var computedDownsizeDimensionsHeight = selectedDownsizeDimensionsHeight;
+
+		_downsizeToDimensionsWidthComboBox.SelectionChanged -=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsHeightComboBox.SelectionChanged -=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+
+		if (sender == _downsizeToDimensionsWidthComboBox)
+		{
+			computedDownsizeDimensionsHeight = (int)
+				((double)selectedDownsizeDimensionsWidth / _editableImage!.ImageSize.AspectRatio);
+
+			SetSelectedDownsizeValue(
+				_downsizeToDimensionsHeightComboBox, computedDownsizeDimensionsHeight);
+		}
+		else if (sender == _downsizeToDimensionsHeightComboBox)
+		{
+			computedDownsizeDimensionsWidth = (int)
+				((double)selectedDownsizeDimensionsHeight * _editableImage!.ImageSize.AspectRatio);
+
+			SetSelectedDownsizeValue(
+				_downsizeToDimensionsWidthComboBox, computedDownsizeDimensionsWidth);
+		}
+
+		_downsizeToDimensionsWidthComboBox.SelectionChanged +=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsHeightComboBox.SelectionChanged +=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+
+		var isDownsizeableDimensionWidth =
+			computedDownsizeDimensionsWidth != GetLastDownsizeValue(
+				_downsizeToDimensionsWidthComboBox);
+
+		var isDownsizeableDimensionHeight =
+			computedDownsizeDimensionsHeight != GetLastDownsizeValue(
+				_downsizeToDimensionsHeightComboBox);
+
+		_downsizeToDimensionsButton.IsEnabled =
+			isDownsizeableDimensionWidth && isDownsizeableDimensionHeight;
+	}
+
+	private async void OnDownsizeToPercentage(object? sender, RoutedEventArgs e)
+		=> await DownsizeToPercentage();
+	private async void OnDownsizeToDimensions(object? sender, RoutedEventArgs e)
+		=> await DownsizeToDimensions();
+
 	private bool IsImageLoaded => _editableImage is not null;
 
 	private bool ShouldCloseWindow(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.EscapeKey ||
-			 keyPressing == GlobalParameters!.EnterKey ||
-			 keyPressing == GlobalParameters!.DKey))
+			(keyPressing == GlobalParameters!.EscapeKey))
 		{
 			return true;
 		}
@@ -188,21 +257,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			(keyPressing == GlobalParameters!.UKey ||
 			 keyPressing == GlobalParameters!.IKey))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	private bool ShouldEditImage(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.LKey ||
-			 keyPressing == GlobalParameters!.RKey ||
-			 keyPressing == GlobalParameters!.HKey ||
-			 keyPressing == GlobalParameters!.VKey))
 		{
 			return true;
 		}
@@ -228,6 +282,34 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
+	private bool ShouldEditImage(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			(keyPressing == GlobalParameters!.LKey ||
+			 keyPressing == GlobalParameters!.RKey ||
+			 keyPressing == GlobalParameters!.HKey ||
+			 keyPressing == GlobalParameters!.VKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldDownsizeImage(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			(keyPressing == GlobalParameters!.EKey ||
+			 keyPressing == GlobalParameters!.DKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private async Task RevertChanges(ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (!IsImageLoaded)
@@ -242,31 +324,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		else if (keyPressing == GlobalParameters!.IKey)
 		{
 			await Redo();
-		}
-	}
-
-	private async Task EditImage(ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (!IsImageLoaded)
-		{
-			return;
-		}
-
-		if (keyPressing == GlobalParameters!.LKey)
-		{
-			await RotateLeft();
-		}
-		else if (keyPressing == GlobalParameters!.RKey)
-		{
-			await RotateRight();
-		}
-		else if (keyPressing == GlobalParameters!.HKey)
-		{
-			await FlipHorizontally();
-		}
-		else if (keyPressing == GlobalParameters!.VKey)
-		{
-			await FlipVertically();
 		}
 	}
 
@@ -307,33 +364,72 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
-	private async Task Undo()
-	{
-		_editableImage!.UndoLastEdit();
-		await ApplyTransform(default);
-	}
-
-	private async Task Redo()
-	{
-		_editableImage!.RedoLastEdit();
-		await ApplyTransform(default);
-	}
-
-	private async Task RotateLeft() => await ApplyTransform(() => _editableImage!.RotateLeft());
-	private async Task RotateRight() => await ApplyTransform(() => _editableImage!.RotateRight());
-
-	private async Task FlipHorizontally()
-		=> await ApplyTransform(() => _editableImage!.FlipHorizontally());
-	private async Task FlipVertically()
-		=> await ApplyTransform(() => _editableImage!.FlipVertically());
-
-	private async Task SaveImageWithFormat(ISaveFileImageFormat? saveFileImageFormat)
+	private async Task EditImage(ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (!IsImageLoaded)
 		{
 			return;
 		}
 
+		if (keyPressing == GlobalParameters!.LKey)
+		{
+			await RotateLeft();
+		}
+		else if (keyPressing == GlobalParameters!.RKey)
+		{
+			await RotateRight();
+		}
+		else if (keyPressing == GlobalParameters!.HKey)
+		{
+			await FlipHorizontally();
+		}
+		else if (keyPressing == GlobalParameters!.VKey)
+		{
+			await FlipVertically();
+		}
+	}
+
+	private async Task DownsizeImage(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (!IsImageLoaded)
+		{
+			return;
+		}
+
+		if (keyPressing == GlobalParameters!.EKey)
+		{
+			await DownsizeToPercentage();
+		}
+		else if (keyPressing == GlobalParameters!.DKey)
+		{
+			await DownsizeToDimensions();
+		}
+	}
+
+	private async Task Undo()
+	{
+		if (!_undoButton.IsEnabled)
+		{
+			return;
+		}
+
+		_editableImage!.UndoLastEdit();
+		await ApplyTransform(default);
+	}
+
+	private async Task Redo()
+	{
+		if (!_redoButton.IsEnabled)
+		{
+			return;
+		}
+
+		_editableImage!.RedoLastEdit();
+		await ApplyTransform(default);
+	}
+
+	private async Task SaveImageWithFormat(ISaveFileImageFormat? saveFileImageFormat)
+	{
 		var hasSameFormat = saveFileImageFormat is null;
 
 		var imageFileName = hasSameFormat
@@ -388,6 +484,40 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
+	private async Task RotateLeft() => await ApplyTransform(() => _editableImage!.RotateLeft());
+	private async Task RotateRight() => await ApplyTransform(() => _editableImage!.RotateRight());
+
+	private async Task FlipHorizontally()
+		=> await ApplyTransform(() => _editableImage!.FlipHorizontally());
+	private async Task FlipVertically()
+		=> await ApplyTransform(() => _editableImage!.FlipVertically());
+
+	private async Task DownsizeToPercentage()
+	{
+		if (!_downsizeToPercentageButton.IsEnabled)
+		{
+			return;
+		}
+
+		var downsizePercentage = GetSelectedDownsizeValue(_downsizeToPercentageComboBox);
+
+		await ApplyTransform(() => _editableImage!.DownsizeToPercentage(downsizePercentage));
+	}
+
+	private async Task DownsizeToDimensions()
+	{
+		if (!_downsizeToDimensionsButton.IsEnabled)
+		{
+			return;
+		}
+
+		var downsizeDimensionsWidth = GetSelectedDownsizeValue(_downsizeToDimensionsWidthComboBox);
+		var downsizeDimensionsHeight = GetSelectedDownsizeValue(_downsizeToDimensionsHeightComboBox);
+
+		await ApplyTransform(() => _editableImage!.DownsizeToDimensions(
+			downsizeDimensionsWidth, downsizeDimensionsHeight));
+	}
+
 	private async Task ApplyTransform(Action? transformImageAction)
 	{
 		try
@@ -398,10 +528,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 			}
 
 			_displayImage.Source = _editableImage!.ImageToDisplay;
-
-			UpdateDisplayImage();
-
 			_hasUnsavedChanges = true;
+
+			RefreshContent();
 		}
 		catch
 		{
@@ -423,24 +552,50 @@ public partial class ImageEditWindow : Window, IImageEditView
 		string imageToSaveFilePath, string imageFolderPath)
 		=> imageToSaveFilePath.StartsWith(imageFolderPath, _fileSystemStringComparison!.Value);
 
-	private void EnableButtons()
-	{
-		_undoButton.IsEnabled = IsImageLoaded;
-		_redoButton.IsEnabled = IsImageLoaded;
-
-		_rotateDropDownButton.IsEnabled = IsImageLoaded;
-		_flipDropDownButton.IsEnabled = IsImageLoaded;
-
-		_saveAsDropDownButton.IsEnabled = IsImageLoaded;
-	}
-
-	private void UpdateDisplayImage()
+	private void RefreshContent()
 	{
 		if (!IsImageLoaded)
 		{
 			return;
 		}
 
+		UnregisterEvents();
+
+		PopulateDownsizeComboBox(_downsizeToPercentageComboBox, 1, 100, "%");
+		PopulateDownsizeComboBox(
+			_downsizeToDimensionsWidthComboBox, 1, _editableImage!.ImageSize.Width, "px");
+		PopulateDownsizeComboBox(
+			_downsizeToDimensionsHeightComboBox, 1, _editableImage!.ImageSize.Height, "px");
+
+		UpdateControls();
+
+		RegisterEvents();
+	}
+
+	private void EnableControls()
+	{
+		Title = IsImageLoaded
+			? ImageFileData!.ImageFileName
+			: $"Error loading image '{ImageFileData!.ImageFileName}'";
+
+		_undoButton.IsEnabled = IsImageLoaded;
+		_redoButton.IsEnabled = IsImageLoaded;
+
+		_rotateDropDownButton.IsEnabled = IsImageLoaded;
+		_flipDropDownButton.IsEnabled = IsImageLoaded;
+
+		_downsizeToPercentageButton.IsEnabled = IsImageLoaded;
+		_downsizeToPercentageComboBox.IsEnabled = IsImageLoaded;
+
+		_downsizeToDimensionsButton.IsEnabled = IsImageLoaded;
+		_downsizeToDimensionsWidthComboBox.IsEnabled = IsImageLoaded;
+		_downsizeToDimensionsHeightComboBox.IsEnabled = IsImageLoaded;
+
+		_saveAsDropDownButton.IsEnabled = IsImageLoaded;
+	}
+
+	private void UpdateControls()
+	{
 		_displayImage.MaxWidth = _editableImage!.ImageSize.Width;
 		_displayImage.MaxHeight = _editableImage!.ImageSize.Height;
 		_displayImage.Source = _editableImage!.ImageToDisplay;
@@ -448,8 +603,96 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_undoButton.IsEnabled = _editableImage!.CanUndoLastEdit;
 		_redoButton.IsEnabled = _editableImage!.CanRedoLastEdit;
 
+		_downsizeToPercentageButton.IsEnabled = false;
+		_downsizeToDimensionsButton.IsEnabled = false;
+
 		SizeToContent = SizeToContent.WidthAndHeight;
 	}
 
+	private void RegisterEvents()
+	{
+		_downsizeToPercentageComboBox.SelectionChanged +=
+			OnDownsizeToPercentageComboxBoxSelectionChanged;
+
+		_downsizeToDimensionsWidthComboBox.SelectionChanged +=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsHeightComboBox.SelectionChanged +=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+	}
+
+	private void UnregisterEvents()
+	{
+		_downsizeToPercentageComboBox.SelectionChanged -=
+			OnDownsizeToPercentageComboxBoxSelectionChanged;
+
+		_downsizeToDimensionsWidthComboBox.SelectionChanged -=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsHeightComboBox.SelectionChanged -=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+	}
+
+	private static void PopulateDownsizeComboBox(
+		ComboBox downsizeComboBox,
+		int minimumDownsizeValue,
+		int maximumDownsizeValue,
+		string downsizeContentSuffix)
+	{
+		downsizeComboBox.Items.Clear();
+
+		for (var aDownsizeValue = minimumDownsizeValue;
+				aDownsizeValue <= maximumDownsizeValue;
+				aDownsizeValue++)
+		{
+			var downsizeComboBoxItem = new ComboBoxItem
+			{
+				Tag = aDownsizeValue,
+				Content = $"{aDownsizeValue}{downsizeContentSuffix}"
+			};
+
+			downsizeComboBox.Items.Add(downsizeComboBoxItem);
+
+			if (aDownsizeValue == maximumDownsizeValue)
+			{
+				downsizeComboBox.SelectedItem = downsizeComboBoxItem;
+			}
+		}
+	}
+
+	private static int GetSelectedDownsizeValue(ComboBox downsizeComboBox)
+	{
+		var selectedDownsizeComboBoxItem = (ComboBoxItem)downsizeComboBox.SelectedItem!;
+
+		return GetDownsizeValue(selectedDownsizeComboBoxItem);
+	}
+
+	private static int GetLastDownsizeValue(ComboBox downsizeComboBox)
+	{
+		var downsizeComboBoxItemCount = downsizeComboBox.ItemCount;
+		var lastDownsizeComboBoxItem =
+			(ComboBoxItem)downsizeComboBox.Items[downsizeComboBoxItemCount - 1]!;
+
+		return GetDownsizeValue(lastDownsizeComboBoxItem);
+	}
+
+	private static int GetDownsizeValue(ComboBoxItem downsizeComboBoxItem)
+		=> (int)downsizeComboBoxItem.Tag!;
+
+	private static void SetSelectedDownsizeValue(
+		ComboBox downsizeComboBox, int selectedDownsizeValue)
+	{
+		var downsizeComboBoxItems = downsizeComboBox.Items
+			.Cast<ComboBoxItem>()
+			.ToList();
+
+		foreach (var aDownsizeComboBoxItem in downsizeComboBoxItems)
+		{
+			if ((int)aDownsizeComboBoxItem.Tag! == selectedDownsizeValue)
+			{
+				downsizeComboBox.SelectedItem = aDownsizeComboBoxItem;
+				break;
+			}
+		}
+	}
+
 	#endregion
-}
+	}

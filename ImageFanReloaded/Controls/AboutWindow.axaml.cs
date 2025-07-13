@@ -44,10 +44,7 @@ public partial class AboutWindow : Window, IAboutView
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.EscapeKey ||
-			 keyPressing == GlobalParameters!.EnterKey ||
-			 keyPressing == GlobalParameters!.HKey ||
-			 keyPressing == GlobalParameters!.F1Key))
+			(keyPressing == GlobalParameters!.EscapeKey))
 		{
 			return true;
 		}

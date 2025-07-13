@@ -75,6 +75,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		imageInfoBuilder.AppendLine($"\tFile name:\t{imageFileData.ImageFileName}");
 		imageInfoBuilder.AppendLine($"\tFile path:\t{imageFileData.ImageFilePath}");
 		imageInfoBuilder.AppendLine($"\tFile size:\t{imageFileData.SizeOnDiscInKilobytes} KB");
+		imageInfoBuilder.AppendLine(
+			$"\tFile last modification time:\t{imageFileData.LastModificationTime}");
 	}
 
 	private static void BuildImageProfile(

@@ -44,9 +44,7 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-		    (keyPressing == GlobalParameters!.EscapeKey ||
-		     keyPressing == GlobalParameters!.EnterKey ||
-		     keyPressing == GlobalParameters!.FKey))
+		    (keyPressing == GlobalParameters!.EscapeKey))
 		{
 			return true;
 		}

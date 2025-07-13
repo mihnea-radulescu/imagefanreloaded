@@ -64,15 +64,15 @@
 					</Grid.ColumnDefinitions>
 
 					<TextBox Name="_folderInfoTextBox"
-							Grid.Column="0"
-							IsReadOnly="True"
-							Background="Transparent"
-							TextAlignment="Left"/>
+							 Grid.Column="0"
+							 IsReadOnly="True"
+							 Background="Transparent"
+							 TextAlignment="Left"/>
 					<TextBox Name="_imageInfoTextBox"
-							Grid.Column="2"
-							IsReadOnly="True"
-							Background="Transparent"
-							TextAlignment="Right"/>
+							 Grid.Column="2"
+							 IsReadOnly="True"
+							 Background="Transparent"
+							 TextAlignment="Right"/>
 				</Grid>
 
 			</Grid>

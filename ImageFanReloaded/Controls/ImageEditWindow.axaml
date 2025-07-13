@@ -9,6 +9,8 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
@@ -18,32 +20,10 @@
 			<Button Name="_undoButton"
 					Content="Undo"
 					Click="OnUndo"/>
+
 			<Button Name="_redoButton"
 					Content="Redo"
 					Click="OnRedo"/>
-			<DropDownButton Name="_rotateDropDownButton"
-							Content="Rotate">
-				<DropDownButton.Flyout>
-					<MenuFlyout>
-						<MenuItem Header="Left"
-								  Click="OnRotateLeft"/>
-						<MenuItem Header="Right"
-								  Click="OnRotateRight"/>
-					</MenuFlyout>
-				</DropDownButton.Flyout>
-			</DropDownButton>
-
-			<DropDownButton Name="_flipDropDownButton"
-							Content="Flip">
-				<DropDownButton.Flyout>
-					<MenuFlyout>
-						<MenuItem Header="Horizontally"
-								  Click="OnFlipHorizontally"/>
-						<MenuItem Header="Vertically"
-								  Click="OnFlipVertically"/>
-					</MenuFlyout>
-				</DropDownButton.Flyout>
-			</DropDownButton>
 
 			<DropDownButton Name="_saveAsDropDownButton"
 							Content="Save as">
@@ -68,7 +48,63 @@
 			</DropDownButton>
 		</StackPanel>
 
-		<Grid Grid.Row="1">
+		<StackPanel Grid.Row="1"
+					Classes="HorizontalStackPanel"
+					HorizontalAlignment="Center">
+			<DropDownButton Name="_rotateDropDownButton"
+							Content="Rotate">
+				<DropDownButton.Flyout>
+					<MenuFlyout>
+						<MenuItem Header="Left"
+								  Click="OnRotateLeft"/>
+						<MenuItem Header="Right"
+								  Click="OnRotateRight"/>
+					</MenuFlyout>
+				</DropDownButton.Flyout>
+			</DropDownButton>
+
+			<DropDownButton Name="_flipDropDownButton"
+							Content="Flip">
+				<DropDownButton.Flyout>
+					<MenuFlyout>
+						<MenuItem Header="Horizontally"
+								  Click="OnFlipHorizontally"/>
+						<MenuItem Header="Vertically"
+								  Click="OnFlipVertically"/>
+					</MenuFlyout>
+				</DropDownButton.Flyout>
+			</DropDownButton>
+		</StackPanel>
+
+		<StackPanel Grid.Row="2"
+					Classes="HorizontalStackPanel"
+					HorizontalAlignment="Center">
+			<StackPanel Classes="HorizontalStackPanel"
+						HorizontalAlignment="Center">
+				<Button Name="_downsizeToPercentageButton"
+						Content="Downsize to percentage"
+						Click="OnDownsizeToPercentage"/>
+				<ComboBox Name="_downsizeToPercentageComboBox"
+						  Margin="0 2 0 0"/>
+			</StackPanel>
+
+			<StackPanel Classes="HorizontalStackPanel"
+						HorizontalAlignment="Center">
+				<Button Name="_downsizeToDimensionsButton"
+						Content="Downsize to dimensions"
+						Click="OnDownsizeToDimensions"/>
+				<TextBlock VerticalAlignment="Center"
+						   Text="Width:"/>
+				<ComboBox Name="_downsizeToDimensionsWidthComboBox"
+						  Margin="0 2 0 0"/>
+				<TextBlock VerticalAlignment="Center"
+						   Text="Height:"/>
+				<ComboBox Name="_downsizeToDimensionsHeightComboBox"
+						  Margin="0 2 0 0"/>
+			</StackPanel>
+		</StackPanel>
+
+		<Grid Grid.Row="3">
 			<Image Name="_displayImage"
 				   Margin="4"
 				   Stretch="Uniform"/>
