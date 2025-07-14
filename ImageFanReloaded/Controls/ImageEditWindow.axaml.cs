@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -21,6 +22,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	public ImageEditWindow()
 	{
 		InitializeComponent();
+
+		_downsizeComboBoxValueToComboBoxItemMapping = new Dictionary<string, ComboBoxItem>();
 
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 	}
@@ -53,9 +56,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 		catch
 		{
+			Title = $"{ImageFileData!.ImageFileName} - error loading image";
 		}
 
-		EnableControls();
+		SetControlsEnabledStatus(IsImageLoaded);
 
 		RefreshContent();
 	}
@@ -67,12 +71,15 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	#region Private
 
+	private readonly IDictionary<string, ComboBoxItem> _downsizeComboBoxValueToComboBoxItemMapping;
+
 	private IGlobalParameters? _globalParameters;
 	private StringComparison? _fileSystemStringComparison;
 
 	private EditableImage? _editableImage;
-
 	private bool _hasUnsavedChanges;
+
+	private bool _hasInProgressUiUpdate;
 
 	private async void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -113,7 +120,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async void OnWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
-		if (_hasUnsavedChanges)
+		if (_hasInProgressUiUpdate)
+		{
+			e.Cancel = true;
+		}
+		else if (_hasUnsavedChanges)
 		{
 			e.Cancel = true;
 
@@ -178,8 +189,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 		var selectedDownsizePercentage = GetSelectedDownsizeValue(
 			_downsizeToPercentageComboBox);
 
-		_downsizeToPercentageButton.IsEnabled =
+		_downsizeToPercentageMenuItem.IsEnabled =
 			selectedDownsizePercentage != GetLastDownsizeValue(_downsizeToPercentageComboBox);
+
+		SetDownsizeButtonEnabledStatus();
 	}
 
 	private void OnDownsizeToDimensionsComboBoxSelectionChanged(
@@ -228,8 +241,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 			computedDownsizeDimensionsHeight != GetLastDownsizeValue(
 				_downsizeToDimensionsHeightComboBox);
 
-		_downsizeToDimensionsButton.IsEnabled =
+		_downsizeToDimensionsMenuItem.IsEnabled =
 			isDownsizeableDimensionWidth && isDownsizeableDimensionHeight;
+
+		SetDownsizeButtonEnabledStatus();
 	}
 
 	private async void OnDownsizeToPercentage(object? sender, RoutedEventArgs e)
@@ -408,114 +423,180 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async Task Undo()
 	{
-		if (!_undoButton.IsEnabled)
+		if (!_undoButton.IsEnabled || _hasInProgressUiUpdate)
 		{
 			return;
 		}
 
-		_editableImage!.UndoLastEdit();
-		await ApplyTransform(default);
+		await PerformUiUpdate(async () =>
+		{
+			_editableImage!.UndoLastEdit();
+			await ApplyTransform(default);
+		});
 	}
 
 	private async Task Redo()
 	{
-		if (!_redoButton.IsEnabled)
+		if (!_redoButton.IsEnabled || _hasInProgressUiUpdate)
 		{
 			return;
 		}
 
-		_editableImage!.RedoLastEdit();
-		await ApplyTransform(default);
+		await PerformUiUpdate(async () =>
+		{
+			_editableImage!.RedoLastEdit();
+			await ApplyTransform(default);
+		});
 	}
 
 	private async Task SaveImageWithFormat(ISaveFileImageFormat? saveFileImageFormat)
 	{
-		var hasSameFormat = saveFileImageFormat is null;
-
-		var imageFileName = hasSameFormat
-			? ImageFileData!.ImageFileName
-			: $"{ImageFileData!.ImageFileNameWithoutExtension}{saveFileImageFormat!.Extension}";
-		var imageFilePath = ImageFileData!.ImageFilePath;
-		var imageFolderPath = ImageFileData!.ImageFolderPath;
-
-		var saveFileDialog = SaveFileDialogFactory!.GetSaveFileDialog();
-		var saveFileDialogTitle = hasSameFormat
-			? $"Select image file"
-			: $"Select {saveFileImageFormat!.Name} image file";
-		var imageToSaveFilePath = await saveFileDialog.ShowDialog(
-			imageFileName, imageFolderPath, saveFileDialogTitle);
-
-		if (imageToSaveFilePath is not null)
-		{
-			try
-			{
-				if (hasSameFormat)
-				{
-					await _editableImage!.SaveImageWithSameFormat(imageToSaveFilePath);
-				}
-				else
-				{
-					await _editableImage!.SaveImageWithFormat(
-						imageToSaveFilePath, saveFileImageFormat!);
-				}
-
-				_hasUnsavedChanges = false;
-
-				if (HasOverwrittenCurrentImageFile(imageToSaveFilePath, imageFilePath))
-				{
-					ImageChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
-				}
-				else if (HasSavedImageFileInCurrentFolder(imageToSaveFilePath, imageFolderPath))
-				{
-					FolderChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
-				}
-			}
-			catch
-			{
-				var saveImageAsErrorMessageBox = MessageBoxManager.GetMessageBoxStandard(
-					"Image file save error",
-					$"Could not save image file '{imageToSaveFilePath}'.",
-					MsBox.Avalonia.Enums.ButtonEnum.Ok,
-					MsBox.Avalonia.Enums.Icon.Error,
-					WindowStartupLocation.CenterOwner);
-
-				await saveImageAsErrorMessageBox.ShowWindowDialogAsync(this);
-			}
-		}
-	}
-
-	private async Task RotateLeft() => await ApplyTransform(() => _editableImage!.RotateLeft());
-	private async Task RotateRight() => await ApplyTransform(() => _editableImage!.RotateRight());
-
-	private async Task FlipHorizontally()
-		=> await ApplyTransform(() => _editableImage!.FlipHorizontally());
-	private async Task FlipVertically()
-		=> await ApplyTransform(() => _editableImage!.FlipVertically());
-
-	private async Task DownsizeToPercentage()
-	{
-		if (!_downsizeToPercentageButton.IsEnabled)
+		if (_hasInProgressUiUpdate)
 		{
 			return;
 		}
 
-		var downsizePercentage = GetSelectedDownsizeValue(_downsizeToPercentageComboBox);
+		await PerformUiUpdate(async () =>
+		{
+			var hasSameFormat = saveFileImageFormat is null;
 
-		await ApplyTransform(() => _editableImage!.DownsizeToPercentage(downsizePercentage));
+			var imageFileName = hasSameFormat
+				? ImageFileData!.ImageFileName
+				: $"{ImageFileData!.ImageFileNameWithoutExtension}{saveFileImageFormat!.Extension}";
+			var imageFilePath = ImageFileData!.ImageFilePath;
+			var imageFolderPath = ImageFileData!.ImageFolderPath;
+
+			var saveFileDialog = SaveFileDialogFactory!.GetSaveFileDialog();
+			var saveFileDialogTitle = hasSameFormat
+				? $"Select image file"
+				: $"Select {saveFileImageFormat!.Name} image file";
+			var imageToSaveFilePath = await saveFileDialog.ShowDialog(
+				imageFileName, imageFolderPath, saveFileDialogTitle);
+
+			if (imageToSaveFilePath is not null)
+			{
+				try
+				{
+					if (hasSameFormat)
+					{
+						await _editableImage!.SaveImageWithSameFormat(imageToSaveFilePath);
+					}
+					else
+					{
+						await _editableImage!.SaveImageWithFormat(
+							imageToSaveFilePath, saveFileImageFormat!);
+					}
+
+					_hasUnsavedChanges = false;
+
+					if (HasOverwrittenCurrentImageFile(imageToSaveFilePath, imageFilePath))
+					{
+						ImageChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
+					}
+					else if (HasSavedImageFileInCurrentFolder(imageToSaveFilePath, imageFolderPath))
+					{
+						FolderChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
+					}
+				}
+				catch
+				{
+					var saveImageAsErrorMessageBox = MessageBoxManager.GetMessageBoxStandard(
+						"Image file save error",
+						$"Could not save image file '{imageToSaveFilePath}'.",
+						MsBox.Avalonia.Enums.ButtonEnum.Ok,
+						MsBox.Avalonia.Enums.Icon.Error,
+						WindowStartupLocation.CenterOwner);
+
+					await saveImageAsErrorMessageBox.ShowWindowDialogAsync(this);
+				}
+			}
+		});
+	}
+
+	private async Task RotateLeft()
+	{
+		if (_hasInProgressUiUpdate)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.RotateLeft());
+		});
+	}
+
+	private async Task RotateRight()
+	{
+		if (_hasInProgressUiUpdate)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.RotateRight());
+		});
+	}
+
+	private async Task FlipHorizontally()
+	{
+		if (_hasInProgressUiUpdate)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.FlipHorizontally());
+		});
+	}
+
+	private async Task FlipVertically()
+	{
+		if (_hasInProgressUiUpdate)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.FlipVertically());
+		});
+	}
+
+	private async Task DownsizeToPercentage()
+	{
+		if (!_downsizeToPercentageMenuItem.IsEnabled || _hasInProgressUiUpdate)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			var downsizePercentage = GetSelectedDownsizeValue(_downsizeToPercentageComboBox);
+
+			await ApplyTransform(() => _editableImage!.DownsizeToPercentage(downsizePercentage));
+		});
 	}
 
 	private async Task DownsizeToDimensions()
 	{
-		if (!_downsizeToDimensionsButton.IsEnabled)
+		if (!_downsizeToDimensionsMenuItem.IsEnabled || _hasInProgressUiUpdate)
 		{
 			return;
 		}
 
-		var downsizeDimensionsWidth = GetSelectedDownsizeValue(_downsizeToDimensionsWidthComboBox);
-		var downsizeDimensionsHeight = GetSelectedDownsizeValue(_downsizeToDimensionsHeightComboBox);
+		await PerformUiUpdate(async () =>
+		{
+			var downsizeDimensionsWidth = GetSelectedDownsizeValue(
+				_downsizeToDimensionsWidthComboBox);
+			var downsizeDimensionsHeight = GetSelectedDownsizeValue(
+				_downsizeToDimensionsHeightComboBox);
 
-		await ApplyTransform(() => _editableImage!.DownsizeToDimensions(
-			downsizeDimensionsWidth, downsizeDimensionsHeight));
+			await ApplyTransform(() => _editableImage!.DownsizeToDimensions(
+				downsizeDimensionsWidth, downsizeDimensionsHeight));
+		});
 	}
 
 	private async Task ApplyTransform(Action? transformImageAction)
@@ -529,8 +610,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 			_displayImage.Source = _editableImage!.ImageToDisplay;
 			_hasUnsavedChanges = true;
-
-			RefreshContent();
 		}
 		catch
 		{
@@ -561,6 +640,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		UnregisterEvents();
 
+		ClearDownsizeComboBoxValueToComboBoxItemMapping();
+
 		PopulateDownsizeComboBox(_downsizeToPercentageComboBox, 1, 100, "%");
 		PopulateDownsizeComboBox(
 			_downsizeToDimensionsWidthComboBox, 1, _editableImage!.ImageSize.Width, "px");
@@ -572,26 +653,24 @@ public partial class ImageEditWindow : Window, IImageEditView
 		RegisterEvents();
 	}
 
-	private void EnableControls()
+	private void SetControlsEnabledStatus(bool areControlsEnabled)
 	{
-		Title = IsImageLoaded
-			? ImageFileData!.ImageFileName
-			: $"Error loading image '{ImageFileData!.ImageFileName}'";
+		_undoButton.IsEnabled = areControlsEnabled;
+		_redoButton.IsEnabled = areControlsEnabled;
 
-		_undoButton.IsEnabled = IsImageLoaded;
-		_redoButton.IsEnabled = IsImageLoaded;
+		_rotateDropDownButton.IsEnabled = areControlsEnabled;
+		_flipDropDownButton.IsEnabled = areControlsEnabled;
 
-		_rotateDropDownButton.IsEnabled = IsImageLoaded;
-		_flipDropDownButton.IsEnabled = IsImageLoaded;
+		_downsizeButton.IsEnabled = areControlsEnabled;
 
-		_downsizeToPercentageButton.IsEnabled = IsImageLoaded;
-		_downsizeToPercentageComboBox.IsEnabled = IsImageLoaded;
+		_downsizeToPercentageMenuItem.IsEnabled = areControlsEnabled;
+		_downsizeToPercentageComboBox.IsEnabled = areControlsEnabled;
 
-		_downsizeToDimensionsButton.IsEnabled = IsImageLoaded;
-		_downsizeToDimensionsWidthComboBox.IsEnabled = IsImageLoaded;
-		_downsizeToDimensionsHeightComboBox.IsEnabled = IsImageLoaded;
+		_downsizeToDimensionsMenuItem.IsEnabled = areControlsEnabled;
+		_downsizeToDimensionsWidthComboBox.IsEnabled = areControlsEnabled;
+		_downsizeToDimensionsHeightComboBox.IsEnabled = areControlsEnabled;
 
-		_saveAsDropDownButton.IsEnabled = IsImageLoaded;
+		_saveAsDropDownButton.IsEnabled = areControlsEnabled;
 	}
 
 	private void UpdateControls()
@@ -603,8 +682,12 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_undoButton.IsEnabled = _editableImage!.CanUndoLastEdit;
 		_redoButton.IsEnabled = _editableImage!.CanRedoLastEdit;
 
-		_downsizeToPercentageButton.IsEnabled = false;
-		_downsizeToDimensionsButton.IsEnabled = false;
+		_downsizeToPercentageMenuItem.IsEnabled = false;
+		_downsizeToDimensionsMenuItem.IsEnabled = false;
+
+		SetDownsizeButtonEnabledStatus();
+
+		Title = $"{ImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
 
 		SizeToContent = SizeToContent.WidthAndHeight;
 	}
@@ -631,7 +714,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 			OnDownsizeToDimensionsComboBoxSelectionChanged;
 	}
 
-	private static void PopulateDownsizeComboBox(
+	private void PopulateDownsizeComboBox(
 		ComboBox downsizeComboBox,
 		int minimumDownsizeValue,
 		int maximumDownsizeValue,
@@ -640,8 +723,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		downsizeComboBox.Items.Clear();
 
 		for (var aDownsizeValue = minimumDownsizeValue;
-				aDownsizeValue <= maximumDownsizeValue;
-				aDownsizeValue++)
+				 aDownsizeValue <= maximumDownsizeValue;
+				 aDownsizeValue++)
 		{
 			var downsizeComboBoxItem = new ComboBoxItem
 			{
@@ -650,6 +733,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 			};
 
 			downsizeComboBox.Items.Add(downsizeComboBoxItem);
+
+			var downsizeComboBoxKey = GetDownsizeComboBoxKey(downsizeComboBox, aDownsizeValue);
+			_downsizeComboBoxValueToComboBoxItemMapping.Add(
+				downsizeComboBoxKey, downsizeComboBoxItem);
 
 			if (aDownsizeValue == maximumDownsizeValue)
 			{
@@ -677,22 +764,44 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private static int GetDownsizeValue(ComboBoxItem downsizeComboBoxItem)
 		=> (int)downsizeComboBoxItem.Tag!;
 
-	private static void SetSelectedDownsizeValue(
+	private void SetSelectedDownsizeValue(
 		ComboBox downsizeComboBox, int selectedDownsizeValue)
 	{
-		var downsizeComboBoxItems = downsizeComboBox.Items
-			.Cast<ComboBoxItem>()
-			.ToList();
+		var selectedDownsizeComboBoxKey =
+			GetDownsizeComboBoxKey(downsizeComboBox, selectedDownsizeValue);
+		var selectedDownsizeComboBoxItem =
+			_downsizeComboBoxValueToComboBoxItemMapping[selectedDownsizeComboBoxKey];
 
-		foreach (var aDownsizeComboBoxItem in downsizeComboBoxItems)
+		downsizeComboBox.SelectedItem = selectedDownsizeComboBoxItem;
+	}
+
+	private void ClearDownsizeComboBoxValueToComboBoxItemMapping()
+		=> _downsizeComboBoxValueToComboBoxItemMapping.Clear();
+
+	private static string GetDownsizeComboBoxKey(
+		ComboBox downsizeComboBox, int downsizeValue) => $"{downsizeComboBox.Name}_{downsizeValue}";
+
+	private async Task PerformUiUpdate(Func<Task> uiUpdateFunc)
+	{
+		try
 		{
-			if ((int)aDownsizeComboBoxItem.Tag! == selectedDownsizeValue)
-			{
-				downsizeComboBox.SelectedItem = aDownsizeComboBoxItem;
-				break;
-			}
+			_hasInProgressUiUpdate = true;
+			SetControlsEnabledStatus(false);
+
+			await uiUpdateFunc();
+		}
+		finally
+		{
+			_hasInProgressUiUpdate = false;
+			SetControlsEnabledStatus(true);
+
+			RefreshContent();
 		}
 	}
 
+	private void SetDownsizeButtonEnabledStatus()
+		=> _downsizeButton.IsEnabled =
+			_downsizeToPercentageMenuItem.IsEnabled || _downsizeToDimensionsMenuItem.IsEnabled;
+
 	#endregion
-	}
+}

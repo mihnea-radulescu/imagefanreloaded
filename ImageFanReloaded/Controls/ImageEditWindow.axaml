@@ -79,29 +79,33 @@
 		<StackPanel Grid.Row="2"
 					Classes="HorizontalStackPanel"
 					HorizontalAlignment="Center">
-			<StackPanel Classes="HorizontalStackPanel"
-						HorizontalAlignment="Center">
-				<Button Name="_downsizeToPercentageButton"
-						Content="Downsize to percentage"
-						Click="OnDownsizeToPercentage"/>
-				<ComboBox Name="_downsizeToPercentageComboBox"
-						  Margin="0 2 0 0"/>
-			</StackPanel>
+			<TextBlock VerticalAlignment="Center"
+					   Text="Percentage:"/>
+			<ComboBox Name="_downsizeToPercentageComboBox"
+					  Margin="0 2 0 0"/>
 
-			<StackPanel Classes="HorizontalStackPanel"
-						HorizontalAlignment="Center">
-				<Button Name="_downsizeToDimensionsButton"
-						Content="Downsize to dimensions"
-						Click="OnDownsizeToDimensions"/>
-				<TextBlock VerticalAlignment="Center"
-						   Text="Width:"/>
-				<ComboBox Name="_downsizeToDimensionsWidthComboBox"
-						  Margin="0 2 0 0"/>
-				<TextBlock VerticalAlignment="Center"
-						   Text="Height:"/>
-				<ComboBox Name="_downsizeToDimensionsHeightComboBox"
-						  Margin="0 2 0 0"/>
-			</StackPanel>
+			<DropDownButton Name="_downsizeButton"
+							Content="Downsize">
+				<DropDownButton.Flyout>
+					<MenuFlyout>
+						<MenuItem Name="_downsizeToPercentageMenuItem"
+								  Header="To percentage"
+								  Click="OnDownsizeToPercentage"/>
+						<MenuItem Name="_downsizeToDimensionsMenuItem"
+								  Header="To width and height"
+								  Click="OnDownsizeToDimensions"/>
+					</MenuFlyout>
+				</DropDownButton.Flyout>
+			</DropDownButton>
+
+			<TextBlock VerticalAlignment="Center"
+					   Text="Width:"/>
+			<ComboBox Name="_downsizeToDimensionsWidthComboBox"
+					  Margin="0 2 0 0"/>
+			<TextBlock VerticalAlignment="Center"
+					   Text="Height:"/>
+			<ComboBox Name="_downsizeToDimensionsHeightComboBox"
+					  Margin="0 2 0 0"/>
 		</StackPanel>
 
 		<Grid Grid.Row="3">
