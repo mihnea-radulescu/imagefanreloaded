@@ -376,9 +376,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			100 - TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
 	}
 
-	public async Task UpdateThumbnailAfterImageFileChange()
-		=> await _selectedThumbnailBox!.UpdateThumbnailAfterImageFileChange();
-
 	public async Task ShowImageEdit(IImageEditView imageEditView) => await imageEditView.ShowDialog(MainView!);
 	public async Task ShowTabOptions(ITabOptionsView tabOptionsView) => await tabOptionsView.ShowDialog(MainView!);
 	public async Task ShowAboutInfo(IAboutView aboutView) => await aboutView.ShowDialog(MainView!);

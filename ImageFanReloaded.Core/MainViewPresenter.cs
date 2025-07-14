@@ -116,13 +116,9 @@ public class MainViewPresenter
 		var imageEditView = _imageEditViewFactory.GetImageEditView(contentTabItem, imageFile);
 		await imageEditView.LoadImage();
 
-		imageEditView.ImageChanged += OnImageEditViewImageChanged;
-		imageEditView.FolderChanged += OnImageEditViewFolderChanged;
-
+		imageEditView.FolderContentChanged += OnImageEditViewFolderContentChanged;
 		await contentTabItem.ShowImageEdit(imageEditView);
-
-		imageEditView.ImageChanged -= OnImageEditViewImageChanged;
-		imageEditView.FolderChanged -= OnImageEditViewFolderChanged;
+		imageEditView.FolderContentChanged -= OnImageEditViewFolderContentChanged;
 	}
 
 	private async void OnTabOptionsRequested(object? sender, ContentTabItemEventArgs e)
@@ -144,14 +140,7 @@ public class MainViewPresenter
 		await contentTabItem.ShowAboutInfo(aboutView);
 	}
 
-	private async void OnImageEditViewImageChanged(object? sender, ContentTabItemEventArgs e)
-	{
-		var contentTabItem = e.ContentTabItem;
-
-		await contentTabItem.UpdateThumbnailAfterImageFileChange();
-	}
-
-	private void OnImageEditViewFolderChanged(object? sender, ContentTabItemEventArgs e)
+	private void OnImageEditViewFolderContentChanged(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 

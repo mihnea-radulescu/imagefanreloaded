@@ -94,22 +94,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		}
 	}
 
-	public async Task UpdateThumbnailAfterImageFileChange()
-	{
-		NotifyStopAnimation();
-
-		await DisposeThumbnail();
-
-		_thumbnailInfo!.ReadThumbnailInputFromDisc();
-		_thumbnailInfo!.GetThumbnail();
-
-		RefreshThumbnail();
-	}
-
 	public bool IsAnimated => _isAnimated;
-
 	public Task AnimationTask => _animationTask ?? Task.CompletedTask;
-
 	public void NotifyStopAnimation() => _ctsAnimation?.Cancel();
 
 	public async Task DisposeThumbnail()

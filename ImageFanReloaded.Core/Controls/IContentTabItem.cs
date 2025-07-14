@@ -72,8 +72,6 @@ public interface IContentTabItem
 	void RaiseFolderOrderingChangedEvent();
 	void RaisePanelsSplittingRatioChangedEvent();
 
-	Task UpdateThumbnailAfterImageFileChange();
-
 	Task ShowImageEdit(IImageEditView imageEditView);
 	Task ShowTabOptions(ITabOptionsView tabOptionsView);
 	Task ShowAboutInfo(IAboutView aboutView);

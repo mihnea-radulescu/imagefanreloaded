@@ -20,8 +20,7 @@ public interface IImageEditView
 
 	Task LoadImage();
 
-	event EventHandler<ContentTabItemEventArgs>? ImageChanged;
-	event EventHandler<ContentTabItemEventArgs>? FolderChanged;
+	event EventHandler<ContentTabItemEventArgs>? FolderContentChanged;
 
 	Task ShowDialog(IMainView owner);
 }

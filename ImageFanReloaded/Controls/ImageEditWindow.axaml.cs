@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -64,8 +63,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		RefreshContent();
 	}
 
-	public event EventHandler<ContentTabItemEventArgs>? ImageChanged;
-	public event EventHandler<ContentTabItemEventArgs>? FolderChanged;
+	public event EventHandler<ContentTabItemEventArgs>? FolderContentChanged;
 
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
 
@@ -489,13 +487,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 					_hasUnsavedChanges = false;
 
-					if (HasOverwrittenCurrentImageFile(imageToSaveFilePath, imageFilePath))
+					if (HasSavedImageFileInCurrentFolder(imageToSaveFilePath, imageFolderPath))
 					{
-						ImageChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
-					}
-					else if (HasSavedImageFileInCurrentFolder(imageToSaveFilePath, imageFolderPath))
-					{
-						FolderChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
+						FolderContentChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
 					}
 				}
 				catch
@@ -623,9 +617,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 			await applyTransformErrorMessageBox.ShowWindowDialogAsync(this);
 		}
 	}
-
-	private bool HasOverwrittenCurrentImageFile(string imageToSaveFilePath, string imageFilePath)
-		=> imageToSaveFilePath.Equals(imageFilePath, _fileSystemStringComparison!.Value);
 
 	private bool HasSavedImageFileInCurrentFolder(
 		string imageToSaveFilePath, string imageFolderPath)
