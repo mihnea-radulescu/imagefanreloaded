@@ -174,10 +174,13 @@ public class AppBootstrap : IAppBootstrap
 
 		IImageView imageView = imageWindow;
 		imageView.GlobalParameters = _globalParameters;
+
 		imageView.ScreenInformation = screenInformation;
 
 		ITabOptions tabOptions = _tabOptionsFactory.GetTabOptions();
 		imageView.TabOptions = tabOptions;
+
+		imageView.IsStandaloneView = true;
 
 		imageView.ViewClosing += OnImageViewClosing;
 

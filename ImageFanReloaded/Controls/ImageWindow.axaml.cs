@@ -43,8 +43,9 @@ public partial class ImageWindow : Window, IImageView
 	}
 
 	public IScreenInformation? ScreenInformation { get; set; }
-
 	public ITabOptions? TabOptions { get; set; }
+
+	public bool IsStandaloneView { get; set; }
 
 	public event EventHandler<ImageViewClosingEventArgs>? ViewClosing;
 	public event EventHandler<ImageChangedEventArgs>? ImageChanged;
@@ -73,8 +74,6 @@ public partial class ImageWindow : Window, IImageView
 
 		_imageInfoTextBox.Text = _imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
 		_imageInfoTextBox.IsVisible = TabOptions!.ShowImageViewImageInfo;
-
-		_showMainViewAfterImageViewClosing = false;
 
 		await ResizeToScreenSize();
 	}
@@ -184,7 +183,7 @@ public partial class ImageWindow : Window, IImageView
 		{
 			await HandleEscapeAction();
 		}
-		else if (ShouldHandleWindowClose(keyModifiers, keyPressing))
+		else if (ShouldShowMainViewAfterImageViewClosing(keyModifiers, keyPressing))
 		{
 			_showMainViewAfterImageViewClosing = true;
 
@@ -353,10 +352,11 @@ public partial class ImageWindow : Window, IImageView
 		return false;
 	}
 
-	private bool ShouldHandleWindowClose(
+	private bool ShouldShowMainViewAfterImageViewClosing(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+		if (IsStandaloneView &&
+			keyModifiers == _globalParameters!.NoneKeyModifier &&
 			keyPressing == _globalParameters!.TKey)
 		{
 			return true;
