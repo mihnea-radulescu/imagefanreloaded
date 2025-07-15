@@ -156,6 +156,30 @@ public class EditableImage : DisposableBase, IEditableImage
 		CreateTransformedImage(anImageFrame => anImageFrame.Flip());
 	}
 
+	public async Task SaveImageWithSameFormat(string imageFilePath)
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		await _editableImageData.ImageFramesToEdit.WriteAsync(imageFilePath);
+	}
+
+	public async Task SaveImageWithFormat(
+		string imageFilePath, ISaveFileImageFormat saveFileImageFormat)
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		var magickFormat = saveFileImageFormat.GetMagickFormat();
+
+		if (saveFileImageFormat.IsAnimationEnabled)
+		{
+			await _editableImageData.ImageFramesToEdit.WriteAsync(imageFilePath, magickFormat);
+		}
+		else
+		{
+			await _editableImageData.ImageFramesToEdit[0].WriteAsync(imageFilePath, magickFormat);
+		}
+	}
+
 	public void DownsizeToPercentage(int percentage)
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
@@ -183,30 +207,6 @@ public class EditableImage : DisposableBase, IEditableImage
 		}
 
 		CreateTransformedImage(anImageFrame => anImageFrame.Resize((uint)width, (uint)height));
-	}
-
-	public async Task SaveImageWithSameFormat(string imageFilePath)
-	{
-		ThrowObjectDisposedExceptionIfNecessary();
-
-		await _editableImageData.ImageFramesToEdit.WriteAsync(imageFilePath);
-	}
-
-	public async Task SaveImageWithFormat(
-		string imageFilePath, ISaveFileImageFormat saveFileImageFormat)
-	{
-		ThrowObjectDisposedExceptionIfNecessary();
-
-		var magickFormat = saveFileImageFormat.GetMagickFormat();
-
-		if (saveFileImageFormat.IsAnimationEnabled)
-		{
-			await _editableImageData.ImageFramesToEdit.WriteAsync(imageFilePath, magickFormat);
-		}
-		else
-		{
-			await _editableImageData.ImageFramesToEdit[0].WriteAsync(imageFilePath, magickFormat);
-		}
 	}
 
 	#region Protected

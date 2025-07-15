@@ -95,15 +95,15 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 			e.Handled = true;
 		}
-		else if (ShouldSaveImageAs(keyModifiers, keyPressing))
-		{
-			await SaveImageAs(keyPressing);
-
-			e.Handled = true;
-		}
 		else if (ShouldEditImage(keyModifiers, keyPressing))
 		{
 			await EditImage(keyPressing);
+
+			e.Handled = true;
+		}
+		else if (ShouldSaveImageAs(keyModifiers, keyPressing))
+		{
+			await SaveImageAs(keyPressing);
 
 			e.Handled = true;
 		}
@@ -156,6 +156,14 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private async void OnUndo(object? sender, RoutedEventArgs e) => await Undo();
 	private async void OnRedo(object? sender, RoutedEventArgs e) => await Redo();
 
+	private async void OnRotateLeft(object? sender, RoutedEventArgs e) => await RotateLeft();
+	private async void OnRotateRight(object? sender, RoutedEventArgs e) => await RotateRight();
+
+	private async void OnFlipHorizontally(object? sender, RoutedEventArgs e)
+		=> await FlipHorizontally();
+	private async void OnFlipVertically(object? sender, RoutedEventArgs e)
+		=> await FlipVertically();
+
 	private async void OnSaveImageAsWithSameFormat(object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(default);
 
@@ -171,14 +179,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatBmp(object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
-
-	private async void OnRotateLeft(object? sender, RoutedEventArgs e) => await RotateLeft();
-	private async void OnRotateRight(object? sender, RoutedEventArgs e) => await RotateRight();
-
-	private async void OnFlipHorizontally(object? sender, RoutedEventArgs e)
-		=> await FlipHorizontally();
-	private async void OnFlipVertically(object? sender, RoutedEventArgs e)
-		=> await FlipVertically();
 
 	private void OnDownsizeToPercentageComboxBoxSelectionChanged(
 		object? sender, SelectionChangedEventArgs e)
@@ -299,6 +299,21 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
+	private bool ShouldEditImage(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			(keyPressing == GlobalParameters!.LKey ||
+			 keyPressing == GlobalParameters!.RKey ||
+			 keyPressing == GlobalParameters!.HKey ||
+			 keyPressing == GlobalParameters!.VKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool ShouldSaveImageAs(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
@@ -310,21 +325,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 			 keyPressing == GlobalParameters!.WKey ||
 			 keyPressing == GlobalParameters!.TKey ||
 			 keyPressing == GlobalParameters!.BKey))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	private bool ShouldEditImage(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.LKey ||
-			 keyPressing == GlobalParameters!.RKey ||
-			 keyPressing == GlobalParameters!.HKey ||
-			 keyPressing == GlobalParameters!.VKey))
 		{
 			return true;
 		}
@@ -362,6 +362,31 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
+	private async Task EditImage(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (!IsImageLoaded)
+		{
+			return;
+		}
+
+		if (keyPressing == GlobalParameters!.LKey)
+		{
+			await RotateLeft();
+		}
+		else if (keyPressing == GlobalParameters!.RKey)
+		{
+			await RotateRight();
+		}
+		else if (keyPressing == GlobalParameters!.HKey)
+		{
+			await FlipHorizontally();
+		}
+		else if (keyPressing == GlobalParameters!.VKey)
+		{
+			await FlipVertically();
+		}
+	}
+
 	private async Task SaveImageAs(ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (!IsImageLoaded)
@@ -396,31 +421,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		else if (keyPressing == GlobalParameters!.BKey)
 		{
 			await SaveImageWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
-		}
-	}
-
-	private async Task EditImage(ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (!IsImageLoaded)
-		{
-			return;
-		}
-
-		if (keyPressing == GlobalParameters!.LKey)
-		{
-			await RotateLeft();
-		}
-		else if (keyPressing == GlobalParameters!.RKey)
-		{
-			await RotateRight();
-		}
-		else if (keyPressing == GlobalParameters!.HKey)
-		{
-			await FlipHorizontally();
-		}
-		else if (keyPressing == GlobalParameters!.VKey)
-		{
-			await FlipVertically();
 		}
 	}
 
@@ -466,6 +466,58 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			_editableImage!.RedoLastEdit();
 			await ApplyTransform(default);
+		});
+	}
+
+	private async Task RotateLeft()
+	{
+		if (_hasInProgressUiUpdate)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.RotateLeft());
+		});
+	}
+
+	private async Task RotateRight()
+	{
+		if (_hasInProgressUiUpdate)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.RotateRight());
+		});
+	}
+
+	private async Task FlipHorizontally()
+	{
+		if (_hasInProgressUiUpdate)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.FlipHorizontally());
+		});
+	}
+
+	private async Task FlipVertically()
+	{
+		if (_hasInProgressUiUpdate)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.FlipVertically());
 		});
 	}
 
@@ -526,58 +578,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 					await saveImageAsErrorMessageBox.ShowWindowDialogAsync(this);
 				}
 			}
-		});
-	}
-
-	private async Task RotateLeft()
-	{
-		if (_hasInProgressUiUpdate)
-		{
-			return;
-		}
-
-		await PerformUiUpdate(async () =>
-		{
-			await ApplyTransform(() => _editableImage!.RotateLeft());
-		});
-	}
-
-	private async Task RotateRight()
-	{
-		if (_hasInProgressUiUpdate)
-		{
-			return;
-		}
-
-		await PerformUiUpdate(async () =>
-		{
-			await ApplyTransform(() => _editableImage!.RotateRight());
-		});
-	}
-
-	private async Task FlipHorizontally()
-	{
-		if (_hasInProgressUiUpdate)
-		{
-			return;
-		}
-
-		await PerformUiUpdate(async () =>
-		{
-			await ApplyTransform(() => _editableImage!.FlipHorizontally());
-		});
-	}
-
-	private async Task FlipVertically()
-	{
-		if (_hasInProgressUiUpdate)
-		{
-			return;
-		}
-
-		await PerformUiUpdate(async () =>
-		{
-			await ApplyTransform(() => _editableImage!.FlipVertically());
 		});
 	}
 

@@ -20,9 +20,9 @@ public interface IEditableImage : IDisposable
 	void FlipHorizontally();
 	void FlipVertically();
 
-	void DownsizeToPercentage(int percentage);
-	void DownsizeToDimensions(int width, int height);
-
 	Task SaveImageWithSameFormat(string imageFilePath);
 	Task SaveImageWithFormat(string imageFilePath, ISaveFileImageFormat saveFileImageFormat);
+
+	void DownsizeToPercentage(int percentage);
+	void DownsizeToDimensions(int width, int height);
 }

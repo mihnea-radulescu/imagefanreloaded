@@ -10,7 +10,6 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
@@ -24,6 +23,30 @@
 			<Button Name="_redoButton"
 					Content="Redo"
 					Click="OnRedo"/>
+
+			<DropDownButton Name="_rotateDropDownButton"
+							Content="Rotate">
+				<DropDownButton.Flyout>
+					<MenuFlyout>
+						<MenuItem Header="Left"
+								  Click="OnRotateLeft"/>
+						<MenuItem Header="Right"
+								  Click="OnRotateRight"/>
+					</MenuFlyout>
+				</DropDownButton.Flyout>
+			</DropDownButton>
+
+			<DropDownButton Name="_flipDropDownButton"
+							Content="Flip">
+				<DropDownButton.Flyout>
+					<MenuFlyout>
+						<MenuItem Header="Horizontally"
+								  Click="OnFlipHorizontally"/>
+						<MenuItem Header="Vertically"
+								  Click="OnFlipVertically"/>
+					</MenuFlyout>
+				</DropDownButton.Flyout>
+			</DropDownButton>
 
 			<DropDownButton Name="_saveAsDropDownButton"
 							Content="Save as">
@@ -49,34 +72,6 @@
 		</StackPanel>
 
 		<StackPanel Grid.Row="1"
-					Classes="HorizontalStackPanel"
-					HorizontalAlignment="Center">
-			<DropDownButton Name="_rotateDropDownButton"
-							Content="Rotate">
-				<DropDownButton.Flyout>
-					<MenuFlyout>
-						<MenuItem Header="Left"
-								  Click="OnRotateLeft"/>
-						<MenuItem Header="Right"
-								  Click="OnRotateRight"/>
-					</MenuFlyout>
-				</DropDownButton.Flyout>
-			</DropDownButton>
-
-			<DropDownButton Name="_flipDropDownButton"
-							Content="Flip">
-				<DropDownButton.Flyout>
-					<MenuFlyout>
-						<MenuItem Header="Horizontally"
-								  Click="OnFlipHorizontally"/>
-						<MenuItem Header="Vertically"
-								  Click="OnFlipVertically"/>
-					</MenuFlyout>
-				</DropDownButton.Flyout>
-			</DropDownButton>
-		</StackPanel>
-
-		<StackPanel Grid.Row="2"
 					Classes="HorizontalStackPanel"
 					HorizontalAlignment="Center">
 			<TextBlock VerticalAlignment="Center"
@@ -108,10 +103,11 @@
 					  Margin="0 2 0 0"/>
 		</StackPanel>
 
-		<Grid Grid.Row="3"
-			  Margin="4">
+		<StackPanel Grid.Row="3"
+			  		Classes="HorizontalStackPanel"
+					HorizontalAlignment="Center">
 			<Image Name="_displayImage"
 				   Stretch="Uniform"/>
-		</Grid>
+		</StackPanel>
 	</Grid>
 </Window>
