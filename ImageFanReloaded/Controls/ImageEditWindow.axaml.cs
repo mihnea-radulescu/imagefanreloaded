@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -52,14 +53,17 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_editableImage = await EditableImageFactory!
 			.CreateEditableImage(ImageFileData!.ImageFilePath);
 
-		if (!IsImageLoaded)
+		var isImageLoaded = _editableImage is not null;
+		SetControlsEnabledStatus(isImageLoaded);
+
+		if (isImageLoaded)
 		{
-			Title = $"{ImageFileData!.ImageFileName} - error loading image";
+			RefreshContent();
 		}
-
-		SetControlsEnabledStatus(IsImageLoaded);
-
-		RefreshContent();
+		else
+		{
+			SetImageLoadErrorTitle();
+		}
 	}
 
 	public event EventHandler<ContentTabItemEventArgs>? FolderContentChanged;
@@ -89,27 +93,45 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 			e.Handled = true;
 		}
-		else if (ShouldRevertChanges(keyModifiers, keyPressing))
+		else if (ShouldUndo(keyModifiers, keyPressing))
 		{
-			await RevertChanges(keyPressing);
+			await Undo();
 
 			e.Handled = true;
 		}
-		else if (ShouldEditImage(keyModifiers, keyPressing))
+		else if (ShouldRedo(keyModifiers, keyPressing))
 		{
-			await EditImage(keyPressing);
+			await Redo();
+
+			e.Handled = true;
+		}
+		else if (ShouldRotate(keyModifiers, keyPressing))
+		{
+			Rotate();
+
+			e.Handled = true;
+		}
+		else if (ShouldFlip(keyModifiers, keyPressing))
+		{
+			Flip();
+
+			e.Handled = true;
+		}
+		else if (ShouldExecuteEffects(keyModifiers, keyPressing))
+		{
+			ExecuteEffects();
 
 			e.Handled = true;
 		}
 		else if (ShouldSaveImageAs(keyModifiers, keyPressing))
 		{
-			await SaveImageAs(keyPressing);
+			SaveImageAs();
 
 			e.Handled = true;
 		}
 		else if (ShouldDownsizeImage(keyModifiers, keyPressing))
 		{
-			await DownsizeImage(keyPressing);
+			DownsizeImage();
 
 			e.Handled = true;
 		}
@@ -163,6 +185,27 @@ public partial class ImageEditWindow : Window, IImageEditView
 		=> await FlipHorizontally();
 	private async void OnFlipVertically(object? sender, RoutedEventArgs e)
 		=> await FlipVertically();
+
+	private async void OnBlur(object? sender, RoutedEventArgs e)
+		=> await Blur();
+	private async void OnSharpen(object? sender, RoutedEventArgs e)
+		=> await Sharpen();
+	private async void OnReduceNoise(object? sender, RoutedEventArgs e)
+		=> await ReduceNoise();
+	private async void OnEnhance(object? sender, RoutedEventArgs e)
+		=> await Enhance();
+	private async void OnWhiteBalance(object? sender, RoutedEventArgs e)
+		=> await WhiteBalance();
+	private async void OnEmboss(object? sender, RoutedEventArgs e)
+		=> await Emboss();
+	private async void OnGrayscale(object? sender, RoutedEventArgs e)
+		=> await Grayscale();
+	private async void OnNegative(object? sender, RoutedEventArgs e)
+		=> await Negative();
+	private async void OnSepia(object? sender, RoutedEventArgs e)
+		=> await Sepia();
+	private async void OnOilPaint(object? sender, RoutedEventArgs e)
+		=> await OilPaint();
 
 	private async void OnSaveImageAsWithSameFormat(object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(default);
@@ -272,13 +315,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private async void OnDownsizeToDimensions(object? sender, RoutedEventArgs e)
 		=> await DownsizeToDimensions();
 
-	private bool IsImageLoaded => _editableImage is not null;
-
 	private bool ShouldCloseWindow(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.EscapeKey))
+			keyPressing == GlobalParameters!.EscapeKey)
 		{
 			return true;
 		}
@@ -286,12 +327,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
-	private bool ShouldRevertChanges(
+	private bool ShouldUndo(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.UKey ||
-			 keyPressing == GlobalParameters!.IKey))
+			keyPressing == GlobalParameters!.UKey)
 		{
 			return true;
 		}
@@ -299,14 +339,47 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
-	private bool ShouldEditImage(
+	private bool ShouldRedo(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.LKey ||
-			 keyPressing == GlobalParameters!.RKey ||
-			 keyPressing == GlobalParameters!.HKey ||
-			 keyPressing == GlobalParameters!.VKey))
+			keyPressing == GlobalParameters!.IKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldRotate(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.RKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldFlip(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.FKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldExecuteEffects(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.EKey)
 		{
 			return true;
 		}
@@ -318,13 +391,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.SKey ||
-			 keyPressing == GlobalParameters!.JKey ||
-			 keyPressing == GlobalParameters!.GKey ||
-			 keyPressing == GlobalParameters!.PKey ||
-			 keyPressing == GlobalParameters!.WKey ||
-			 keyPressing == GlobalParameters!.TKey ||
-			 keyPressing == GlobalParameters!.BKey))
+			keyPressing == GlobalParameters!.SKey)
 		{
 			return true;
 		}
@@ -336,8 +403,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.EKey ||
-			 keyPressing == GlobalParameters!.DKey))
+			keyPressing == GlobalParameters!.DKey)
 		{
 			return true;
 		}
@@ -345,105 +411,59 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
-	private async Task RevertChanges(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	private void Rotate()
 	{
-		if (!IsImageLoaded)
+		if (!_rotateDropDownButton.IsEnabled)
 		{
 			return;
 		}
 
-		if (keyPressing == GlobalParameters!.UKey)
-		{
-			await Undo();
-		}
-		else if (keyPressing == GlobalParameters!.IKey)
-		{
-			await Redo();
-		}
+		ExpandDropDownButton(_rotateDropDownButton);
 	}
 
-	private async Task EditImage(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	private void Flip()
 	{
-		if (!IsImageLoaded)
+		if (!_flipDropDownButton.IsEnabled)
 		{
 			return;
 		}
 
-		if (keyPressing == GlobalParameters!.LKey)
-		{
-			await RotateLeft();
-		}
-		else if (keyPressing == GlobalParameters!.RKey)
-		{
-			await RotateRight();
-		}
-		else if (keyPressing == GlobalParameters!.HKey)
-		{
-			await FlipHorizontally();
-		}
-		else if (keyPressing == GlobalParameters!.VKey)
-		{
-			await FlipVertically();
-		}
+		ExpandDropDownButton(_flipDropDownButton);
 	}
 
-	private async Task SaveImageAs(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	private void ExecuteEffects()
 	{
-		if (!IsImageLoaded)
+		if (!_effectsDropDownButton.IsEnabled)
 		{
 			return;
 		}
 
-		if (keyPressing == GlobalParameters!.SKey)
-		{
-			await SaveImageWithFormat(default);
-		}
-		else if (keyPressing == GlobalParameters!.JKey)
-		{
-			await SaveImageWithFormat(SaveFileImageFormatFactory!.JpegSaveFileImageFormat);
-		}
-		else if (keyPressing == GlobalParameters!.GKey)
-		{
-			await SaveImageWithFormat(SaveFileImageFormatFactory!.GifSaveFileImageFormat);
-		}
-		else if (keyPressing == GlobalParameters!.PKey)
-		{
-			await SaveImageWithFormat(SaveFileImageFormatFactory!.PngSaveFileImageFormat);
-		}
-		else if (keyPressing == GlobalParameters!.WKey)
-		{
-			await SaveImageWithFormat(SaveFileImageFormatFactory!.WebpSaveFileImageFormat);
-		}
-		else if (keyPressing == GlobalParameters!.TKey)
-		{
-			await SaveImageWithFormat(SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
-		}
-		else if (keyPressing == GlobalParameters!.BKey)
-		{
-			await SaveImageWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
-		}
+		ExpandDropDownButton(_effectsDropDownButton);
 	}
 
-	private async Task DownsizeImage(ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	private void SaveImageAs()
 	{
-		if (!IsImageLoaded)
+		if (!_saveAsDropDownButton.IsEnabled)
 		{
 			return;
 		}
 
-		if (keyPressing == GlobalParameters!.EKey)
+		ExpandDropDownButton(_saveAsDropDownButton);
+	}
+
+	private void DownsizeImage()
+	{
+		if (!_downsizeDropDownButton.IsEnabled)
 		{
-			await DownsizeToPercentage();
+			return;
 		}
-		else if (keyPressing == GlobalParameters!.DKey)
-		{
-			await DownsizeToDimensions();
-		}
+
+		ExpandDropDownButton(_downsizeDropDownButton);
 	}
 
 	private async Task Undo()
 	{
-		if (!_undoButton.IsEnabled || _hasInProgressUiUpdate)
+		if (!_undoButton.IsEnabled)
 		{
 			return;
 		}
@@ -457,7 +477,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async Task Redo()
 	{
-		if (!_redoButton.IsEnabled || _hasInProgressUiUpdate)
+		if (!_redoButton.IsEnabled)
 		{
 			return;
 		}
@@ -471,11 +491,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async Task RotateLeft()
 	{
-		if (_hasInProgressUiUpdate)
-		{
-			return;
-		}
-
 		await PerformUiUpdate(async () =>
 		{
 			await ApplyTransform(() => _editableImage!.RotateLeft());
@@ -484,11 +499,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async Task RotateRight()
 	{
-		if (_hasInProgressUiUpdate)
-		{
-			return;
-		}
-
 		await PerformUiUpdate(async () =>
 		{
 			await ApplyTransform(() => _editableImage!.RotateRight());
@@ -497,11 +507,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async Task FlipHorizontally()
 	{
-		if (_hasInProgressUiUpdate)
-		{
-			return;
-		}
-
 		await PerformUiUpdate(async () =>
 		{
 			await ApplyTransform(() => _editableImage!.FlipHorizontally());
@@ -510,24 +515,94 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async Task FlipVertically()
 	{
-		if (_hasInProgressUiUpdate)
-		{
-			return;
-		}
-
 		await PerformUiUpdate(async () =>
 		{
 			await ApplyTransform(() => _editableImage!.FlipVertically());
 		});
 	}
 
+	private async Task Blur()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Blur());
+		});
+	}
+
+	private async Task Sharpen()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Sharpen());
+		});
+	}
+
+	private async Task ReduceNoise()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.ReduceNoise());
+		});
+	}
+
+	private async Task Enhance()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Enhance());
+		});
+	}
+
+	private async Task WhiteBalance()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.WhiteBalance());
+		});
+	}
+
+	private async Task Emboss()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Emboss());
+		});
+	}
+
+	private async Task Grayscale()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Grayscale());
+		});
+	}
+
+	private async Task Negative()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Negative());
+		});
+	}
+
+	private async Task Sepia()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Sepia());
+		});
+	}
+
+	private async Task OilPaint()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.OilPaint());
+		});
+	}
+
 	private async Task SaveImageWithFormat(ISaveFileImageFormat? saveFileImageFormat)
 	{
-		if (_hasInProgressUiUpdate)
-		{
-			return;
-		}
-
 		await PerformUiUpdate(async () =>
 		{
 			var hasSameFormat = saveFileImageFormat is null;
@@ -583,11 +658,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async Task DownsizeToPercentage()
 	{
-		if (!_downsizeToPercentageMenuItem.IsEnabled || _hasInProgressUiUpdate)
-		{
-			return;
-		}
-
 		await PerformUiUpdate(async () =>
 		{
 			var downsizePercentage = GetSelectedDownsizeValue(_downsizeToPercentageComboBox);
@@ -598,11 +668,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async Task DownsizeToDimensions()
 	{
-		if (!_downsizeToDimensionsMenuItem.IsEnabled || _hasInProgressUiUpdate)
-		{
-			return;
-		}
-
 		await PerformUiUpdate(async () =>
 		{
 			var downsizeDimensionsWidth = GetSelectedDownsizeValue(
@@ -646,11 +711,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void RefreshContent()
 	{
-		if (!IsImageLoaded)
-		{
-			return;
-		}
-
 		UnregisterEvents();
 
 		ClearDownsizeComboBoxValueToComboBoxItemMapping();
@@ -674,12 +734,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_rotateDropDownButton.IsEnabled = areControlsEnabled;
 		_flipDropDownButton.IsEnabled = areControlsEnabled;
 
-		_downsizeButton.IsEnabled = areControlsEnabled;
+		_effectsDropDownButton.IsEnabled = areControlsEnabled;
 
-		_downsizeToPercentageMenuItem.IsEnabled = areControlsEnabled;
+		_downsizeDropDownButton.IsEnabled = areControlsEnabled;
 		_downsizeToPercentageComboBox.IsEnabled = areControlsEnabled;
-
-		_downsizeToDimensionsMenuItem.IsEnabled = areControlsEnabled;
 		_downsizeToDimensionsWidthComboBox.IsEnabled = areControlsEnabled;
 		_downsizeToDimensionsHeightComboBox.IsEnabled = areControlsEnabled;
 
@@ -700,7 +758,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		SetDownsizeButtonEnabledStatus();
 
-		Title = $"{ImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
+		SetImageTitle();
 
 		SizeToContent = SizeToContent.WidthAndHeight;
 	}
@@ -796,25 +854,38 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async Task PerformUiUpdate(Func<Task> uiUpdateFunc)
 	{
-		try
-		{
-			_hasInProgressUiUpdate = true;
-			SetControlsEnabledStatus(false);
+		_hasInProgressUiUpdate = true;
+		SetControlsEnabledStatus(false);
 
-			await uiUpdateFunc();
-		}
-		finally
-		{
-			_hasInProgressUiUpdate = false;
-			SetControlsEnabledStatus(true);
+		await uiUpdateFunc();
 
-			RefreshContent();
-		}
+		_hasInProgressUiUpdate = false;
+		SetControlsEnabledStatus(true);
+
+		RefreshContent();
 	}
 
 	private void SetDownsizeButtonEnabledStatus()
-		=> _downsizeButton.IsEnabled =
+		=> _downsizeDropDownButton.IsEnabled =
 			_downsizeToPercentageMenuItem.IsEnabled || _downsizeToDimensionsMenuItem.IsEnabled;
+
+	private void SetImageTitle()
+		=> Title = $"{ImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
+	private void SetImageLoadErrorTitle()
+		=> Title = $"{ImageFileData!.ImageFileName} - error loading image";
+
+	private static void ExpandDropDownButton(DropDownButton dropDownButton)
+	{
+		var menuFlyout = (MenuFlyout)dropDownButton.Flyout!;
+		menuFlyout.ShowAt(dropDownButton);
+
+		var firstEnabledMenuItem = menuFlyout.Items
+			.Cast<MenuItem>()
+			.Where(aMenuItem => aMenuItem.IsEnabled)
+			.First();
+
+		firstEnabledMenuItem.IsSelected = true;
+	}
 
 	#endregion
 }

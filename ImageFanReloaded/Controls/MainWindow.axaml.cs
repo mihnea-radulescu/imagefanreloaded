@@ -246,7 +246,8 @@ public partial class MainWindow : Window, IMainView
 
 	private bool ShouldHandleEscapeAction(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EscapeKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.EscapeKey)
 		{
 			return true;
 		}

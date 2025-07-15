@@ -20,6 +20,17 @@ public interface IEditableImage : IDisposable
 	void FlipHorizontally();
 	void FlipVertically();
 
+	void Blur();
+	void Sharpen();
+	void ReduceNoise();
+	void Enhance();
+	void WhiteBalance();
+	void Emboss();
+	void Grayscale();
+	void Negative();
+	void Sepia();
+	void OilPaint();
+
 	Task SaveImageWithSameFormat(string imageFilePath);
 	Task SaveImageWithFormat(string imageFilePath, ISaveFileImageFormat saveFileImageFormat);
 

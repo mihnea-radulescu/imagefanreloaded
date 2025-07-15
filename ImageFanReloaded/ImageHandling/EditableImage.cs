@@ -156,6 +156,76 @@ public class EditableImage : DisposableBase, IEditableImage
 		CreateTransformedImage(anImageFrame => anImageFrame.Flip());
 	}
 
+	public void Blur()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Blur());
+	}
+
+	public void Sharpen()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Sharpen());
+	}
+
+	public void ReduceNoise()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.ReduceNoise());
+	}
+
+	public void Enhance()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Enhance());
+	}
+
+	public void WhiteBalance()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.WhiteBalance());
+	}
+
+	public void Emboss()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Emboss());
+	}
+
+	public void Grayscale()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Grayscale());
+	}
+
+	public void Negative()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Negate());
+	}
+
+	public void Sepia()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.SepiaTone());
+	}
+
+	public void OilPaint()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.OilPaint());
+	}
+
 	public async Task SaveImageWithSameFormat(string imageFilePath)
 	{
 		ThrowObjectDisposedExceptionIfNecessary();

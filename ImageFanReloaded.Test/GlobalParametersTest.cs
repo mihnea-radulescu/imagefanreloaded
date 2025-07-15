@@ -74,6 +74,7 @@ public class GlobalParametersTest : TestBase
 
 		Assert.NotEqual(Key.None, _globalParameters.TKey);
 		Assert.NotEqual(Key.None, _globalParameters.IKey);
+		Assert.NotEqual(Key.None, _globalParameters.UKey);
 
 		Assert.NotEqual(Key.None, _globalParameters.UpKey);
 		Assert.NotEqual(Key.None, _globalParameters.DownKey);
@@ -85,17 +86,6 @@ public class GlobalParametersTest : TestBase
 
 		Assert.NotEqual(Key.None, _globalParameters.PageUpKey);
 		Assert.NotEqual(Key.None, _globalParameters.PageDownKey);
-
-		Assert.NotEqual(Key.None, _globalParameters.LKey);
-		Assert.NotEqual(Key.None, _globalParameters.VKey);
-
-		Assert.NotEqual(Key.None, _globalParameters.JKey);
-		Assert.NotEqual(Key.None, _globalParameters.GKey);
-		Assert.NotEqual(Key.None, _globalParameters.PKey);
-		Assert.NotEqual(Key.None, _globalParameters.WKey);
-		Assert.NotEqual(Key.None, _globalParameters.BKey);
-
-		Assert.NotEqual(Key.None, _globalParameters.UKey);
 
 		Assert.NotNull(_globalParameters.NameComparer);
 

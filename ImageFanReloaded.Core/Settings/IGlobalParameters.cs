@@ -45,6 +45,7 @@ public interface IGlobalParameters
 
 	Key TKey { get; }
 	Key IKey { get; }
+	Key UKey { get; }
 
 	Key UpKey { get; }
 	Key DownKey { get; }
@@ -56,17 +57,6 @@ public interface IGlobalParameters
 
 	Key PageUpKey { get; }
 	Key PageDownKey { get; }
-
-	Key LKey { get; }
-	Key VKey { get; }
-
-	Key JKey { get; }
-	Key GKey { get; }
-	Key PKey { get; }
-	Key WKey { get; }
-	Key BKey { get; }
-
-	Key UKey { get; }
 
 	bool IsBackwardNavigationKey(Key aKey);
 	bool IsForwardNavigationKey(Key aKey);

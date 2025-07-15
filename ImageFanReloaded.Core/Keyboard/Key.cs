@@ -34,21 +34,11 @@ public enum Key
 
 	T,
 	I,
+	U,
 
 	Plus,
 	Minus,
 
 	PageUp,
-	PageDown,
-
-	L,
-	V,
-
-	J,
-	G,
-	P,
-	W,
-	B,
-
-	U
+	PageDown
 }

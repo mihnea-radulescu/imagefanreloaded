@@ -35,6 +35,7 @@ public static class KeyExtensions
 
 			Avalonia.Input.Key.T => Core.Keyboard.Key.T,
 			Avalonia.Input.Key.I => Core.Keyboard.Key.I,
+			Avalonia.Input.Key.U => Core.Keyboard.Key.U,
 
 			Avalonia.Input.Key.OemPlus => Core.Keyboard.Key.Plus,
 			Avalonia.Input.Key.Add => Core.Keyboard.Key.Plus,
@@ -43,17 +44,6 @@ public static class KeyExtensions
 
 			Avalonia.Input.Key.PageUp => Core.Keyboard.Key.PageUp,
 			Avalonia.Input.Key.PageDown => Core.Keyboard.Key.PageDown,
-
-			Avalonia.Input.Key.L => Core.Keyboard.Key.L,
-			Avalonia.Input.Key.V => Core.Keyboard.Key.V,
-
-			Avalonia.Input.Key.J => Core.Keyboard.Key.J,
-			Avalonia.Input.Key.G => Core.Keyboard.Key.G,
-			Avalonia.Input.Key.P => Core.Keyboard.Key.P,
-			Avalonia.Input.Key.W => Core.Keyboard.Key.W,
-			Avalonia.Input.Key.B => Core.Keyboard.Key.B,
-
-			Avalonia.Input.Key.U => Core.Keyboard.Key.U,
 
 			_ => Core.Keyboard.Key.None
 		};

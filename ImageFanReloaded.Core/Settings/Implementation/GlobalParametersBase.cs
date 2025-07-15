@@ -47,6 +47,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 	public Key TKey { get; }
 	public Key IKey { get; }
+	public Key UKey { get; }
 
 	public Key UpKey { get; }
 	public Key DownKey { get; }
@@ -58,17 +59,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 	public Key PageUpKey { get; }
 	public Key PageDownKey { get; }
-
-	public Key LKey { get; }
-	public Key VKey { get; }
-
-	public Key JKey { get; }
-	public Key GKey { get; }
-	public Key PKey { get; }
-	public Key WKey { get; }
-	public Key BKey { get; }
-
-	public Key UKey { get; }
 
 	public bool IsBackwardNavigationKey(Key aKey) => _backwardNavigationKeys.Contains(aKey);
 	public bool IsForwardNavigationKey(Key aKey) => _forwardNavigationKeys.Contains(aKey);
@@ -142,6 +132,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		TKey = Key.T;
 		IKey = Key.I;
+		UKey = Key.U;
 
 		UpKey = Key.Up;
 		DownKey = Key.Down;
@@ -153,17 +144,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		PageUpKey = Key.PageUp;
 		PageDownKey = Key.PageDown;
-
-		LKey = Key.L;
-		VKey = Key.V;
-
-		JKey = Key.J;
-		GKey = Key.G;
-		PKey = Key.P;
-		WKey = Key.W;
-		BKey = Key.B;
-
-		UKey = Key.U;
 
 		NameComparer = operatingSystemSettings.IsWindows
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)

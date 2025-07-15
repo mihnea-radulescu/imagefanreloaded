@@ -48,6 +48,34 @@
 				</DropDownButton.Flyout>
 			</DropDownButton>
 
+			<DropDownButton Name="_effectsDropDownButton"
+							Content="Effects">
+				<DropDownButton.Flyout>
+					<MenuFlyout>
+						<MenuItem Header="Blur"
+								  Click="OnBlur"/>
+						<MenuItem Header="Sharpen"
+								  Click="OnSharpen"/>
+						<MenuItem Header="Reduce noise"
+								  Click="OnReduceNoise"/>
+						<MenuItem Header="Enhance"
+								  Click="OnEnhance"/>
+						<MenuItem Header="White balance"
+								  Click="OnWhiteBalance"/>
+						<MenuItem Header="Emboss"
+								  Click="OnEmboss"/>
+						<MenuItem Header="Grayscale"
+								  Click="OnGrayscale"/>
+						<MenuItem Header="Negative"
+								  Click="OnNegative"/>
+						<MenuItem Header="Sepia"
+								  Click="OnSepia"/>
+						<MenuItem Header="Oil paint"
+								  Click="OnOilPaint"/>
+					</MenuFlyout>
+				</DropDownButton.Flyout>
+			</DropDownButton>
+
 			<DropDownButton Name="_saveAsDropDownButton"
 							Content="Save as">
 				<DropDownButton.Flyout>
@@ -79,7 +107,7 @@
 			<ComboBox Name="_downsizeToPercentageComboBox"
 					  Margin="0 2 0 0"/>
 
-			<DropDownButton Name="_downsizeButton"
+			<DropDownButton Name="_downsizeDropDownButton"
 							Content="Downsize">
 				<DropDownButton.Flyout>
 					<MenuFlyout>
