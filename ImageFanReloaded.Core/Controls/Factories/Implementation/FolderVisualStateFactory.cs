@@ -1,6 +1,6 @@
 using ImageFanReloaded.Core.Controls.Implementation;
 using ImageFanReloaded.Core.DiscAccess;
-using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.Controls.Factories.Implementation;

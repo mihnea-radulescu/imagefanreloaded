@@ -1,4 +1,3 @@
-using Avalonia.Media.Imaging;
 using ImageMagick;
 using ImageFanReloaded.Core.BaseTypes;
 using ImageFanReloaded.Core.ImageHandling;
@@ -8,7 +7,7 @@ namespace ImageFanReloaded.ImageHandling;
 public class EditableImageData : DisposableBase
 {
 	public EditableImageData(
-		MagickImageCollection imageFramesToEdit, Bitmap imageToDisplay, ImageSize imageSize)
+		MagickImageCollection imageFramesToEdit, IImage imageToDisplay, ImageSize imageSize)
 	{
 		_imageFramesToEdit = imageFramesToEdit;
 		_imageToDisplay = imageToDisplay;
@@ -25,7 +24,7 @@ public class EditableImageData : DisposableBase
 		}
 	}
 
-	public Bitmap ImageToDisplay
+	public IImage ImageToDisplay
 	{
 		get
 		{
@@ -58,7 +57,7 @@ public class EditableImageData : DisposableBase
 	#region Private
 
 	private readonly MagickImageCollection _imageFramesToEdit;
-	private readonly Bitmap _imageToDisplay;
+	private readonly IImage _imageToDisplay;
 	private readonly ImageSize _imageSize;
 	
 	#endregion

@@ -108,9 +108,9 @@
 					  Margin="0 2 0 0"/>
 		</StackPanel>
 
-		<Grid Grid.Row="3">
+		<Grid Grid.Row="3"
+			  Margin="4">
 			<Image Name="_displayImage"
-				   Margin="4"
 				   Stretch="Uniform"/>
 		</Grid>
 	</Grid>

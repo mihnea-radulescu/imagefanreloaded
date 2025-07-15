@@ -8,16 +8,17 @@ using ImageMagick;
 using ImageFanReloaded.Core.BaseTypes;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.ImageHandling;
 
-public class EditableImage : DisposableBase
+public class EditableImage : DisposableBase, IEditableImage
 {
 	public EditableImage(string imageFilePath, uint imageQualityLevel)
 	{
 		MagickImageCollection? imageFramesToEdit = default;
-		Bitmap? imageToDisplay = default;
+		Bitmap? bitmapToDisplay = default;
 
 		try
 		{
@@ -41,9 +42,10 @@ public class EditableImage : DisposableBase
 			imageFramesToEdit[0].Write(imageToDisplayStream, MagickFormat.Jpg);
 			imageToDisplayStream.Reset();
 
-			imageToDisplay = new Bitmap(imageToDisplayStream);
+			bitmapToDisplay = new Bitmap(imageToDisplayStream);
 
-			var imageSize = new ImageSize(imageToDisplay.Size.Width, imageToDisplay.Size.Height);
+			var imageSize = new ImageSize(bitmapToDisplay.Size.Width, bitmapToDisplay.Size.Height);
+			var imageToDisplay = new Image(bitmapToDisplay, imageSize);
 
 			_editableImageData = new EditableImageData(
 				imageFramesToEdit, imageToDisplay, imageSize);
@@ -54,13 +56,13 @@ public class EditableImage : DisposableBase
 		catch
 		{
 			imageFramesToEdit?.Dispose();
-			imageToDisplay?.Dispose();
+			bitmapToDisplay?.Dispose();
 
 			throw;
 		}
 	}
 
-	public Bitmap ImageToDisplay
+	public IImage ImageToDisplay
 	{
 		get
 		{
@@ -255,10 +257,11 @@ public class EditableImage : DisposableBase
 		transformedImageFramesToEdit[0].Write(imageToDisplayStream, MagickFormat.Jpg);
 		imageToDisplayStream.Reset();
 
-		var transformedImageToDisplay = new Bitmap(imageToDisplayStream);
+		var transformedBitmapToDisplay = new Bitmap(imageToDisplayStream);
 
 		var transformedImageSize = new ImageSize(
-			transformedImageToDisplay.Size.Width, transformedImageToDisplay.Size.Height);
+			transformedBitmapToDisplay.Size.Width, transformedBitmapToDisplay.Size.Height);
+		var transformedImageToDisplay = new Image(transformedBitmapToDisplay, transformedImageSize);
 
 		var transformedEditableImageData = new EditableImageData(
 			transformedImageFramesToEdit, transformedImageToDisplay, transformedImageSize);

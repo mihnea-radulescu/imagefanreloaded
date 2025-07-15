@@ -1,6 +1,6 @@
 using ImageFanReloaded.Core.Settings;
 
-namespace ImageFanReloaded.Core.ImageHandling;
+namespace ImageFanReloaded.Core.ImageHandling.Factories;
 
 public interface IThumbnailInfoFactory
 {

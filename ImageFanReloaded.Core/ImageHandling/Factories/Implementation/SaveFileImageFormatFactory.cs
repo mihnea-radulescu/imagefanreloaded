@@ -1,6 +1,6 @@
 using ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormats;
 
-namespace ImageFanReloaded.Core.ImageHandling.Implementation;
+namespace ImageFanReloaded.Core.ImageHandling.Factories.Implementation;
 
 public class SaveFileImageFormatFactory : ISaveFileImageFormatFactory
 {

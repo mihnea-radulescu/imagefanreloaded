@@ -1,7 +1,8 @@
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Settings;
 
-namespace ImageFanReloaded.ImageHandling;
+namespace ImageFanReloaded.ImageHandling.Factories;
 
 public class ImageFileFactory : IImageFileFactory
 {

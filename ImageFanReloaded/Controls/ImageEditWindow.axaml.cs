@@ -9,10 +9,11 @@ using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 using ImageFanReloaded.Keyboard;
-using ImageFanReloaded.ImageHandling;
+using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.Controls;
 
@@ -38,6 +39,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
+	public IEditableImageFactory? EditableImageFactory { get; set; }
 	public ISaveFileImageFormatFactory? SaveFileImageFormatFactory { get; set; }
 	public ISaveFileDialogFactory? SaveFileDialogFactory { get; set; }
 
@@ -47,13 +49,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	public async Task LoadImage()
 	{
-		try
-		{
-			_editableImage = await Task.Run(() =>
-				new EditableImage(
-					ImageFileData!.ImageFilePath, GlobalParameters!.ImageQualityLevel));
-		}
-		catch
+		_editableImage = await EditableImageFactory!
+			.CreateEditableImage(ImageFileData!.ImageFilePath);
+
+		if (!IsImageLoaded)
 		{
 			Title = $"{ImageFileData!.ImageFileName} - error loading image";
 		}
@@ -74,7 +73,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private IGlobalParameters? _globalParameters;
 	private StringComparison? _fileSystemStringComparison;
 
-	private EditableImage? _editableImage;
+	private IEditableImage? _editableImage;
 	private bool _hasUnsavedChanges;
 
 	private bool _hasInProgressUiUpdate;
@@ -602,7 +601,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 				await Task.Run(transformImageAction);
 			}
 
-			_displayImage.Source = _editableImage!.ImageToDisplay;
+			_displayImage.Source = _editableImage!.ImageToDisplay.GetBitmap();
 			_hasUnsavedChanges = true;
 		}
 		catch
@@ -668,7 +667,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 	{
 		_displayImage.MaxWidth = _editableImage!.ImageSize.Width;
 		_displayImage.MaxHeight = _editableImage!.ImageSize.Height;
-		_displayImage.Source = _editableImage!.ImageToDisplay;
+		_displayImage.Source = _editableImage!.ImageToDisplay.GetBitmap();
 
 		_undoButton.IsEnabled = _editableImage!.CanUndoLastEdit;
 		_redoButton.IsEnabled = _editableImage!.CanRedoLastEdit;

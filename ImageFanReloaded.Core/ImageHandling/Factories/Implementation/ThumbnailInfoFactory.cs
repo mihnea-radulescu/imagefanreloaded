@@ -1,6 +1,7 @@
+using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Settings;
 
-namespace ImageFanReloaded.Core.ImageHandling.Implementation;
+namespace ImageFanReloaded.Core.ImageHandling.Factories.Implementation;
 
 public class ThumbnailInfoFactory : IThumbnailInfoFactory
 {

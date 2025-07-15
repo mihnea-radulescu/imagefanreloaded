@@ -14,6 +14,8 @@ using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.Factories;
+using ImageFanReloaded.Core.ImageHandling.Factories.Implementation;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.OperatingSystem.Implementation;
@@ -22,6 +24,7 @@ using ImageFanReloaded.Core.Settings.Implementation;
 using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Core.Synchronization.Implementation;
 using ImageFanReloaded.ImageHandling;
+using ImageFanReloaded.ImageHandling.Factories;
 using ImageFanReloaded.Settings;
 
 namespace ImageFanReloaded;
@@ -102,6 +105,8 @@ public class AppBootstrap : IAppBootstrap
 		_desktop.MainWindow = mainWindow;
 		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
 
+		IEditableImageFactory editableImageFactory = new EditableImageFactory(_globalParameters);
+
 		ISaveFileImageFormatFactory saveFileImageFormatFactory = new SaveFileImageFormatFactory();
 
 		ISaveFileDialogFactory saveFileDialogFactory;
@@ -127,7 +132,10 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters, screenInformation);
 
 		IImageEditViewFactory imageEditViewFactory = new ImageEditViewFactory(
-			_globalParameters, saveFileImageFormatFactory, saveFileDialogFactory);
+			_globalParameters,
+			editableImageFactory,
+			saveFileImageFormatFactory,
+			saveFileDialogFactory);
 
 		ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);
 
