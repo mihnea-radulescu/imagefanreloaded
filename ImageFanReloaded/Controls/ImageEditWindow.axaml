@@ -92,7 +92,7 @@
 								  Header="To percentage"
 								  Click="OnDownsizeToPercentage"/>
 						<MenuItem Name="_downsizeToDimensionsMenuItem"
-								  Header="To width and height"
+								  Header="To dimensions"
 								  Click="OnDownsizeToDimensions"/>
 					</MenuFlyout>
 				</DropDownButton.Flyout>

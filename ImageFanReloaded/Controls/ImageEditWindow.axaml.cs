@@ -186,7 +186,15 @@ public partial class ImageEditWindow : Window, IImageEditView
 		var selectedDownsizePercentage = GetSelectedDownsizeValue(
 			_downsizeToPercentageComboBox);
 
+		var computedDownsizedImageWidth =
+			_editableImage!.ImageSize.Width * selectedDownsizePercentage / 100;
+		var computedDownsizedImageHeight =
+			_editableImage!.ImageSize.Height * selectedDownsizePercentage / 100;
+
+		var canDownsize = computedDownsizedImageWidth >= 1 && computedDownsizedImageHeight >= 1;
+
 		_downsizeToPercentageMenuItem.IsEnabled =
+			canDownsize &&
 			selectedDownsizePercentage != GetLastDownsizeValue(_downsizeToPercentageComboBox);
 
 		SetDownsizeButtonEnabledStatus();
@@ -208,21 +216,34 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_downsizeToDimensionsHeightComboBox.SelectionChanged -=
 			OnDownsizeToDimensionsComboBoxSelectionChanged;
 
+		var canDownsizeWidth = true;
+		var canDownsizeHeight = true;
+
 		if (sender == _downsizeToDimensionsWidthComboBox)
 		{
 			computedDownsizeDimensionsHeight = (int)
 				((double)selectedDownsizeDimensionsWidth / _editableImage!.ImageSize.AspectRatio);
 
-			SetSelectedDownsizeValue(
-				_downsizeToDimensionsHeightComboBox, computedDownsizeDimensionsHeight);
+			canDownsizeHeight = computedDownsizeDimensionsHeight >= 1;
+
+			if (canDownsizeHeight)
+			{
+				SetSelectedDownsizeValue(
+					_downsizeToDimensionsHeightComboBox, computedDownsizeDimensionsHeight);
+			}
 		}
 		else if (sender == _downsizeToDimensionsHeightComboBox)
 		{
 			computedDownsizeDimensionsWidth = (int)
 				((double)selectedDownsizeDimensionsHeight * _editableImage!.ImageSize.AspectRatio);
 
-			SetSelectedDownsizeValue(
-				_downsizeToDimensionsWidthComboBox, computedDownsizeDimensionsWidth);
+			canDownsizeWidth = computedDownsizeDimensionsWidth >= 1;
+
+			if (canDownsizeWidth)
+			{
+				SetSelectedDownsizeValue(
+					_downsizeToDimensionsWidthComboBox, computedDownsizeDimensionsWidth);
+			}
 		}
 
 		_downsizeToDimensionsWidthComboBox.SelectionChanged +=
@@ -231,10 +252,12 @@ public partial class ImageEditWindow : Window, IImageEditView
 			OnDownsizeToDimensionsComboBoxSelectionChanged;
 
 		var isDownsizeableDimensionWidth =
+			canDownsizeWidth &&
 			computedDownsizeDimensionsWidth != GetLastDownsizeValue(
 				_downsizeToDimensionsWidthComboBox);
 
 		var isDownsizeableDimensionHeight =
+			canDownsizeHeight &&
 			computedDownsizeDimensionsHeight != GetLastDownsizeValue(
 				_downsizeToDimensionsHeightComboBox);
 
