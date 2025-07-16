@@ -8,6 +8,10 @@
 			<Setter Property="BorderThickness" Value="0"/>
 			<Setter Property="CornerRadius" Value="5"/>
 		</Style>
+		<Style Selector="DropDownButton">
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="CornerRadius" Value="5"/>
+		</Style>
 		<Style Selector="TextBox">
 			<Setter Property="BorderThickness" Value="0"/>
 			<Setter Property="CornerRadius" Value="5"/>
