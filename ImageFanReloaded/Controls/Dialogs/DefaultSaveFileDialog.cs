@@ -37,6 +37,8 @@ public class DefaultSaveFileDialog : ISaveFileDialog
 		return imageToSaveFilePath;
 	}
 
+	public bool ShouldAlwaysRefreshSaveFolder => false;
+
 	#region Private
 
 	private static readonly IReadOnlyList<FilePickerFileType> SupportedFileTypes;

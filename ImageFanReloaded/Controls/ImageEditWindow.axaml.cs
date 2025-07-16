@@ -741,9 +741,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 					_hasUnsavedChanges = false;
 
-					if (HasSavedImageFileInCurrentFolder(imageToSaveFilePath, imageFolderPath))
+					if (saveFileDialog.ShouldAlwaysRefreshSaveFolder ||
+						HasSavedImageFileInCurrentFolder(imageToSaveFilePath, imageFolderPath))
 					{
-						FolderContentChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
+						FolderContentChanged?.Invoke(
+							this, new ContentTabItemEventArgs(ContentTabItem!));
 					}
 				}
 				catch

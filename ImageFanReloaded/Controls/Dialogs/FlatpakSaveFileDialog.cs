@@ -49,6 +49,8 @@ public class FlatpakSaveFileDialog : ISaveFileDialog
 		return default;
 	}
 
+	public bool ShouldAlwaysRefreshSaveFolder => true;
+
 	#region Private
 
 	private const string FreedesktopPortalServiceName = "org.freedesktop.portal.Desktop";
