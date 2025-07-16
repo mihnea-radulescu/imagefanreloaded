@@ -105,14 +105,16 @@ public partial class ImageWindow : Window, IImageView
 
 	private IImageFile? _imageFile;
 
-	private double _negligibleImageDragX, _negligibleImageDragY;
+	private double _negligibleImageDragX;
+	private double _negligibleImageDragY;
 
 	private ImageSize? _screenSize;
 
 	private bool _canZoomToImageSize;
 	private Cursor? _screenSizeCursor;
 
-	private Point _mouseDownCoordinates, _mouseUpCoordinates;
+	private Point _mouseDownCoordinates;
+	private Point _mouseUpCoordinates;
 
 	private ImageViewState _imageViewState;
 
@@ -202,7 +204,7 @@ public partial class ImageWindow : Window, IImageView
 			return;
 		}
 
-		_mouseDownCoordinates = e.GetPosition(_imageControl);
+		_mouseDownCoordinates = e.GetPosition(_displayImage);
 	}
 
 	private async void OnMouseUp(object? sender, PointerReleasedEventArgs e)
@@ -211,9 +213,9 @@ public partial class ImageWindow : Window, IImageView
 		{
 			if (e.InitialPressMouseButton == MouseButton.Left && _canZoomToImageSize)
 			{
-				var mousePositionToImage = e.GetPosition(_imageControl);
+				var mousePositionToImage = e.GetPosition(_displayImage);
 				var imageSize = new ImageSize(
-					_imageControl.Source!.Size.Width, _imageControl.Source!.Size.Height);
+					_displayImage.Source!.Size.Width, _displayImage.Source!.Size.Height);
 
 				var coordinatesToImageSizeRatio =
 					GetCoordinatesToImageSizeRatio(mousePositionToImage, imageSize);
@@ -229,7 +231,7 @@ public partial class ImageWindow : Window, IImageView
 		{
 			if (e.InitialPressMouseButton == MouseButton.Left)
 			{
-				_mouseUpCoordinates = e.GetPosition(_imageControl);
+				_mouseUpCoordinates = e.GetPosition(_displayImage);
 
 				if (_mouseDownCoordinates == _mouseUpCoordinates)
 				{
@@ -450,7 +452,7 @@ public partial class ImageWindow : Window, IImageView
 					}
 
 					await Dispatcher.UIThread.InvokeAsync(()
-						=> _imageControl.Source = anImageFrameBitmap);
+						=> _displayImage.Source = anImageFrameBitmap);
 
 					if (ctsAnimation.IsCancellationRequested)
 					{
@@ -486,7 +488,7 @@ public partial class ImageWindow : Window, IImageView
 		}
 	}
 
-	private (double, double) GetNormalizedDrag()
+	private (double normalizedDragX, double normalizedDragY) GetNormalizedDrag()
 	{
 		var dragX = _mouseUpCoordinates.X - _mouseDownCoordinates.X;
 
@@ -518,9 +520,9 @@ public partial class ImageWindow : Window, IImageView
 	private void DragImage(double normalizedDragX, double normalizedDragY)
 	{
 		var newHorizontalScrollOffset = _imageScrollViewer.Offset.X +
-			normalizedDragX * ImageScrollFactor * _imageControl.Source!.Size.Width;
+			normalizedDragX * ImageScrollFactor * _displayImage.Source!.Size.Width;
 		var newVerticalScrollOffset = _imageScrollViewer.Offset.Y +
-			normalizedDragY * ImageScrollFactor * _imageControl.Source!.Size.Height;
+			normalizedDragY * ImageScrollFactor * _displayImage.Source!.Size.Height;
 
 		if (newHorizontalScrollOffset < 0)
 		{
@@ -551,9 +553,9 @@ public partial class ImageWindow : Window, IImageView
 			(int)mousePositionToImage.X, (int)mousePositionToImage.Y);
 
 		if (mousePoint.X >= 0 &&
-			mousePoint.X <= _imageControl.Source!.Size.Width &&
+			mousePoint.X <= _displayImage.Source!.Size.Width &&
 			mousePoint.Y >= 0 &&
-			mousePoint.Y <= _imageControl.Source!.Size.Height)
+			mousePoint.Y <= _displayImage.Source!.Size.Height)
 		{
 			coordinatesToImageSizeRatio =
 				new CoordinatesToImageSizeRatio(mousePoint, imageSize);
@@ -588,7 +590,7 @@ public partial class ImageWindow : Window, IImageView
 		Cursor = SizeAllCursor;
 
 		var zoomRectangle = GetZoomRectangle(coordinatesToImageSizeRatio, image);
-		_imageControl.BringIntoView(zoomRectangle);
+		_displayImage.BringIntoView(zoomRectangle);
 	}
 
 	private static Rect GetZoomRectangle(
@@ -627,7 +629,7 @@ public partial class ImageWindow : Window, IImageView
 
 	private void SetImageSource(IImage? image)
 	{
-		_imageControl.Source = image?.GetBitmap();
+		_displayImage.Source = image?.GetBitmap();
 
 		if (_previousImage is not null &&
 			_previousImage != _invalidImage)

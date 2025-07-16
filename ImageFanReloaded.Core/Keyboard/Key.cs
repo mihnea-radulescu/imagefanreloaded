@@ -35,6 +35,7 @@ public enum Key
 	T,
 	I,
 	U,
+	C,
 
 	Plus,
 	Minus,

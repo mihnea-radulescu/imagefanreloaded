@@ -48,6 +48,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key TKey { get; }
 	public Key IKey { get; }
 	public Key UKey { get; }
+	public Key CKey { get; }
 
 	public Key UpKey { get; }
 	public Key DownKey { get; }
@@ -133,6 +134,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		TKey = Key.T;
 		IKey = Key.I;
 		UKey = Key.U;
+		CKey = Key.C;
 
 		UpKey = Key.Up;
 		DownKey = Key.Down;

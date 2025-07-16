@@ -16,7 +16,7 @@
 				Width="20"
 				Height="20"
 				Margin="0 2 0 0"
-				Background="#0087bd"
+				Background="DodgerBlue"
 				BorderThickness="1.5"
 				PointerPressed="OnTabClose">
 			<TextBlock Text="✕"

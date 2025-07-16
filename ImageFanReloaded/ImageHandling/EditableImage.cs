@@ -279,6 +279,22 @@ public class EditableImage : DisposableBase, IEditableImage
 		CreateTransformedImage(anImageFrame => anImageFrame.Resize((uint)width, (uint)height));
 	}
 
+	public void Crop(int topLeftPointX, int topLeftPointY, int width, int height)
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		var imageFrameCropGeometry = new MagickGeometry(
+			$"{width}x{height}+{topLeftPointX}+{topLeftPointY}")
+		{
+			IgnoreAspectRatio = true
+		};
+
+		CreateTransformedImage(anImageFrame =>
+		{
+			anImageFrame.Crop(imageFrameCropGeometry);
+		});
+	}
+
 	#region Protected
 
 	protected override void DisposeSpecific()

@@ -17,7 +17,7 @@
 					  VerticalScrollBarVisibility="Hidden"
 					  PointerPressed="OnMouseDown"
 					  PointerReleased="OnMouseUp">
-			<Image Name="_imageControl"
+			<Image Name="_displayImage"
 				   Stretch="None"/>
 		</ScrollViewer>
 		<Canvas Grid.Row="0">

@@ -46,6 +46,7 @@ public interface IGlobalParameters
 	Key TKey { get; }
 	Key IKey { get; }
 	Key UKey { get; }
+	Key CKey { get; }
 
 	Key UpKey { get; }
 	Key DownKey { get; }

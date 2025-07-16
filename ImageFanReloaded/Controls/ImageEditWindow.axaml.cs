@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using MsBox.Avalonia;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
@@ -82,6 +85,14 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private bool _hasInProgressUiUpdate;
 
+	private Point _mouseDownToGridCoordinates;
+	private Point _mouseUpToGridCoordinates;
+
+	private Point _mouseDownToImageCoordinates;
+	private Point _mouseUpToImageCoordinates;
+
+	private Rect _cropToEditableImageRectangle;
+
 	private async void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
 		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
@@ -102,6 +113,12 @@ public partial class ImageEditWindow : Window, IImageEditView
 		else if (ShouldRedo(keyModifiers, keyPressing))
 		{
 			await Redo();
+
+			e.Handled = true;
+		}
+		else if (ShouldCrop(keyModifiers, keyPressing))
+		{
+			await Crop();
 
 			e.Handled = true;
 		}
@@ -134,6 +151,63 @@ public partial class ImageEditWindow : Window, IImageEditView
 			DownsizeImage();
 
 			e.Handled = true;
+		}
+	}
+
+	private void OnMouseDown(object? sender, PointerPressedEventArgs e)
+	{
+		ClearCropRectangle();
+
+		_mouseDownToGridCoordinates = e.GetPosition(_displayGrid);
+		_mouseDownToImageCoordinates = e.GetPosition(_displayImage);
+	}
+
+	private void OnMouseUp(object? sender, PointerReleasedEventArgs e)
+	{
+		if (e.InitialPressMouseButton == MouseButton.Left)
+		{
+			_mouseUpToGridCoordinates = e.GetPosition(_displayGrid);
+			_mouseUpToImageCoordinates = e.GetPosition(_displayImage);
+
+			var (topLeftPointToGrid, bottomRightPointToGrid) = GetTopLeftBottomRightPoints(
+				_mouseDownToGridCoordinates, _mouseUpToGridCoordinates);
+
+			var (topLeftPointToImage, bottomRightPointToImage) = GetTopLeftBottomRightPoints(
+				_mouseDownToImageCoordinates, _mouseUpToImageCoordinates);
+
+			if (topLeftPointToGrid.X == bottomRightPointToGrid.X ||
+				topLeftPointToGrid.Y == bottomRightPointToGrid.Y)
+			{
+				ClearCropRectangle();
+			}
+			else
+			{
+				var cropToGridRectangle = new Rect(topLeftPointToGrid, bottomRightPointToGrid);
+
+				var drawingCropRectangle = new Rectangle
+				{
+					Stroke = Brushes.DodgerBlue,
+					StrokeThickness = 2,
+					Width = cropToGridRectangle.Width,
+					Height = cropToGridRectangle.Height
+				};
+
+				Canvas.SetLeft(drawingCropRectangle, cropToGridRectangle.Left);
+				Canvas.SetTop(drawingCropRectangle, cropToGridRectangle.Top);
+
+				DrawCropRectangle(drawingCropRectangle);
+
+				var editableImageToDisplayImageScale =
+					_editableImage!.ImageSize.Width / _displayImage.Bounds.Width;
+
+				_cropToEditableImageRectangle = new Rect(
+					topLeftPointToImage * editableImageToDisplayImageScale,
+					bottomRightPointToImage * editableImageToDisplayImageScale);
+			}
+		}
+		else if (e.InitialPressMouseButton == MouseButton.Right)
+		{
+			ClearCropRectangle();
 		}
 	}
 
@@ -177,6 +251,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async void OnUndo(object? sender, RoutedEventArgs e) => await Undo();
 	private async void OnRedo(object? sender, RoutedEventArgs e) => await Redo();
+
+	private async void OnCrop(object? sender, RoutedEventArgs e) => await Crop();
 
 	private async void OnRotateLeft(object? sender, RoutedEventArgs e) => await RotateLeft();
 	private async void OnRotateRight(object? sender, RoutedEventArgs e) => await RotateRight();
@@ -351,6 +427,18 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
+	private bool ShouldCrop(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.CKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool ShouldRotate(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
@@ -486,6 +574,23 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			_editableImage!.RedoLastEdit();
 			await ApplyTransform(default);
+		});
+	}
+
+	private async Task Crop()
+	{
+		if (!_cropButton.IsEnabled)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Crop(
+				(int)_cropToEditableImageRectangle.Left,
+				(int)_cropToEditableImageRectangle.Top,
+				(int)_cropToEditableImageRectangle.Width,
+				(int)_cropToEditableImageRectangle.Height));
 		});
 	}
 
@@ -731,6 +836,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_undoButton.IsEnabled = areControlsEnabled;
 		_redoButton.IsEnabled = areControlsEnabled;
 
+		_cropButton.IsEnabled = areControlsEnabled;
+
 		_rotateDropDownButton.IsEnabled = areControlsEnabled;
 		_flipDropDownButton.IsEnabled = areControlsEnabled;
 
@@ -752,6 +859,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		_undoButton.IsEnabled = _editableImage!.CanUndoLastEdit;
 		_redoButton.IsEnabled = _editableImage!.CanRedoLastEdit;
+
+		ClearCropRectangle();
 
 		_downsizeToPercentageMenuItem.IsEnabled = false;
 		_downsizeToDimensionsMenuItem.IsEnabled = false;
@@ -885,6 +994,30 @@ public partial class ImageEditWindow : Window, IImageEditView
 			.First();
 
 		firstEnabledMenuItem.IsSelected = true;
+	}
+
+	private void ClearCropRectangle()
+	{
+		_cropOverlayCanvas.Children.Clear();
+		_cropButton.IsEnabled = false;
+	}
+
+	private void DrawCropRectangle(Rectangle drawingCropRectangle)
+	{
+		_cropOverlayCanvas.Children.Add(drawingCropRectangle);
+		_cropButton.IsEnabled = true;
+	}
+
+	private static (Point topLeftPoint, Point bottomRightPoint) GetTopLeftBottomRightPoints(
+		Point mouseDownCoordinates, Point mouseUpCoordinates)
+	{
+		mouseDownCoordinates.Deconstruct(out var x1, out var y1);
+		mouseUpCoordinates.Deconstruct(out var x2, out var y2);
+
+		var topLeftPoint = new Point(Math.Min(x1, x2), Math.Min(y1, y2));
+		var bottomRightPoint = new Point(Math.Max(x1, x2), Math.Max(y1, y2));
+
+		return (topLeftPoint, bottomRightPoint);
 	}
 
 	#endregion

@@ -36,4 +36,6 @@ public interface IEditableImage : IDisposable
 
 	void DownsizeToPercentage(int percentage);
 	void DownsizeToDimensions(int width, int height);
+
+	void Crop(int topLeftPointX, int topLeftPointY, int width, int height);
 }

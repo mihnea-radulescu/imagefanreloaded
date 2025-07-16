@@ -24,6 +24,10 @@
 					Content="Redo"
 					Click="OnRedo"/>
 
+			<Button Name="_cropButton"
+					Content="Crop"
+					Click="OnCrop"/>
+
 			<DropDownButton Name="_rotateDropDownButton"
 							Content="Rotate">
 				<DropDownButton.Flyout>
@@ -131,11 +135,14 @@
 					  Margin="0 2 0 0"/>
 		</StackPanel>
 
-		<StackPanel Grid.Row="3"
-			  		Classes="HorizontalStackPanel"
-					HorizontalAlignment="Center">
+		<Grid Name="_displayGrid"
+			  Grid.Row="3"
+			  Margin="4">
 			<Image Name="_displayImage"
-				   Stretch="Uniform"/>
-		</StackPanel>
+				   Stretch="Uniform"
+				   PointerPressed="OnMouseDown"
+				   PointerReleased="OnMouseUp"/>
+			<Canvas Name="_cropOverlayCanvas"/>
+		</Grid>
 	</Grid>
 </Window>

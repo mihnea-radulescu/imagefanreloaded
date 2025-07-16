@@ -30,7 +30,10 @@
 					Content="About"
 					Click="OnAboutButtonClicked"/>
 		</StackPanel>
-		<Grid Name="_contentGrid" Grid.Row="1">
+
+		<Grid Name="_contentGrid"
+			  Grid.Row="1"
+			  Margin="0 2 0 0">
 			<TreeView Name="_folderTreeView"
 					  Grid.Column="0"
 					  SelectionMode="Single"/>
@@ -38,7 +41,7 @@
 			<GridSplitter Name="_gridSplitter"
 						  Grid.Column="1"
 						  Width="5"
-						  Background="#FFBCBCBC"
+						  Background="LightGray"
 						  IsEnabled="False"/>
 
 			<Grid Grid.Column="2">
