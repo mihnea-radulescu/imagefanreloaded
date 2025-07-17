@@ -20,22 +20,23 @@ public interface IEditableImage : IDisposable
 	void FlipHorizontally();
 	void FlipVertically();
 
-	void Blur();
-	void Sharpen();
-	void ReduceNoise();
 	void Enhance();
 	void WhiteBalance();
-	void Emboss();
+	void ReduceNoise();
+	void Sharpen();
+	void Blur();
+
 	void Grayscale();
-	void Negative();
 	void Sepia();
+	void Negative();
 	void OilPaint();
+	void Emboss();
 
 	Task SaveImageWithSameFormat(string imageFilePath);
 	Task SaveImageWithFormat(string imageFilePath, ISaveFileImageFormat saveFileImageFormat);
 
+	void Crop(int topLeftPointX, int topLeftPointY, int width, int height);
+
 	void DownsizeToPercentage(int percentage);
 	void DownsizeToDimensions(int width, int height);
-
-	void Crop(int topLeftPointX, int topLeftPointY, int width, int height);
 }

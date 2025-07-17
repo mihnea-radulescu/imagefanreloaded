@@ -236,26 +236,27 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private async void OnFlipVertically(object? sender, RoutedEventArgs e)
 		=> await FlipVertically();
 
-	private async void OnBlur(object? sender, RoutedEventArgs e)
-		=> await Blur();
-	private async void OnSharpen(object? sender, RoutedEventArgs e)
-		=> await Sharpen();
-	private async void OnReduceNoise(object? sender, RoutedEventArgs e)
-		=> await ReduceNoise();
 	private async void OnEnhance(object? sender, RoutedEventArgs e)
 		=> await Enhance();
 	private async void OnWhiteBalance(object? sender, RoutedEventArgs e)
 		=> await WhiteBalance();
-	private async void OnEmboss(object? sender, RoutedEventArgs e)
-		=> await Emboss();
+	private async void OnReduceNoise(object? sender, RoutedEventArgs e)
+		=> await ReduceNoise();
+	private async void OnSharpen(object? sender, RoutedEventArgs e)
+		=> await Sharpen();
+	private async void OnBlur(object? sender, RoutedEventArgs e)
+		=> await Blur();
+
 	private async void OnGrayscale(object? sender, RoutedEventArgs e)
 		=> await Grayscale();
-	private async void OnNegative(object? sender, RoutedEventArgs e)
-		=> await Negative();
 	private async void OnSepia(object? sender, RoutedEventArgs e)
 		=> await Sepia();
+	private async void OnNegative(object? sender, RoutedEventArgs e)
+		=> await Negative();
 	private async void OnOilPaint(object? sender, RoutedEventArgs e)
 		=> await OilPaint();
+	private async void OnEmboss(object? sender, RoutedEventArgs e)
+		=> await Emboss();
 
 	private async void OnSaveImageAsWithSameFormat(object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(default);
@@ -599,30 +600,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		});
 	}
 
-	private async Task Blur()
-	{
-		await PerformUiUpdate(async () =>
-		{
-			await ApplyTransform(() => _editableImage!.Blur());
-		});
-	}
-
-	private async Task Sharpen()
-	{
-		await PerformUiUpdate(async () =>
-		{
-			await ApplyTransform(() => _editableImage!.Sharpen());
-		});
-	}
-
-	private async Task ReduceNoise()
-	{
-		await PerformUiUpdate(async () =>
-		{
-			await ApplyTransform(() => _editableImage!.ReduceNoise());
-		});
-	}
-
 	private async Task Enhance()
 	{
 		await PerformUiUpdate(async () =>
@@ -639,11 +616,27 @@ public partial class ImageEditWindow : Window, IImageEditView
 		});
 	}
 
-	private async Task Emboss()
+	private async Task ReduceNoise()
 	{
 		await PerformUiUpdate(async () =>
 		{
-			await ApplyTransform(() => _editableImage!.Emboss());
+			await ApplyTransform(() => _editableImage!.ReduceNoise());
+		});
+	}
+
+	private async Task Sharpen()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Sharpen());
+		});
+	}
+
+	private async Task Blur()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Blur());
 		});
 	}
 
@@ -655,14 +648,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		});
 	}
 
-	private async Task Negative()
-	{
-		await PerformUiUpdate(async () =>
-		{
-			await ApplyTransform(() => _editableImage!.Negative());
-		});
-	}
-
 	private async Task Sepia()
 	{
 		await PerformUiUpdate(async () =>
@@ -671,11 +656,27 @@ public partial class ImageEditWindow : Window, IImageEditView
 		});
 	}
 
+	private async Task Negative()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Negative());
+		});
+	}
+
 	private async Task OilPaint()
 	{
 		await PerformUiUpdate(async () =>
 		{
 			await ApplyTransform(() => _editableImage!.OilPaint());
+		});
+	}
+
+	private async Task Emboss()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Emboss());
 		});
 	}
 
@@ -1110,7 +1111,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private Rect GetCropToEditableImageRectangle()
 	{
 		var editableImageToDisplayImageScale =
-			_editableImage!.ImageSize.Width / _displayImage.Bounds.Width;
+			(double)_editableImage!.ImageSize.Width / _displayImage.Bounds.Width;
 
 		var topLeftPointToEditableImage =
 			_topLeftPointToImage * editableImageToDisplayImageScale;

@@ -20,6 +20,7 @@
 			<li>support for multiple folder tabs</li>
 			<li>keyboard and mouse user interaction</li>
 			<li>44 supported image formats: bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm</li>
+			<li>image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize</li>
 			<li>image animation support for the formats gif, mng and webp</li>
 			<li>folder ordering by name and last modification time, ascending and descending</li>
 			<li>configurable thumbnail size, between 100 and 400 pixels</li>
@@ -46,7 +47,7 @@
 	</keywords>
 
 	<launchable type="desktop-id">io.github.mihnea_radulescu.imagefanreloaded.desktop</launchable>
-	
+
 	<screenshots>
 		<screenshot type="default">
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-1.jpg</image>
@@ -57,12 +58,20 @@
 		<screenshot>
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-3.jpg</image>
 		</screenshot>
+		<screenshot>
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-4.jpg</image>
+		</screenshot>
 	</screenshots>
 
 	<url type="homepage">https://github.com/mihnea-radulescu/imagefanreloaded</url>
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.07.18" date="2025-07-18">
+			<description>
+				<p>Added image editing capabilities</p>
+			</description>
+		</release>
 		<release version="1.2025.07.07" date="2025-07-07">
 			<description>
 				<p>Added image animation support for the formats gif, mng and webp</p>

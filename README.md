@@ -8,6 +8,7 @@ Features:
 * support for multiple folder tabs
 * keyboard and mouse user interaction
 * 44 supported image formats: bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm
+* image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize
 * image animation support for the formats gif, mng and webp
 * folder ordering by name and last modification time, ascending and descending
 * configurable thumbnail size, between 100 and 400 pixels
@@ -31,6 +32,7 @@ User interface:
 * keys + and - for changing thumbnail size by an increment of 50 pixels
 * key S for slideshow navigation
 * key T for displaying Image edit view, and for switching from command-line image file access mode to thumbnail navigation mode
+* keys in Image edit view: U for undo, I for redo, R for rotate, F for flip, E for effects, S for save as, C for crop and D for downsize
 * key F for displaying Image info view
 * key R for toggling recursive folder browsing
 * key E for applying EXIF image orientation
@@ -48,3 +50,5 @@ User interface:
 ![Screenshot 2](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-2.jpg "ImageFan Reloaded - Screenshot 2")
 
 ![Screenshot 3](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-3.jpg "ImageFan Reloaded - Screenshot 3")
+
+![Screenshot 4](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-4.jpg "ImageFan Reloaded - Screenshot 4")

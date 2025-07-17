@@ -156,27 +156,6 @@ public class EditableImage : DisposableBase, IEditableImage
 		CreateTransformedImage(anImageFrame => anImageFrame.Flip());
 	}
 
-	public void Blur()
-	{
-		ThrowObjectDisposedExceptionIfNecessary();
-
-		CreateTransformedImage(anImageFrame => anImageFrame.Blur());
-	}
-
-	public void Sharpen()
-	{
-		ThrowObjectDisposedExceptionIfNecessary();
-
-		CreateTransformedImage(anImageFrame => anImageFrame.Sharpen());
-	}
-
-	public void ReduceNoise()
-	{
-		ThrowObjectDisposedExceptionIfNecessary();
-
-		CreateTransformedImage(anImageFrame => anImageFrame.ReduceNoise());
-	}
-
 	public void Enhance()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
@@ -191,11 +170,25 @@ public class EditableImage : DisposableBase, IEditableImage
 		CreateTransformedImage(anImageFrame => anImageFrame.WhiteBalance());
 	}
 
-	public void Emboss()
+	public void ReduceNoise()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		CreateTransformedImage(anImageFrame => anImageFrame.Emboss());
+		CreateTransformedImage(anImageFrame => anImageFrame.ReduceNoise());
+	}
+
+	public void Sharpen()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Sharpen());
+	}
+
+	public void Blur()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Blur());
 	}
 
 	public void Grayscale()
@@ -205,13 +198,6 @@ public class EditableImage : DisposableBase, IEditableImage
 		CreateTransformedImage(anImageFrame => anImageFrame.Grayscale());
 	}
 
-	public void Negative()
-	{
-		ThrowObjectDisposedExceptionIfNecessary();
-
-		CreateTransformedImage(anImageFrame => anImageFrame.Negate());
-	}
-
 	public void Sepia()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
@@ -219,11 +205,25 @@ public class EditableImage : DisposableBase, IEditableImage
 		CreateTransformedImage(anImageFrame => anImageFrame.SepiaTone());
 	}
 
+	public void Negative()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Negate());
+	}
+
 	public void OilPaint()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
 		CreateTransformedImage(anImageFrame => anImageFrame.OilPaint());
+	}
+
+	public void Emboss()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Emboss());
 	}
 
 	public async Task SaveImageWithSameFormat(string imageFilePath)
@@ -248,6 +248,22 @@ public class EditableImage : DisposableBase, IEditableImage
 		{
 			await _editableImageData.ImageFramesToEdit[0].WriteAsync(imageFilePath, magickFormat);
 		}
+	}
+
+	public void Crop(int topLeftPointX, int topLeftPointY, int width, int height)
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		var imageFrameCropGeometry = new MagickGeometry(
+			$"{width}x{height}+{topLeftPointX}+{topLeftPointY}")
+		{
+			IgnoreAspectRatio = true
+		};
+
+		CreateTransformedImage(anImageFrame =>
+		{
+			anImageFrame.Crop(imageFrameCropGeometry);
+		});
 	}
 
 	public void DownsizeToPercentage(int percentage)
@@ -277,22 +293,6 @@ public class EditableImage : DisposableBase, IEditableImage
 		}
 
 		CreateTransformedImage(anImageFrame => anImageFrame.Resize((uint)width, (uint)height));
-	}
-
-	public void Crop(int topLeftPointX, int topLeftPointY, int width, int height)
-	{
-		ThrowObjectDisposedExceptionIfNecessary();
-
-		var imageFrameCropGeometry = new MagickGeometry(
-			$"{width}x{height}+{topLeftPointX}+{topLeftPointY}")
-		{
-			IgnoreAspectRatio = true
-		};
-
-		CreateTransformedImage(anImageFrame =>
-		{
-			anImageFrame.Crop(imageFrameCropGeometry);
-		});
 	}
 
 	#region Protected

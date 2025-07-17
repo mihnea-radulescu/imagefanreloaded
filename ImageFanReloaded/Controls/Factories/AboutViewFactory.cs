@@ -54,6 +54,8 @@ User interface:
 • key F for displaying Image info view
 • key T for displaying Image edit view, and for switching from command-line image file access mode to
 	thumbnail navigation mode
+• keys in Image edit view: U for undo, I for redo, R for rotate, F for flip, E for effects, S for save as, C for crop
+	and D for downsize
 • key R for toggling recursive folder browsing
 • key E for applying EXIF image orientation
 • key O for displaying Tab options view
