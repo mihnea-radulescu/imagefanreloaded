@@ -10,6 +10,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
@@ -23,10 +24,6 @@
 			<Button Name="_redoButton"
 					Content="Redo"
 					Click="OnRedo"/>
-
-			<Button Name="_cropButton"
-					Content="Crop"
-					Click="OnCrop"/>
 
 			<DropDownButton Name="_rotateDropDownButton"
 							Content="Rotate">
@@ -106,6 +103,21 @@
 		<StackPanel Grid.Row="1"
 					Classes="HorizontalStackPanel"
 					HorizontalAlignment="Center">
+			<Button Name="_cropButton"
+					Content="Crop"
+					Click="OnCrop"/>
+
+			<CheckBox Name="_snapCropEdgesCheckBox"
+					  Content="Snap crop edges to image border">
+				<ToolTip.Tip>
+					<TextBlock Name="_snapCropEdgesToolTip"/>
+				</ToolTip.Tip>
+			</CheckBox>
+		</StackPanel>
+
+		<StackPanel Grid.Row="2"
+					Classes="HorizontalStackPanel"
+					HorizontalAlignment="Center">
 			<TextBlock VerticalAlignment="Center"
 					   Text="Percentage:"/>
 			<ComboBox Name="_downsizeToPercentageComboBox"
@@ -137,9 +149,10 @@
 
 		<Grid Name="_displayGrid"
 			  Grid.Row="3"
-			  Margin="4">
+			  Margin="10">
 			<Image Name="_displayImage"
 				   Stretch="Uniform"
+				   Cursor="Cross"
 				   PointerPressed="OnMouseDown"
 				   PointerReleased="OnMouseUp"/>
 			<Canvas Name="_cropOverlayCanvas"/>

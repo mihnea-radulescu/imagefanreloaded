@@ -1,17 +1,16 @@
 <UserControl xmlns="https://github.com/avaloniaui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 x:Class="ImageFanReloaded.Controls.ContentTabItemHeader"
-			 ToolTip.ShowDelay="500"
 			 Loaded="OnLoaded">
 	<ToolTip.Tip>
-		<TextBlock Name="_textBlockTabTooltip"/>
+		<TextBlock Name="_tabToolTipTextBlock"/>
 	</ToolTip.Tip>
 	<StackPanel Classes="HorizontalStackPanel"
 				HorizontalAlignment="Left">
-		<TextBlock Name="_textBlockTabTitle"
+		<TextBlock Name="_tabTitleTextBlock"
 				   VerticalAlignment="Center"/>
 
-		<Border Name="_borderTabClose"
+		<Border Name="_tabCloseBorder"
 				CornerRadius="50"
 				Width="20"
 				Height="20"

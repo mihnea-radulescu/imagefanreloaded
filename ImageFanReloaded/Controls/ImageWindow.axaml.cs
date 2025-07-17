@@ -21,7 +21,7 @@ public partial class ImageWindow : Window, IImageView
 	{
 		ArrowCursor = new Cursor(StandardCursorType.Arrow);
 		HandCursor = new Cursor(StandardCursorType.Hand);
-		SizeAllCursor = new Cursor(StandardCursorType.SizeAll);
+		DragMoveCursor = new Cursor(StandardCursorType.DragMove);
 	}
 
 	public ImageWindow()
@@ -91,7 +91,7 @@ public partial class ImageWindow : Window, IImageView
 
 	private static readonly Cursor ArrowCursor;
 	private static readonly Cursor HandCursor;
-	private static readonly Cursor SizeAllCursor;
+	private static readonly Cursor DragMoveCursor;
 
 	private CancellationTokenSource? _ctsAnimation;
 	private CancellationTokenSource? _ctsSlideshow;
@@ -587,7 +587,7 @@ public partial class ImageWindow : Window, IImageView
 		SetImageSource(image);
 
 		_imageViewState = ImageViewState.ZoomedToImageSize;
-		Cursor = SizeAllCursor;
+		Cursor = DragMoveCursor;
 
 		var zoomRectangle = GetZoomRectangle(coordinatesToImageSizeRatio, image);
 		_displayImage.BringIntoView(zoomRectangle);

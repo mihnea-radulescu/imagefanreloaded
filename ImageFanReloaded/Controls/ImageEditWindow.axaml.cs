@@ -27,6 +27,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 	{
 		InitializeComponent();
 
+		_snapCropEdgesToolTip.Text =
+			$"If the crop area is within {SnapCropEdgesThresholdInPixels} pixels of an image edge, it will automatically snap to the edge.";
+
 		_downsizeComboBoxValueToComboBoxItemMapping = new Dictionary<string, ComboBoxItem>();
 
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
@@ -75,6 +78,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	#region Private
 
+	private const int SnapCropEdgesThresholdInPixels = 5;
+
 	private readonly IDictionary<string, ComboBoxItem> _downsizeComboBoxValueToComboBoxItemMapping;
 
 	private IGlobalParameters? _globalParameters;
@@ -85,13 +90,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private bool _hasInProgressUiUpdate;
 
-	private Point _mouseDownToGridCoordinates;
-	private Point _mouseUpToGridCoordinates;
-
 	private Point _mouseDownToImageCoordinates;
 	private Point _mouseUpToImageCoordinates;
 
-	private Rect _cropToEditableImageRectangle;
+	private Point _topLeftPointToImage;
+	private Point _bottomRightPointToImage;
 
 	private async void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -113,12 +116,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		else if (ShouldRedo(keyModifiers, keyPressing))
 		{
 			await Redo();
-
-			e.Handled = true;
-		}
-		else if (ShouldCrop(keyModifiers, keyPressing))
-		{
-			await Crop();
 
 			e.Handled = true;
 		}
@@ -146,6 +143,12 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 			e.Handled = true;
 		}
+		else if (ShouldCrop(keyModifiers, keyPressing))
+		{
+			await Crop();
+
+			e.Handled = true;
+		}
 		else if (ShouldDownsizeImage(keyModifiers, keyPressing))
 		{
 			DownsizeImage();
@@ -156,9 +159,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void OnMouseDown(object? sender, PointerPressedEventArgs e)
 	{
-		ClearCropRectangle();
+		ClearDrawnRectangle();
 
-		_mouseDownToGridCoordinates = e.GetPosition(_displayGrid);
 		_mouseDownToImageCoordinates = e.GetPosition(_displayImage);
 	}
 
@@ -166,48 +168,22 @@ public partial class ImageEditWindow : Window, IImageEditView
 	{
 		if (e.InitialPressMouseButton == MouseButton.Left)
 		{
-			_mouseUpToGridCoordinates = e.GetPosition(_displayGrid);
 			_mouseUpToImageCoordinates = e.GetPosition(_displayImage);
 
-			var (topLeftPointToGrid, bottomRightPointToGrid) = GetTopLeftBottomRightPoints(
-				_mouseDownToGridCoordinates, _mouseUpToGridCoordinates);
+			ComputeTopLeftBottomRightPointsToImage();
 
-			var (topLeftPointToImage, bottomRightPointToImage) = GetTopLeftBottomRightPoints(
-				_mouseDownToImageCoordinates, _mouseUpToImageCoordinates);
-
-			if (topLeftPointToGrid.X == bottomRightPointToGrid.X ||
-				topLeftPointToGrid.Y == bottomRightPointToGrid.Y)
+			if (IsLineOrDotCropSelection())
 			{
-				ClearCropRectangle();
+				ClearDrawnRectangle();
 			}
 			else
 			{
-				var cropToGridRectangle = new Rect(topLeftPointToGrid, bottomRightPointToGrid);
-
-				var drawingCropRectangle = new Rectangle
-				{
-					Stroke = Brushes.DodgerBlue,
-					StrokeThickness = 2,
-					Width = cropToGridRectangle.Width,
-					Height = cropToGridRectangle.Height
-				};
-
-				Canvas.SetLeft(drawingCropRectangle, cropToGridRectangle.Left);
-				Canvas.SetTop(drawingCropRectangle, cropToGridRectangle.Top);
-
-				DrawCropRectangle(drawingCropRectangle);
-
-				var editableImageToDisplayImageScale =
-					_editableImage!.ImageSize.Width / _displayImage.Bounds.Width;
-
-				_cropToEditableImageRectangle = new Rect(
-					topLeftPointToImage * editableImageToDisplayImageScale,
-					bottomRightPointToImage * editableImageToDisplayImageScale);
+				DrawCropToGridRectangle();
 			}
 		}
 		else if (e.InitialPressMouseButton == MouseButton.Right)
 		{
-			ClearCropRectangle();
+			ClearDrawnRectangle();
 		}
 	}
 
@@ -251,8 +227,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async void OnUndo(object? sender, RoutedEventArgs e) => await Undo();
 	private async void OnRedo(object? sender, RoutedEventArgs e) => await Redo();
-
-	private async void OnCrop(object? sender, RoutedEventArgs e) => await Crop();
 
 	private async void OnRotateLeft(object? sender, RoutedEventArgs e) => await RotateLeft();
 	private async void OnRotateRight(object? sender, RoutedEventArgs e) => await RotateRight();
@@ -298,6 +272,22 @@ public partial class ImageEditWindow : Window, IImageEditView
 		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
 	private async void OnSaveImageAsWithFormatBmp(object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
+
+	private async void OnCrop(object? sender, RoutedEventArgs e) => await Crop();
+
+	private void OnSnapCropEdgesCheckBoxIsCheckedChanged(object? sender, RoutedEventArgs e)
+	{
+		var isCheckedSnapCropEdgesCheckBox = _snapCropEdgesCheckBox.IsChecked!.Value;
+
+		if (isCheckedSnapCropEdgesCheckBox)
+		{
+			SnapCropRectangleToImageBounds();
+
+			DrawCropToGridRectangle();
+
+			LockSnapCropEdgesCheckBox();
+		}
+	}
 
 	private void OnDownsizeToPercentageComboxBoxSelectionChanged(
 		object? sender, SelectionChangedEventArgs e)
@@ -427,18 +417,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
-	private bool ShouldCrop(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.CKey)
-		{
-			return true;
-		}
-
-		return false;
-	}
-
 	private bool ShouldRotate(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
@@ -480,6 +458,18 @@ public partial class ImageEditWindow : Window, IImageEditView
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.SKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldCrop(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.CKey)
 		{
 			return true;
 		}
@@ -574,23 +564,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			_editableImage!.RedoLastEdit();
 			await ApplyTransform(default);
-		});
-	}
-
-	private async Task Crop()
-	{
-		if (!_cropButton.IsEnabled)
-		{
-			return;
-		}
-
-		await PerformUiUpdate(async () =>
-		{
-			await ApplyTransform(() => _editableImage!.Crop(
-				(int)_cropToEditableImageRectangle.Left,
-				(int)_cropToEditableImageRectangle.Top,
-				(int)_cropToEditableImageRectangle.Width,
-				(int)_cropToEditableImageRectangle.Height));
 		});
 	}
 
@@ -763,6 +736,25 @@ public partial class ImageEditWindow : Window, IImageEditView
 		});
 	}
 
+	private async Task Crop()
+	{
+		if (!_cropButton.IsEnabled)
+		{
+			return;
+		}
+
+		await PerformUiUpdate(async () =>
+		{
+			var cropToEditableImageRectangle = GetCropToEditableImageRectangle();
+
+			await ApplyTransform(() => _editableImage!.Crop(
+				(int)cropToEditableImageRectangle.Left,
+				(int)cropToEditableImageRectangle.Top,
+				(int)cropToEditableImageRectangle.Width,
+				(int)cropToEditableImageRectangle.Height));
+		});
+	}
+
 	private async Task DownsizeToPercentage()
 	{
 		await PerformUiUpdate(async () =>
@@ -838,19 +830,20 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_undoButton.IsEnabled = areControlsEnabled;
 		_redoButton.IsEnabled = areControlsEnabled;
 
-		_cropButton.IsEnabled = areControlsEnabled;
-
 		_rotateDropDownButton.IsEnabled = areControlsEnabled;
 		_flipDropDownButton.IsEnabled = areControlsEnabled;
 
 		_effectsDropDownButton.IsEnabled = areControlsEnabled;
 
+		_saveAsDropDownButton.IsEnabled = areControlsEnabled;
+
+		_cropButton.IsEnabled = areControlsEnabled;
+		_snapCropEdgesCheckBox.IsEnabled = areControlsEnabled;
+
 		_downsizeDropDownButton.IsEnabled = areControlsEnabled;
 		_downsizeToPercentageComboBox.IsEnabled = areControlsEnabled;
 		_downsizeToDimensionsWidthComboBox.IsEnabled = areControlsEnabled;
 		_downsizeToDimensionsHeightComboBox.IsEnabled = areControlsEnabled;
-
-		_saveAsDropDownButton.IsEnabled = areControlsEnabled;
 	}
 
 	private void UpdateControls()
@@ -862,7 +855,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_undoButton.IsEnabled = _editableImage!.CanUndoLastEdit;
 		_redoButton.IsEnabled = _editableImage!.CanRedoLastEdit;
 
-		ClearCropRectangle();
+		ClearDrawnRectangle();
 
 		_downsizeToPercentageMenuItem.IsEnabled = false;
 		_downsizeToDimensionsMenuItem.IsEnabled = false;
@@ -876,6 +869,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void RegisterEvents()
 	{
+		_snapCropEdgesCheckBox.IsCheckedChanged +=
+			OnSnapCropEdgesCheckBoxIsCheckedChanged;
+
 		_downsizeToPercentageComboBox.SelectionChanged +=
 			OnDownsizeToPercentageComboxBoxSelectionChanged;
 
@@ -887,6 +883,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void UnregisterEvents()
 	{
+		_snapCropEdgesCheckBox.IsCheckedChanged -=
+			OnSnapCropEdgesCheckBoxIsCheckedChanged;
+
 		_downsizeToPercentageComboBox.SelectionChanged -=
 			OnDownsizeToPercentageComboxBoxSelectionChanged;
 
@@ -998,29 +997,124 @@ public partial class ImageEditWindow : Window, IImageEditView
 		firstEnabledMenuItem.IsSelected = true;
 	}
 
-	private void ClearCropRectangle()
+	private void ClearDrawnRectangle()
 	{
 		_cropOverlayCanvas.Children.Clear();
+
 		_cropButton.IsEnabled = false;
+
+		_snapCropEdgesCheckBox.IsChecked = false;
+		_snapCropEdgesCheckBox.IsEnabled = false;
 	}
 
-	private void DrawCropRectangle(Rectangle drawingCropRectangle)
+	private void DrawRectangle(Rectangle drawingCropRectangle)
 	{
+		_cropOverlayCanvas.Children.Clear();
 		_cropOverlayCanvas.Children.Add(drawingCropRectangle);
-		_cropButton.IsEnabled = true;
+
+		var shouldPerformCrop =
+			_topLeftPointToImage.X > 0 ||
+			_topLeftPointToImage.Y > 0 ||
+			_bottomRightPointToImage.X < _displayImage.Bounds.Width ||
+			_bottomRightPointToImage.Y < _displayImage.Bounds.Height;
+
+		_cropButton.IsEnabled = shouldPerformCrop;
+
+		_snapCropEdgesCheckBox.IsEnabled = ShouldEnableSnapCropEdgesCheckBox();
 	}
 
-	private static (Point topLeftPoint, Point bottomRightPoint) GetTopLeftBottomRightPoints(
-		Point mouseDownCoordinates, Point mouseUpCoordinates)
+	private bool ShouldEnableSnapCropEdgesCheckBox()
 	{
-		mouseDownCoordinates.Deconstruct(out var x1, out var y1);
-		mouseUpCoordinates.Deconstruct(out var x2, out var y2);
+		var displayImageWidth = _displayImage.Bounds.Width;
+		var displayImageHeight = _displayImage.Bounds.Height;
 
-		var topLeftPoint = new Point(Math.Min(x1, x2), Math.Min(y1, y2));
-		var bottomRightPoint = new Point(Math.Max(x1, x2), Math.Max(y1, y2));
+		if (_topLeftPointToImage.X <= SnapCropEdgesThresholdInPixels)
+			return true;
 
-		return (topLeftPoint, bottomRightPoint);
+		if (_topLeftPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+			return true;
+
+		if (displayImageWidth - _bottomRightPointToImage.X <= SnapCropEdgesThresholdInPixels)
+			return true;
+
+		if (displayImageHeight - _bottomRightPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+			return true;
+
+		return false;
 	}
+
+	private void LockSnapCropEdgesCheckBox() => _snapCropEdgesCheckBox.IsEnabled = false;
+
+	private void SnapCropRectangleToImageBounds()
+	{
+		var displayImageWidth = _displayImage.Bounds.Width;
+		var displayImageHeight = _displayImage.Bounds.Height;
+
+		if (_topLeftPointToImage.X <= SnapCropEdgesThresholdInPixels)
+			_topLeftPointToImage = new Point(0, _topLeftPointToImage.Y);
+
+		if (_topLeftPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+			_topLeftPointToImage = new Point(_topLeftPointToImage.X, 0);
+
+		if (displayImageWidth - _bottomRightPointToImage.X <= SnapCropEdgesThresholdInPixels)
+			_bottomRightPointToImage = new Point(displayImageWidth, _bottomRightPointToImage.Y);
+
+		if (displayImageHeight - _bottomRightPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+			_bottomRightPointToImage = new Point(_bottomRightPointToImage.X, displayImageHeight);
+	}
+
+	private void DrawCropToGridRectangle()
+	{
+		var topLeftPointToGrid = _displayImage
+			.TranslatePoint(_topLeftPointToImage, _displayGrid)!
+			.Value;
+		var bottomRightPointToGrid = _displayImage
+			.TranslatePoint(_bottomRightPointToImage, _displayGrid)!
+			.Value;
+
+		var cropToGridRectangle = new Rect(topLeftPointToGrid, bottomRightPointToGrid);
+
+		var drawingCropRectangle = new Rectangle
+		{
+			Stroke = Brushes.DodgerBlue,
+			StrokeThickness = 2,
+			Width = cropToGridRectangle.Width,
+			Height = cropToGridRectangle.Height
+		};
+
+		Canvas.SetLeft(drawingCropRectangle, cropToGridRectangle.Left);
+		Canvas.SetTop(drawingCropRectangle, cropToGridRectangle.Top);
+
+		DrawRectangle(drawingCropRectangle);
+	}
+
+	private Rect GetCropToEditableImageRectangle()
+	{
+		var editableImageToDisplayImageScale =
+			_editableImage!.ImageSize.Width / _displayImage.Bounds.Width;
+
+		var topLeftPointToEditableImage =
+			_topLeftPointToImage * editableImageToDisplayImageScale;
+		var bottomRightPointToEditableImage =
+			_bottomRightPointToImage * editableImageToDisplayImageScale;
+
+		var cropToEditableImageRectangle = new Rect(
+			topLeftPointToEditableImage, bottomRightPointToEditableImage);
+		return cropToEditableImageRectangle;
+	}
+
+	private void ComputeTopLeftBottomRightPointsToImage()
+	{
+		_mouseDownToImageCoordinates.Deconstruct(out var x1, out var y1);
+		_mouseUpToImageCoordinates.Deconstruct(out var x2, out var y2);
+
+		_topLeftPointToImage = new Point(Math.Min(x1, x2), Math.Min(y1, y2));
+		_bottomRightPointToImage = new Point(Math.Max(x1, x2), Math.Max(y1, y2));
+	}
+
+	private bool IsLineOrDotCropSelection()
+		=> _topLeftPointToImage.X == _bottomRightPointToImage.X ||
+		   _topLeftPointToImage.Y == _bottomRightPointToImage.Y;
 
 	#endregion
 }
