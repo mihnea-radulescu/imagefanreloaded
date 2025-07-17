@@ -848,21 +848,40 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void UpdateControls()
 	{
-		_displayImage.MaxWidth = _editableImage!.ImageSize.Width;
-		_displayImage.MaxHeight = _editableImage!.ImageSize.Height;
-		_displayImage.Source = _editableImage!.ImageToDisplay.GetBitmap();
-
-		_undoButton.IsEnabled = _editableImage!.CanUndoLastEdit;
-		_redoButton.IsEnabled = _editableImage!.CanRedoLastEdit;
-
 		ClearDrawnRectangle();
 
-		_downsizeToPercentageMenuItem.IsEnabled = false;
-		_downsizeToDimensionsMenuItem.IsEnabled = false;
+		UpdateDisplayLayouts();
+
+		UpdateControlsEnabledStatus();
 
 		SetDownsizeButtonEnabledStatus();
 
 		SetImageTitle();
+	}
+
+	private void UpdateControlsEnabledStatus()
+	{
+		_undoButton.IsEnabled = _editableImage!.CanUndoLastEdit;
+		_redoButton.IsEnabled = _editableImage!.CanRedoLastEdit;
+
+		_downsizeToPercentageMenuItem.IsEnabled = false;
+		_downsizeToDimensionsMenuItem.IsEnabled = false;
+	}
+
+	private void UpdateDisplayLayouts()
+	{
+		SizeToContent = SizeToContent.Manual;
+
+		_displayImage.MaxWidth = _editableImage!.ImageSize.Width;
+		_displayImage.MaxHeight = _editableImage!.ImageSize.Height;
+		_displayImage.Source = _editableImage!.ImageToDisplay.GetBitmap();
+		_displayImage.InvalidateMeasure();
+		_displayImage.InvalidateArrange();
+		_displayImage.UpdateLayout();
+
+		_displayGrid.InvalidateMeasure();
+		_displayGrid.InvalidateArrange();
+		_displayGrid.UpdateLayout();
 
 		SizeToContent = SizeToContent.WidthAndHeight;
 	}
