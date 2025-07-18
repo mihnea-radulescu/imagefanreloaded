@@ -76,7 +76,7 @@ public partial class ImageWindow : Window, IImageView
 		_negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
 		_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
 
-		_screenSize = ScreenInformation!.GetScreenSize();
+		_scaledScreenSize = ScreenInformation!.GetScaledScreenSize();
 
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
@@ -119,7 +119,7 @@ public partial class ImageWindow : Window, IImageView
 	private double _negligibleImageDragX;
 	private double _negligibleImageDragY;
 
-	private ImageSize? _screenSize;
+	private ImageSize? _scaledScreenSize;
 
 	private bool _canZoomToImageSize;
 	private Cursor? _screenSizeCursor;
@@ -481,7 +481,7 @@ public partial class ImageWindow : Window, IImageView
 
 	private async Task ResizeToScreenSize()
 	{
-		var image = _imageFile!.GetResizedImage(_screenSize!, TabOptions!.ApplyImageOrientation);
+		var image = _imageFile!.GetResizedImage(_scaledScreenSize!, TabOptions!.ApplyImageOrientation);
 
 		_imageViewState = ImageViewState.ResizedToScreenSize;
 		Cursor = _screenSizeCursor;
@@ -583,8 +583,8 @@ public partial class ImageWindow : Window, IImageView
 	{
 		var canZoomToImageSize =
 			!_imageFile!.IsAnimatedImage &&
-			(_imageFile!.ImageSize.Width > _screenSize!.Width ||
-			 _imageFile!.ImageSize.Height > _screenSize!.Height);
+			(_imageFile!.ImageSize.Width > _scaledScreenSize!.Width ||
+			 _imageFile!.ImageSize.Height > _scaledScreenSize!.Height);
 
 		return canZoomToImageSize;
 	}

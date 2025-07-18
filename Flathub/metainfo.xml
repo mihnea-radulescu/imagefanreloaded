@@ -67,6 +67,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.07.19" date="2025-07-19">
+			<description>
+				<p>Implemented integer and fractional screen scaling</p>
+			</description>
+		</release>
 		<release version="1.2025.07.18" date="2025-07-18">
 			<description>
 				<p>Added image editing capabilities</p>

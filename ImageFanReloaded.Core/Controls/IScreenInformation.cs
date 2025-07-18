@@ -4,5 +4,5 @@ namespace ImageFanReloaded.Core.Controls;
 
 public interface IScreenInformation
 {
-	ImageSize GetScreenSize();
+	ImageSize GetScaledScreenSize();
 }
