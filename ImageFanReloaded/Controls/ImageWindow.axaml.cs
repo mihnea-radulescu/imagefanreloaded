@@ -9,21 +9,16 @@ using Avalonia.Threading;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.ImageHandling.Extensions;
 using ImageFanReloaded.Keyboard;
+using ImageFanReloaded.Mouse;
 
 namespace ImageFanReloaded.Controls;
 
 public partial class ImageWindow : Window, IImageView
 {
-	static ImageWindow()
-	{
-		ArrowCursor = new Cursor(StandardCursorType.Arrow);
-		HandCursor = new Cursor(StandardCursorType.Hand);
-		DragMoveCursor = new Cursor(StandardCursorType.DragMove);
-	}
-
 	public ImageWindow()
 	{
 		InitializeComponent();
@@ -38,7 +33,21 @@ public partial class ImageWindow : Window, IImageView
 		set
 		{
 			_globalParameters = value;
+
 			_invalidImage = _globalParameters!.InvalidImage;
+		}
+	}
+
+	public IMouseCursorFactory? MouseCursorFactory
+	{
+		get => _mouseCursorFactory;
+		set
+		{
+			_mouseCursorFactory = value;
+
+			_standardCursor = _mouseCursorFactory!.StandardCursor.GetCursor();
+			_zoomCursor = _mouseCursorFactory!.ZoomCursor.GetCursor();
+			_dragCursor = _mouseCursorFactory!.DragCursor.GetCursor();
 		}
 	}
 
@@ -89,10 +98,6 @@ public partial class ImageWindow : Window, IImageView
 	private const int OneImageForward = 1;
 	private const int OneImageBackward = -1;
 
-	private static readonly Cursor ArrowCursor;
-	private static readonly Cursor HandCursor;
-	private static readonly Cursor DragMoveCursor;
-
 	private CancellationTokenSource? _ctsAnimation;
 	private CancellationTokenSource? _ctsSlideshow;
 
@@ -101,9 +106,15 @@ public partial class ImageWindow : Window, IImageView
 	private IImage? _previousImage;
 
 	private IGlobalParameters? _globalParameters;
+	private IMouseCursorFactory? _mouseCursorFactory;
+
 	private IImage? _invalidImage;
 
 	private IImageFile? _imageFile;
+
+	private Cursor? _standardCursor;
+	private Cursor? _zoomCursor;
+	private Cursor? _dragCursor;
 
 	private double _negligibleImageDragX;
 	private double _negligibleImageDragY;
@@ -578,8 +589,7 @@ public partial class ImageWindow : Window, IImageView
 		return canZoomToImageSize;
 	}
 
-	private Cursor GetScreenSizeCursor()
-		=> _canZoomToImageSize ? HandCursor : ArrowCursor;
+	private Cursor GetScreenSizeCursor() => _canZoomToImageSize ? _zoomCursor! : _standardCursor!;
 
 	private void ZoomToImageSize(CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
 	{
@@ -587,7 +597,7 @@ public partial class ImageWindow : Window, IImageView
 		SetImageSource(image);
 
 		_imageViewState = ImageViewState.ZoomedToImageSize;
-		Cursor = DragMoveCursor;
+		Cursor = _dragCursor!;
 
 		var zoomRectangle = GetZoomRectangle(coordinatesToImageSizeRatio, image);
 		_displayImage.BringIntoView(zoomRectangle);

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.Controls;
@@ -18,6 +19,8 @@ public interface IThumbnailBox
 	bool HasImageError { get; }
 
 	bool IsSelected { get; }
+
+	IMouseCursorFactory? MouseCursorFactory { get; set; }
 
 	void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters);
 

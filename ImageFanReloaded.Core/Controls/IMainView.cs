@@ -1,5 +1,6 @@
 using System;
 using ImageFanReloaded.Core.CustomEventArgs;
+using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 
@@ -8,6 +9,7 @@ namespace ImageFanReloaded.Core.Controls;
 public interface IMainView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
+	IMouseCursorFactory? MouseCursorFactory { get; set; }
 	ITabOptionsFactory? TabOptionsFactory { get; set; }
 	IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 

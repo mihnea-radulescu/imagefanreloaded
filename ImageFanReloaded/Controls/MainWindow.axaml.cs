@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.Keyboard;
+using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Keyboard;
@@ -23,6 +24,7 @@ public partial class MainWindow : Window, IMainView
 	}
 
 	public IGlobalParameters? GlobalParameters { get; set; }
+	public IMouseCursorFactory? MouseCursorFactory { get; set; }
 	public ITabOptionsFactory? TabOptionsFactory { get; set; }
 	public IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 
@@ -171,7 +173,7 @@ public partial class MainWindow : Window, IMainView
 		{
 			MainView = this,
 			GlobalParameters = GlobalParameters,
-
+			MouseCursorFactory = MouseCursorFactory,
 			TabOptions = TabOptionsFactory!.GetTabOptions(),
 			FolderChangedMutex = AsyncMutexFactory!.GetAsyncMutex(),
 		};

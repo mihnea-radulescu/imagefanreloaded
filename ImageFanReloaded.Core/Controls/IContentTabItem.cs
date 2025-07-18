@@ -6,6 +6,7 @@ using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
+using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 
@@ -16,6 +17,8 @@ public interface IContentTabItem
 	IMainView? MainView { get; set; }
 
 	IGlobalParameters? GlobalParameters { get; set; }
+	IMouseCursorFactory? MouseCursorFactory { get; set; }
+
 	ITabOptions? TabOptions { get; set; }
 
 	IAsyncMutex? FolderChangedMutex { get; set; }

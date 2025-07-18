@@ -17,6 +17,7 @@ using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.ImageHandling.Factories.Implementation;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
+using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.OperatingSystem.Implementation;
 using ImageFanReloaded.Core.Settings;
@@ -25,6 +26,7 @@ using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Core.Synchronization.Implementation;
 using ImageFanReloaded.ImageHandling;
 using ImageFanReloaded.ImageHandling.Factories;
+using ImageFanReloaded.Mouse;
 using ImageFanReloaded.Settings;
 
 namespace ImageFanReloaded;
@@ -57,6 +59,7 @@ public class AppBootstrap : IAppBootstrap
 	private IGlobalParameters _globalParameters = default!;
 	private IFileSizeEngine _fileSizeEngine = default!;
 	private IDiscQueryEngine _discQueryEngine = default!;
+	private IMouseCursorFactory _mouseCursorFactory = default!;
 	private ITabOptionsFactory _tabOptionsFactory = default!;
 	private IInputPathHandlerFactory _inputPathHandlerFactory = default!;
 	private IInputPathHandler _commandLineArgsInputPathHandler = default!;
@@ -79,8 +82,10 @@ public class AppBootstrap : IAppBootstrap
 		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 
 #if FLATPAK_BUILD
+		_mouseCursorFactory = new FlatpakMouseCursorFactory();
 		_tabOptionsFactory = new FlatpakTabOptionsFactory();
 #else
+		_mouseCursorFactory = new DefaultMouseCursorFactory();
 		_tabOptionsFactory = new DefaultTabOptionsFactory();
 #endif
 
@@ -121,6 +126,7 @@ public class AppBootstrap : IAppBootstrap
 
 		IMainView mainView = mainWindow;
 		mainView.GlobalParameters = _globalParameters;
+		mainView.MouseCursorFactory = _mouseCursorFactory;
 		mainView.TabOptionsFactory = _tabOptionsFactory;
 		mainView.AsyncMutexFactory = asyncMutexFactory;
 
@@ -129,7 +135,7 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters, _fileSizeEngine, thumbnailInfoFactory, _discQueryEngine);
 
 		IImageViewFactory imageViewFactory = new ImageViewFactory(
-			_globalParameters, screenInformation);
+			_globalParameters, _mouseCursorFactory, screenInformation);
 
 		IImageEditViewFactory imageEditViewFactory = new ImageEditViewFactory(
 			_globalParameters,
@@ -174,6 +180,7 @@ public class AppBootstrap : IAppBootstrap
 
 		IImageView imageView = imageWindow;
 		imageView.GlobalParameters = _globalParameters;
+		imageView.MouseCursorFactory = _mouseCursorFactory;
 
 		imageView.ScreenInformation = screenInformation;
 

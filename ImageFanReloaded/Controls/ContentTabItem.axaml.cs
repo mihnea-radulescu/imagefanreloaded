@@ -36,6 +36,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public IMainView? MainView { get; set; }
 
 	public IGlobalParameters? GlobalParameters { get; set; }
+	public IMouseCursorFactory? MouseCursorFactory { get; set; }
+
 	public ITabOptions? TabOptions { get; set; }
 
 	public IAsyncMutex? FolderChangedMutex { get; set; }
@@ -239,6 +241,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var aThumbnailBox = new ThumbnailBox();
 			aThumbnailBox.Index = _maxThumbnailIndex + i;
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
+			aThumbnailBox.MouseCursorFactory = MouseCursorFactory;
+
 			aThumbnailBox.SetControlProperties(TabOptions!.ThumbnailSize.ToInt(), GlobalParameters!);
 
 			thumbnailInfo.ThumbnailBox = aThumbnailBox;
@@ -416,7 +420,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		var thumbnailBox = e.ThumbnailBox;
 
-		if (e.ClickType == ClickType.Left)
+		if (e.MouseClickType == MouseClickType.Left)
 		{
 			if (thumbnailBox.IsSelected)
 			{
@@ -427,7 +431,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				SelectThumbnailBox(thumbnailBox);
 			}
 		}
-		else if (e.ClickType == ClickType.Right)
+		else if (e.MouseClickType == MouseClickType.Right)
 		{
 			if (!thumbnailBox.IsSelected)
 			{

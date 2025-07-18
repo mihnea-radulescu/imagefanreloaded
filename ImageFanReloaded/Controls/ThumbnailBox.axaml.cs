@@ -11,17 +11,12 @@ using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.ImageHandling.Extensions;
+using ImageFanReloaded.Mouse;
 
 namespace ImageFanReloaded.Controls;
 
 public partial class ThumbnailBox : UserControl, IThumbnailBox
 {
-	static ThumbnailBox()
-	{
-		HandCursor = new Cursor(StandardCursorType.Hand);
-		ArrowCursor = new Cursor(StandardCursorType.Arrow);
-	}
-
 	public ThumbnailBox()
 	{
 		InitializeComponent();
@@ -52,6 +47,18 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	public bool IsSelected { get; private set; }
 
+	public IMouseCursorFactory? MouseCursorFactory
+	{
+		get => _mouseCursorFactory;
+		set
+		{
+			_mouseCursorFactory = value;
+
+			_standardCursor = _mouseCursorFactory!.StandardCursor.GetCursor();
+			_zoomCursor = _mouseCursorFactory!.ZoomCursor.GetCursor();
+		}
+	}
+
 	public void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters)
 	{
 		_thumbnailImage.MaxWidth = thumbnailSize;
@@ -61,7 +68,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	public void SelectThumbnail()
 	{
 		_thumbnailBoxBorder.BorderBrush = Brushes.DodgerBlue;
-		Cursor = HandCursor;
+		Cursor = _zoomCursor!;
 		IsSelected = true;
 
 		BringThumbnailIntoView();
@@ -72,7 +79,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	public void UnselectThumbnail()
 	{
 		_thumbnailBoxBorder.BorderBrush = Brushes.LightGray;
-		Cursor = ArrowCursor;
+		Cursor = _standardCursor!;
 		IsSelected = false;
 	}
 
@@ -110,10 +117,12 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	#region Private
 
-	private static readonly Cursor HandCursor;
-	private static readonly Cursor ArrowCursor;
-
 	private IThumbnailInfo? _thumbnailInfo;
+
+	private IMouseCursorFactory? _mouseCursorFactory;
+
+	private Cursor? _standardCursor;
+	private Cursor? _zoomCursor;
 
 	private bool _isAnimated;
 	private CancellationTokenSource? _ctsAnimation;
@@ -123,11 +132,13 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	{
 		if (e.InitialPressMouseButton == MouseButton.Left)
 		{
-			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxClickedEventArgs(this, ClickType.Left));
+			ThumbnailBoxClicked?.Invoke(
+				this, new ThumbnailBoxClickedEventArgs(this, MouseClickType.Left));
 		}
 		else if (e.InitialPressMouseButton == MouseButton.Right)
 		{
-			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxClickedEventArgs(this, ClickType.Right));
+			ThumbnailBoxClicked?.Invoke(
+				this, new ThumbnailBoxClickedEventArgs(this, MouseClickType.Right));
 		}
 	}
 
