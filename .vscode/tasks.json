@@ -63,46 +63,6 @@
 			"problemMatcher": "$msCompile"
 		},
 		{
-			"label": "publish osx-arm64",
-			"command": "dotnet",
-			"type": "process",
-			"args": [
-				"publish",
-				"${workspaceFolder}/ImageFanReloaded/ImageFanReloaded.csproj",
-				"--output",
-				"${workspaceFolder}/publish/osx-arm64",
-				"-p:PublishReadyToRun=true",
-				"-p:PublishSingleFile=true",
-				"--self-contained",
-				"true",
-				"--framework",
-				"net8.0",
-				"--runtime",
-				"osx-arm64"
-			],
-			"problemMatcher": "$msCompile"
-		},
-		{
-			"label": "publish osx-x64",
-			"command": "dotnet",
-			"type": "process",
-			"args": [
-				"publish",
-				"${workspaceFolder}/ImageFanReloaded/ImageFanReloaded.csproj",
-				"--output",
-				"${workspaceFolder}/publish/osx-x64",
-				"-p:PublishReadyToRun=true",
-				"-p:PublishSingleFile=true",
-				"--self-contained",
-				"true",
-				"--framework",
-				"net8.0",
-				"--runtime",
-				"osx-x64"
-			],
-			"problemMatcher": "$msCompile"
-		},
-		{
 			"label": "publish win-arm64",
 			"command": "dotnet",
 			"type": "process",
