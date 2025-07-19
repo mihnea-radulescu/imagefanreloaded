@@ -8,6 +8,7 @@ public abstract class MouseCursorFactoryBase : IMouseCursorFactory
 {
 	public IMouseCursor StandardCursor { get; }
 	public IMouseCursor ZoomCursor { get; }
+	public IMouseCursor SelectCursor { get; }
 
 	public abstract IMouseCursor DragCursor { get; }
 
@@ -17,6 +18,7 @@ public abstract class MouseCursorFactoryBase : IMouseCursorFactory
 	{
 		StandardCursor = new MouseCursor(new Cursor(StandardCursorType.Arrow));
 		ZoomCursor = new MouseCursor(new Cursor(StandardCursorType.Hand));
+		SelectCursor = new MouseCursor(new Cursor(StandardCursorType.Cross));
 	}
 
 	#endregion

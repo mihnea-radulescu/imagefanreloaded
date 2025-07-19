@@ -14,10 +14,12 @@ using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
+using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.TextHandling.Implementation;
-using ImageFanReloaded.Keyboard;
 using ImageFanReloaded.ImageHandling.Extensions;
+using ImageFanReloaded.Keyboard;
+using ImageFanReloaded.Mouse;
 
 namespace ImageFanReloaded.Controls;
 
@@ -43,6 +45,18 @@ public partial class ImageEditWindow : Window, IImageEditView
 			_globalParameters = value;
 
 			_fileSystemStringComparison = _globalParameters!.NameComparer.ToStringComparison();
+		}
+	}
+
+	public IMouseCursorFactory? MouseCursorFactory
+	{
+		get => _mouseCursorFactory;
+		set
+		{
+			_mouseCursorFactory = value;
+
+			_standardCursor = _mouseCursorFactory!.StandardCursor.GetCursor();
+			_selectCursor = _mouseCursorFactory!.SelectCursor.GetCursor();
 		}
 	}
 
@@ -84,9 +98,13 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private IGlobalParameters? _globalParameters;
 	private StringComparison? _fileSystemStringComparison;
+	private IMouseCursorFactory? _mouseCursorFactory;
 
 	private IEditableImage? _editableImage;
 	private bool _hasUnsavedChanges;
+
+	private Cursor? _standardCursor;
+	private Cursor? _selectCursor;
 
 	private bool _hasInProgressUiUpdate;
 
@@ -159,6 +177,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void OnMouseDown(object? sender, PointerPressedEventArgs e)
 	{
+		if (_hasInProgressUiUpdate)
+		{
+			return;
+		}
+
 		ClearDrawnRectangle();
 
 		_mouseDownToImageCoordinates = e.GetPosition(_displayImage);
@@ -166,6 +189,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void OnMouseUp(object? sender, PointerReleasedEventArgs e)
 	{
+		if (_hasInProgressUiUpdate)
+		{
+			return;
+		}
+
 		if (e.InitialPressMouseButton == MouseButton.Left)
 		{
 			_mouseUpToImageCoordinates = e.GetPosition(_displayImage);
@@ -840,6 +868,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		_cropButton.IsEnabled = areControlsEnabled;
 		_snapCropEdgesCheckBox.IsEnabled = areControlsEnabled;
+		_displayImage.Cursor = areControlsEnabled
+			? _selectCursor
+			: _standardCursor;
 
 		_downsizeDropDownButton.IsEnabled = areControlsEnabled;
 		_downsizeToPercentageComboBox.IsEnabled = areControlsEnabled;

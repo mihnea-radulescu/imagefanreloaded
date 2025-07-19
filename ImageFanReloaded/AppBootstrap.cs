@@ -117,7 +117,7 @@ public class AppBootstrap : IAppBootstrap
 		ISaveFileDialogFactory saveFileDialogFactory;
 
 #if FLATPAK_BUILD
-		saveFileDialogFactory = new FlatpakSaveFileDialogFactory();
+		saveFileDialogFactory = new FlatpakSaveFileDialogFactory(mainWindow);
 #else
 		saveFileDialogFactory = new DefaultSaveFileDialogFactory(mainWindow);
 #endif
@@ -139,6 +139,7 @@ public class AppBootstrap : IAppBootstrap
 
 		IImageEditViewFactory imageEditViewFactory = new ImageEditViewFactory(
 			_globalParameters,
+			_mouseCursorFactory,
 			editableImageFactory,
 			saveFileImageFormatFactory,
 			saveFileDialogFactory);

@@ -156,7 +156,6 @@
 			  Margin="10 6 10 10">
 			<Image Name="_displayImage"
 				   Stretch="Uniform"
-				   Cursor="Cross"
 				   PointerPressed="OnMouseDown"
 				   PointerReleased="OnMouseUp"/>
 			<Canvas Name="_cropOverlayCanvas"/>
