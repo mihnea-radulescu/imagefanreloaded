@@ -14,7 +14,7 @@ public class AboutViewFactory : IAboutViewFactory
 		_aboutInformationProvider = aboutInformationProvider;
 		_globalParameters = globalParameters;
 	}
-	
+
 	public IAboutView GetAboutView()
 	{
 		var aboutText = string.Format(
@@ -23,14 +23,14 @@ public class AboutViewFactory : IAboutViewFactory
 		IAboutView aboutView = new AboutWindow();
 		aboutView.GlobalParameters = _globalParameters;
 		aboutView.SetAboutText(aboutText);
-		
+
 		return aboutView;
 	}
-	
+
 	#region Private
-	
+
 	private const string AboutTextTemplate =
-		@"Cross-platform, light-weight, tab-based image viewer, supporting multi-core processing
+		@"Cross-platform, feature-rich, tab-based image viewer, supporting multi-core processing
 
 Version {0}
 Copyright © Mihnea Rădulescu 2017 - {1}
@@ -68,7 +68,7 @@ User interface:
 • key I for toggling image info in image view and zoomed image view modes
 • key Esc for exiting image view and zoomed image view modes, and for quitting application
 ";
-	
+
 	private readonly IAboutInformationProvider _aboutInformationProvider;
 	private readonly IGlobalParameters _globalParameters;
 
