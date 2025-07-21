@@ -11,7 +11,7 @@ Features:
 * image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize
 * image animation support for the formats gif, mng and webp
 * folder ordering by name and last modification time, ascending and descending
-* configurable thumbnail size, between 100 and 400 pixels
+* configurable thumbnail size, between 100 and 1200 pixels
 * slideshow navigation across images
 * image info containing file, image, color, EXIF, IPTC and XMP profiles
 * automatic image orientation according to the EXIF Orientation tag

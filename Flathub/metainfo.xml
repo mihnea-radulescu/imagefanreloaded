@@ -23,7 +23,7 @@
 			<li>image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize</li>
 			<li>image animation support for the formats gif, mng and webp</li>
 			<li>folder ordering by name and last modification time, ascending and descending</li>
-			<li>configurable thumbnail size, between 100 and 400 pixels</li>
+			<li>configurable thumbnail size, between 100 and 1200 pixels</li>
 			<li>slideshow navigation across images</li>
 			<li>image info containing file, image, color, EXIF, IPTC and XMP profiles</li>
 			<li>automatic image orientation according to the EXIF Orientation tag</li>
@@ -67,6 +67,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.07.22" date="2025-07-22">
+			<description>
+				<p>Expanded thumbnail size selection to the range of 100 to 1200 pixels</p>
+			</description>
+		</release>
 		<release version="1.2025.07.20" date="2025-07-20">
 			<description>
 				<p>Improvements around image editing and image save logic</p>

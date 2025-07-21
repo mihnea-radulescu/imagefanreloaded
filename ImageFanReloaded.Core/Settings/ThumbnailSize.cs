@@ -6,12 +6,28 @@ namespace ImageFanReloaded.Core.Settings;
 public enum ThumbnailSize
 {
 	OneHundredPixels = 100,
-	OneHundredAndFiftyPixels = 150,
+	OneHundredFiftyPixels = 150,
 	TwoHundredPixels = 200,
-	TwoHundredAndFixtyPixels = 250,
+	TwoHundredFixtyPixels = 250,
 	ThreeHundredPixels = 300,
-	ThreeHundredAndFixtyPixels = 350,
-	FourHundredPixels = 400
+	ThreeHundredFixtyPixels = 350,
+	FourHundredPixels = 400,
+	FourHundredFixtyPixels = 450,
+	FiveHundredPixels = 500,
+	FiveHundredFiftyPixels = 550,
+	SixHundredPixels = 600,
+	SixHundredFiftyPixels = 650,
+	SevenHundredPixels = 700,
+	SevenHundredFiftyPixels = 750,
+	EightHundredPixels = 800,
+	EightHundredFiftyPixels = 850,
+	NineHundredPixels = 900,
+	NineHundredFiftyPixels = 950,
+	OneThousandPixels = 1000,
+	OneThousandFiftyPixels = 1050,
+	OneThousandOneHundredPixels = 1100,
+	OneThousandOneHundredFiftyPixels = 1150,
+	OneThousandTwoHundredPixels = 1200
 }
 
 public static class ThumbnailSizeExtensions

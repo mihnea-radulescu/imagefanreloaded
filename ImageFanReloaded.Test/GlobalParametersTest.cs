@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
@@ -5,6 +6,7 @@ using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.OperatingSystem;
 using ImageFanReloaded.Core.OperatingSystem.Implementation;
+using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.ImageHandling;
 using ImageFanReloaded.ImageHandling.Extensions;
 using ImageFanReloaded.Settings;
@@ -103,7 +105,8 @@ public class GlobalParametersTest : TestBase
 
 		Assert.NotNull(_globalParameters.InvalidImage.GetBitmap());
 
-		Assert.Equal(15, _globalParameters.PersistentImages.Count);
+		var expectedPersistentImagesCount = 1 + 2 * Enum.GetValues<ThumbnailSize>().Length;
+		Assert.Equal(expectedPersistentImagesCount, _globalParameters.PersistentImages.Count);
 
 		Assert.NotNull(_globalParameters.DriveIcon.GetBitmap());
 		Assert.NotNull(_globalParameters.FolderIcon.GetBitmap());

@@ -63,7 +63,7 @@ public class TabOptions : ITabOptions
 		FileSystemEntryInfoOrdering.Name;
 	private const FileSystemEntryInfoOrderingDirection DefaultFileSystemEntryInfoOrderingDirection =
 		FileSystemEntryInfoOrderingDirection.Ascending;
-	private const ThumbnailSize DefaultThumbnailSize = ThumbnailSize.TwoHundredAndFixtyPixels;
+	private const ThumbnailSize DefaultThumbnailSize = ThumbnailSize.TwoHundredFixtyPixels;
 	private const bool DefaultRecursiveFolderBrowsing = false;
 	private const bool DefaultShowImageViewImageInfo = false;
 	private const int DefaultPanelsSplittingRatio = 15;
