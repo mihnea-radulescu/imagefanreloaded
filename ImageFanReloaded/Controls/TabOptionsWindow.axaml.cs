@@ -7,7 +7,6 @@ using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.Settings;
-using ImageFanReloaded.Core.Settings.Implementation;
 using ImageFanReloaded.Keyboard;
 
 namespace ImageFanReloaded.Controls;
@@ -45,6 +44,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		PopulateSlideshowIntervals();
 
 		SetApplyImageOrientation();
+		SetShowThumbnailImageFileName();
 
 		RegisterTabOptionEvents();
 	}
@@ -53,7 +53,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	#region Private
 
-	private TabOptionChanges _tabOptionChanges;
+	private readonly TabOptionChanges _tabOptionChanges;
 
 	private void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -144,6 +144,14 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		TabOptions!.ApplyImageOrientation = applyImageOrientation;
 		_tabOptionChanges.HasChangedApplyImageOrientation = true;
+	}
+
+	private void OnShowThumbnailImageFileNameIsCheckedChanged(object? sender, RoutedEventArgs e)
+	{
+		var showThumbnailImageFileName = _showThumbnailImageFileNameCheckBox.IsChecked!.Value;
+
+		TabOptions!.ShowThumbnailImageFileName = showThumbnailImageFileName;
+		_tabOptionChanges.HasChangedShowThumbnailImageFileName = true;
 	}
 
 	private void OnSaveAsDefaultIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -273,17 +281,25 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_applyImageOrientationCheckBox.IsChecked = TabOptions!.ApplyImageOrientation;
 	}
 
+	private void SetShowThumbnailImageFileName()
+	{
+		_showThumbnailImageFileNameCheckBox.IsChecked = TabOptions!.ShowThumbnailImageFileName;
+	}
+
 	private void RegisterTabOptionEvents()
 	{
 		_folderOrderingComboBox.SelectionChanged += OnFolderOrderingSelectionChanged;
 		_folderOrderingDirectionComboBox.SelectionChanged +=
 			OnFolderOrderingDirectionSelectionChanged;
 		_thumbnailSizeComboBox.SelectionChanged += OnThumbnailSizeSelectionChanged;
-		_recursiveFolderBrowsingCheckBox.IsCheckedChanged += OnRecursiveFolderBrowsingIsCheckedChanged;
+		_recursiveFolderBrowsingCheckBox.IsCheckedChanged +=
+			OnRecursiveFolderBrowsingIsCheckedChanged;
 		_showImageViewImageInfoCheckBox.IsCheckedChanged += OnShowImageViewImageInfoIsCheckedChanged;
 		_panelsSplittingRatioSlider.ValueChanged += OnPanelsSplittingRatioChanged;
 		_slideshowIntervalComboBox.SelectionChanged += OnSlideshowIntervalSelectionChanged;
 		_applyImageOrientationCheckBox.IsCheckedChanged += OnApplyImageOrientationIsCheckedChanged;
+		_showThumbnailImageFileNameCheckBox.IsCheckedChanged +=
+			OnShowThumbnailImageFileNameIsCheckedChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged += OnSaveAsDefaultIsCheckedChanged;
 	}
@@ -294,11 +310,14 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_folderOrderingDirectionComboBox.SelectionChanged -=
 			OnFolderOrderingDirectionSelectionChanged;
 		_thumbnailSizeComboBox.SelectionChanged -= OnThumbnailSizeSelectionChanged;
-		_recursiveFolderBrowsingCheckBox.IsCheckedChanged -= OnRecursiveFolderBrowsingIsCheckedChanged;
+		_recursiveFolderBrowsingCheckBox.IsCheckedChanged -=
+			OnRecursiveFolderBrowsingIsCheckedChanged;
 		_showImageViewImageInfoCheckBox.IsCheckedChanged -= OnShowImageViewImageInfoIsCheckedChanged;
 		_panelsSplittingRatioSlider.ValueChanged -= OnPanelsSplittingRatioChanged;
 		_slideshowIntervalComboBox.SelectionChanged -= OnSlideshowIntervalSelectionChanged;
 		_applyImageOrientationCheckBox.IsCheckedChanged -= OnApplyImageOrientationIsCheckedChanged;
+		_showThumbnailImageFileNameCheckBox.IsCheckedChanged -=
+			OnShowThumbnailImageFileNameIsCheckedChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged -= OnSaveAsDefaultIsCheckedChanged;
 	}

@@ -25,6 +25,20 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	public event EventHandler<ThumbnailBoxSelectedEventArgs>? ThumbnailBoxSelected;
 	public event EventHandler<ThumbnailBoxClickedEventArgs>? ThumbnailBoxClicked;
 
+	public ITabOptions? TabOptions { get; set; }
+
+	public IMouseCursorFactory? MouseCursorFactory
+	{
+		get => _mouseCursorFactory;
+		set
+		{
+			_mouseCursorFactory = value;
+
+			_standardCursor = _mouseCursorFactory!.StandardCursor.GetCursor();
+			_zoomCursor = _mouseCursorFactory!.ZoomCursor.GetCursor();
+		}
+	}
+
 	public int Index { get; set; }
 
 	public IThumbnailInfo? ThumbnailInfo
@@ -38,7 +52,9 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 			HasImageError = ImageFile.HasReadImageError;
 
 			_thumbnailImage.Source = _thumbnailInfo.ThumbnailImage!.GetBitmap();
+
 			_thumbnailTextBlock.Text = _thumbnailInfo.ThumbnailText;
+			_thumbnailTextBlock.IsVisible = TabOptions!.ShowThumbnailImageFileName;
 		}
 	}
 
@@ -46,18 +62,6 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	public bool HasImageError { get; private set; }
 
 	public bool IsSelected { get; private set; }
-
-	public IMouseCursorFactory? MouseCursorFactory
-	{
-		get => _mouseCursorFactory;
-		set
-		{
-			_mouseCursorFactory = value;
-
-			_standardCursor = _mouseCursorFactory!.StandardCursor.GetCursor();
-			_zoomCursor = _mouseCursorFactory!.ZoomCursor.GetCursor();
-		}
-	}
 
 	public void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters)
 	{

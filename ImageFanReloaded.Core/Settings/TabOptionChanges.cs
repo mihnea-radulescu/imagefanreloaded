@@ -10,6 +10,7 @@ public record TabOptionChanges
 	public bool HasChangedPanelsSplittingRatio { get; set; }
 	public bool HasChangedSlideshowInterval { get; set; }
 	public bool HasChangedApplyImageOrientation { get; set; }
+	public bool HasChangedShowThumbnailImageFileName { get; set; }
 
 	public bool ShouldSaveAsDefault { get; set; }
 }

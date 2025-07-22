@@ -4,7 +4,7 @@
 		Icon="/MainWindowIcon.ico"
 		Title="Tab options"
 		Width="800"
-		Height="450"
+		Height="475"
 		WindowStartupLocation="CenterOwner"
 		CanResize="False"
 		Focusable="True"
@@ -24,6 +24,8 @@
 			<RowDefinition Height="2*"/>
 			<RowDefinition Height="10*"/>
 			<RowDefinition Height="4*"/>
+			<RowDefinition Height="10*"/>
+			<RowDefinition Height="2*"/>
 			<RowDefinition Height="10*"/>
 			<RowDefinition Height="2*"/>
 			<RowDefinition Height="10*"/>
@@ -124,10 +126,19 @@
 		<TextBlock Grid.Row="17"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
+				   Text="Show thumbnail image file name?"
+				   Margin="0 10 0 0"/>
+		<CheckBox Name="_showThumbnailImageFileNameCheckBox"
+				  Grid.Row="17"
+				  Grid.Column="3"/>
+
+		<TextBlock Grid.Row="19"
+				   Grid.Column="1"
+				   HorizontalAlignment="Right"
 				   Text="Save as default?"
 				   Margin="0 10 0 0"/>
 		<CheckBox Name="_saveAsDefaultCheckBox"
-				  Grid.Row="17"
+				  Grid.Row="19"
 				  Grid.Column="3"/>
 	</Grid>
 </Window>

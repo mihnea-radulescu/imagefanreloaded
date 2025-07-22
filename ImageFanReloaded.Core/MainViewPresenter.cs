@@ -155,7 +155,8 @@ public class MainViewPresenter
 		var shouldRaiseFolderChangedEvent =
 			tabOptionChanges.HasChangedThumbnailSize ||
 			tabOptionChanges.HasChangedRecursiveFolderBrowsing ||
-			tabOptionChanges.HasChangedApplyImageOrientation;
+			tabOptionChanges.HasChangedApplyImageOrientation ||
+			tabOptionChanges.HasChangedShowThumbnailImageFileName;
 
 		var shouldRaiseFolderOrderingChangedEvent =
 			tabOptionChanges.HasChangedFolderOrdering ||

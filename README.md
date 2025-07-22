@@ -30,11 +30,12 @@ User interface:
 * keys N and M for changing folder ordering between name and last modification time
 * keys A and D for changing folder ordering direction between ascending and descending
 * keys + and - for changing thumbnail size by an increment of 50 pixels
+* key U to toggle showing file names under thumbnail images
 * key S for slideshow navigation
 * key T for displaying Image edit view, and for switching from command-line image file access mode to thumbnail navigation mode
 * keys in Image edit view: U for undo, I for redo, R for rotate, F for flip, E for effects, S for save as, C for crop and D for downsize
 * key F for displaying Image info view
-* key R for toggling recursive folder browsing
+* key R to toggle recursive folder browsing
 * key E for applying EXIF image orientation
 * key O for displaying Tab options view
 * keys H and F1 for displaying About view
@@ -42,7 +43,7 @@ User interface:
 * keys PageUp and PageDown for scrolling through thumbnails
 * key Enter for entering image view and zoomed image view modes
 * key combos Ctrl+Up, Ctrl+Down, Ctrl+Left and Ctrl+Right for dragging zoomed images
-* key I for toggling image info in image view and zoomed image view modes
+* key I to toggle showing image info in image view and zoomed image view modes
 * key Esc for exiting image view and zoomed image view modes, and for quitting application
 
 ![Screenshot 1](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-1.jpg "ImageFan Reloaded - Screenshot 1")

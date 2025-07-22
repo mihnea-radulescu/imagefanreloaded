@@ -43,7 +43,10 @@
 	<keywords>
 		<keyword>viewer</keyword>
 		<keyword>image viewer</keyword>
+		<keyword>image gallery</keyword>
 		<keyword>image catalog</keyword>
+		<keyword>photo viewer</keyword>
+		<keyword>photo gallery</keyword>
 	</keywords>
 
 	<launchable type="desktop-id">io.github.mihnea_radulescu.imagefanreloaded.desktop</launchable>
@@ -67,6 +70,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.07.23" date="2025-07-23">
+			<description>
+				<p>Added tab option: show thumbnail image file name</p>
+			</description>
+		</release>
 		<release version="1.2025.07.22" date="2025-07-22">
 			<description>
 				<p>Expanded thumbnail size selection to the range of 100 to 1200 pixels</p>

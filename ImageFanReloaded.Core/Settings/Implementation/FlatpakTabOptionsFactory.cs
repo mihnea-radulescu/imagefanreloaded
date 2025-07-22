@@ -4,7 +4,7 @@ public class FlatpakTabOptionsFactory : TabOptionsFactoryBase
 {
 	#region Protected
 
-	protected override string SettingsFolderName => "";
+	protected override string SettingsFolderName => string.Empty;
 
 	#endregion
 }

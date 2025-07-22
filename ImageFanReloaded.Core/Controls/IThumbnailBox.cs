@@ -12,6 +12,9 @@ public interface IThumbnailBox
 	event EventHandler<ThumbnailBoxSelectedEventArgs>? ThumbnailBoxSelected;
 	event EventHandler<ThumbnailBoxClickedEventArgs>? ThumbnailBoxClicked;
 
+	ITabOptions? TabOptions { get; set; }
+	IMouseCursorFactory? MouseCursorFactory { get; set; }
+
 	int Index { get; set; }
 	IThumbnailInfo? ThumbnailInfo { get; set; }
 
@@ -19,8 +22,6 @@ public interface IThumbnailBox
 	bool HasImageError { get; }
 
 	bool IsSelected { get; }
-
-	IMouseCursorFactory? MouseCursorFactory { get; set; }
 
 	void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters);
 

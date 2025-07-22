@@ -70,22 +70,22 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		var shouldHandleKeyPressing = ShouldStartSlideshow(keyModifiers, keyPressing)
-									  || ShouldDisplayImageInfo(keyModifiers, keyPressing)
-									  || ShouldDisplayImageEdit(keyModifiers, keyPressing)
-									  || ShouldDisplayTabOptions(keyModifiers, keyPressing)
-									  || ShouldDisplayAboutInfo(keyModifiers, keyPressing)
-									  || ShouldChangeFolderOrdering(keyModifiers, keyPressing)
-									  || ShouldChangeFolderOrderingDirection(
-											keyModifiers, keyPressing)
-									  || ShouldChangeThumbnailSize(keyModifiers, keyPressing)
-									  || ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing)
-									  || ShouldChangeApplyImageOrientation(keyModifiers, keyPressing)
-									  || ShouldChangeImageViewImageInfoVisibility(keyModifiers, keyPressing)
-									  || ShouldSwitchControlFocus(keyModifiers, keyPressing)
-									  || ShouldHandleThumbnailSelection(keyModifiers, keyPressing)
-									  || ShouldHandleThumbnailScrolling(keyModifiers, keyPressing)
-									  || ShouldHandleThumbnailNavigation(keyModifiers, keyPressing);
+		var shouldHandleKeyPressing = ShouldStartSlideshow(keyModifiers, keyPressing) ||
+			ShouldDisplayImageInfo(keyModifiers, keyPressing) ||
+			ShouldDisplayImageEdit(keyModifiers, keyPressing) ||
+			ShouldDisplayTabOptions(keyModifiers, keyPressing) ||
+			ShouldDisplayAboutInfo(keyModifiers, keyPressing) ||
+			ShouldChangeFolderOrdering(keyModifiers, keyPressing) ||
+			ShouldChangeFolderOrderingDirection(keyModifiers, keyPressing) ||
+			ShouldChangeThumbnailSize(keyModifiers, keyPressing) ||
+			ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing) ||
+			ShouldChangeApplyImageOrientation(keyModifiers, keyPressing) ||
+			ShouldChangeShowThumbnailImageFileName(keyModifiers, keyPressing) ||
+			ShouldChangeImageViewImageInfoVisibility(keyModifiers, keyPressing) ||
+			ShouldSwitchControlFocus(keyModifiers, keyPressing) ||
+			ShouldHandleThumbnailSelection(keyModifiers, keyPressing) ||
+			ShouldHandleThumbnailScrolling(keyModifiers, keyPressing) ||
+			ShouldHandleThumbnailNavigation(keyModifiers, keyPressing);
 
 		return shouldHandleKeyPressing;
 	}
@@ -131,6 +131,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldChangeApplyImageOrientation(keyModifiers, keyPressing))
 		{
 			ChangeApplyImageOrientation();
+		}
+		else if (ShouldChangeShowThumbnailImageFileName(keyModifiers, keyPressing))
+		{
+			ChangeShowThumbnailImageFileName();
 		}
 		else if (ShouldChangeImageViewImageInfoVisibility(keyModifiers, keyPressing))
 		{
@@ -239,9 +243,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var thumbnailInfo = thumbnailInfoCollection[i];
 
 			var aThumbnailBox = new ThumbnailBox();
+			aThumbnailBox.TabOptions = TabOptions;
+			aThumbnailBox.MouseCursorFactory = MouseCursorFactory;
+
 			aThumbnailBox.Index = _maxThumbnailIndex + i;
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
-			aThumbnailBox.MouseCursorFactory = MouseCursorFactory;
 
 			aThumbnailBox.SetControlProperties(TabOptions!.ThumbnailSize.ToInt(), GlobalParameters!);
 
@@ -650,7 +656,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldStartSlideshow(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.SKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.SKey)
 		{
 			return true;
 		}
@@ -660,7 +667,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldDisplayImageInfo(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.FKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.FKey)
 		{
 			return true;
 		}
@@ -670,7 +678,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldDisplayImageEdit(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.TKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.TKey)
 		{
 			return true;
 		}
@@ -680,7 +689,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldDisplayTabOptions(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.OKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.OKey)
 		{
 			return true;
 		}
@@ -734,7 +744,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldToggleRecursiveFolderAccess(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.RKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.RKey)
 		{
 			return true;
 		}
@@ -744,7 +755,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldChangeApplyImageOrientation(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.EKey)
 		{
 			return true;
 		}
@@ -752,9 +764,22 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
-	private bool ShouldChangeImageViewImageInfoVisibility(KeyModifiers keyModifiers, Key keyPressing)
+	private bool ShouldChangeShowThumbnailImageFileName(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.IKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.UKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldChangeImageViewImageInfoVisibility(
+		KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.IKey)
 		{
 			return true;
 		}
@@ -764,7 +789,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldSwitchControlFocus(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.TabKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.TabKey)
 		{
 			return true;
 		}
@@ -788,7 +814,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		if (_selectedThumbnailBox is not null &&
 			keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.PageUpKey || keyPressing == GlobalParameters!.PageDownKey))
+			(keyPressing == GlobalParameters!.PageUpKey ||
+			 keyPressing == GlobalParameters!.PageDownKey))
 		{
 			return true;
 		}
@@ -967,6 +994,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void ChangeApplyImageOrientation()
 	{
 		TabOptions!.ApplyImageOrientation = !TabOptions!.ApplyImageOrientation;
+
+		RaiseFolderChangedEvent();
+	}
+
+	private void ChangeShowThumbnailImageFileName()
+	{
+		TabOptions!.ShowThumbnailImageFileName = !TabOptions!.ShowThumbnailImageFileName;
 
 		RaiseFolderChangedEvent();
 	}

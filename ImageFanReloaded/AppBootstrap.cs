@@ -1,5 +1,3 @@
-//#define FLATPAK_BUILD
-
 using System.Threading.Tasks;
 using Avalonia.Controls.ApplicationLifetimes;
 using ImageFanReloaded.Controls;
@@ -81,17 +79,23 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters, _fileSizeEngine, imageFileFactory);
 		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 
-#if FLATPAK_BUILD
-		_mouseCursorFactory = new FlatpakMouseCursorFactory();
-		_tabOptionsFactory = new FlatpakTabOptionsFactory();
-#else
-		_mouseCursorFactory = new DefaultMouseCursorFactory();
-		_tabOptionsFactory = new DefaultTabOptionsFactory();
-#endif
+		IEnvironmentSettings environmentSettings = new EnvironmentSettings();
+
+		if (environmentSettings.IsInsideFlatpakContainer)
+		{
+			_mouseCursorFactory = new FlatpakMouseCursorFactory();
+			_tabOptionsFactory = new FlatpakTabOptionsFactory();
+		}
+		else
+		{
+			_mouseCursorFactory = new DefaultMouseCursorFactory();
+			_tabOptionsFactory = new DefaultTabOptionsFactory();
+		}
 
 		_inputPathHandlerFactory = new InputPathHandlerFactory(_globalParameters, _discQueryEngine);
 		string? commandLineArgsInputPath = GetCommandLineArgsInputPath();
-		_commandLineArgsInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(commandLineArgsInputPath);
+		_commandLineArgsInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(
+			commandLineArgsInputPath);
 	}
 	
 	private string? GetCommandLineArgsInputPath()
@@ -102,7 +106,8 @@ public class AppBootstrap : IAppBootstrap
 		return inputPath;
 	}
 
-	private bool IsMainViewAccess() => _commandLineArgsInputPathHandler.InputPathType != InputPathType.File;
+	private bool IsMainViewAccess()
+		=> _commandLineArgsInputPathHandler.InputPathType != InputPathType.File;
 
 	private void ShowMainView()
 	{
