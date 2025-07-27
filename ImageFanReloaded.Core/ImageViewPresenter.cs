@@ -30,13 +30,17 @@ public class ImageViewPresenter
 		_imageView = imageView;
 		_imageView.ImageChanged += OnImageChanged;
 
-		_imageFiles = new List<IImageFile>();
+		_imageFiles = [];
 		_currentImageFileIndex = 0;
 	}
 
 	public async Task SetUpAccessToImages()
 	{
-		_imageFiles = await _discQueryEngine.GetImageFiles(_inputPathHandler.FolderPath!, false);
+		_imageFiles = await _discQueryEngine.GetImageFiles(
+			_inputPathHandler.FolderPath!,
+			FileSystemEntryInfoOrdering.Name,
+			FileSystemEntryInfoOrderingDirection.Ascending,
+			false);
 
 		(_currentImageFile, _currentImageFileIndex) = _imageFiles
 			.Select((anImageFile, index) => (anImageFile, index))

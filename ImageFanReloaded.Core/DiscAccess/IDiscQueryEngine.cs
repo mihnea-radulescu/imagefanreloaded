@@ -13,10 +13,14 @@ public interface IDiscQueryEngine
 
 	Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
 		string folderPath,
-		FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering,
-		FileSystemEntryInfoOrderingDirection fileSystemEntryInfoOrderingDirection);
-	
+		FileSystemEntryInfoOrdering folderOrdering,
+		FileSystemEntryInfoOrderingDirection folderOrderingDirection);
+
 	Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath);
 
-	Task<IReadOnlyList<IImageFile>> GetImageFiles(string folderPath, bool recursive);
+	Task<IReadOnlyList<IImageFile>> GetImageFiles(
+		string folderPath,
+		FileSystemEntryInfoOrdering imageFileOrdering,
+		FileSystemEntryInfoOrderingDirection imageFileOrderingDirection,
+		bool recursive);
 }

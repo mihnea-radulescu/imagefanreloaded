@@ -7,8 +7,12 @@ namespace ImageFanReloaded.Core.Settings.Implementation;
 
 public class TabOptions : ITabOptions
 {
-	public FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; set; }
-	public FileSystemEntryInfoOrderingDirection FileSystemEntryInfoOrderingDirection { get; set; }
+	public FileSystemEntryInfoOrdering FolderOrdering { get; set; }
+	public FileSystemEntryInfoOrderingDirection FolderOrderingDirection { get; set; }
+
+	public FileSystemEntryInfoOrdering ImageFileOrdering { get; set; }
+	public FileSystemEntryInfoOrderingDirection ImageFileOrderingDirection { get; set; }
+
 	public ThumbnailSize ThumbnailSize { get; set; }
 	public bool RecursiveFolderBrowsing { get; set; }
 	public bool ShowImageViewImageInfo { get; set; }
@@ -60,10 +64,16 @@ public class TabOptions : ITabOptions
 
 	private const string SettingsFileName = "DefaultTabOptions.json";
 
-	private const FileSystemEntryInfoOrdering DefaultFileSystemEntryInfoOrdering =
+	private const FileSystemEntryInfoOrdering DefaultFolderOrdering =
 		FileSystemEntryInfoOrdering.Name;
-	private const FileSystemEntryInfoOrderingDirection DefaultFileSystemEntryInfoOrderingDirection =
+	private const FileSystemEntryInfoOrderingDirection DefaultFolderOrderingDirection =
 		FileSystemEntryInfoOrderingDirection.Ascending;
+
+	private const FileSystemEntryInfoOrdering DefaultImageFileOrdering =
+		FileSystemEntryInfoOrdering.Name;
+	private const FileSystemEntryInfoOrderingDirection DefaultImageFileOrderingDirection =
+		FileSystemEntryInfoOrderingDirection.Ascending;
+
 	private const ThumbnailSize DefaultThumbnailSize = ThumbnailSize.TwoHundredFixtyPixels;
 	private const bool DefaultRecursiveFolderBrowsing = false;
 	private const bool DefaultShowImageViewImageInfo = false;
@@ -105,15 +115,24 @@ public class TabOptions : ITabOptions
 			return tabOptions;
 		}
 
-		if (!IsValidEnumValue(tabOptions.FileSystemEntryInfoOrdering))
+		if (!IsValidEnumValue(tabOptions.FolderOrdering))
 		{
-			tabOptions.FileSystemEntryInfoOrdering = DefaultFileSystemEntryInfoOrdering;
+			tabOptions.FolderOrdering = DefaultFolderOrdering;
 		}
 
-		if (!IsValidEnumValue(tabOptions.FileSystemEntryInfoOrderingDirection))
+		if (!IsValidEnumValue(tabOptions.FolderOrderingDirection))
 		{
-			tabOptions.FileSystemEntryInfoOrderingDirection =
-				DefaultFileSystemEntryInfoOrderingDirection;
+			tabOptions.FolderOrderingDirection = DefaultFolderOrderingDirection;
+		}
+
+		if (!IsValidEnumValue(tabOptions.ImageFileOrdering))
+		{
+			tabOptions.ImageFileOrdering = DefaultImageFileOrdering;
+		}
+
+		if (!IsValidEnumValue(tabOptions.ImageFileOrderingDirection))
+		{
+			tabOptions.ImageFileOrderingDirection = DefaultImageFileOrderingDirection;
 		}
 
 		if (!IsValidEnumValue(tabOptions.ThumbnailSize))
@@ -138,9 +157,12 @@ public class TabOptions : ITabOptions
 	{
 		if (DefaultTabOptions is not null)
 		{
-			FileSystemEntryInfoOrdering = DefaultTabOptions.FileSystemEntryInfoOrdering;
-			FileSystemEntryInfoOrderingDirection =
-				DefaultTabOptions.FileSystemEntryInfoOrderingDirection;
+			FolderOrdering = DefaultTabOptions.FolderOrdering;
+			FolderOrderingDirection = DefaultTabOptions.FolderOrderingDirection;
+
+			ImageFileOrdering = DefaultTabOptions.ImageFileOrdering;
+			ImageFileOrderingDirection = DefaultTabOptions.ImageFileOrderingDirection;
+
 			ThumbnailSize = DefaultTabOptions.ThumbnailSize;
 			RecursiveFolderBrowsing = DefaultTabOptions.RecursiveFolderBrowsing;
 			ShowImageViewImageInfo = DefaultTabOptions.ShowImageViewImageInfo;
@@ -151,8 +173,12 @@ public class TabOptions : ITabOptions
 		}
 		else
 		{
-			FileSystemEntryInfoOrdering = DefaultFileSystemEntryInfoOrdering;
-			FileSystemEntryInfoOrderingDirection = DefaultFileSystemEntryInfoOrderingDirection;
+			FolderOrdering = DefaultFolderOrdering;
+			FolderOrderingDirection = DefaultFolderOrderingDirection;
+
+			ImageFileOrdering = DefaultImageFileOrdering;
+			ImageFileOrderingDirection = DefaultImageFileOrderingDirection;
+
 			ThumbnailSize = DefaultThumbnailSize;
 			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing;
 			ShowImageViewImageInfo = DefaultShowImageViewImageInfo;
@@ -165,9 +191,12 @@ public class TabOptions : ITabOptions
 
 	private void SetDefaultTabOptions()
 	{
-		DefaultTabOptions!.FileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering;
-		DefaultTabOptions!.FileSystemEntryInfoOrderingDirection =
-			FileSystemEntryInfoOrderingDirection;
+		DefaultTabOptions!.FolderOrdering = FolderOrdering;
+		DefaultTabOptions!.FolderOrderingDirection = FolderOrderingDirection;
+
+		DefaultTabOptions!.ImageFileOrdering = ImageFileOrdering;
+		DefaultTabOptions!.ImageFileOrderingDirection = ImageFileOrderingDirection;
+
 		DefaultTabOptions!.ThumbnailSize = ThumbnailSize;
 		DefaultTabOptions!.RecursiveFolderBrowsing = RecursiveFolderBrowsing;
 		DefaultTabOptions!.ShowImageViewImageInfo = ShowImageViewImageInfo;

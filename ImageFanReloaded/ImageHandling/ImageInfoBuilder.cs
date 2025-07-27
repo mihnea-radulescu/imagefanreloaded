@@ -22,8 +22,10 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 		try
 		{
-			return await BuildExtendedImageInfo(
+			var extendedImageInfo = await BuildExtendedImageInfo(
 				imageFile.ImageFileData, imageFile.ImageSize, imageFile.IsAnimatedImage);
+
+			return extendedImageInfo;
 		}
 		catch
 		{

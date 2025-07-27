@@ -4,8 +4,12 @@ namespace ImageFanReloaded.Core.Settings;
 
 public interface ITabOptions
 {
-	FileSystemEntryInfoOrdering FileSystemEntryInfoOrdering { get; set; }
-	FileSystemEntryInfoOrderingDirection FileSystemEntryInfoOrderingDirection { get; set; }
+	FileSystemEntryInfoOrdering FolderOrdering { get; set; }
+	FileSystemEntryInfoOrderingDirection FolderOrderingDirection { get; set; }
+
+	FileSystemEntryInfoOrdering ImageFileOrdering { get; set; }
+	FileSystemEntryInfoOrderingDirection ImageFileOrderingDirection { get; set; }
+
 	ThumbnailSize ThumbnailSize { get; set; }
 	bool RecursiveFolderBrowsing { get; set; }
 	bool ShowImageViewImageInfo { get; set; }

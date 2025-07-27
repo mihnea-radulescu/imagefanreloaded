@@ -77,6 +77,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			ShouldDisplayAboutInfo(keyModifiers, keyPressing) ||
 			ShouldChangeFolderOrdering(keyModifiers, keyPressing) ||
 			ShouldChangeFolderOrderingDirection(keyModifiers, keyPressing) ||
+			ShouldChangeImageFileOrdering(keyModifiers, keyPressing) ||
+			ShouldChangeImageFileOrderingDirection(keyModifiers, keyPressing) ||
 			ShouldChangeThumbnailSize(keyModifiers, keyPressing) ||
 			ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing) ||
 			ShouldChangeApplyImageOrientation(keyModifiers, keyPressing) ||
@@ -119,6 +121,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldChangeFolderOrderingDirection(keyModifiers, keyPressing))
 		{
 			ChangeFolderOrderingDirection(keyPressing);
+		}
+		else if (ShouldChangeImageFileOrdering(keyModifiers, keyPressing))
+		{
+			ChangeImageFileOrdering(keyPressing);
+		}
+		else if (ShouldChangeImageFileOrderingDirection(keyModifiers, keyPressing))
+		{
+			ChangeImageFileOrderingDirection(keyPressing);
 		}
 		else if (ShouldChangeThumbnailSize(keyModifiers, keyPressing))
 		{
@@ -329,13 +339,15 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			? _folderTreeView.Items
 			: _activeFolderTreeViewItem.Items;
 
-		foreach (TreeViewItem? aSubItem in subItems)
+		var subTreeViewItems = subItems.Cast<TreeViewItem>().ToList();
+
+		foreach (var aSubTreeViewItem in subTreeViewItems)
 		{
-			if (aSubItem!.Header is IFileSystemTreeViewItem fileSystemTreeViewItem)
+			if (aSubTreeViewItem.Header is IFileSystemTreeViewItem fileSystemTreeViewItem)
 			{
 				if (fileSystemTreeViewItem.FileSystemEntryInfo == selectedFileSystemEntryInfo)
 				{
-					_activeFolderTreeViewItem = aSubItem;
+					_activeFolderTreeViewItem = aSubTreeViewItem;
 					break;
 				}
 			}
@@ -731,6 +743,28 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
+	private bool ShouldChangeImageFileOrdering(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
+			(keyPressing == GlobalParameters!.NKey || keyPressing == GlobalParameters!.MKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldChangeImageFileOrderingDirection(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
+			(keyPressing == GlobalParameters!.AKey || keyPressing == GlobalParameters!.DKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool ShouldChangeThumbnailSize(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
@@ -897,20 +931,20 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void ChangeFolderOrdering(Key keyPressing)
 	{
-		var newFileSystemEntryInfoOrdering = TabOptions!.FileSystemEntryInfoOrdering;
+		var newFolderOrdering = TabOptions!.FolderOrdering;
 
 		if (keyPressing == GlobalParameters!.NKey)
 		{
-			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.Name;
+			newFolderOrdering = FileSystemEntryInfoOrdering.Name;
 		}
 		else if (keyPressing == GlobalParameters!.MKey)
 		{
-			newFileSystemEntryInfoOrdering = FileSystemEntryInfoOrdering.LastModificationTime;
+			newFolderOrdering = FileSystemEntryInfoOrdering.LastModificationTime;
 		}
 
-		if (newFileSystemEntryInfoOrdering != TabOptions!.FileSystemEntryInfoOrdering)
+		if (newFolderOrdering != TabOptions!.FolderOrdering)
 		{
-			TabOptions!.FileSystemEntryInfoOrdering = newFileSystemEntryInfoOrdering;
+			TabOptions!.FolderOrdering = newFolderOrdering;
 
 			RaiseFolderOrderingChangedEvent();
 		}
@@ -918,27 +952,64 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void ChangeFolderOrderingDirection(Key keyPressing)
 	{
-		var newFileSystemEntryInfoOrderingDirection =
-			TabOptions!.FileSystemEntryInfoOrderingDirection;
+		var newFolderOrderingDirection = TabOptions!.FolderOrderingDirection;
 
 		if (keyPressing == GlobalParameters!.AKey)
 		{
-			newFileSystemEntryInfoOrderingDirection =
-				FileSystemEntryInfoOrderingDirection.Ascending;
+			newFolderOrderingDirection = FileSystemEntryInfoOrderingDirection.Ascending;
 		}
 		else if (keyPressing == GlobalParameters!.DKey)
 		{
-			newFileSystemEntryInfoOrderingDirection =
-				FileSystemEntryInfoOrderingDirection.Descending;
+			newFolderOrderingDirection = FileSystemEntryInfoOrderingDirection.Descending;
 		}
 
-		if (newFileSystemEntryInfoOrderingDirection !=
-			TabOptions!.FileSystemEntryInfoOrderingDirection)
+		if (newFolderOrderingDirection != TabOptions!.FolderOrderingDirection)
 		{
-			TabOptions!.FileSystemEntryInfoOrderingDirection =
-				newFileSystemEntryInfoOrderingDirection;
+			TabOptions!.FolderOrderingDirection = newFolderOrderingDirection;
 
 			RaiseFolderOrderingChangedEvent();
+		}
+	}
+
+	private void ChangeImageFileOrdering(Key keyPressing)
+	{
+		var newImageFileOrdering = TabOptions!.ImageFileOrdering;
+
+		if (keyPressing == GlobalParameters!.NKey)
+		{
+			newImageFileOrdering = FileSystemEntryInfoOrdering.Name;
+		}
+		else if (keyPressing == GlobalParameters!.MKey)
+		{
+			newImageFileOrdering = FileSystemEntryInfoOrdering.LastModificationTime;
+		}
+
+		if (newImageFileOrdering != TabOptions!.ImageFileOrdering)
+		{
+			TabOptions!.ImageFileOrdering = newImageFileOrdering;
+
+			RaiseFolderChangedEvent();
+		}
+	}
+
+	private void ChangeImageFileOrderingDirection(Key keyPressing)
+	{
+		var newImageFileOrderingDirection = TabOptions!.ImageFileOrderingDirection;
+
+		if (keyPressing == GlobalParameters!.AKey)
+		{
+			newImageFileOrderingDirection = FileSystemEntryInfoOrderingDirection.Ascending;
+		}
+		else if (keyPressing == GlobalParameters!.DKey)
+		{
+			newImageFileOrderingDirection = FileSystemEntryInfoOrderingDirection.Descending;
+		}
+
+		if (newImageFileOrderingDirection != TabOptions!.ImageFileOrderingDirection)
+		{
+			TabOptions!.ImageFileOrderingDirection = newImageFileOrderingDirection;
+
+			RaiseFolderChangedEvent();
 		}
 	}
 

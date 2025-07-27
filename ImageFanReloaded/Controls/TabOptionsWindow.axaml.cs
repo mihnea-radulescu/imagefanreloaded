@@ -34,6 +34,9 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		PopulateFolderOrderings();
 		PopulateFolderOrderingDirections();
 
+		PopulateImageFileOrderings();
+		PopulateImageFileOrderingDirections();
+
 		PopulateThumbnailSizes();
 
 		SetRecursiveFolderBrowsing();
@@ -81,7 +84,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		var folderOrderingComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
 		var folderOrdering = (FileSystemEntryInfoOrdering)folderOrderingComboBoxItem.Tag!;
 
-		TabOptions!.FileSystemEntryInfoOrdering = folderOrdering;
+		TabOptions!.FolderOrdering = folderOrdering;
 		_tabOptionChanges.HasChangedFolderOrdering = true;
 	}
 
@@ -92,8 +95,28 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		var folderOrderingDirection =
 			(FileSystemEntryInfoOrderingDirection)folderOrderingDirectionComboBoxItem.Tag!;
 
-		TabOptions!.FileSystemEntryInfoOrderingDirection = folderOrderingDirection;
+		TabOptions!.FolderOrderingDirection = folderOrderingDirection;
 		_tabOptionChanges.HasChangedFolderOrderingDirection = true;
+	}
+
+	private void OnImageFileOrderingSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	{
+		var imageFileOrderingComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
+		var imageFileOrdering = (FileSystemEntryInfoOrdering)imageFileOrderingComboBoxItem.Tag!;
+
+		TabOptions!.ImageFileOrdering = imageFileOrdering;
+		_tabOptionChanges.HasChangedImageFileOrdering = true;
+	}
+
+	private void OnImageFileOrderingDirectionSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
+	{
+		var imageFileOrderingDirectionComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
+		var imageFileOrderingDirection =
+			(FileSystemEntryInfoOrderingDirection)imageFileOrderingDirectionComboBoxItem.Tag!;
+
+		TabOptions!.ImageFileOrderingDirection = imageFileOrderingDirection;
+		_tabOptionChanges.HasChangedImageFileOrderingDirection = true;
 	}
 
 	private void OnThumbnailSizeSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -162,7 +185,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	}
 
 	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.EscapeKey)
@@ -175,46 +199,85 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void PopulateFolderOrderings()
 	{
-		var fileSystemEntryInfoOrderingValues = Enum.GetValues<FileSystemEntryInfoOrdering>();
+		var folderOrderingValues = Enum.GetValues<FileSystemEntryInfoOrdering>();
 
-		foreach (var aFileSystemEntryInfoOrderingValue in fileSystemEntryInfoOrderingValues)
+		foreach (var aFolderOrderingValue in folderOrderingValues)
 		{
-			var aFileSystemEntryInfoOrderingItem = new ComboBoxItem
+			var aFolderOrderingItem = new ComboBoxItem
 			{
-				Tag = aFileSystemEntryInfoOrderingValue,
-				Content = aFileSystemEntryInfoOrderingValue.GetDescription()
+				Tag = aFolderOrderingValue,
+				Content = aFolderOrderingValue.GetDescription()
 			};
 
-			_folderOrderingComboBox.Items.Add(aFileSystemEntryInfoOrderingItem);
+			_folderOrderingComboBox.Items.Add(aFolderOrderingItem);
 
-			if (aFileSystemEntryInfoOrderingValue == TabOptions!.FileSystemEntryInfoOrdering)
+			if (aFolderOrderingValue == TabOptions!.FolderOrdering)
 			{
-				_folderOrderingComboBox.SelectedItem = aFileSystemEntryInfoOrderingItem;
+				_folderOrderingComboBox.SelectedItem = aFolderOrderingItem;
 			}
 		}
 	}
 
 	private void PopulateFolderOrderingDirections()
 	{
-		var fileSystemEntryInfoOrderingDirectionValues = Enum
-			.GetValues<FileSystemEntryInfoOrderingDirection>();
+		var folderOrderingDirectionValues = Enum.GetValues<FileSystemEntryInfoOrderingDirection>();
 
-		foreach (var aFileSystemEntryInfoOrderingDirectionValue in
-			fileSystemEntryInfoOrderingDirectionValues)
+		foreach (var aFolderOrderingDirectionValue in folderOrderingDirectionValues)
 		{
-			var aFileSystemEntryInfoOrderingDirectionItem = new ComboBoxItem
+			var aFolderOrderingDirectionItem = new ComboBoxItem
 			{
-				Tag = aFileSystemEntryInfoOrderingDirectionValue,
-				Content = aFileSystemEntryInfoOrderingDirectionValue.ToString()
+				Tag = aFolderOrderingDirectionValue,
+				Content = aFolderOrderingDirectionValue.ToString()
 			};
 
-			_folderOrderingDirectionComboBox.Items.Add(aFileSystemEntryInfoOrderingDirectionItem);
+			_folderOrderingDirectionComboBox.Items.Add(aFolderOrderingDirectionItem);
 
-			if (aFileSystemEntryInfoOrderingDirectionValue ==
-				TabOptions!.FileSystemEntryInfoOrderingDirection)
+			if (aFolderOrderingDirectionValue == TabOptions!.FolderOrderingDirection)
 			{
-				_folderOrderingDirectionComboBox.SelectedItem =
-					aFileSystemEntryInfoOrderingDirectionItem;
+				_folderOrderingDirectionComboBox.SelectedItem = aFolderOrderingDirectionItem;
+			}
+		}
+	}
+
+	private void PopulateImageFileOrderings()
+	{
+		var imageFileOrderingValues = Enum.GetValues<FileSystemEntryInfoOrdering>();
+
+		foreach (var anImageFileOrderingValue in imageFileOrderingValues)
+		{
+			var anImageFileOrderingItem = new ComboBoxItem
+			{
+				Tag = anImageFileOrderingValue,
+				Content = anImageFileOrderingValue.GetDescription()
+			};
+
+			_imageFileOrderingComboBox.Items.Add(anImageFileOrderingItem);
+
+			if (anImageFileOrderingValue == TabOptions!.ImageFileOrdering)
+			{
+				_imageFileOrderingComboBox.SelectedItem = anImageFileOrderingItem;
+			}
+		}
+	}
+
+	private void PopulateImageFileOrderingDirections()
+	{
+		var imageFileOrderingDirectionValues = Enum
+			.GetValues<FileSystemEntryInfoOrderingDirection>();
+
+		foreach (var anImageFileOrderingDirectionValue in imageFileOrderingDirectionValues)
+		{
+			var anImageFileOrderingDirectionItem = new ComboBoxItem
+			{
+				Tag = anImageFileOrderingDirectionValue,
+				Content = anImageFileOrderingDirectionValue.ToString()
+			};
+
+			_imageFileOrderingDirectionComboBox.Items.Add(anImageFileOrderingDirectionItem);
+
+			if (anImageFileOrderingDirectionValue == TabOptions!.ImageFileOrderingDirection)
+			{
+				_imageFileOrderingDirectionComboBox.SelectedItem = anImageFileOrderingDirectionItem;
 			}
 		}
 	}
@@ -291,6 +354,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_folderOrderingComboBox.SelectionChanged += OnFolderOrderingSelectionChanged;
 		_folderOrderingDirectionComboBox.SelectionChanged +=
 			OnFolderOrderingDirectionSelectionChanged;
+
+		_imageFileOrderingComboBox.SelectionChanged += OnImageFileOrderingSelectionChanged;
+		_imageFileOrderingDirectionComboBox.SelectionChanged +=
+			OnImageFileOrderingDirectionSelectionChanged;
+
 		_thumbnailSizeComboBox.SelectionChanged += OnThumbnailSizeSelectionChanged;
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged +=
 			OnRecursiveFolderBrowsingIsCheckedChanged;
@@ -309,6 +377,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_folderOrderingComboBox.SelectionChanged -= OnFolderOrderingSelectionChanged;
 		_folderOrderingDirectionComboBox.SelectionChanged -=
 			OnFolderOrderingDirectionSelectionChanged;
+
+		_imageFileOrderingComboBox.SelectionChanged -= OnImageFileOrderingSelectionChanged;
+		_imageFileOrderingDirectionComboBox.SelectionChanged -=
+			OnImageFileOrderingDirectionSelectionChanged;
+
 		_thumbnailSizeComboBox.SelectionChanged -= OnThumbnailSizeSelectionChanged;
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged -=
 			OnRecursiveFolderBrowsingIsCheckedChanged;

@@ -153,6 +153,8 @@ public class MainViewPresenter
 		var tabOptionChanges = e.TabOptionChanges;
 
 		var shouldRaiseFolderChangedEvent =
+			tabOptionChanges.HasChangedImageFileOrdering ||
+			tabOptionChanges.HasChangedImageFileOrderingDirection ||
 			tabOptionChanges.HasChangedThumbnailSize ||
 			tabOptionChanges.HasChangedRecursiveFolderBrowsing ||
 			tabOptionChanges.HasChangedApplyImageOrientation ||
@@ -255,8 +257,8 @@ public class MainViewPresenter
 
 				subFolders = await _discQueryEngine.GetSubFolders(
 					matchingFileSystemEntryInfo.Path,
-					contentTabItem.TabOptions!.FileSystemEntryInfoOrdering,
-					contentTabItem.TabOptions!.FileSystemEntryInfoOrderingDirection);
+					contentTabItem.TabOptions!.FolderOrdering,
+					contentTabItem.TabOptions!.FolderOrderingDirection);
 				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(subFolders);
 			}
 		} while (matchingFileSystemEntryInfo is not null);

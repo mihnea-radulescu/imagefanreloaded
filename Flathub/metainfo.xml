@@ -22,7 +22,7 @@
 			<li>44 supported image formats: bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm</li>
 			<li>image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize</li>
 			<li>image animation support for the formats gif, mng and webp</li>
-			<li>folder ordering by name and last modification time, ascending and descending</li>
+			<li>folder and image file ordering by name and last modification time, ascending and descending</li>
 			<li>configurable thumbnail size, between 100 and 1200 pixels</li>
 			<li>slideshow navigation across images</li>
 			<li>image info containing file, image, color, EXIF, IPTC and XMP profiles</li>
@@ -70,6 +70,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.07.28" date="2025-07-28">
+			<description>
+				<p>Added tab option: image file ordering and ordering direction</p>
+			</description>
+		</release>
 		<release version="1.2025.07.23" date="2025-07-23">
 			<description>
 				<p>Added tab option: show thumbnail image file name</p>

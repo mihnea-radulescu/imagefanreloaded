@@ -48,7 +48,9 @@ User interface:
 • key combo Shift+Tab for cycling through tabs
 • key Tab for cycling through controls in the active tab
 • keys N and M for changing folder ordering between name and last modification time
+• key combos Ctrl+N and Ctrl+M for changing image file ordering between name and last modification time
 • keys A and D for changing folder ordering direction between ascending and descending
+• key combos Ctrl+A and Ctrl+D for changing image file ordering direction between ascending and descending
 • keys + and - for changing thumbnail size by an increment of 50 pixels
 • key U to toggle showing file names under thumbnail images
 • key S for slideshow navigation

@@ -148,7 +148,7 @@ public abstract class ImageFileBase : IImageFile
 		var imageFileInfo = longFormat ? ImageFileData.ImageFilePath : ImageFileData.ImageFileName;
 
 		var imageInfo = HasReadImageError
-			? $"{imageFileInfo} - invalid image"
+			? $"{imageFileInfo} - invalid image - {ImageFileData.SizeOnDiscInKilobytes} KB"
 			: $"{imageFileInfo} - {ImageSize} - {ImageFileData.SizeOnDiscInKilobytes} KB";
 
 		return imageInfo;

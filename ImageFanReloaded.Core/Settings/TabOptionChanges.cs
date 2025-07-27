@@ -4,6 +4,10 @@ public record TabOptionChanges
 {
 	public bool HasChangedFolderOrdering { get; set; }
 	public bool HasChangedFolderOrderingDirection { get; set; }
+
+	public bool HasChangedImageFileOrdering { get; set; }
+	public bool HasChangedImageFileOrderingDirection { get; set; }
+
 	public bool HasChangedThumbnailSize { get; set; }
 	public bool HasChangedRecursiveFolderBrowsing { get; set; }
 	public bool HasChangedShowImageViewImageInfo { get; set; }

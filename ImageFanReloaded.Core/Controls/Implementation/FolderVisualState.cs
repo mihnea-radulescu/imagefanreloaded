@@ -50,12 +50,15 @@ public class FolderVisualState : IFolderVisualState
 
 			var subFolders = await _discQueryEngine.GetSubFolders(
 				_folderPath,
-				tabOptions.FileSystemEntryInfoOrdering,
-				tabOptions.FileSystemEntryInfoOrderingDirection);
+				tabOptions.FolderOrdering,
+				tabOptions.FolderOrderingDirection);
 			_contentTabItem.PopulateSubFoldersTree(subFolders);
 
 			var imageFiles = await _discQueryEngine.GetImageFiles(
-				_folderPath, tabOptions.RecursiveFolderBrowsing);
+				_folderPath,
+				tabOptions.ImageFileOrdering,
+				tabOptions.ImageFileOrderingDirection,
+				tabOptions.RecursiveFolderBrowsing);
 			var imageFilesCount = imageFiles.Count;
 			
 			var imageFilesTotalSizeOnDiscInMegabytes =
