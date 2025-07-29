@@ -68,8 +68,8 @@ public class FolderVisualState : IFolderVisualState
 				imageFilesCount,
 				imageFilesTotalSizeOnDiscInMegabytes,
 				tabOptions.RecursiveFolderBrowsing);
-			_contentTabItem.SetFolderStatusBarText(folderStatusBarText);
-			_contentTabItem.SetImageStatusBarText(string.Empty);
+			_contentTabItem.SetFolderInfoText(folderStatusBarText);
+			_contentTabItem.SetImageInfoText(string.Empty);
 
 			var thumbnails = GetThumbnailInfoCollection(tabOptions, imageFiles);
 

@@ -63,8 +63,8 @@ public interface IContentTabItem
 	void PopulateThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
 	void RefreshThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
 
-	void SetFolderStatusBarText(string folderStatusBarText);
-	void SetImageStatusBarText(string imageStatusBarText);
+	void SetFolderInfoText(string folderInfoText);
+	void SetImageInfoText(string imageInfoText);
 
 	void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders);
 

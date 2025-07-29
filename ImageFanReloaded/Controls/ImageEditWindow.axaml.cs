@@ -1033,7 +1033,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private void SetImageTitle()
 		=> Title = $"{ImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
 	private void SetImageLoadErrorTitle()
-		=> Title = $"{ImageFileData!.ImageFileName} - error loading image";
+		=> Title = $"{ImageFileData!.ImageFileName} - image read error";
 
 	private static void ExpandDropDownButton(DropDownButton dropDownButton)
 	{

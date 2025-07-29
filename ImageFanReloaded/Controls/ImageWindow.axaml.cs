@@ -81,10 +81,10 @@ public partial class ImageWindow : Window, IImageView
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
 
+		await ResizeToScreenSize();
+
 		_imageInfoTextBox.Text = _imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
 		_imageInfoTextBox.IsVisible = TabOptions!.ShowImageViewImageInfo;
-
-		await ResizeToScreenSize();
 	}
 
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);

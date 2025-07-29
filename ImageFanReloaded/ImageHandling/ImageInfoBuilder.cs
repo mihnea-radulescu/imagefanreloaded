@@ -15,7 +15,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 {
 	public async Task<string> BuildImageInfo(IImageFile imageFile)
 	{
-		if (imageFile.HasReadImageError)
+		if (imageFile.HasImageReadError)
 		{
 			return BuildBasicImageInfo(imageFile.ImageFileData);
 		}

@@ -49,7 +49,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 			_thumbnailInfo = value;
 
 			ImageFile = _thumbnailInfo!.ImageFile;
-			HasImageError = ImageFile.HasReadImageError;
+			HasImageError = ImageFile.HasImageReadError;
 
 			_thumbnailImage.Source = _thumbnailInfo.ThumbnailImage!.GetBitmap();
 

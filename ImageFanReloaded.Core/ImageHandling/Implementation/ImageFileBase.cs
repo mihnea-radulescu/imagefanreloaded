@@ -26,7 +26,7 @@ public abstract class ImageFileBase : IImageFile
 	public bool IsAnimatedImage { get; private set; }
 	public TimeSpan AnimatedImageSlideshowDelay { get; private set; }
 
-	public bool HasReadImageError { get; private set; }
+	public bool HasImageReadError { get; private set; }
 
 	public IImage GetImage(bool applyImageOrientation)
 	{
@@ -44,7 +44,7 @@ public abstract class ImageFileBase : IImageFile
 
 			image = _globalParameters.InvalidImage;
 
-			HasReadImageError = true;
+			HasImageReadError = true;
 		}
 
 		return image;
@@ -69,7 +69,7 @@ public abstract class ImageFileBase : IImageFile
 
 			resizedImage = _globalParameters.InvalidImage;
 
-			HasReadImageError = true;
+			HasImageReadError = true;
 		}
 		finally
 		{
@@ -95,7 +95,7 @@ public abstract class ImageFileBase : IImageFile
 
 			imageData = _globalParameters.InvalidImage;
 
-			HasReadImageError = true;
+			HasImageReadError = true;
 		}
 
 		lock (_thumbnailGenerationLockObject)
@@ -147,8 +147,8 @@ public abstract class ImageFileBase : IImageFile
 	{
 		var imageFileInfo = longFormat ? ImageFileData.ImageFilePath : ImageFileData.ImageFileName;
 
-		var imageInfo = HasReadImageError
-			? $"{imageFileInfo} - invalid image - {ImageFileData.SizeOnDiscInKilobytes} KB"
+		var imageInfo = HasImageReadError
+			? $"{imageFileInfo} - image read error - {ImageFileData.SizeOnDiscInKilobytes} KB"
 			: $"{imageFileInfo} - {ImageSize} - {ImageFileData.SizeOnDiscInKilobytes} KB";
 
 		return imageInfo;

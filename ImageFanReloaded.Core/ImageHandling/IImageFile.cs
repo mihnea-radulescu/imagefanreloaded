@@ -10,7 +10,7 @@ public interface IImageFile
 	bool IsAnimatedImage { get; }
 	TimeSpan AnimatedImageSlideshowDelay { get; }
 
-	bool HasReadImageError { get; }
+	bool HasImageReadError { get; }
 
 	IImage GetImage(bool applyImageOrientation);
 	IImage GetResizedImage(ImageSize viewPortSize, bool applyImageOrientation);

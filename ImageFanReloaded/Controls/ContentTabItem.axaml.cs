@@ -323,17 +323,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void SetFolderStatusBarText(string folderStatusBarText)
-	{
-		_folderInfoTextBox.Text = folderStatusBarText;
-	}
+	public void SetFolderInfoText(string folderInfoText)
+		=> _folderInfoTextBox.Text = folderInfoText;
 
-	public void SetImageStatusBarText(string imageStatusBarText)
-	{
-		_imageInfoTextBox.Text = imageStatusBarText;
-	}
+	public void SetImageInfoText(string imageInfoText)
+		=> _imageInfoTextBox.Text = imageInfoText;
 
-	public void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders)
+	public void SaveMatchingTreeViewItem(
+		FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders)
 	{
 		var subItems = _activeFolderTreeViewItem is null || startAtRootFolders
 			? _folderTreeView.Items
@@ -354,7 +351,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public bool AreFolderInfoOrImageInfoFocused() => _folderInfoTextBox.IsFocused || _imageInfoTextBox.IsFocused;
+	public bool AreFolderInfoOrImageInfoFocused()
+		=> _folderInfoTextBox.IsFocused || _imageInfoTextBox.IsFocused;
 
 	public void FocusThumbnailScrollViewer() => _thumbnailScrollViewer.Focus();
 
@@ -429,9 +427,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxSelectedEventArgs e)
 	{
 		var imageFile = e.ThumbnailBox.ImageFile!;
-		var basicImageInfo = imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
-
-		SetImageStatusBarText(basicImageInfo);
+		UpdateImageInfoText(imageFile);
 	}
 
 	private void OnThumbnailBoxClicked(object? sender, ThumbnailBoxClickedEventArgs e)
@@ -485,7 +481,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void OnTabCountChanged(object? sender, TabCountChangedEventArgs e) => ShowCloseButton(e.ShowTabCloseButton);
 
-	private async void OnImageChanged(object? sender, ImageChangedEventArgs e)
+	private async void OnImageViewImageChanged(object? sender, ImageChangedEventArgs e)
 	{
 		var imageView = e.ImageView;
 		var increment = e.Increment;
@@ -495,8 +491,15 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		if (canAdvanceToDesignatedImage)
 		{
-			await imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
+			var imageFile = _selectedThumbnailBox!.ImageFile!;
+			await imageView.SetImage(imageFile);
 		}
+	}
+
+	private void OnImageViewClosing(object? sender, ImageViewClosingEventArgs e)
+	{
+		var imageFile = _selectedThumbnailBox!.ImageFile!;
+		UpdateImageInfoText(imageFile);
 	}
 
 	private void OnSlideshowButtonClicked(object? sender, RoutedEventArgs e)
@@ -510,6 +513,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		=> RaiseTabOptionsRequested();
 	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseAboutInfoRequested();
+
+	private void UpdateImageInfoText(IImageFile imageFile)
+	{
+		var basicImageInfo = imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
+		SetImageInfoText(basicImageInfo);
+	}
 
 	private void AddMainGridColumnDefinitions()
 	{
@@ -591,7 +600,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		await imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
 
-		imageView.ImageChanged += OnImageChanged;
+		imageView.ImageChanged += OnImageViewImageChanged;
+		imageView.ViewClosing += OnImageViewClosing;
 
 		if (startSlideshow)
 		{
@@ -610,7 +620,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		await imageView.ShowDialog(MainView!);
 
-		imageView.ImageChanged -= OnImageChanged;
+		imageView.ImageChanged -= OnImageViewImageChanged;
+		imageView.ViewClosing -= OnImageViewClosing;
 	}
 
 	private void AddSubFoldersToTreeView(ItemCollection itemCollection, IReadOnlyList<FileSystemEntryInfo> subFolders)
