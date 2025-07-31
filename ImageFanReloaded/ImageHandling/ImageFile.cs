@@ -37,7 +37,7 @@ public class ImageFile : ImageFileBase
 		{
 			InitializeNonExistingImageData();
 
-			throw new FileNotFoundException($"Image '{imageFilePath}' not found.", imageFilePath);
+			throw new FileNotFoundException($@"Image ""{imageFilePath}"" not found.", imageFilePath);
 		}
 
 		if (IsAnimationEnabledImageFileExtension)

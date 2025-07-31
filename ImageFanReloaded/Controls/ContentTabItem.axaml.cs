@@ -30,7 +30,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		AddMainGridColumnDefinitions();
 
-		_thumbnailBoxCollection = new List<IThumbnailBox>();
+		_thumbnailBoxCollection = [];
 	}
 
 	public IMainView? MainView { get; set; }
@@ -396,14 +396,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			100 - TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
 	}
 
-	public async Task RefreshSelectedImage()
-	{
-		var selectedImageFile = GetSelectedImageFile();
-		await Task.Run(() => selectedImageFile.RefreshTransientImageFileData());
-
-		UpdateSelectedImageStatus();
-	}
-
 	public async Task UpdateSelectedImageAfterImageFileChange()
 	{
 		try
@@ -413,8 +405,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var previousSelectedImageSizeOnDiscInKilobytes =
 				GetSelectedImageSizeOnDiscInKilobytes();
 
-			await RefreshSelectedImage();
 			await _selectedThumbnailBox!.UpdateThumbnailAfterImageFileChange();
+
+			var selectedImageFile = GetSelectedImageFile();
+			await Task.Run(() => selectedImageFile.RefreshTransientImageFileData());
+			UpdateSelectedImageStatus();
 
 			var currentSelectedImageSizeOnDiscInKilobytes =
 				GetSelectedImageSizeOnDiscInKilobytes();

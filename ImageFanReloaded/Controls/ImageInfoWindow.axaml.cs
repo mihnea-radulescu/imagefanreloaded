@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
+using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Keyboard;
 
@@ -18,14 +19,29 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 	}
 
 	public IGlobalParameters? GlobalParameters { get; set; }
+	public IImageInfoBuilder? ImageInfoBuilder { get; set; }
 
-	public void SetImageInfoText(string text) => _imageInfoTextBox.Text = text;
+	public IImageFile? ImageFile { get; set; }
 
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
 
 	#region Private
 
-	private void OnWindowLoaded(object? sender, RoutedEventArgs e) => _imageInfoScrollViewer.Focus();
+	private bool _isLoading;
+
+	private async void OnWindowLoaded(object? sender, RoutedEventArgs e)
+	{
+		_isLoading = true;
+		SetLoadingImageInfoTitle();
+
+		var imageInfo = await Task.Run(() => ImageInfoBuilder!.BuildImageInfo(ImageFile!));
+		_imageInfoTextBox.Text = imageInfo;
+
+		_imageInfoScrollViewer.Focus();
+
+		SetImageInfoTitle();
+		_isLoading = false;
+	}
 
 	private void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -40,6 +56,14 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 		}
 	}
 
+	private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
+	{
+		if (_isLoading)
+		{
+			e.Cancel = true;
+		}
+	}
+
 	private bool ShouldCloseWindow(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
@@ -51,6 +75,12 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 
 		return false;
 	}
+
+	private void SetLoadingImageInfoTitle()
+		=> Title = $"{ImageFile!.StaticImageFileData.ImageFileName} - loading image info...";
+
+	private void SetImageInfoTitle()
+		=> Title = ImageFile!.StaticImageFileData.ImageFileName;
 
 	#endregion
 }

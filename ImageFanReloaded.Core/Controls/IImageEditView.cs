@@ -22,8 +22,6 @@ public interface IImageEditView
 
 	IContentTabItem? ContentTabItem { get; set; }
 
-	Task LoadImage();
-
 	event EventHandler<ContentTabItemEventArgs>? ImageFileOverwritten;
 	event EventHandler<ContentTabItemEventArgs>? FolderContentChanged;
 

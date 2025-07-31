@@ -2,13 +2,13 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		x:Class="ImageFanReloaded.Controls.ImageInfoWindow"
 		Icon="/MainWindowIcon.ico"
-		Title="Image info"
 		Width="800"
 		Height="600"
 		WindowStartupLocation="CenterOwner"
 		CanResize="False"
 		Focusable="True"
-		Loaded="OnWindowLoaded">
+		Loaded="OnWindowLoaded"
+		Closing="OnWindowClosing">
 	<ScrollViewer Name="_imageInfoScrollViewer"
 				  HorizontalScrollBarVisibility="Auto"
 				  VerticalScrollBarVisibility="Auto"

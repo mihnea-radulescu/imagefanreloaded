@@ -75,7 +75,6 @@ public interface IContentTabItem
 	void RaiseFolderOrderingChangedEvent();
 	void RaisePanelsSplittingRatioChangedEvent();
 
-	Task RefreshSelectedImage();
 	Task UpdateSelectedImageAfterImageFileChange();
 
 	Task ShowImageEdit(IImageEditView imageEditView);

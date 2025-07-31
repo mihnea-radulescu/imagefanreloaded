@@ -5,6 +5,7 @@
 		WindowStartupLocation="CenterOwner"
 		WindowState="Maximized"
 		Focusable="True"
+		Loaded="OnWindowLoaded"
 		Closing="OnWindowClosing">
 	<Grid>
 		<Grid.RowDefinitions>

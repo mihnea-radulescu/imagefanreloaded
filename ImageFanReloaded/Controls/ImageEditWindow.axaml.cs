@@ -25,6 +25,29 @@ namespace ImageFanReloaded.Controls;
 
 public partial class ImageEditWindow : Window, IImageEditView
 {
+	static ImageEditWindow()
+	{
+		TransformImageErrorMessage = string.Concat(
+			"Could not perform image transformation.",
+			Environment.NewLine,
+			Environment.NewLine,
+			"The selected image format does only support image reading.",
+			Environment.NewLine,
+			Environment.NewLine,
+			"Consider saving the image in a different format, editing the saved image, and then retrying the image transformation."
+		);
+
+		SaveImageErrorMessage = string.Concat(
+			@"Could not save image file ""{0}"".",
+			Environment.NewLine,
+			Environment.NewLine,
+			"The selected file is not writable, or the selected image format does only support image reading.",
+			Environment.NewLine,
+			Environment.NewLine,
+			"Consider saving the image as a different file, or in a different format."
+		);
+	}
+
 	public ImageEditWindow()
 	{
 		InitializeComponent();
@@ -68,24 +91,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	public IContentTabItem? ContentTabItem { get; set; }
 
-	public async Task LoadImage()
-	{
-		_editableImage = await EditableImageFactory!
-			.CreateEditableImage(StaticImageFileData!.ImageFilePath);
-
-		var isImageLoaded = _editableImage is not null;
-		SetControlsEnabledStatus(isImageLoaded);
-
-		if (isImageLoaded)
-		{
-			RefreshContent();
-		}
-		else
-		{
-			SetImageLoadErrorTitle();
-		}
-	}
-
 	public event EventHandler<ContentTabItemEventArgs>? ImageFileOverwritten;
 	public event EventHandler<ContentTabItemEventArgs>? FolderContentChanged;
 
@@ -95,6 +100,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private const int SnapCropEdgesThresholdInPixels = 5;
 
+	private static readonly string TransformImageErrorMessage;
+	private static readonly string SaveImageErrorMessage;
+
 	private readonly IDictionary<string, ComboBoxItem> _downsizeComboBoxValueToComboBoxItemMapping;
 
 	private IGlobalParameters? _globalParameters;
@@ -102,18 +110,21 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private IMouseCursorFactory? _mouseCursorFactory;
 
 	private IEditableImage? _editableImage;
-	private bool _hasUnsavedChanges;
 
 	private Cursor? _standardCursor;
 	private Cursor? _selectCursor;
-
-	private bool _hasInProgressUiUpdate;
 
 	private Point _mouseDownToImageCoordinates;
 	private Point _mouseUpToImageCoordinates;
 
 	private Point _topLeftPointToImage;
 	private Point _bottomRightPointToImage;
+
+	private bool _isLoading;
+	private bool _hasInProgressUiUpdate;
+	private bool _hasUnsavedChanges;
+
+	private async void OnWindowLoaded(object? sender, RoutedEventArgs e) => await LoadImage();
 
 	private async void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -218,7 +229,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async void OnWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
-		if (_hasInProgressUiUpdate)
+		if (_isLoading || _hasInProgressUiUpdate)
 		{
 			e.Cancel = true;
 		}
@@ -410,6 +421,31 @@ public partial class ImageEditWindow : Window, IImageEditView
 		=> await DownsizeToPercentage();
 	private async void OnDownsizeToDimensions(object? sender, RoutedEventArgs e)
 		=> await DownsizeToDimensions();
+
+	private async Task LoadImage()
+	{
+		_isLoading = true;
+
+		SetLoadingImageTitle();
+		SetControlsEnabledStatus(false);
+
+		_editableImage = await EditableImageFactory!
+			.CreateEditableImage(StaticImageFileData!.ImageFilePath);
+
+		var isImageLoaded = _editableImage is not null;
+		SetControlsEnabledStatus(isImageLoaded);
+
+		if (isImageLoaded)
+		{
+			RefreshContent();
+		}
+		else
+		{
+			SetImageLoadErrorTitle();
+		}
+
+		_isLoading = false;
+	}
 
 	private bool ShouldCloseWindow(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
@@ -762,9 +798,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 				}
 				catch
 				{
+					var imageToSaveFileName = GetFileNameFromPath(imageToSaveFilePath);
+
 					var saveImageAsErrorMessageBox = MessageBoxManager.GetMessageBoxStandard(
-						"Image file save error",
-						$"Could not save image file '{imageToSaveFilePath}'.",
+						"Image save error",
+						string.Format(SaveImageErrorMessage, imageToSaveFileName),
 						MsBox.Avalonia.Enums.ButtonEnum.Ok,
 						MsBox.Avalonia.Enums.Icon.Error,
 						WindowStartupLocation.CenterOwner);
@@ -834,7 +872,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			var applyTransformErrorMessageBox = MessageBoxManager.GetMessageBoxStandard(
 				"Image transformation error",
-				$"Could not perform image transformation.",
+				TransformImageErrorMessage,
 				MsBox.Avalonia.Enums.ButtonEnum.Ok,
 				MsBox.Avalonia.Enums.Icon.Error,
 				WindowStartupLocation.CenterOwner);
@@ -1043,8 +1081,12 @@ public partial class ImageEditWindow : Window, IImageEditView
 		=> _downsizeDropDownButton.IsEnabled =
 			_downsizeToPercentageMenuItem.IsEnabled || _downsizeToDimensionsMenuItem.IsEnabled;
 
+	private void SetLoadingImageTitle()
+		=> Title = $"{StaticImageFileData!.ImageFileName} - loading image...";
+
 	private void SetImageTitle()
 		=> Title = $"{StaticImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
+
 	private void SetImageLoadErrorTitle()
 		=> Title = $"{StaticImageFileData!.ImageFileName} - image read error";
 
@@ -1179,6 +1221,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private bool IsLineOrDotCropSelection()
 		=> _topLeftPointToImage.X == _bottomRightPointToImage.X ||
 		   _topLeftPointToImage.Y == _bottomRightPointToImage.Y;
+
+	private static string GetFileNameFromPath(string filePath)
+		=> System.IO.Path.GetFileName(filePath);
 
 	#endregion
 }

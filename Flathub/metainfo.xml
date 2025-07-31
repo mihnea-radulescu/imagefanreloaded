@@ -72,7 +72,10 @@
 	<releases>
 		<release version="1.2025.08.01" date="2025-08-01">
 			<description>
-				<p>Improved thumbnail updating and invalid image handling</p>
+				<ul>
+					<li>Improved thumbnail updating and invalid image handling</li>
+					<li>Enhanced image info and image edit responsiveness</li>
+				</ul>
 			</description>
 		</release>
 		<release version="1.2025.07.30" date="2025-07-30">

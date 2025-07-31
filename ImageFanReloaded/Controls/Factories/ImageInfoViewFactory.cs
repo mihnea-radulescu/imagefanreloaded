@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.ImageHandling;
@@ -16,13 +15,14 @@ public class ImageInfoViewFactory : IImageInfoViewFactory
 		_imageInfoBuilder = imageInfoBuilder;
 	}
 
-	public async Task<IImageInfoView> GetImageInfoView(IImageFile imageFile)
+	public IImageInfoView GetImageInfoView(IImageFile imageFile)
 	{
 		IImageInfoView imageInfoView = new ImageInfoWindow();
-		imageInfoView.GlobalParameters = _globalParameters;
 
-		var imageInfo = await _imageInfoBuilder.BuildImageInfo(imageFile);
-		imageInfoView.SetImageInfoText(imageInfo);
+		imageInfoView.GlobalParameters = _globalParameters;
+		imageInfoView.ImageInfoBuilder = _imageInfoBuilder;
+
+		imageInfoView.ImageFile = imageFile;
 
 		return imageInfoView;
 	}
