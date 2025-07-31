@@ -79,11 +79,11 @@ public class FolderVisualState : IFolderVisualState
 
 	public void UpdateFolderInfoText(
 		ITabOptions tabOptions,
-		decimal previousThumbnailSizeOnDiscInKilobytes,
-		decimal currentThumbnailSizeOnDiscInKilobytes)
+		decimal previousSelectedImageSizeOnDiscInKilobytes,
+		decimal currentSelectedImageSizeOnDiscInKilobytes)
 	{
 		_imageFilesTotalSizeOnDiscInKilobytes +=
-			currentThumbnailSizeOnDiscInKilobytes - previousThumbnailSizeOnDiscInKilobytes;
+			currentSelectedImageSizeOnDiscInKilobytes - previousSelectedImageSizeOnDiscInKilobytes;
 
 		SetFolderInfoText(tabOptions);
 	} 

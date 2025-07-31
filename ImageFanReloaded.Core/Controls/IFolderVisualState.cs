@@ -12,8 +12,8 @@ public interface IFolderVisualState
 
 	void UpdateFolderInfoText(
 		ITabOptions tabOptions,
-		decimal previousThumbnailSizeOnDiscInKilobytes,
-		decimal currentThumbnailSizeOnDiscInKilobytes);
+		decimal previousSelectedImageSizeOnDiscInKilobytes,
+		decimal currentSelectedImageSizeOnDiscInKilobytes);
 
 	void DisposeCancellationTokenSource();
 }
