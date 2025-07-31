@@ -6,26 +6,26 @@ namespace ImageFanReloaded.Test;
 
 public class NaturalSortingComparerTest
 {
-    public NaturalSortingComparerTest()
-    {
-        _naturalSortingComparer = new NaturalSortingComparer(StringComparer.InvariantCulture);
-    }
+	public NaturalSortingComparerTest()
+	{
+		_naturalSortingComparer = new NaturalSortingComparer(StringComparer.InvariantCulture);
+	}
 
-    [InlineData("a", "b", -1)]
+	[InlineData("a", "b", -1)]
 	[InlineData("aaa", "aaa", 0)]
 	[InlineData("cba", "abc", 1)]
 	[Theory]
-    public void Compare_NoDigitsPresentInEitherString_ReturnsExpectedResult(
-        string x, string y, int expectedComparisonResult)
-    {
-        // Arrange
+	public void Compare_NoDigitsPresentInEitherString_ReturnsExpectedResult(
+		string x, string y, int expectedComparisonResult)
+	{
+		// Arrange
 
-        // Act
-        var actualComparisonResult = _naturalSortingComparer.Compare(x, y);
+		// Act
+		var actualComparisonResult = _naturalSortingComparer.Compare(x, y);
 
-        // Assert
-        Assert.Equal(expectedComparisonResult, actualComparisonResult);
-    }
+		// Assert
+		Assert.Equal(expectedComparisonResult, actualComparisonResult);
+	}
 
 	[InlineData("1", "b", -1)]
 	[InlineData("cba", "2", 1)]
@@ -69,5 +69,5 @@ public class NaturalSortingComparerTest
 
 	private readonly NaturalSortingComparer _naturalSortingComparer;
 
-    #endregion
+	#endregion
 }

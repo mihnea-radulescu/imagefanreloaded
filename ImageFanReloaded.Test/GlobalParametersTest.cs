@@ -98,6 +98,7 @@ public class GlobalParametersTest : TestBase
 		Assert.NotEmpty(_globalParameters.ImageFileExtensions);
 
 		Assert.NotEqual(0U, _globalParameters.ImageQualityLevel);
+		Assert.NotEqual(0, _globalParameters.DecimalDigitCountForDisplay);
 
 		Assert.NotNull(_globalParameters.UserProfilePath);
 		Assert.NotEmpty(_globalParameters.UserProfilePath);

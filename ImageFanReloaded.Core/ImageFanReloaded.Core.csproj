@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <Title>ImageFan Reloaded - Core</Title>
-        <Product>ImageFan Reloaded - Core</Product>
-    </PropertyGroup>
+	<PropertyGroup>
+		<Title>ImageFan Reloaded - Core</Title>
+		<Product>ImageFan Reloaded - Core</Product>
+	</PropertyGroup>
 
 </Project>

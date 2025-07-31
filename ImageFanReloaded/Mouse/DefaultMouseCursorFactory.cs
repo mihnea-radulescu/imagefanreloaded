@@ -10,6 +10,6 @@ public class DefaultMouseCursorFactory : MouseCursorFactoryBase
 	{
 		DragCursor = new MouseCursor(new Cursor(StandardCursorType.DragMove));
 	}
-	
+
 	public override IMouseCursor DragCursor { get; }
 }

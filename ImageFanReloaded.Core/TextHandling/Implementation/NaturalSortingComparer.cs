@@ -6,102 +6,102 @@ namespace ImageFanReloaded.Core.TextHandling.Implementation;
 
 public class NaturalSortingComparer : StringComparer, IStringComparisonEnabled
 {
-    static NaturalSortingComparer()
-    {
-        ContiguousDigitBlockRegex = new Regex(@"\d+", RegexOptions.Compiled);
-    }
+	static NaturalSortingComparer()
+	{
+		ContiguousDigitBlockRegex = new Regex(@"\d+", RegexOptions.Compiled);
+	}
 
-    public NaturalSortingComparer(StringComparer defaultStringComparer)
-    {
-        _defaultStringComparer = defaultStringComparer;
-    }
+	public NaturalSortingComparer(StringComparer defaultStringComparer)
+	{
+		_defaultStringComparer = defaultStringComparer;
+	}
 
-    public override int Compare(string? x, string? y)
-    {
-        if (x is null && y is null)
-        {
-            return 0;
-        }
+	public override int Compare(string? x, string? y)
+	{
+		if (x is null && y is null)
+		{
+			return 0;
+		}
 
-        if (x is null)
-        {
-            return -1;
-        }
+		if (x is null)
+		{
+			return -1;
+		}
 
-        if (y is null)
-        {
-            return 1;
-        }
-        
-        if (!ContainsDigits(x) || !ContainsDigits(y))
-        {
-            return _defaultStringComparer.Compare(x, y);
-        }
+		if (y is null)
+		{
+			return 1;
+		}
 
-        var maximumContiguousDigitBlockLengthX = GetMaximumContiguousDigitBlockLength(x);
-        var maximumContiguousDigitBlockLengthY = GetMaximumContiguousDigitBlockLength(y);
+		if (!ContainsDigits(x) || !ContainsDigits(y))
+		{
+			return _defaultStringComparer.Compare(x, y);
+		}
 
-        var maximumContiguousDigitBlockLength = Math.Max(
-            maximumContiguousDigitBlockLengthX, maximumContiguousDigitBlockLengthY);
+		var maximumContiguousDigitBlockLengthX = GetMaximumContiguousDigitBlockLength(x);
+		var maximumContiguousDigitBlockLengthY = GetMaximumContiguousDigitBlockLength(y);
 
-        var paddedX = PadDigitBlocks(x, maximumContiguousDigitBlockLength);
-        var paddedY = PadDigitBlocks(y, maximumContiguousDigitBlockLength);
+		var maximumContiguousDigitBlockLength = Math.Max(
+			maximumContiguousDigitBlockLengthX, maximumContiguousDigitBlockLengthY);
 
-        return _defaultStringComparer.Compare(paddedX, paddedY);
-    }
+		var paddedX = PadDigitBlocks(x, maximumContiguousDigitBlockLength);
+		var paddedY = PadDigitBlocks(y, maximumContiguousDigitBlockLength);
 
-    public override bool Equals(string? x, string? y) => Compare(x, y) == 0;
+		return _defaultStringComparer.Compare(paddedX, paddedY);
+	}
 
-    public override int GetHashCode(string obj)
-    {
-        if (!ContainsDigits(obj))
-        {
-            return _defaultStringComparer.GetHashCode(obj);
-        }
-        
-        var maximumContiguousDigitBlockLengthObj = GetMaximumContiguousDigitBlockLength(obj);
-        var paddedObj = PadDigitBlocks(obj, maximumContiguousDigitBlockLengthObj);
+	public override bool Equals(string? x, string? y) => Compare(x, y) == 0;
 
-        return _defaultStringComparer.GetHashCode(paddedObj);
-    }
-    
-    public StringComparison GetStringComparison()
-    {
-        if (_defaultStringComparer == InvariantCultureIgnoreCase)
-        {
-            return StringComparison.InvariantCultureIgnoreCase;
-        }
+	public override int GetHashCode(string obj)
+	{
+		if (!ContainsDigits(obj))
+		{
+			return _defaultStringComparer.GetHashCode(obj);
+		}
 
-        return StringComparison.InvariantCulture;
-    }
+		var maximumContiguousDigitBlockLengthObj = GetMaximumContiguousDigitBlockLength(obj);
+		var paddedObj = PadDigitBlocks(obj, maximumContiguousDigitBlockLengthObj);
 
-    #region Private
+		return _defaultStringComparer.GetHashCode(paddedObj);
+	}
 
-    private static readonly Regex ContiguousDigitBlockRegex;
-    
-    private readonly StringComparer _defaultStringComparer;
+	public StringComparison GetStringComparison()
+	{
+		if (_defaultStringComparer == InvariantCultureIgnoreCase)
+		{
+			return StringComparison.InvariantCultureIgnoreCase;
+		}
 
-    private static bool ContainsDigits(string text) => ContiguousDigitBlockRegex.IsMatch(text);
+		return StringComparison.InvariantCulture;
+	}
 
-    private static int GetMaximumContiguousDigitBlockLength(string text)
-    {
-        var maximumContiguousDigitBlockLength =
-            ContiguousDigitBlockRegex
-                .Matches(text)
-                .Select(aMatch => aMatch.Value.Length)
-                .Max();
+	#region Private
 
-        return maximumContiguousDigitBlockLength;
-    }
+	private static readonly Regex ContiguousDigitBlockRegex;
 
-    private static string PadDigitBlocks(string text, int digitBlockLength)
-    {
-        var paddedText = ContiguousDigitBlockRegex.Replace(
-            text,
-            aMatch => aMatch.Value.PadLeft(digitBlockLength, '0'));
+	private readonly StringComparer _defaultStringComparer;
 
-        return paddedText;
-    }
+	private static bool ContainsDigits(string text) => ContiguousDigitBlockRegex.IsMatch(text);
 
-    #endregion
+	private static int GetMaximumContiguousDigitBlockLength(string text)
+	{
+		var maximumContiguousDigitBlockLength =
+			ContiguousDigitBlockRegex
+				.Matches(text)
+				.Select(aMatch => aMatch.Value.Length)
+				.Max();
+
+		return maximumContiguousDigitBlockLength;
+	}
+
+	private static string PadDigitBlocks(string text, int digitBlockLength)
+	{
+		var paddedText = ContiguousDigitBlockRegex.Replace(
+			text,
+			aMatch => aMatch.Value.PadLeft(digitBlockLength, '0'));
+
+		return paddedText;
+	}
+
+	#endregion
 }

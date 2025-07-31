@@ -49,7 +49,6 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 			_thumbnailInfo = value;
 
 			ImageFile = _thumbnailInfo!.ImageFile;
-			HasImageError = ImageFile.HasImageReadError;
 
 			_thumbnailImage.Source = _thumbnailInfo.ThumbnailImage!.GetBitmap();
 
@@ -59,7 +58,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	}
 
 	public IImageFile? ImageFile { get; private set; }
-	public bool HasImageError { get; private set; }
+	public bool HasImageReadError => ImageFile!.HasImageReadError;
 
 	public bool IsSelected { get; private set; }
 
@@ -103,6 +102,21 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		{
 			_thumbnailImage.Source = thumbnailImage.GetBitmap();
 		}
+	}
+
+	public async Task UpdateThumbnailAfterImageFileChange()
+	{
+		NotifyStopAnimation();
+
+		await DisposeThumbnail();
+
+		await Task.Run(() =>
+		{
+			_thumbnailInfo!.ReadThumbnailInputFromDisc();
+			_thumbnailInfo!.GetThumbnail();
+		});
+
+		RefreshThumbnail();
 	}
 
 	public bool IsAnimated => _isAnimated;

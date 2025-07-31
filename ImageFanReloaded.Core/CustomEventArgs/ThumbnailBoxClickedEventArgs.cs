@@ -11,10 +11,10 @@ public class ThumbnailBoxClickedEventArgs : EventArgs
 		MouseClickType mouseClickType)
 	{
 		ThumbnailBox = thumbnailBox;
-		
+
 		MouseClickType = mouseClickType;
 	}
-	
+
 	public IThumbnailBox ThumbnailBox { get; }
 
 	public MouseClickType MouseClickType { get; }

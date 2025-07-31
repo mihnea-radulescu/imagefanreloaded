@@ -28,8 +28,8 @@ public class AppBuilderInitializer
 
 	private static AppBuilderInitializer? _instance;
 
-    private AppBuilderInitializer()
-    {
+	private AppBuilderInitializer()
+	{
 		AppBuilder
 			.Configure<TestApp>()
 			.UsePlatformDetect()

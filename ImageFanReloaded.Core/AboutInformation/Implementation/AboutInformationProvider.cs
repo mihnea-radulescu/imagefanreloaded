@@ -7,7 +7,7 @@ public class AboutInformationProvider : IAboutInformationProvider
 	public AboutInformationProvider()
 	{
 		var assemblyVersion = Assembly.GetEntryAssembly()!.GetName().Version!;
-		
+
 		var major = assemblyVersion.Major;
 		var minor = assemblyVersion.Minor;
 		var build = assemblyVersion.Build.ToString().PadLeft(PaddingMinimumLength, PaddingCharacter);
@@ -16,10 +16,10 @@ public class AboutInformationProvider : IAboutInformationProvider
 		VersionString = $"{major}.{minor}.{build}.{revision}";
 		Year = minor;
 	}
-	
+
 	public string VersionString { get; }
 	public int Year { get; }
-	
+
 	#region Private
 
 	private const int PaddingMinimumLength = 2;

@@ -10,11 +10,11 @@ public class FolderOrderingChangedEventArgs : EventArgs
 		string path)
 	{
 		ContentTabItem = contentTabItem;
-		
+
 		Path = path;
 	}
 
 	public IContentTabItem ContentTabItem { get; }
-	
+
 	public string Path { get; }
 }

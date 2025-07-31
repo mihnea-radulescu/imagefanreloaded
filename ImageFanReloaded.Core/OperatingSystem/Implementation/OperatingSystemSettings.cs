@@ -8,7 +8,7 @@ public class OperatingSystemSettings : IOperatingSystemSettings
 		IsWindows = System.OperatingSystem.IsWindows();
 		IsMacOS = System.OperatingSystem.IsMacOS();
 	}
-	
+
 	public bool IsLinux { get; }
 	public bool IsWindows { get; }
 	public bool IsMacOS { get; }

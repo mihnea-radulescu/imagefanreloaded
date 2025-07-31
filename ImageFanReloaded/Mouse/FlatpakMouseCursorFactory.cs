@@ -10,6 +10,6 @@ public class FlatpakMouseCursorFactory : MouseCursorFactoryBase
 	{
 		DragCursor = new MouseCursor(new Cursor(StandardCursorType.SizeAll));
 	}
-	
+
 	public override IMouseCursor DragCursor { get; }
 }

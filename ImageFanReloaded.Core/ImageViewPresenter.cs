@@ -45,7 +45,7 @@ public class ImageViewPresenter
 		(_currentImageFile, _currentImageFileIndex) = _imageFiles
 			.Select((anImageFile, index) => (anImageFile, index))
 			.Single(anImageFileWithIndex =>
-				anImageFileWithIndex.anImageFile.ImageFileData.ImageFilePath.Equals(
+				anImageFileWithIndex.anImageFile.StaticImageFileData.ImageFilePath.Equals(
 					_inputPathHandler.FilePath,
 					_nameComparison));
 

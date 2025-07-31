@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Avalonia.Media.Imaging;
 using ImageMagick;
+using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -15,8 +16,15 @@ public class ImageFile : ImageFileBase
 	public ImageFile(
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
-		ImageFileData imageFileData)
-		: base(globalParameters, imageResizer, imageFileData)
+		IFileSizeEngine fileSizeEngine,
+		StaticImageFileData staticImageFileData,
+		TransientImageFileData transientImageFileData)
+		: base(
+			globalParameters,
+			imageResizer,
+			fileSizeEngine,
+			staticImageFileData,
+			transientImageFileData)
 	{
 	}
 
@@ -24,21 +32,29 @@ public class ImageFile : ImageFileBase
 
 	protected override IImage GetImageFromDisc(bool applyImageOrientation)
 	{
+		var imageFilePath = StaticImageFileData.ImageFilePath;
+		if (!File.Exists(imageFilePath))
+		{
+			InitializeNonExistingImageData();
+
+			throw new FileNotFoundException($"Image '{imageFilePath}' not found.", imageFilePath);
+		}
+
 		if (IsAnimationEnabledImageFileExtension)
 		{
-			return BuildAnimatedImageFromFile(ImageFileData.ImageFilePath);
+			return BuildAnimatedImageFromFile(imageFilePath);
 		}
 		else if (applyImageOrientation)
 		{
-			return BuildIndirectlySupportedImageFromFile(ImageFileData.ImageFilePath);
+			return BuildIndirectlySupportedImageFromFile(imageFilePath);
 		}
 		else if (IsDirectlySupportedImageFileExtension)
 		{
-			return BuildImageFromFile(ImageFileData.ImageFilePath);
+			return BuildImageFromFile(imageFilePath);
 		}
 		else
 		{
-			return BuildIndirectlySupportedImageFromFile(ImageFileData.ImageFilePath);
+			return BuildIndirectlySupportedImageFromFile(imageFilePath);
 		}
 	}
 

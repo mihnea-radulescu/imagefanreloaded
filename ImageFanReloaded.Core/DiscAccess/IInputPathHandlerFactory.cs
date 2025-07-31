@@ -2,5 +2,5 @@ namespace ImageFanReloaded.Core.DiscAccess;
 
 public interface IInputPathHandlerFactory
 {
-    IInputPathHandler GetInputPathHandler(string? inputPath);
+	IInputPathHandler GetInputPathHandler(string? inputPath);
 }

@@ -10,5 +10,10 @@ public interface IFolderVisualState
 	Task ClearVisualState();
 	Task UpdateVisualState(ITabOptions tabOptions);
 
+	void UpdateFolderInfoText(
+		ITabOptions tabOptions,
+		decimal previousThumbnailSizeOnDiscInKilobytes,
+		decimal currentThumbnailSizeOnDiscInKilobytes);
+
 	void DisposeCancellationTokenSource();
 }

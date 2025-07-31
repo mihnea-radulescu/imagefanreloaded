@@ -8,12 +8,12 @@ public record CoordinatesToImageSizeRatio
 	{
 		ImageCenter = new CoordinatesToImageSizeRatio(0.5, 0.5);
 	}
-	
+
 	public static CoordinatesToImageSizeRatio ImageCenter { get; }
-	
+
 	public CoordinatesToImageSizeRatio(ImagePoint coordinates, ImageSize imageSize)
-    {
-        RatioX = (double)coordinates.X / (double)imageSize.Width;
+	{
+		RatioX = (double)coordinates.X / (double)imageSize.Width;
 		RatioY = (double)coordinates.Y / (double)imageSize.Height;
 	}
 
@@ -21,12 +21,12 @@ public record CoordinatesToImageSizeRatio
 	public double RatioY { get; }
 
 	#region Private
-	
+
 	private CoordinatesToImageSizeRatio(double ratioX, double ratioY)
 	{
 		RatioX = ratioX;
 		RatioY = ratioY;
 	}
-	
+
 	#endregion
 }

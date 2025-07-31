@@ -6,7 +6,7 @@ namespace ImageFanReloaded.Core.DiscAccess;
 public interface IInputPathHandler
 {
 	InputPathType InputPathType { get; }
-	
+
 	string? FolderPath { get; }
 	string? FilePath { get; }
 

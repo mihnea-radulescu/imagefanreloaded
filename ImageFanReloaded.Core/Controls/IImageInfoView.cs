@@ -6,7 +6,7 @@ namespace ImageFanReloaded.Core.Controls;
 public interface IImageInfoView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
-	
+
 	void SetImageInfoText(string text);
 
 	Task ShowDialog(IMainView owner);

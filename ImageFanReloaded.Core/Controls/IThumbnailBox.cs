@@ -19,7 +19,7 @@ public interface IThumbnailBox
 	IThumbnailInfo? ThumbnailInfo { get; set; }
 
 	IImageFile? ImageFile { get; }
-	bool HasImageError { get; }
+	bool HasImageReadError { get; }
 
 	bool IsSelected { get; }
 
@@ -30,6 +30,8 @@ public interface IThumbnailBox
 
 	void BringThumbnailIntoView();
 	void RefreshThumbnail();
+
+	Task UpdateThumbnailAfterImageFileChange();
 
 	bool IsAnimated { get; }
 	Task AnimationTask { get; }

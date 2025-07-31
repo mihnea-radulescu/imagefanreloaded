@@ -71,12 +71,12 @@ public class AppBootstrap : IAppBootstrap
 
 		_globalParameters = new GlobalParameters(operatingSystemSettings, imageResizer);
 
-		IImageFileFactory imageFileFactory = new ImageFileFactory(_globalParameters, imageResizer);
-
 		_fileSizeEngine = new FileSizeEngine();
+		IImageFileFactory imageFileFactory = new ImageFileFactory(
+			_globalParameters, imageResizer, _fileSizeEngine);
 
 		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
-			_globalParameters, _fileSizeEngine, imageFileFactory);
+			_globalParameters, imageFileFactory, _fileSizeEngine);
 		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 
 		IEnvironmentSettings environmentSettings = new EnvironmentSettings();
@@ -97,7 +97,7 @@ public class AppBootstrap : IAppBootstrap
 		_commandLineArgsInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(
 			commandLineArgsInputPath);
 	}
-	
+
 	private string? GetCommandLineArgsInputPath()
 	{
 		var args = _desktop.Args!;
@@ -155,7 +155,7 @@ public class AppBootstrap : IAppBootstrap
 		IAboutViewFactory aboutViewFactory = new AboutViewFactory(
 			aboutInformationProvider, _globalParameters);
 
-		IImageInfoBuilder imageInfoBuilder = new ImageInfoBuilder();
+		IImageInfoBuilder imageInfoBuilder = new ImageInfoBuilder(_globalParameters);
 		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(
 			_globalParameters, imageInfoBuilder);
 
@@ -177,7 +177,7 @@ public class AppBootstrap : IAppBootstrap
 
 		mainView.Show();
 	}
-	
+
 	private async Task ShowImageView()
 	{
 		var imageWindow = new ImageWindow();
@@ -218,6 +218,6 @@ public class AppBootstrap : IAppBootstrap
 			ShowMainView();
 		}
 	}
-	
+
 	#endregion
 }

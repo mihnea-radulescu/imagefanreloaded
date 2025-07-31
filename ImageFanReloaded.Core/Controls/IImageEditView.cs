@@ -18,12 +18,13 @@ public interface IImageEditView
 	ISaveFileImageFormatFactory? SaveFileImageFormatFactory { get; set; }
 	ISaveFileDialogFactory? SaveFileDialogFactory { get; set; }
 
-	ImageFileData? ImageFileData { get; set; }
+	StaticImageFileData? StaticImageFileData { get; set; }
 
 	IContentTabItem? ContentTabItem { get; set; }
 
 	Task LoadImage();
 
+	event EventHandler<ContentTabItemEventArgs>? ImageFileOverwritten;
 	event EventHandler<ContentTabItemEventArgs>? FolderContentChanged;
 
 	Task ShowDialog(IMainView owner);

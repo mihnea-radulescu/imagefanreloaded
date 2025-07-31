@@ -1,12 +1,12 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="ImageFanReloaded.Controls.FileSystemTreeViewItem"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="ImageFanReloaded.Controls.FileSystemTreeViewItem"
 			 Margin="1">
 	<StackPanel Orientation="Horizontal">
 		<Image Name="_fileSystemEntryImage"
-               VerticalAlignment="Center"
-               Stretch="None"/>
+			   VerticalAlignment="Center"
+			   Stretch="None"/>
 		<TextBlock Name="_fileSystemEntryTextBlock"
-                   VerticalAlignment="Center"/>
+				   VerticalAlignment="Center"/>
 	</StackPanel>
 </UserControl>

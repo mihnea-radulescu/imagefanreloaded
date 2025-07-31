@@ -18,6 +18,6 @@ public class DefaultSaveFileDialogFactory : ISaveFileDialogFactory
 	#region Private
 
 	private readonly IStorageProvider _storageProvider;
-	
+
 	#endregion
 }

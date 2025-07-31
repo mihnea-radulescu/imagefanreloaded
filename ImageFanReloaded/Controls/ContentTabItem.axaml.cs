@@ -396,10 +396,47 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			100 - TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
 	}
 
-	public async Task ShowImageEdit(IImageEditView imageEditView) => await imageEditView.ShowDialog(MainView!);
-	public async Task ShowTabOptions(ITabOptionsView tabOptionsView) => await tabOptionsView.ShowDialog(MainView!);
-	public async Task ShowAboutInfo(IAboutView aboutView) => await aboutView.ShowDialog(MainView!);
-	public async Task ShowImageInfo(IImageInfoView imageInfoView) => await imageInfoView.ShowDialog(MainView!);
+	public async Task RefreshSelectedImage()
+	{
+		var selectedImageFile = GetSelectedImageFile();
+		await Task.Run(() => selectedImageFile.RefreshTransientImageFileData());
+
+		UpdateSelectedImageStatus();
+	}
+
+	public async Task UpdateSelectedImageAfterImageFileChange()
+	{
+		try
+		{
+			await FolderChangedMutex!.Wait();
+
+			var previousThumbnailSizeOnDiscInKilobytes =
+				GetSelectedImageFileSizeOnDiscInKilobytes();
+
+			await RefreshSelectedImage();
+			await _selectedThumbnailBox!.UpdateThumbnailAfterImageFileChange();
+
+			var currentThumbnailSizeOnDiscInKilobytes = GetSelectedImageFileSizeOnDiscInKilobytes();
+
+			FolderVisualState!.UpdateFolderInfoText(
+				TabOptions!,
+				previousThumbnailSizeOnDiscInKilobytes,
+				currentThumbnailSizeOnDiscInKilobytes);
+		}
+		finally
+		{
+			FolderChangedMutex!.Signal();
+		}
+	}
+
+	public async Task ShowImageEdit(IImageEditView imageEditView)
+		=> await imageEditView.ShowDialog(MainView!);
+	public async Task ShowTabOptions(ITabOptionsView tabOptionsView)
+		=> await tabOptionsView.ShowDialog(MainView!);
+	public async Task ShowAboutInfo(IAboutView aboutView)
+		=> await aboutView.ShowDialog(MainView!);
+	public async Task ShowImageInfo(IImageInfoView imageInfoView)
+		=> await imageInfoView.ShowDialog(MainView!);
 
 	#region Private
 
@@ -425,10 +462,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private TreeViewItem? _activeFolderTreeViewItem;
 
 	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxSelectedEventArgs e)
-	{
-		var imageFile = e.ThumbnailBox.ImageFile!;
-		UpdateImageInfoText(imageFile);
-	}
+		=> UpdateSelectedImageStatus();
 
 	private void OnThumbnailBoxClicked(object? sender, ThumbnailBoxClickedEventArgs e)
 	{
@@ -491,16 +525,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		if (canAdvanceToDesignatedImage)
 		{
-			var imageFile = _selectedThumbnailBox!.ImageFile!;
-			await imageView.SetImage(imageFile);
+			var selectedImageFile = GetSelectedImageFile();
+			await imageView.SetImage(selectedImageFile);
 		}
 	}
 
 	private void OnImageViewClosing(object? sender, ImageViewClosingEventArgs e)
-	{
-		var imageFile = _selectedThumbnailBox!.ImageFile!;
-		UpdateImageInfoText(imageFile);
-	}
+		=> UpdateSelectedImageStatus();
 
 	private void OnSlideshowButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseSlideshowRequested();
@@ -513,12 +544,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		=> RaiseTabOptionsRequested();
 	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseAboutInfoRequested();
-
-	private void UpdateImageInfoText(IImageFile imageFile)
-	{
-		var basicImageInfo = imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
-		SetImageInfoText(basicImageInfo);
-	}
 
 	private void AddMainGridColumnDefinitions()
 	{
@@ -548,7 +573,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 			_slideshowButton.IsEnabled = true;
 			_imageInfoButton.IsEnabled = true;
-			_imageEditButton.IsEnabled = !_selectedThumbnailBox.HasImageError;
+			_imageEditButton.IsEnabled = !_selectedThumbnailBox.HasImageReadError;
 
 			SelectThumbnail();
 		}
@@ -598,7 +623,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		imageView.TabOptions = TabOptions;
 
-		await imageView.SetImage(_selectedThumbnailBox!.ImageFile!);
+		var selectedImageFile = GetSelectedImageFile();
+		await imageView.SetImage(selectedImageFile);
 
 		imageView.ImageChanged += OnImageViewImageChanged;
 		imageView.ViewClosing += OnImageViewClosing;
@@ -912,13 +938,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		FocusThumbnailScrollViewer();
 		BringThumbnailIntoView();
 
-		var imageFile = _selectedThumbnailBox!.ImageFile!;
-		ImageInfoRequested?.Invoke(this, new ImageSelectedEventArgs(this, imageFile));
+		var selectedImageFile = GetSelectedImageFile();
+		ImageInfoRequested?.Invoke(this, new ImageSelectedEventArgs(this, selectedImageFile));
 	}
 
 	private void RaiseImageEditRequested()
 	{
-		if (_selectedThumbnailBox is null || _selectedThumbnailBox.HasImageError)
+		if (_selectedThumbnailBox is null || _selectedThumbnailBox.HasImageReadError)
 		{
 			return;
 		}
@@ -926,8 +952,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		FocusThumbnailScrollViewer();
 		BringThumbnailIntoView();
 
-		var imageFile = _selectedThumbnailBox!.ImageFile!;
-		ImageEditRequested?.Invoke(this, new ImageSelectedEventArgs(this, imageFile));
+		var selectedImageFile = GetSelectedImageFile();
+		ImageEditRequested?.Invoke(this, new ImageSelectedEventArgs(this, selectedImageFile));
 	}
 
 	private void RaiseTabOptionsRequested()
@@ -1117,6 +1143,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private TreeViewItem? GetFolderTreeViewSelectedItem()
 		=> (TreeViewItem?)_folderTreeView.SelectedItem;
 
+	private IImageFile GetSelectedImageFile() => _selectedThumbnailBox!.ImageFile!;
+
 	private static async Task StopThumbnailAnimation(
 		IReadOnlyList<IThumbnailBox> thumbnailBoxCollectionToClear)
 	{
@@ -1140,6 +1168,26 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		catch
 		{
 		}
+	}
+
+	private void UpdateSelectedImageStatus()
+	{
+		var selectedImageFile = GetSelectedImageFile();
+		var basicImageInfo = selectedImageFile.GetBasicImageInfo(
+			TabOptions!.RecursiveFolderBrowsing);
+		SetImageInfoText(basicImageInfo);
+
+		var hasImageReadError = _selectedThumbnailBox!.HasImageReadError;
+		_imageEditButton.IsEnabled = !hasImageReadError;
+	}
+
+	private decimal GetSelectedImageFileSizeOnDiscInKilobytes()
+	{
+		var selectedImageFile = GetSelectedImageFile();
+		var selectedImageFileSizeOnDiscInKilobytes =
+			selectedImageFile.TransientImageFileData.SizeOnDiscInKilobytes.GetValueOrDefault();
+
+		return selectedImageFileSizeOnDiscInKilobytes;
 	}
 
 	#endregion

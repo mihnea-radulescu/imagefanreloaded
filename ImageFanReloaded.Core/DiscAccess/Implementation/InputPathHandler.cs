@@ -25,7 +25,7 @@ public class InputPathHandler : IInputPathHandler
 			if (Directory.Exists(inputPath))
 			{
 				InputPathType = InputPathType.Folder;
-				
+
 				FolderPath = Path.GetFullPath(inputPath);
 			}
 			else if (File.Exists(inputPath))
@@ -48,9 +48,9 @@ public class InputPathHandler : IInputPathHandler
 			}
 		}
 	}
-	
+
 	public InputPathType InputPathType { get; }
-	
+
 	public string? FolderPath { get; }
 	public string? FilePath { get; }
 
@@ -76,11 +76,11 @@ public class InputPathHandler : IInputPathHandler
 
 				return matchingFileSystemEntryInfo;
 			});
-	
+
 	#region Private
-	
+
 	private readonly IDiscQueryEngine _discQueryEngine;
-	
+
 	private readonly StringComparison _nameComparison;
 
 	#endregion

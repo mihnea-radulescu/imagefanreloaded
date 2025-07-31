@@ -59,6 +59,6 @@ public class EditableImageData : DisposableBase
 	private readonly MagickImageCollection _imageFramesToEdit;
 	private readonly IImage _imageToDisplay;
 	private readonly ImageSize _imageSize;
-	
+
 	#endregion
 }

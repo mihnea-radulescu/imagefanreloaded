@@ -75,6 +75,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public HashSet<string> ImageFileExtensions { get; }
 
 	public uint ImageQualityLevel { get; }
+	public int DecimalDigitCountForDisplay { get; }
 
 	public string UserProfilePath { get; }
 	public IReadOnlyList<string> SpecialFolders { get; }
@@ -94,19 +95,19 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public abstract IImage GetLoadingImageThumbnail(int thumbnailSize);
 
 	#region Protected
-	
+
 	protected GlobalParametersBase(IOperatingSystemSettings operatingSystemSettings)
 	{
 		ProcessorCount = Environment.ProcessorCount;
-		
+
 		IsLinux = operatingSystemSettings.IsLinux;
 		IsWindows = operatingSystemSettings.IsWindows;
 		IsMacOS = operatingSystemSettings.IsMacOS;
-		
+
 		TabKey = Key.Tab;
 		EscapeKey = Key.Escape;
 		EnterKey = Key.Enter;
-		
+
 		SKey = Key.S;
 		OKey = Key.O;
 
@@ -119,9 +120,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		CtrlKeyModifier = KeyModifiers.Ctrl;
 		AltKeyModifier = KeyModifiers.Alt;
 		ShiftKeyModifier = KeyModifiers.Shift;
-		
+
 		F4Key = Key.F4;
-		
+
 		NKey = Key.N;
 		MKey = Key.M;
 
@@ -217,6 +218,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			StringComparer.InvariantCultureIgnoreCase);
 
 		ImageQualityLevel = 80;
+		DecimalDigitCountForDisplay = 2;
 
 		UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
@@ -227,7 +229,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			"Downloads",
 			"Pictures"
 		};
-		
+
 		_backwardNavigationKeys = [
 			Key.Up,
 			Key.Left
@@ -240,11 +242,11 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		_navigationKeys = [ .._backwardNavigationKeys, .._forwardNavigationKeys ];
 	}
-	
+
 	protected const int IconSizeSquareLength = 36;
-	
+
 	#endregion
-	
+
 	#region Private
 
 	private readonly HashSet<Key> _backwardNavigationKeys;

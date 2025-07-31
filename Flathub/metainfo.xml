@@ -70,6 +70,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.08.01" date="2025-08-01">
+			<description>
+				<p>Improved thumbnail updating and invalid image handling</p>
+			</description>
+		</release>
 		<release version="1.2025.07.30" date="2025-07-30">
 			<description>
 				<p>Bug fix: minor invalid image info refresh</p>

@@ -8,57 +8,59 @@ using System.Xml.Linq;
 using ImageMagick;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.ImageHandling;
 
 public class ImageInfoBuilder : IImageInfoBuilder
 {
-	public async Task<string> BuildImageInfo(IImageFile imageFile)
+	public ImageInfoBuilder(IGlobalParameters globalParameters)
 	{
-		if (imageFile.HasImageReadError)
-		{
-			return BuildBasicImageInfo(imageFile.ImageFileData);
-		}
-
-		try
-		{
-			var extendedImageInfo = await BuildExtendedImageInfo(
-				imageFile.ImageFileData, imageFile.ImageSize, imageFile.IsAnimatedImage);
-
-			return extendedImageInfo;
-		}
-		catch
-		{
-			return BuildBasicImageInfo(imageFile.ImageFileData);
-		}
+		_globalParameters = globalParameters;
 	}
+
+	public async Task<string> BuildImageInfo(IImageFile imageFile)
+		=> await Task.Run(() => BuildImageInfoInternal(imageFile));
 
 	#region Private
 
-	private static string BuildBasicImageInfo(ImageFileData imageFileData)
+	private readonly IGlobalParameters _globalParameters;
+
+	private string BuildImageInfoInternal(IImageFile imageFile)
+	{
+		try
+		{
+			return BuildExtendedImageInfo(imageFile);
+		}
+		catch
+		{
+			return BuildBasicImageInfo(imageFile);
+		}
+	}
+
+	private string BuildBasicImageInfo(IImageFile imageFile)
 	{
 		var imageInfoBuilder = new StringBuilder();
 
-		BuildFileProfile(imageFileData, imageInfoBuilder);
+		BuildFileProfile(imageFile, imageInfoBuilder);
 
 		var imageInfo = imageInfoBuilder.ToString();
 		return imageInfo;
 	}
 
-	private static async Task<string> BuildExtendedImageInfo(
-		ImageFileData imageFileData, ImageSize imageSize, bool isAnimatedImage)
-		=> await Task.Run(
-			() => BuildExtendedImageInfoInternal(imageFileData, imageSize, isAnimatedImage));
-
-	private static string BuildExtendedImageInfoInternal(
-		ImageFileData imageFileData, ImageSize imageSize, bool isAnimatedImage)
+	private string BuildExtendedImageInfo(IImageFile imageFile)
 	{
 		var imageInfoBuilder = new StringBuilder();
-		IMagickImage image = new MagickImage(imageFileData.ImageFilePath);
 
-		BuildFileProfile(imageFileData, imageInfoBuilder);
+		var staticImageFileData = imageFile.StaticImageFileData;
+		IMagickImage image = new MagickImage(staticImageFileData.ImageFilePath);
 
+		BuildFileProfile(imageFile, imageInfoBuilder);
+
+		var imageSize = imageFile.ImageSize;
+		var isAnimatedImage = imageFile.IsAnimatedImage;
 		BuildImageProfile(image, imageSize, imageInfoBuilder, isAnimatedImage);
+
 		BuildColorProfile(image, imageInfoBuilder);
 
 		BuildExifProfile(image, imageInfoBuilder);
@@ -69,20 +71,35 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		return imageInfo;
 	}
 
-	private static void BuildFileProfile(ImageFileData imageFileData, StringBuilder imageInfoBuilder)
+	private void BuildFileProfile(IImageFile imageFile, StringBuilder imageInfoBuilder)
 	{
 		imageInfoBuilder.AppendLine("File profile");
 		imageInfoBuilder.AppendLine();
 
-		imageInfoBuilder.AppendLine($"\tFile name:\t{imageFileData.ImageFileName}");
-		imageInfoBuilder.AppendLine($"\tFile path:\t{imageFileData.ImageFilePath}");
-		imageInfoBuilder.AppendLine($"\tFile size:\t{imageFileData.SizeOnDiscInKilobytes} KB");
-		imageInfoBuilder.AppendLine(
-			$"\tFile last modification time:\t{imageFileData.LastModificationTime}");
+		var staticImageFileData = imageFile.StaticImageFileData;
+		imageInfoBuilder.AppendLine($"\tFile name:\t{staticImageFileData.ImageFileName}");
+		imageInfoBuilder.AppendLine($"\tFile path:\t{staticImageFileData.ImageFilePath}");
+
+		imageFile.RefreshTransientImageFileData();
+		var transientImageFileData = imageFile.TransientImageFileData;
+
+		var sizeOnDiscInKilobytes = transientImageFileData.SizeOnDiscInKilobytes.GetValueOrDefault();
+		var sizeOnDiscInKilobytesForDisplay = decimal.Round(
+			sizeOnDiscInKilobytes, _globalParameters.DecimalDigitCountForDisplay);
+		imageInfoBuilder.AppendLine($"\tFile size:\t{sizeOnDiscInKilobytesForDisplay} KB");
+
+		var lastModificationTime = transientImageFileData.LastModificationTime;
+		var lastModificationTimeText = lastModificationTime.HasValue
+			? lastModificationTime.ToString()
+			: "-";
+		imageInfoBuilder.AppendLine($"\tFile last modification time:\t{lastModificationTimeText}");
 	}
 
 	private static void BuildImageProfile(
-		IMagickImage image, ImageSize imageSize, StringBuilder imageInfoBuilder, bool isAnimatedImage)
+		IMagickImage image,
+		ImageSize imageSize,
+		StringBuilder imageInfoBuilder,
+		bool isAnimatedImage)
 	{
 		imageInfoBuilder.AppendLine();
 		imageInfoBuilder.AppendLine("Image profile");

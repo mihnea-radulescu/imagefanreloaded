@@ -50,7 +50,7 @@ public class AsyncMutex : IAsyncMutex
 			GC.SuppressFinalize(this);
 		}
 	}
-	
+
 	#region Private
 
 	private readonly MutexSlim _mutexSlim;

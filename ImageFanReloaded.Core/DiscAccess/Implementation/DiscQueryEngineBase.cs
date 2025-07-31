@@ -19,12 +19,12 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 	protected DiscQueryEngineBase(
 		IGlobalParameters globalParameters,
-		IFileSizeEngine fileSizeEngine,
-		IImageFileFactory imageFileFactory)
+		IImageFileFactory imageFileFactory,
+		IFileSizeEngine fileSizeEngine)
 	{
 		_globalParameters = globalParameters;
-		_fileSizeEngine = fileSizeEngine;
 		_imageFileFactory = imageFileFactory;
+		_fileSizeEngine = fileSizeEngine;
 
 		_specialFolderToIconMapping = new Dictionary<string, IImage>
 		{
@@ -71,8 +71,8 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	private static readonly IReadOnlyList<IImageFile> EmptyImageFileCollection;
 
 	private readonly IGlobalParameters _globalParameters;
-	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IImageFileFactory _imageFileFactory;
+	private readonly IFileSizeEngine _fileSizeEngine;
 
 	private readonly IReadOnlyDictionary<string, IImage> _specialFolderToIconMapping;
 
@@ -231,12 +231,13 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 			var imageFiles = orderedImageFileInfoCollection
 				.Select(aFileInfo => _imageFileFactory.GetImageFile(
-					new ImageFileData(
+					new StaticImageFileData(
 						aFileInfo.Name,
 						aFileInfo.FullName,
 						aFileInfo.Extension,
 						Path.GetFileNameWithoutExtension(aFileInfo.Name),
-						Path.GetDirectoryName(aFileInfo.FullName)!,
+						Path.GetDirectoryName(aFileInfo.FullName)!),
+					new TransientImageFileData(
 						_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length),
 						aFileInfo.LastWriteTime)))
 				.ToList();

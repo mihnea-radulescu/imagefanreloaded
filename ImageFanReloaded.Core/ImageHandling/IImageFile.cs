@@ -4,7 +4,8 @@ namespace ImageFanReloaded.Core.ImageHandling;
 
 public interface IImageFile
 {
-	ImageFileData ImageFileData { get; }
+	StaticImageFileData StaticImageFileData { get; }
+	TransientImageFileData TransientImageFileData { get; }
 
 	ImageSize ImageSize { get; }
 	bool IsAnimatedImage { get; }
@@ -17,7 +18,9 @@ public interface IImageFile
 	void ReadImageDataFromDisc(bool applyImageOrientation);
 
 	IImage GetThumbnail(int thumbnailSize);
-	void DisposeImageData();
 
+	void RefreshTransientImageFileData();
 	string GetBasicImageInfo(bool longFormat);
+
+	void DisposeImageData();
 }

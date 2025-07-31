@@ -11,11 +11,11 @@ namespace ImageFanReloaded.Test;
 public class ImageResizerTest : TestBase
 {
 	public ImageResizerTest()
-    {
+	{
 		_imageResizeCalculator = Substitute.For<IImageResizeCalculator>();
 
-        _imageResizer = new ImageResizer(_imageResizeCalculator);
-    }
+		_imageResizer = new ImageResizer(_imageResizeCalculator);
+	}
 
 	[Theory]
 	[InlineData(3840, 2160, 1920, 1080)]
@@ -100,5 +100,5 @@ public class ImageResizerTest : TestBase
 		string imageFileName, ImageSize viewPortSize, ImageSize resizedImageSize)
 		=> $"{imageFileName}-ViewPort-{viewPortSize.Width}x{viewPortSize.Height}-Resized-{resizedImageSize.Width}x{resizedImageSize.Height}{OutputFileExtension}";
 
-    #endregion
+	#endregion
 }

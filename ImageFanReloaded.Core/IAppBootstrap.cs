@@ -4,5 +4,5 @@ namespace ImageFanReloaded.Core;
 
 public interface IAppBootstrap
 {
-    Task BootstrapApplication();
+	Task BootstrapApplication();
 }

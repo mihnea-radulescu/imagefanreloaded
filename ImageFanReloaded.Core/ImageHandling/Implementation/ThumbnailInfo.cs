@@ -23,7 +23,7 @@ public class ThumbnailInfo : IThumbnailInfo
 	public IImage? ThumbnailImage { get; private set; }
 
 	public IImageFile ImageFile { get; }
-	public string ThumbnailText => ImageFile.ImageFileData.ImageFileName;
+	public string ThumbnailText => ImageFile.StaticImageFileData.ImageFileName;
 
 	public void ReadThumbnailInputFromDisc()
 		=> ImageFile.ReadImageDataFromDisc(_applyImageOrientation);

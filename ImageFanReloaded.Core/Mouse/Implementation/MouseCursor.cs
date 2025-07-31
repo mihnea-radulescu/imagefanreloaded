@@ -9,7 +9,7 @@ public class MouseCursor : DisposableBase, IMouseCursor
 	{
 		_mouseCursorImplementationInstance = mouseCursorImplementationInstance;
 	}
-	
+
 	public TCursor GetInstance<TCursor>() where TCursor : class, IDisposable
 	{
 		ThrowObjectDisposedExceptionIfNecessary();

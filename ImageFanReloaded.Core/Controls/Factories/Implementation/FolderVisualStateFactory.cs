@@ -18,12 +18,12 @@ public class FolderVisualStateFactory : IFolderVisualStateFactory
 		_thumbnailInfoFactory = thumbnailInfoFactory;
 		_discQueryEngine = discQueryEngine;
 	}
-	
+
 	public IFolderVisualState GetFolderVisualState(
 		IContentTabItem contentTabItem,
 		string folderName,
 		string folderPath)
-    {
+	{
 		IFolderVisualState folderVisualState = new FolderVisualState(
 			_globalParameters,
 			_fileSizeEngine,
@@ -35,9 +35,9 @@ public class FolderVisualStateFactory : IFolderVisualStateFactory
 
 		return folderVisualState;
 	}
-	
+
 	#region Private
-	
+
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IThumbnailInfoFactory _thumbnailInfoFactory;

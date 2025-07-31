@@ -18,6 +18,6 @@ public class FlatpakSaveFileDialogFactory : ISaveFileDialogFactory
 	#region Private
 
 	private readonly IStorageProvider _storageProvider;
-	
+
 	#endregion
 }

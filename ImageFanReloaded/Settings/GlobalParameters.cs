@@ -18,32 +18,32 @@ public class GlobalParameters : GlobalParametersBase
 		: base(operatingSystemSettings)
 	{
 		_imageResizer = imageResizer;
-		
+
 		var invalidBitmap = GetBitmapFromResource(Resources.InvalidImage);
 		var invalidBitmapSize = new ImageSize(invalidBitmap.Size.Width, invalidBitmap.Size.Height);
 		var invalidImage = new Image(invalidBitmap, invalidBitmapSize);
 		InvalidImage = invalidImage;
-		
+
 		_invalidImageThumbnails = BuildInvalidImageThumbnails();
 		_loadingImageThumbnails = BuildLoadingImageThumbnails();
 
-        PersistentImages = [
-	        invalidImage, .._invalidImageThumbnails.Values.ToList(), .._loadingImageThumbnails.Values.ToList()];
-        
-        var iconSize = new ImageSize(IconSizeSquareLength);
+		PersistentImages = [
+			invalidImage, .._invalidImageThumbnails.Values.ToList(), .._loadingImageThumbnails.Values.ToList()];
 
-        DesktopFolderIcon = GetResizedIcon(Resources.DesktopFolderIcon, iconSize);
-        DocumentsFolderIcon = GetResizedIcon(Resources.DocumentsFolderIcon, iconSize);
-        DownloadsFolderIcon = GetResizedIcon(Resources.DownloadsFolderIcon, iconSize);
-        DriveIcon = GetResizedIcon(Resources.DriveIcon, iconSize);
-        FolderIcon = GetResizedIcon(Resources.FolderIcon, iconSize);
-        HomeFolderIcon = GetResizedIcon(Resources.HomeFolderIcon, iconSize);
-        PicturesFolderIcon = GetResizedIcon(Resources.PicturesFolderIcon, iconSize);
+		var iconSize = new ImageSize(IconSizeSquareLength);
+
+		DesktopFolderIcon = GetResizedIcon(Resources.DesktopFolderIcon, iconSize);
+		DocumentsFolderIcon = GetResizedIcon(Resources.DocumentsFolderIcon, iconSize);
+		DownloadsFolderIcon = GetResizedIcon(Resources.DownloadsFolderIcon, iconSize);
+		DriveIcon = GetResizedIcon(Resources.DriveIcon, iconSize);
+		FolderIcon = GetResizedIcon(Resources.FolderIcon, iconSize);
+		HomeFolderIcon = GetResizedIcon(Resources.HomeFolderIcon, iconSize);
+		PicturesFolderIcon = GetResizedIcon(Resources.PicturesFolderIcon, iconSize);
 	}
-	
+
 	public override IImage InvalidImage { get; }
 	public override HashSet<IImage> PersistentImages { get; }
-	
+
 	public override IImage DesktopFolderIcon { get; }
 	public override IImage DocumentsFolderIcon { get; }
 	public override IImage DownloadsFolderIcon { get; }
@@ -54,11 +54,11 @@ public class GlobalParameters : GlobalParametersBase
 
 	public override IImage GetInvalidImageThumbnail(int thumbnailSize) => _invalidImageThumbnails[thumbnailSize];
 	public override IImage GetLoadingImageThumbnail(int thumbnailSize) => _loadingImageThumbnails[thumbnailSize];
-	
+
 	#region Private
-	
+
 	private readonly IImageResizer _imageResizer;
-	
+
 	private readonly IReadOnlyDictionary<int, IImage> _invalidImageThumbnails;
 	private readonly IReadOnlyDictionary<int, IImage> _loadingImageThumbnails;
 
@@ -76,11 +76,11 @@ public class GlobalParameters : GlobalParametersBase
 		using var icon = GetBitmapFromResource(resourceData);
 		var iconSize = new ImageSize(icon.Size.Width, icon.Size.Height);
 		var iconImage = new Image(icon, iconSize);
-            
+
 		var resizedIcon = _imageResizer.CreateResizedImage(iconImage, newIconSize, ImageQuality.Medium);
 		return resizedIcon;
 	}
-	
+
 	private IReadOnlyDictionary<int, IImage> BuildInvalidImageThumbnails()
 	{
 		var invalidImageThumbnails = new Dictionary<int, IImage>();
@@ -97,7 +97,7 @@ public class GlobalParameters : GlobalParametersBase
 
 		return invalidImageThumbnails;
 	}
-	
+
 	private IReadOnlyDictionary<int, IImage> BuildLoadingImageThumbnails()
 	{
 		var loadingImageThumbnails = new Dictionary<int, IImage>();
@@ -106,11 +106,11 @@ public class GlobalParameters : GlobalParametersBase
 		{
 			var loadingBitmapSize = new ImageSize(loadingBitmap.Size.Width, loadingBitmap.Size.Height);
 			var loadingImage = new Image(loadingBitmap, loadingBitmapSize);
-			
+
 			foreach (var thumbnailSize in ThumbnailSizeExtensions.ThumbnailSizesAsIntegers)
 			{
 				var thumbnailImageSize = new ImageSize(thumbnailSize);
-			
+
 				var loadingImageThumbnail = _imageResizer.CreateResizedImage(
 					loadingImage, thumbnailImageSize, ImageQuality.Medium);
 

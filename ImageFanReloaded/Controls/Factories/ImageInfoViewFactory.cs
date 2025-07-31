@@ -15,7 +15,7 @@ public class ImageInfoViewFactory : IImageInfoViewFactory
 		_globalParameters = globalParameters;
 		_imageInfoBuilder = imageInfoBuilder;
 	}
-	
+
 	public async Task<IImageInfoView> GetImageInfoView(IImageFile imageFile)
 	{
 		IImageInfoView imageInfoView = new ImageInfoWindow();
@@ -23,12 +23,12 @@ public class ImageInfoViewFactory : IImageInfoViewFactory
 
 		var imageInfo = await _imageInfoBuilder.BuildImageInfo(imageFile);
 		imageInfoView.SetImageInfoText(imageInfo);
-		
+
 		return imageInfoView;
 	}
-	
+
 	#region Private
-	
+
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageInfoBuilder _imageInfoBuilder;
 

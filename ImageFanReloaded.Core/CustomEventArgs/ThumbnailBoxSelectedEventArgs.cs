@@ -9,6 +9,6 @@ public class ThumbnailBoxSelectedEventArgs : EventArgs
 	{
 		ThumbnailBox = thumbnailBox;
 	}
-	
+
 	public IThumbnailBox ThumbnailBox { get; }
 }

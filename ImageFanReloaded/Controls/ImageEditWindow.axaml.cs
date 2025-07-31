@@ -64,14 +64,14 @@ public partial class ImageEditWindow : Window, IImageEditView
 	public ISaveFileImageFormatFactory? SaveFileImageFormatFactory { get; set; }
 	public ISaveFileDialogFactory? SaveFileDialogFactory { get; set; }
 
-	public ImageFileData? ImageFileData { get; set; }
+	public StaticImageFileData? StaticImageFileData { get; set; }
 
 	public IContentTabItem? ContentTabItem { get; set; }
 
 	public async Task LoadImage()
 	{
 		_editableImage = await EditableImageFactory!
-			.CreateEditableImage(ImageFileData!.ImageFilePath);
+			.CreateEditableImage(StaticImageFileData!.ImageFilePath);
 
 		var isImageLoaded = _editableImage is not null;
 		SetControlsEnabledStatus(isImageLoaded);
@@ -86,6 +86,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
+	public event EventHandler<ContentTabItemEventArgs>? ImageFileOverwritten;
 	public event EventHandler<ContentTabItemEventArgs>? FolderContentChanged;
 
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
@@ -715,10 +716,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 			var hasSameFormat = saveFileImageFormat is null;
 
 			var imageFileName = hasSameFormat
-				? ImageFileData!.ImageFileName
-				: $"{ImageFileData!.ImageFileNameWithoutExtension}{saveFileImageFormat!.Extension}";
-			var imageFilePath = ImageFileData!.ImageFilePath;
-			var imageFolderPath = ImageFileData!.ImageFolderPath;
+				? StaticImageFileData!.ImageFileName
+				: $"{StaticImageFileData!.ImageFileNameWithoutExtension}{saveFileImageFormat!.Extension}";
+			var imageFilePath = StaticImageFileData!.ImageFilePath;
+			var imageFolderPath = StaticImageFileData!.ImageFolderPath;
 
 			var saveFileDialog = SaveFileDialogFactory!.GetSaveFileDialog();
 			var saveFileDialogTitle = hasSameFormat
@@ -743,8 +744,17 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 					_hasUnsavedChanges = false;
 
-					if (saveFileDialog.ShouldAlwaysRefreshSaveFolder ||
-						HasSavedImageFileInCurrentFolder(imageToSaveFilePath, imageFolderPath))
+					if (saveFileDialog.ShouldAlwaysRefreshSaveFolder)
+					{
+						FolderContentChanged?.Invoke(
+							this, new ContentTabItemEventArgs(ContentTabItem!));
+					}
+					else if (HasOverwrittenCurrentImageFile(imageToSaveFilePath, imageFilePath))
+					{
+						ImageFileOverwritten?.Invoke(
+							this, new ContentTabItemEventArgs(ContentTabItem!));
+					}
+					else if (HasSavedImageFileInCurrentFolder(imageToSaveFilePath, imageFolderPath))
 					{
 						FolderContentChanged?.Invoke(
 							this, new ContentTabItemEventArgs(ContentTabItem!));
@@ -832,6 +842,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 			await applyTransformErrorMessageBox.ShowWindowDialogAsync(this);
 		}
 	}
+
+	private bool HasOverwrittenCurrentImageFile(string imageToSaveFilePath, string imageFilePath)
+		=> imageToSaveFilePath.Equals(imageFilePath, _fileSystemStringComparison!.Value);
 
 	private bool HasSavedImageFileInCurrentFolder(
 		string imageToSaveFilePath, string imageFolderPath)
@@ -1031,9 +1044,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 			_downsizeToPercentageMenuItem.IsEnabled || _downsizeToDimensionsMenuItem.IsEnabled;
 
 	private void SetImageTitle()
-		=> Title = $"{ImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
+		=> Title = $"{StaticImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
 	private void SetImageLoadErrorTitle()
-		=> Title = $"{ImageFileData!.ImageFileName} - image read error";
+		=> Title = $"{StaticImageFileData!.ImageFileName} - image read error";
 
 	private static void ExpandDropDownButton(DropDownButton dropDownButton)
 	{

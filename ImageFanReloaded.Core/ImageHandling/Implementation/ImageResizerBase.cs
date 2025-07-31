@@ -32,7 +32,7 @@ public abstract class ImageResizerBase : IImageResizer
 		var resizedImage = new Image(resizedImageFrames);
 		return resizedImage;
 	}
-	
+
 	#region Protected
 
 	protected abstract IImageFrame BuildResizedImageFrame(
@@ -41,10 +41,10 @@ public abstract class ImageResizerBase : IImageResizer
 		ImageQuality imageQuality);
 
 	#endregion
-	
+
 	#region Private
-	
+
 	private readonly IImageResizeCalculator _imageResizeCalculator;
-	
+
 	#endregion
 }

@@ -8,17 +8,17 @@ public class MacOSDiscQueryEngine : UnixDiscQueryEngineBase
 {
 	public MacOSDiscQueryEngine(
 		IGlobalParameters globalParameters,
-		IFileSizeEngine fileSizeEngine,
-		IImageFileFactory imageFileFactory)
-		: base(globalParameters, fileSizeEngine, imageFileFactory)
+		IImageFileFactory imageFileFactory,
+		IFileSizeEngine fileSizeEngine)
+		: base(globalParameters, imageFileFactory, fileSizeEngine)
 	{
 		_supportedDrivePrefixes = [ "/Volumes/" ];
 	}
-	
+
 	#region Protected
 
 	protected override IReadOnlyList<string> SupportedDrivePrefixes => _supportedDrivePrefixes;
-	
+
 	#endregion
 
 	#region Private

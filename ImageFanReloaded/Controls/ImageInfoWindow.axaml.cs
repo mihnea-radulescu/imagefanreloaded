@@ -13,14 +13,14 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 	public ImageInfoWindow()
 	{
 		InitializeComponent();
-		
+
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 	}
-	
+
 	public IGlobalParameters? GlobalParameters { get; set; }
 
 	public void SetImageInfoText(string text) => _imageInfoTextBox.Text = text;
-	
+
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
 
 	#region Private
@@ -44,11 +44,11 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-		    keyPressing == GlobalParameters!.EscapeKey)
+			keyPressing == GlobalParameters!.EscapeKey)
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
 

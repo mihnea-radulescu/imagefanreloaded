@@ -6,14 +6,14 @@ namespace ImageFanReloaded.Core.CustomEventArgs;
 
 public class ImageSelectedEventArgs : EventArgs
 {
-    public ImageSelectedEventArgs(
+	public ImageSelectedEventArgs(
 		IContentTabItem contentTabItem,
 		IImageFile imageFile)
-    {
+	{
 		ContentTabItem = contentTabItem;
-		
+
 		ImageFile = imageFile;
-    }
+	}
 
 	public IContentTabItem ContentTabItem { get; }
 

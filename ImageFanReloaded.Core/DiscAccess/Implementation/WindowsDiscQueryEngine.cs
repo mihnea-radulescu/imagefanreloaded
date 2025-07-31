@@ -7,9 +7,9 @@ public class WindowsDiscQueryEngine : DiscQueryEngineBase
 {
 	public WindowsDiscQueryEngine(
 		IGlobalParameters globalParameters,
-		IFileSizeEngine fileSizeEngine,
-		IImageFileFactory imageFileFactory)
-		: base(globalParameters, fileSizeEngine, imageFileFactory)
+		IImageFileFactory imageFileFactory,
+		IFileSizeEngine fileSizeEngine)
+		: base(globalParameters, imageFileFactory, fileSizeEngine)
 	{
 	}
 

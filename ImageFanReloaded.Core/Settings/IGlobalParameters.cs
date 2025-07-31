@@ -33,7 +33,7 @@ public interface IGlobalParameters
 	Key FKey { get; }
 
 	Key F4Key { get; }
-	
+
 	Key NKey { get; }
 	Key MKey { get; }
 
@@ -73,6 +73,7 @@ public interface IGlobalParameters
 	HashSet<string> ImageFileExtensions { get; }
 
 	uint ImageQualityLevel { get; }
+	int DecimalDigitCountForDisplay { get; }
 
 	string UserProfilePath { get; }
 	IReadOnlyList<string> SpecialFolders { get; }

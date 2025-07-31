@@ -106,6 +106,8 @@ public class MainViewPresenter
 
 		var imageInfoView = await _imageInfoViewFactory.GetImageInfoView(imageFile);
 		await contentTabItem.ShowImageInfo(imageInfoView);
+
+		await contentTabItem.RefreshSelectedImage();
 	}
 
 	private async void OnImageEditRequested(object? sender, ImageSelectedEventArgs e)
@@ -116,9 +118,15 @@ public class MainViewPresenter
 		var imageEditView = _imageEditViewFactory.GetImageEditView(contentTabItem, imageFile);
 		await imageEditView.LoadImage();
 
+		imageEditView.ImageFileOverwritten += OnImageEditViewImageFileOverwritten;
 		imageEditView.FolderContentChanged += OnImageEditViewFolderContentChanged;
+
 		await contentTabItem.ShowImageEdit(imageEditView);
+
+		imageEditView.ImageFileOverwritten -= OnImageEditViewImageFileOverwritten;
 		imageEditView.FolderContentChanged -= OnImageEditViewFolderContentChanged;
+
+		await contentTabItem.RefreshSelectedImage();
 	}
 
 	private async void OnTabOptionsRequested(object? sender, ContentTabItemEventArgs e)
@@ -138,6 +146,13 @@ public class MainViewPresenter
 
 		var aboutView = _aboutViewFactory.GetAboutView();
 		await contentTabItem.ShowAboutInfo(aboutView);
+	}
+
+	private async void OnImageEditViewImageFileOverwritten(object? sender, ContentTabItemEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+
+		await contentTabItem.UpdateSelectedImageAfterImageFileChange();
 	}
 
 	private void OnImageEditViewFolderContentChanged(object? sender, ContentTabItemEventArgs e)

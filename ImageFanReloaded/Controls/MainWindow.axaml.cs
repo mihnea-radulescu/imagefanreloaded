@@ -175,7 +175,7 @@ public partial class MainWindow : Window, IMainView
 			GlobalParameters = GlobalParameters,
 			MouseCursorFactory = MouseCursorFactory,
 			TabOptions = TabOptionsFactory!.GetTabOptions(),
-			FolderChangedMutex = AsyncMutexFactory!.GetAsyncMutex(),
+			FolderChangedMutex = AsyncMutexFactory!.GetAsyncMutex()
 		};
 
 		var contentTabItemHeader = new ContentTabItemHeader
@@ -320,7 +320,7 @@ public partial class MainWindow : Window, IMainView
 	private void NavigateToNextTab()
 	{
 		var contentTabItemCount = GetContentTabItemCount();
-		
+
 		var selectedTabItemIndex = _tabControl.SelectedIndex;
 		var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
 		_tabControl.SelectedIndex = nextSelectedTabItemIndex;

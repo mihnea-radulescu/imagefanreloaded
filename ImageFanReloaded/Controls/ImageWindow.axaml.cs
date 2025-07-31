@@ -71,7 +71,7 @@ public partial class ImageWindow : Window, IImageView
 	{
 		_imageFile = imageFile;
 
-		Title = _imageFile.ImageFileData.ImageFileName;
+		Title = _imageFile.StaticImageFileData.ImageFileName;
 
 		_negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
 		_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
