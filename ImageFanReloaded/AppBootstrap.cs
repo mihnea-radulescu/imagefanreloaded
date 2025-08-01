@@ -57,6 +57,7 @@ public class AppBootstrap : IAppBootstrap
 	private IGlobalParameters _globalParameters = default!;
 	private IFileSizeEngine _fileSizeEngine = default!;
 	private IDiscQueryEngine _discQueryEngine = default!;
+	private IEnvironmentSettings _environmentSettings = default!;
 	private IMouseCursorFactory _mouseCursorFactory = default!;
 	private ITabOptionsFactory _tabOptionsFactory = default!;
 	private IInputPathHandlerFactory _inputPathHandlerFactory = default!;
@@ -79,9 +80,9 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters, imageFileFactory, _fileSizeEngine);
 		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 
-		IEnvironmentSettings environmentSettings = new EnvironmentSettings();
+		_environmentSettings = new EnvironmentSettings();
 
-		if (environmentSettings.IsInsideFlatpakContainer)
+		if (_environmentSettings.IsInsideFlatpakContainer)
 		{
 			_mouseCursorFactory = new FlatpakMouseCursorFactory();
 			_tabOptionsFactory = new FlatpakTabOptionsFactory();
@@ -121,11 +122,14 @@ public class AppBootstrap : IAppBootstrap
 
 		ISaveFileDialogFactory saveFileDialogFactory;
 
-#if FLATPAK_BUILD
-		saveFileDialogFactory = new FlatpakSaveFileDialogFactory(mainWindow);
-#else
-		saveFileDialogFactory = new DefaultSaveFileDialogFactory(mainWindow);
-#endif
+		if (_environmentSettings.IsInsideFlatpakContainer)
+		{
+			saveFileDialogFactory = new FlatpakSaveFileDialogFactory(mainWindow);
+		}
+		else
+		{
+			saveFileDialogFactory = new DefaultSaveFileDialogFactory(mainWindow);
+		}
 
 		IAsyncMutexFactory asyncMutexFactory = new AsyncMutexFactory();
 
