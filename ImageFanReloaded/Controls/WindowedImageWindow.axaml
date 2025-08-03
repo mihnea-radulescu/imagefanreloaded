@@ -1,0 +1,13 @@
+<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Class="ImageFanReloaded.Controls.WindowedImageWindow"
+		Icon="/MainWindowIcon.ico"
+		MinWidth="400"
+		MinHeight="300"
+		WindowStartupLocation="CenterScreen"
+		Background="Black"
+		Focusable="True"
+		Closing="OnWindowClosing">
+	<Image Name="_displayImage"
+		   Stretch="Uniform"/>
+</Window>

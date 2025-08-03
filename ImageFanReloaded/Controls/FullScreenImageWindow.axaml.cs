@@ -17,9 +17,9 @@ using ImageFanReloaded.Mouse;
 
 namespace ImageFanReloaded.Controls;
 
-public partial class ImageWindow : Window, IImageView
+public partial class FullScreenImageWindow : Window, IImageView
 {
-	public ImageWindow()
+	public FullScreenImageWindow()
 	{
 		InitializeComponent();
 
@@ -76,7 +76,7 @@ public partial class ImageWindow : Window, IImageView
 		_negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
 		_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
 
-		_scaledScreenSize = ScreenInfo!.GetScaledScreenSize();
+		_scaledScreenSize ??= ScreenInfo!.GetScaledScreenSize(this);
 
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();

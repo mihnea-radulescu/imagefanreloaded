@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 x:Class="ImageFanReloaded.Controls.ContentTabItemHeader"
-			 Loaded="OnLoaded">
+			 Loaded="OnControlLoaded">
 	<ToolTip.Tip>
 		<TextBlock Name="_tabToolTipTextBlock"/>
 	</ToolTip.Tip>

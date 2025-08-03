@@ -66,7 +66,7 @@ public class InputPathHandler : IInputPathHandler
 				var matchingFileSystemEntryInfo = folders
 					.Where(aFolder => FolderPath!.Contains(aFolder.Path, _nameComparison))
 					.Select(aFolder => new
-					{ 
+					{
 						Folder = aFolder,
 						Length = aFolder.Path.Length
 					})

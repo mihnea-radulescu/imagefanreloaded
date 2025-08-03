@@ -37,6 +37,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		PopulateImageFileOrderings();
 		PopulateImageFileOrderingDirections();
 
+		PopulateImageViewDisplayModes();
+
 		PopulateThumbnailSizes();
 
 		SetRecursiveFolderBrowsing();
@@ -117,6 +119,16 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		TabOptions!.ImageFileOrderingDirection = imageFileOrderingDirection;
 		_tabOptionChanges.HasChangedImageFileOrderingDirection = true;
+	}
+
+	private void OnImageViewDisplayModeSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	{
+		var imageViewDisplayModeComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
+		var imageViewDisplayMode =
+			(ImageViewDisplayMode)imageViewDisplayModeComboBoxItem.Tag!;
+
+		TabOptions!.ImageViewDisplayMode = imageViewDisplayMode;
+		_tabOptionChanges.HasChangedImageViewDisplayMode = true;
 	}
 
 	private void OnThumbnailSizeSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -282,6 +294,27 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		}
 	}
 
+	private void PopulateImageViewDisplayModes()
+	{
+		var imageViewDisplayModeValues = Enum.GetValues<ImageViewDisplayMode>();
+
+		foreach (var anImageViewDisplayModeValue in imageViewDisplayModeValues)
+		{
+			var anImageViewDisplayModeItem = new ComboBoxItem
+			{
+				Tag = anImageViewDisplayModeValue,
+				Content = anImageViewDisplayModeValue.GetDescription()
+			};
+
+			_imageViewDisplayModeComboBox.Items.Add(anImageViewDisplayModeItem);
+
+			if (anImageViewDisplayModeValue == TabOptions!.ImageViewDisplayMode)
+			{
+				_imageViewDisplayModeComboBox.SelectedItem = anImageViewDisplayModeItem;
+			}
+		}
+	}
+
 	private void PopulateThumbnailSizes()
 	{
 		foreach (var aThumbnailSize in ThumbnailSizeExtensions.ThumbnailSizes)
@@ -359,6 +392,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_imageFileOrderingDirectionComboBox.SelectionChanged +=
 			OnImageFileOrderingDirectionSelectionChanged;
 
+		_imageViewDisplayModeComboBox.SelectionChanged += OnImageViewDisplayModeSelectionChanged;
+
 		_thumbnailSizeComboBox.SelectionChanged += OnThumbnailSizeSelectionChanged;
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged +=
 			OnRecursiveFolderBrowsingIsCheckedChanged;
@@ -381,6 +416,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_imageFileOrderingComboBox.SelectionChanged -= OnImageFileOrderingSelectionChanged;
 		_imageFileOrderingDirectionComboBox.SelectionChanged -=
 			OnImageFileOrderingDirectionSelectionChanged;
+
+		_imageViewDisplayModeComboBox.SelectionChanged -= OnImageViewDisplayModeSelectionChanged;
 
 		_thumbnailSizeComboBox.SelectionChanged -= OnThumbnailSizeSelectionChanged;
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged -=

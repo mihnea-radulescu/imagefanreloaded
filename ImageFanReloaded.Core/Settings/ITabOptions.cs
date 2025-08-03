@@ -10,6 +10,8 @@ public interface ITabOptions
 	FileSystemEntryInfoOrdering ImageFileOrdering { get; set; }
 	FileSystemEntryInfoOrderingDirection ImageFileOrderingDirection { get; set; }
 
+	ImageViewDisplayMode ImageViewDisplayMode { get; set; }
+
 	ThumbnailSize ThumbnailSize { get; set; }
 	bool RecursiveFolderBrowsing { get; set; }
 	bool ShowImageViewImageInfo { get; set; }

@@ -37,6 +37,10 @@ public enum Key
 	U,
 	C,
 
+	Digit1,
+	Digit2,
+	Digit3,
+
 	Plus,
 	Minus,
 

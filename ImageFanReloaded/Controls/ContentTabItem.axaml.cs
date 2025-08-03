@@ -79,6 +79,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			ShouldChangeFolderOrderingDirection(keyModifiers, keyPressing) ||
 			ShouldChangeImageFileOrdering(keyModifiers, keyPressing) ||
 			ShouldChangeImageFileOrderingDirection(keyModifiers, keyPressing) ||
+			ShouldChangeImageViewDisplayMode(keyModifiers, keyPressing) ||
 			ShouldChangeThumbnailSize(keyModifiers, keyPressing) ||
 			ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing) ||
 			ShouldChangeApplyImageOrientation(keyModifiers, keyPressing) ||
@@ -129,6 +130,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldChangeImageFileOrderingDirection(keyModifiers, keyPressing))
 		{
 			ChangeImageFileOrderingDirection(keyPressing);
+		}
+		else if (ShouldChangeImageViewDisplayMode(keyModifiers, keyPressing))
+		{
+			ChangeImageViewDisplayMode(keyPressing);
 		}
 		else if (ShouldChangeThumbnailSize(keyModifiers, keyPressing))
 		{
@@ -612,9 +617,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private async void DisplayImage(bool startSlideshow)
 	{
-		var imageView = ImageViewFactory!.GetImageView();
-
-		imageView.TabOptions = TabOptions;
+		var imageView = ImageViewFactory!.GetImageView(TabOptions!);
 
 		var selectedImageFile = GetSelectedImageFile();
 		await imageView.SetImage(selectedImageFile);
@@ -788,6 +791,19 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
 			(keyPressing == GlobalParameters!.AKey || keyPressing == GlobalParameters!.DKey))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldChangeImageViewDisplayMode(KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			(keyPressing == GlobalParameters!.Digit1Key ||
+			 keyPressing == GlobalParameters!.Digit2Key ||
+			 keyPressing == GlobalParameters!.Digit3Key))
 		{
 			return true;
 		}
@@ -1040,6 +1056,29 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			TabOptions!.ImageFileOrderingDirection = newImageFileOrderingDirection;
 
 			RaiseFolderChangedEvent();
+		}
+	}
+
+	private void ChangeImageViewDisplayMode(Key keyPressing)
+	{
+		var newImageViewDisplayMode = TabOptions!.ImageViewDisplayMode;
+
+		if (keyPressing == GlobalParameters!.Digit1Key)
+		{
+			newImageViewDisplayMode = ImageViewDisplayMode.FullScreen;
+		}
+		else if (keyPressing == GlobalParameters!.Digit2Key)
+		{
+			newImageViewDisplayMode = ImageViewDisplayMode.Windowed;
+		}
+		else if (keyPressing == GlobalParameters!.Digit3Key)
+		{
+			newImageViewDisplayMode = ImageViewDisplayMode.WindowedMaximized;
+		}
+
+		if (newImageViewDisplayMode != TabOptions!.ImageViewDisplayMode)
+		{
+			TabOptions!.ImageViewDisplayMode = newImageViewDisplayMode;
 		}
 	}
 

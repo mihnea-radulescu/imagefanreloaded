@@ -13,6 +13,8 @@ public class TabOptions : ITabOptions
 	public FileSystemEntryInfoOrdering ImageFileOrdering { get; set; }
 	public FileSystemEntryInfoOrderingDirection ImageFileOrderingDirection { get; set; }
 
+	public ImageViewDisplayMode ImageViewDisplayMode { get; set; }
+
 	public ThumbnailSize ThumbnailSize { get; set; }
 	public bool RecursiveFolderBrowsing { get; set; }
 	public bool ShowImageViewImageInfo { get; set; }
@@ -74,6 +76,9 @@ public class TabOptions : ITabOptions
 	private const FileSystemEntryInfoOrderingDirection DefaultImageFileOrderingDirection =
 		FileSystemEntryInfoOrderingDirection.Ascending;
 
+	private const ImageViewDisplayMode DefaultImageViewDisplayMode =
+		ImageViewDisplayMode.FullScreen;
+
 	private const ThumbnailSize DefaultThumbnailSize = ThumbnailSize.TwoHundredFixtyPixels;
 	private const bool DefaultRecursiveFolderBrowsing = false;
 	private const bool DefaultShowImageViewImageInfo = false;
@@ -125,6 +130,11 @@ public class TabOptions : ITabOptions
 			tabOptions.FolderOrderingDirection = DefaultFolderOrderingDirection;
 		}
 
+		if (!IsValidEnumValue(tabOptions.ImageViewDisplayMode))
+		{
+			tabOptions.ImageViewDisplayMode = DefaultImageViewDisplayMode;
+		}
+
 		if (!IsValidEnumValue(tabOptions.ImageFileOrdering))
 		{
 			tabOptions.ImageFileOrdering = DefaultImageFileOrdering;
@@ -163,6 +173,8 @@ public class TabOptions : ITabOptions
 			ImageFileOrdering = DefaultTabOptions.ImageFileOrdering;
 			ImageFileOrderingDirection = DefaultTabOptions.ImageFileOrderingDirection;
 
+			ImageViewDisplayMode = DefaultTabOptions.ImageViewDisplayMode;
+
 			ThumbnailSize = DefaultTabOptions.ThumbnailSize;
 			RecursiveFolderBrowsing = DefaultTabOptions.RecursiveFolderBrowsing;
 			ShowImageViewImageInfo = DefaultTabOptions.ShowImageViewImageInfo;
@@ -178,6 +190,8 @@ public class TabOptions : ITabOptions
 
 			ImageFileOrdering = DefaultImageFileOrdering;
 			ImageFileOrderingDirection = DefaultImageFileOrderingDirection;
+
+			ImageViewDisplayMode = DefaultImageViewDisplayMode;
 
 			ThumbnailSize = DefaultThumbnailSize;
 			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing;
@@ -196,6 +210,8 @@ public class TabOptions : ITabOptions
 
 		DefaultTabOptions!.ImageFileOrdering = ImageFileOrdering;
 		DefaultTabOptions!.ImageFileOrderingDirection = ImageFileOrderingDirection;
+
+		DefaultTabOptions!.ImageViewDisplayMode = ImageViewDisplayMode;
 
 		DefaultTabOptions!.ThumbnailSize = ThumbnailSize;
 		DefaultTabOptions!.RecursiveFolderBrowsing = RecursiveFolderBrowsing;

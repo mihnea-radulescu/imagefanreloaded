@@ -8,6 +8,7 @@ Features:
 * support for multiple folder tabs
 * keyboard and mouse user interaction
 * 44 supported image formats: bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm
+* full-screen and windowed image viewing modes
 * image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize
 * image animation support for the formats gif, mng and webp
 * folder and image file ordering by name and last modification time, ascending and descending
@@ -27,10 +28,11 @@ User interface:
 * key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 * key combo Shift+Tab for cycling through tabs
 * key Tab for cycling through controls in the active tab
-* keys N and M for changing folder ordering between name and last modification time
+* keys N and M for changing folder ordering between name and last modification time in the main view, and for switching between normal and maximized view modes in the windowed image view
 * key combos Ctrl+N and Ctrl+M for changing image file ordering between name and last modification time
 * keys A and D for changing folder ordering direction between ascending and descending
 * key combos Ctrl+A and Ctrl+D for changing image file ordering direction between ascending and descending
+* digit keys 1, 2 and 3 for switching between full-screen, windowed and windowed maximized image view modes
 * keys + and - for changing thumbnail size by an increment of 50 pixels
 * key U to toggle showing file names under thumbnail images
 * key S for slideshow navigation

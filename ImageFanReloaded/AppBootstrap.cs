@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using ImageFanReloaded.Controls;
 using ImageFanReloaded.Controls.Factories;
@@ -60,6 +61,7 @@ public class AppBootstrap : IAppBootstrap
 	private IEnvironmentSettings _environmentSettings = default!;
 	private IMouseCursorFactory _mouseCursorFactory = default!;
 	private ITabOptionsFactory _tabOptionsFactory = default!;
+	private IImageViewFactory _imageViewFactory = default!;
 	private IInputPathHandlerFactory _inputPathHandlerFactory = default!;
 	private IInputPathHandler _commandLineArgsInputPathHandler = default!;
 
@@ -93,6 +95,9 @@ public class AppBootstrap : IAppBootstrap
 			_tabOptionsFactory = new DefaultTabOptionsFactory();
 		}
 
+		IScreenInfo screenInfo = new ScreenInfo();
+		_imageViewFactory = new ImageViewFactory(_globalParameters, _mouseCursorFactory, screenInfo);
+
 		_inputPathHandlerFactory = new InputPathHandlerFactory(_globalParameters, _discQueryEngine);
 		string? commandLineArgsInputPath = GetCommandLineArgsInputPath();
 		_commandLineArgsInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(
@@ -112,9 +117,14 @@ public class AppBootstrap : IAppBootstrap
 
 	private void ShowMainView()
 	{
-		var mainWindow = new MainWindow();
+		IAsyncMutexFactory asyncMutexFactory = new AsyncMutexFactory();
+		IMainViewFactory mainViewFactory = new MainViewFactory(
+			_globalParameters, _mouseCursorFactory, _tabOptionsFactory, asyncMutexFactory);
+
+		IMainView mainView = mainViewFactory.GetMainView();
+
+		var mainWindow = (Window)mainView;
 		_desktop.MainWindow = mainWindow;
-		IScreenInfo screenInfo = new ScreenInfo(mainWindow);
 
 		IEditableImageFactory editableImageFactory = new EditableImageFactory(_globalParameters);
 
@@ -131,20 +141,9 @@ public class AppBootstrap : IAppBootstrap
 			saveFileDialogFactory = new DefaultSaveFileDialogFactory(mainWindow);
 		}
 
-		IAsyncMutexFactory asyncMutexFactory = new AsyncMutexFactory();
-
-		IMainView mainView = mainWindow;
-		mainView.GlobalParameters = _globalParameters;
-		mainView.MouseCursorFactory = _mouseCursorFactory;
-		mainView.TabOptionsFactory = _tabOptionsFactory;
-		mainView.AsyncMutexFactory = asyncMutexFactory;
-
 		IThumbnailInfoFactory thumbnailInfoFactory = new ThumbnailInfoFactory(_globalParameters);
 		IFolderVisualStateFactory folderVisualStateFactory = new FolderVisualStateFactory(
 			_globalParameters, _fileSizeEngine, thumbnailInfoFactory, _discQueryEngine);
-
-		IImageViewFactory imageViewFactory = new ImageViewFactory(
-			_globalParameters, _mouseCursorFactory, screenInfo);
 
 		IImageEditViewFactory imageEditViewFactory = new ImageEditViewFactory(
 			_globalParameters,
@@ -166,7 +165,7 @@ public class AppBootstrap : IAppBootstrap
 		var mainViewPresenter = new MainViewPresenter(
 			_discQueryEngine,
 			folderVisualStateFactory,
-			imageViewFactory,
+			_imageViewFactory,
 			imageInfoViewFactory,
 			imageEditViewFactory,
 			tabOptionsViewFactory,
@@ -184,21 +183,10 @@ public class AppBootstrap : IAppBootstrap
 
 	private async Task ShowImageView()
 	{
-		var imageWindow = new ImageWindow();
-		_desktop.MainWindow = imageWindow;
-		IScreenInfo screenInfo = new ScreenInfo(imageWindow);
-
-		IImageView imageView = imageWindow;
-		imageView.GlobalParameters = _globalParameters;
-		imageView.MouseCursorFactory = _mouseCursorFactory;
-
-		imageView.ScreenInfo = screenInfo;
-
 		ITabOptions tabOptions = _tabOptionsFactory.GetTabOptions();
-		imageView.TabOptions = tabOptions;
+		IImageView imageView = _imageViewFactory.GetImageView(tabOptions);
 
 		imageView.IsStandaloneView = true;
-
 		imageView.ViewClosing += OnImageViewClosing;
 
 		var imageViewPresenter = new ImageViewPresenter(
@@ -209,6 +197,9 @@ public class AppBootstrap : IAppBootstrap
 			imageView);
 
 		await imageViewPresenter.SetUpAccessToImages();
+
+		var imageWindow = (Window)imageView;
+		_desktop.MainWindow = imageWindow;
 
 		imageView.Show();
 	}

@@ -79,6 +79,10 @@ public class GlobalParametersTest : TestBase
 		Assert.NotEqual(Key.None, _globalParameters.UKey);
 		Assert.NotEqual(Key.None, _globalParameters.CKey);
 
+		Assert.NotEqual(Key.None, _globalParameters.Digit1Key);
+		Assert.NotEqual(Key.None, _globalParameters.Digit2Key);
+		Assert.NotEqual(Key.None, _globalParameters.Digit3Key);
+
 		Assert.NotEqual(Key.None, _globalParameters.UpKey);
 		Assert.NotEqual(Key.None, _globalParameters.DownKey);
 		Assert.NotEqual(Key.None, _globalParameters.LeftKey);

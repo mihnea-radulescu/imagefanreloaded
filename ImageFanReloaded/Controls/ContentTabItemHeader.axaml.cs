@@ -29,7 +29,7 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 
 	#region Private
 
-	private void OnLoaded(object? sender, RoutedEventArgs e)
+	private void OnControlLoaded(object? sender, RoutedEventArgs e)
 		=> _tabToolTipTextBlock.FontSize = _tabTitleTextBlock.FontSize;
 
 	private void OnTabClose(object? sender, PointerPressedEventArgs e)

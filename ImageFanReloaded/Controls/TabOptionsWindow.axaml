@@ -27,6 +27,8 @@
 			<RowDefinition Height="10*"/>
 			<RowDefinition Height="2*"/>
 			<RowDefinition Height="10*"/>
+			<RowDefinition Height="2*"/>
+			<RowDefinition Height="10*"/>
 			<RowDefinition Height="4*"/>
 			<RowDefinition Height="10*"/>
 			<RowDefinition Height="2*"/>
@@ -92,9 +94,9 @@
 		<TextBlock Grid.Row="9"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
-				   Text="Thumbnail size:"
+				   Text="Image view display mode:"
 				   Margin="0 6 0 0"/>
-		<ComboBox Name="_thumbnailSizeComboBox"
+		<ComboBox Name="_imageViewDisplayModeComboBox"
 				  Grid.Row="9"
 				  Grid.Column="3"
 				  HorizontalAlignment="Stretch"
@@ -103,68 +105,79 @@
 		<TextBlock Grid.Row="11"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
-				   Text="Recursive folder browsing?"
-				   Margin="0 10 0 0"/>
-		<CheckBox Name="_recursiveFolderBrowsingCheckBox"
+				   Text="Thumbnail size:"
+				   Margin="0 6 0 0"/>
+		<ComboBox Name="_thumbnailSizeComboBox"
 				  Grid.Row="11"
-				  Grid.Column="3"/>
+				  Grid.Column="3"
+				  HorizontalAlignment="Stretch"
+				  VerticalContentAlignment="Center"/>
 
 		<TextBlock Grid.Row="13"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
-				   Text="Show image info in image view?"
+				   Text="Recursive folder browsing?"
 				   Margin="0 10 0 0"/>
-		<CheckBox Name="_showImageViewImageInfoCheckBox"
+		<CheckBox Name="_recursiveFolderBrowsingCheckBox"
 				  Grid.Row="13"
 				  Grid.Column="3"/>
 
 		<TextBlock Grid.Row="15"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
+				   Text="Show image info in image view?"
+				   Margin="0 10 0 0"/>
+		<CheckBox Name="_showImageViewImageInfoCheckBox"
+				  Grid.Row="15"
+				  Grid.Column="3"/>
+
+		<TextBlock Grid.Row="17"
+				   Grid.Column="1"
+				   HorizontalAlignment="Right"
 				   Text="Panels splitting ratio:"
 				   Margin="0 16 0 0"/>
 		<Slider Name="_panelsSplittingRatioSlider"
-				Grid.Row="15"
+				Grid.Row="17"
 				Grid.Column="3"
 				Minimum="0"
 				Maximum="100"/>
 
-		<TextBlock Grid.Row="17"
+		<TextBlock Grid.Row="19"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
 				   Text="Slideshow interval:"
 				   Margin="0 6 0 0"/>
 		<ComboBox Name="_slideshowIntervalComboBox"
-				  Grid.Row="17"
+				  Grid.Row="19"
 				  Grid.Column="3"
 				  HorizontalAlignment="Stretch"
 				  VerticalContentAlignment="Center"/>
 
-		<TextBlock Grid.Row="19"
+		<TextBlock Grid.Row="21"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
 				   Text="Apply EXIF image orientation (slight performance impact)?"
 				   Margin="0 10 0 0"/>
 		<CheckBox Name="_applyImageOrientationCheckBox"
-				  Grid.Row="19"
-				  Grid.Column="3"/>
-
-		<TextBlock Grid.Row="21"
-				   Grid.Column="1"
-				   HorizontalAlignment="Right"
-				   Text="Show thumbnail image file name?"
-				   Margin="0 10 0 0"/>
-		<CheckBox Name="_showThumbnailImageFileNameCheckBox"
 				  Grid.Row="21"
 				  Grid.Column="3"/>
 
 		<TextBlock Grid.Row="23"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
+				   Text="Show thumbnail image file name?"
+				   Margin="0 10 0 0"/>
+		<CheckBox Name="_showThumbnailImageFileNameCheckBox"
+				  Grid.Row="23"
+				  Grid.Column="3"/>
+
+		<TextBlock Grid.Row="25"
+				   Grid.Column="1"
+				   HorizontalAlignment="Right"
 				   Text="Save as default?"
 				   Margin="0 10 0 0"/>
 		<CheckBox Name="_saveAsDefaultCheckBox"
-				  Grid.Row="23"
+				  Grid.Row="25"
 				  Grid.Column="3"/>
 	</Grid>
 </Window>

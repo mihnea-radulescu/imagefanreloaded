@@ -86,7 +86,7 @@ public class FolderVisualState : IFolderVisualState
 			currentSelectedImageSizeOnDiscInKilobytes - previousSelectedImageSizeOnDiscInKilobytes;
 
 		SetFolderInfoText(tabOptions);
-	} 
+	}
 
 	public void DisposeCancellationTokenSource() => _ctsThumbnailGeneration.Dispose();
 

@@ -48,6 +48,10 @@ public interface IGlobalParameters
 	Key UKey { get; }
 	Key CKey { get; }
 
+	Key Digit1Key { get; }
+	Key Digit2Key { get; }
+	Key Digit3Key { get; }
+
 	Key UpKey { get; }
 	Key DownKey { get; }
 	Key LeftKey { get; }

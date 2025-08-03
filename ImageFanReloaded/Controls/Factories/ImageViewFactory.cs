@@ -1,3 +1,4 @@
+using System;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.Mouse;
@@ -17,13 +18,25 @@ public class ImageViewFactory : IImageViewFactory
 		_screenInfo = screenInfo;
 	}
 
-	public IImageView GetImageView()
+	public IImageView GetImageView(ITabOptions tabOptions)
 	{
-		IImageView imageView = new ImageWindow();
+		var imageViewDisplayMode = tabOptions.ImageViewDisplayMode;
+
+		IImageView imageView = tabOptions.ImageViewDisplayMode switch
+		{
+			ImageViewDisplayMode.FullScreen => new FullScreenImageWindow(),
+			ImageViewDisplayMode.Windowed => new WindowedImageWindow(),
+			ImageViewDisplayMode.WindowedMaximized => new WindowedImageWindow(),
+
+			_ => throw new NotSupportedException(
+				$"Image view display mode {imageViewDisplayMode} not supported."),
+		};
 
 		imageView.GlobalParameters = _globalParameters;
 		imageView.MouseCursorFactory = _mouseCursorFactory;
 		imageView.ScreenInfo = _screenInfo;
+
+		imageView.TabOptions = tabOptions;
 
 		return imageView;
 	}
