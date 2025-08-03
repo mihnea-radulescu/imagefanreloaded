@@ -10,11 +10,11 @@ public class ImageViewFactory : IImageViewFactory
 	public ImageViewFactory(
 		IGlobalParameters globalParameters,
 		IMouseCursorFactory mouseCursorFactory,
-		IScreenInformation screenInformation)
+		IScreenInfo screenInfo)
 	{
 		_globalParameters = globalParameters;
 		_mouseCursorFactory = mouseCursorFactory;
-		_screenInformation = screenInformation;
+		_screenInfo = screenInfo;
 	}
 
 	public IImageView GetImageView()
@@ -23,7 +23,7 @@ public class ImageViewFactory : IImageViewFactory
 
 		imageView.GlobalParameters = _globalParameters;
 		imageView.MouseCursorFactory = _mouseCursorFactory;
-		imageView.ScreenInformation = _screenInformation;
+		imageView.ScreenInfo = _screenInfo;
 
 		return imageView;
 	}
@@ -32,7 +32,7 @@ public class ImageViewFactory : IImageViewFactory
 
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IMouseCursorFactory _mouseCursorFactory;
-	private readonly IScreenInformation _screenInformation;
+	private readonly IScreenInfo _screenInfo;
 
 	#endregion
 }

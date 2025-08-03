@@ -12,7 +12,7 @@ public interface IImageView
 	IGlobalParameters? GlobalParameters { get; set; }
 	IMouseCursorFactory? MouseCursorFactory { get; set; }
 
-	IScreenInformation? ScreenInformation { get; set; }
+	IScreenInfo? ScreenInfo { get; set; }
 	ITabOptions? TabOptions { get; set; }
 
 	bool IsStandaloneView { get; set; }

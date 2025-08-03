@@ -3,8 +3,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using ImageFanReloaded.Controls;
 using ImageFanReloaded.Controls.Factories;
 using ImageFanReloaded.Core;
-using ImageFanReloaded.Core.AboutInformation;
-using ImageFanReloaded.Core.AboutInformation.Implementation;
+using ImageFanReloaded.Core.AboutInfo;
+using ImageFanReloaded.Core.AboutInfo.Implementation;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.Controls.Factories.Implementation;
@@ -114,7 +114,7 @@ public class AppBootstrap : IAppBootstrap
 	{
 		var mainWindow = new MainWindow();
 		_desktop.MainWindow = mainWindow;
-		IScreenInformation screenInformation = new ScreenInformation(mainWindow);
+		IScreenInfo screenInfo = new ScreenInfo(mainWindow);
 
 		IEditableImageFactory editableImageFactory = new EditableImageFactory(_globalParameters);
 
@@ -144,7 +144,7 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters, _fileSizeEngine, thumbnailInfoFactory, _discQueryEngine);
 
 		IImageViewFactory imageViewFactory = new ImageViewFactory(
-			_globalParameters, _mouseCursorFactory, screenInformation);
+			_globalParameters, _mouseCursorFactory, screenInfo);
 
 		IImageEditViewFactory imageEditViewFactory = new ImageEditViewFactory(
 			_globalParameters,
@@ -155,9 +155,9 @@ public class AppBootstrap : IAppBootstrap
 
 		ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);
 
-		IAboutInformationProvider aboutInformationProvider = new AboutInformationProvider();
+		IAboutInfoProvider aboutInfoProvider = new AboutInfoProvider();
 		IAboutViewFactory aboutViewFactory = new AboutViewFactory(
-			aboutInformationProvider, _globalParameters);
+			aboutInfoProvider, _globalParameters);
 
 		IImageInfoBuilder imageInfoBuilder = new ImageInfoBuilder(_globalParameters);
 		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(
@@ -186,13 +186,13 @@ public class AppBootstrap : IAppBootstrap
 	{
 		var imageWindow = new ImageWindow();
 		_desktop.MainWindow = imageWindow;
-		IScreenInformation screenInformation = new ScreenInformation(imageWindow);
+		IScreenInfo screenInfo = new ScreenInfo(imageWindow);
 
 		IImageView imageView = imageWindow;
 		imageView.GlobalParameters = _globalParameters;
 		imageView.MouseCursorFactory = _mouseCursorFactory;
 
-		imageView.ScreenInformation = screenInformation;
+		imageView.ScreenInfo = screenInfo;
 
 		ITabOptions tabOptions = _tabOptionsFactory.GetTabOptions();
 		imageView.TabOptions = tabOptions;

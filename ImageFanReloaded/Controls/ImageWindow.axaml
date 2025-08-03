@@ -6,7 +6,7 @@
 		WindowState="FullScreen"
 		Background="Black"
 		Focusable="True"
-		Closing="OnClosing">
+		Closing="OnWindowClosing">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>

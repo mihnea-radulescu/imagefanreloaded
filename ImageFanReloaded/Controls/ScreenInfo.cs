@@ -4,9 +4,9 @@ using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.Controls;
 
-public class ScreenInformation : IScreenInformation
+public class ScreenInfo : IScreenInfo
 {
-	public ScreenInformation(Window currentWindow)
+	public ScreenInfo(Window currentWindow)
 	{
 		_currentWindow = currentWindow;
 	}

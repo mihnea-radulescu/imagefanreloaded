@@ -1,4 +1,4 @@
-using ImageFanReloaded.Core.AboutInformation;
+using ImageFanReloaded.Core.AboutInfo;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.Settings;
@@ -8,17 +8,17 @@ namespace ImageFanReloaded.Controls.Factories;
 public class AboutViewFactory : IAboutViewFactory
 {
 	public AboutViewFactory(
-		IAboutInformationProvider aboutInformationProvider,
+		IAboutInfoProvider aboutInfoProvider,
 		IGlobalParameters globalParameters)
 	{
-		_aboutInformationProvider = aboutInformationProvider;
+		_aboutInfoProvider = aboutInfoProvider;
 		_globalParameters = globalParameters;
 	}
 
 	public IAboutView GetAboutView()
 	{
 		var aboutText = string.Format(
-			AboutTextTemplate, _aboutInformationProvider.VersionString, _aboutInformationProvider.Year);
+			AboutTextTemplate, _aboutInfoProvider.VersionString, _aboutInfoProvider.Year);
 
 		IAboutView aboutView = new AboutWindow();
 		aboutView.GlobalParameters = _globalParameters;
@@ -72,7 +72,7 @@ User interface:
 • key Esc for exiting image view and zoomed image view modes, and for quitting application
 ";
 
-	private readonly IAboutInformationProvider _aboutInformationProvider;
+	private readonly IAboutInfoProvider _aboutInfoProvider;
 	private readonly IGlobalParameters _globalParameters;
 
 	#endregion

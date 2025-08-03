@@ -51,7 +51,7 @@ public partial class ImageWindow : Window, IImageView
 		}
 	}
 
-	public IScreenInformation? ScreenInformation { get; set; }
+	public IScreenInfo? ScreenInfo { get; set; }
 	public ITabOptions? TabOptions { get; set; }
 
 	public bool IsStandaloneView { get; set; }
@@ -76,7 +76,7 @@ public partial class ImageWindow : Window, IImageView
 		_negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
 		_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
 
-		_scaledScreenSize = ScreenInformation!.GetScaledScreenSize();
+		_scaledScreenSize = ScreenInfo!.GetScaledScreenSize();
 
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
@@ -279,7 +279,7 @@ public partial class ImageWindow : Window, IImageView
 		e.Handled = true;
 	}
 
-	private void OnClosing(object? sender, WindowClosingEventArgs e)
+	private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
 		ViewClosing?.Invoke(this, new ImageViewClosingEventArgs(_showMainViewAfterImageViewClosing));
 	}
