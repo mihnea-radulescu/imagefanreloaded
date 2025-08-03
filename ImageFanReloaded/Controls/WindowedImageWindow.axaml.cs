@@ -22,6 +22,7 @@ public partial class WindowedImageWindow : Window, IImageView
 		InitializeComponent();
 
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
+		AddHandler(PointerPressedEvent, OnMouseDown, RoutingStrategies.Tunnel);
 		AddHandler(PointerReleasedEvent, OnMouseUp, RoutingStrategies.Tunnel);
 		AddHandler(PointerWheelChangedEvent, OnMouseWheel, RoutingStrategies.Tunnel);
 	}
@@ -144,6 +145,13 @@ public partial class WindowedImageWindow : Window, IImageView
 
 			await CloseWindow();
 		}
+
+		e.Handled = true;
+	}
+
+	private void OnMouseDown(object? sender, PointerPressedEventArgs e)
+	{
+		NotifyStopSlideshow();
 
 		e.Handled = true;
 	}
