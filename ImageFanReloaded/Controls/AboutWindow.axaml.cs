@@ -41,7 +41,8 @@ public partial class AboutWindow : Window, IAboutView
 	}
 
 	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.EscapeKey)

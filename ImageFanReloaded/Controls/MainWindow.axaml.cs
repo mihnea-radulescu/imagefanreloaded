@@ -83,7 +83,7 @@ public partial class MainWindow : Window, IMainView
 
 		var contentTabItem = GetActiveContentTabItem()!;
 
-		if (ShouldWindowsOsCloseWindow(keyModifiers, keyPressing))
+		if (ShouldCloseWindow(keyModifiers, keyPressing))
 		{
 			CloseWindow();
 			e.Handled = true;
@@ -257,9 +257,10 @@ public partial class MainWindow : Window, IMainView
 		return false;
 	}
 
-	private bool ShouldWindowsOsCloseWindow(KeyModifiers keyModifiers, Key keyPressing)
+	private bool ShouldCloseWindow(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressing == GlobalParameters!.F4Key)
+		if (keyModifiers == GlobalParameters!.AltKeyModifier &&
+			keyPressing == GlobalParameters!.F4Key)
 		{
 			return true;
 		}
@@ -269,7 +270,8 @@ public partial class MainWindow : Window, IMainView
 
 	private bool ShouldAddNewTab(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.PlusKey)
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
+			keyPressing == GlobalParameters!.PlusKey)
 		{
 			return true;
 		}
@@ -279,7 +281,8 @@ public partial class MainWindow : Window, IMainView
 
 	private bool ShouldCloseSelectedTab(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.MinusKey)
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
+			keyPressing == GlobalParameters!.MinusKey)
 		{
 			return HasAtLeastOneContentTabItem();
 		}
@@ -289,7 +292,8 @@ public partial class MainWindow : Window, IMainView
 
 	private bool ShouldNavigateToNextTab(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.ShiftKeyModifier && keyPressing == GlobalParameters!.TabKey)
+		if (keyModifiers == GlobalParameters!.ShiftKeyModifier &&
+			keyPressing == GlobalParameters!.TabKey)
 		{
 			return HasAtLeastOneContentTabItem();
 		}
@@ -299,7 +303,8 @@ public partial class MainWindow : Window, IMainView
 
 	private bool ShouldAllowKeyPressingEventPropagation(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && GlobalParameters!.IsNavigationKey(keyPressing))
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			GlobalParameters!.IsNavigationKey(keyPressing))
 		{
 			return true;
 		}

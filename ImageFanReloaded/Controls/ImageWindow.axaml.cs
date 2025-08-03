@@ -285,9 +285,11 @@ public partial class ImageWindow : Window, IImageView
 	}
 
 	private bool ShouldStartSlideshow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.SKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.SKey)
 		{
 			return true;
 		}
@@ -297,7 +299,8 @@ public partial class ImageWindow : Window, IImageView
 
 	private bool ShouldHandleImageDrag(ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
 	{
-		if (keyModifiers == _globalParameters!.CtrlKeyModifier && _imageViewState == ImageViewState.ZoomedToImageSize)
+		if (keyModifiers == _globalParameters!.CtrlKeyModifier &&
+			_imageViewState == ImageViewState.ZoomedToImageSize)
 		{
 			return true;
 		}
@@ -306,7 +309,8 @@ public partial class ImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleBackwardNavigation(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			_globalParameters!.IsBackwardNavigationKey(keyPressing))
@@ -318,7 +322,8 @@ public partial class ImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleForwardNavigation(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			_globalParameters!.IsForwardNavigationKey(keyPressing))
@@ -330,7 +335,8 @@ public partial class ImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleImageZoom(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			keyPressing == _globalParameters!.EnterKey)
@@ -342,7 +348,8 @@ public partial class ImageWindow : Window, IImageView
 	}
 
 	private bool ShouldToggleImageInfo(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			keyPressing == _globalParameters!.IKey)
@@ -354,7 +361,8 @@ public partial class ImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleEscapeAction(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			keyPressing == _globalParameters!.EscapeKey)
@@ -366,7 +374,8 @@ public partial class ImageWindow : Window, IImageView
 	}
 
 	private bool ShouldShowMainViewAfterImageViewClosing(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (IsStandaloneView &&
 			keyModifiers == _globalParameters!.NoneKeyModifier &&

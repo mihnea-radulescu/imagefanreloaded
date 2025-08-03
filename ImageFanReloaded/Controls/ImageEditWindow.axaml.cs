@@ -448,7 +448,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.EscapeKey)
@@ -460,7 +461,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldUndo(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.UKey)
@@ -472,7 +474,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldRedo(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.IKey)
@@ -484,7 +487,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldRotate(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.RKey)
@@ -496,7 +500,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldFlip(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.FKey)
@@ -508,7 +513,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldExecuteEffects(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.EKey)
@@ -520,7 +526,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldSaveImageAs(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.SKey)
@@ -532,7 +539,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldCrop(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.CKey)
@@ -544,7 +552,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldDownsizeImage(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.DKey)
