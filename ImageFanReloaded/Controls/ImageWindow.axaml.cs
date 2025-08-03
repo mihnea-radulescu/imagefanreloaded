@@ -481,7 +481,8 @@ public partial class ImageWindow : Window, IImageView
 
 	private async Task ResizeToScreenSize()
 	{
-		var image = _imageFile!.GetResizedImage(_scaledScreenSize!, TabOptions!.ApplyImageOrientation);
+		var image = _imageFile!.GetResizedImage(
+			_scaledScreenSize!, TabOptions!.ApplyImageOrientation);
 
 		_imageViewState = ImageViewState.ResizedToScreenSize;
 		Cursor = _screenSizeCursor;
