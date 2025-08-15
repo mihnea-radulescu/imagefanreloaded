@@ -6,7 +6,9 @@
 		Width="800"
 		Height="600"
 		WindowStartupLocation="CenterOwner"
+		CanMinimize="False"
 		CanResize="False"
+		CanMaximize="False"
 		Focusable="True"
 		Closing="OnWindowClosing">
 	<Grid Margin="4">

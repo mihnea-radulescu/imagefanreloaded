@@ -71,6 +71,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.08.16" date="2025-08-16">
+			<description>
+				<p>Updated application framework and libraries</p>
+			</description>
+		</release>
 		<release version="1.2025.08.04" date="2025-08-04">
 			<description>
 				<p>Added windowed image view display mode</p>
