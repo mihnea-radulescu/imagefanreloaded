@@ -22,6 +22,7 @@ public class TabOptions : ITabOptions
 	public SlideshowInterval SlideshowInterval { get; set; }
 	public bool ApplyImageOrientation { get; set; }
 	public bool ShowThumbnailImageFileName { get; set; }
+	public KeyboardScrollImageIncrement KeyboardScrollImageIncrement { get; set; }
 
 	static TabOptions()
 	{
@@ -86,6 +87,8 @@ public class TabOptions : ITabOptions
 	private const SlideshowInterval DefaultSlideshowInterval = SlideshowInterval.OneSecond;
 	private const bool DefaultApplyImageOrientation = false;
 	private const bool DefaultShowThumbnailImageFileName = true;
+	private const KeyboardScrollImageIncrement DefaultKeyboardScrollImageIncrement =
+		KeyboardScrollImageIncrement.Twelve;
 
 	private static readonly string AppDataFolderPath;
 
@@ -160,6 +163,11 @@ public class TabOptions : ITabOptions
 			tabOptions.SlideshowInterval = DefaultSlideshowInterval;
 		}
 
+		if (!IsValidEnumValue(tabOptions.KeyboardScrollImageIncrement))
+		{
+			tabOptions.KeyboardScrollImageIncrement = DefaultKeyboardScrollImageIncrement;
+		}
+
 		return tabOptions;
 	}
 
@@ -182,6 +190,7 @@ public class TabOptions : ITabOptions
 			SlideshowInterval = DefaultTabOptions.SlideshowInterval;
 			ApplyImageOrientation = DefaultTabOptions.ApplyImageOrientation;
 			ShowThumbnailImageFileName = DefaultTabOptions.ShowThumbnailImageFileName;
+			KeyboardScrollImageIncrement = DefaultTabOptions.KeyboardScrollImageIncrement;
 		}
 		else
 		{
@@ -200,6 +209,7 @@ public class TabOptions : ITabOptions
 			SlideshowInterval = DefaultSlideshowInterval;
 			ApplyImageOrientation = DefaultApplyImageOrientation;
 			ShowThumbnailImageFileName = DefaultShowThumbnailImageFileName;
+			KeyboardScrollImageIncrement = DefaultKeyboardScrollImageIncrement;
 		}
 	}
 
@@ -220,6 +230,7 @@ public class TabOptions : ITabOptions
 		DefaultTabOptions!.SlideshowInterval = SlideshowInterval;
 		DefaultTabOptions!.ApplyImageOrientation = ApplyImageOrientation;
 		DefaultTabOptions!.ShowThumbnailImageFileName = ShowThumbnailImageFileName;
+		DefaultTabOptions!.KeyboardScrollImageIncrement = KeyboardScrollImageIncrement;
 	}
 
 	private static async Task PersistDefaultTabOptions()

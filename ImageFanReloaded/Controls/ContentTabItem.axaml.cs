@@ -442,8 +442,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private const int OneImageForward = 1;
 	private const int OneImageBackward = -1;
-	private const int ThumbnailScrollForwardCount = 12;
-	private const int ThumbnailScrollBackwardCount = -12;
 
 	private static readonly TimeSpan StartSlideshowDelay;
 
@@ -1151,11 +1149,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			if (keyPressing == GlobalParameters!.PageUpKey)
 			{
-				AdvanceFromSelectedThumbnail(ThumbnailScrollBackwardCount);
+				AdvanceFromSelectedThumbnail(-TabOptions!.KeyboardScrollImageIncrement.ToInt());
 			}
 			else if (keyPressing == GlobalParameters!.PageDownKey)
 			{
-				AdvanceFromSelectedThumbnail(ThumbnailScrollForwardCount);
+				AdvanceFromSelectedThumbnail(TabOptions!.KeyboardScrollImageIncrement.ToInt());
 			}
 		}
 	}

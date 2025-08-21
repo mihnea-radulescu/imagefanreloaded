@@ -19,6 +19,7 @@ public interface ITabOptions
 	SlideshowInterval SlideshowInterval { get; set; }
 	bool ApplyImageOrientation { get; set; }
 	bool ShowThumbnailImageFileName { get; set; }
+	KeyboardScrollImageIncrement KeyboardScrollImageIncrement { get; set; }
 
 	Task SaveDefaultTabOptions();
 }

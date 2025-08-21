@@ -9,7 +9,8 @@ public enum SlideshowInterval
 	TwoSeconds = 2,
 	ThreeSeconds = 3,
 	FourSeconds = 4,
-	FiveSeconds = 5
+	FiveSeconds = 5,
+	SixSeconds = 6
 }
 
 public static class SlideshowIntervalExtensions
