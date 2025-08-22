@@ -147,7 +147,7 @@ public class MainViewPresenter
 	{
 		var contentTabItem = e.ContentTabItem;
 
-		await contentTabItem.UpdateSelectedImageAfterImageFileChange();
+		await contentTabItem.UpdateSelectedThumbnailAfterImageFileChange();
 	}
 
 	private void OnImageEditViewFolderContentChanged(object? sender, ContentTabItemEventArgs e)

@@ -398,7 +398,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			100 - TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
 	}
 
-	public async Task UpdateSelectedImageAfterImageFileChange()
+	public async Task UpdateSelectedThumbnailAfterImageFileChange()
 	{
 		try
 		{
@@ -420,6 +420,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				TabOptions!,
 				previousSelectedImageSizeOnDiscInKilobytes,
 				currentSelectedImageSizeOnDiscInKilobytes);
+
+			BringThumbnailIntoView();
 		}
 		finally
 		{
@@ -1149,11 +1151,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			if (keyPressing == GlobalParameters!.PageUpKey)
 			{
-				AdvanceFromSelectedThumbnail(-TabOptions!.KeyboardScrollImageIncrement.ToInt());
+				AdvanceFromSelectedThumbnail(-TabOptions!.KeyboardScrollThumbnailIncrement.ToInt());
 			}
 			else if (keyPressing == GlobalParameters!.PageDownKey)
 			{
-				AdvanceFromSelectedThumbnail(TabOptions!.KeyboardScrollImageIncrement.ToInt());
+				AdvanceFromSelectedThumbnail(TabOptions!.KeyboardScrollThumbnailIncrement.ToInt());
 			}
 		}
 	}

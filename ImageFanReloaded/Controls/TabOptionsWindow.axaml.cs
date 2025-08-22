@@ -51,7 +51,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		SetApplyImageOrientation();
 		SetShowThumbnailImageFileName();
 
-		PopulateKeyboardScrollImageIncrements();
+		PopulateKeyboardScrollThumbnailIncrements();
 
 		RegisterTabOptionEvents();
 	}
@@ -191,15 +191,15 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_tabOptionChanges.HasChangedShowThumbnailImageFileName = true;
 	}
 
-	private void OnKeyboardScrollImageIncrementSelectionChanged(
+	private void OnKeyboardScrollThumbnailIncrementSelectionChanged(
 		object? sender, SelectionChangedEventArgs e)
 	{
-		var keyboardScrollImageIncrementComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
-		var keyboardScrollImageIncrement =
-			(KeyboardScrollImageIncrement)keyboardScrollImageIncrementComboBoxItem.Tag!;
+		var keyboardScrollThumbnailIncrementComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
+		var keyboardScrollThumbnailIncrement =
+			(KeyboardScrollThumbnailIncrement)keyboardScrollThumbnailIncrementComboBoxItem.Tag!;
 
-		TabOptions!.KeyboardScrollImageIncrement = keyboardScrollImageIncrement;
-		_tabOptionChanges.HasChangedKeyboardScrollImageIncrement = true;
+		TabOptions!.KeyboardScrollThumbnailIncrement = keyboardScrollThumbnailIncrement;
+		_tabOptionChanges.HasChangedKeyboardScrollThumbnailIncrement = true;
 	}
 
 	private void OnSaveAsDefaultIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -395,26 +395,26 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_showThumbnailImageFileNameCheckBox.IsChecked = TabOptions!.ShowThumbnailImageFileName;
 	}
 
-	private void PopulateKeyboardScrollImageIncrements()
+	private void PopulateKeyboardScrollThumbnailIncrements()
 	{
-		foreach (var aKeyboardScrollImageIncrement in
-			KeyboardScrollImageIncrementExtensions.KeyboardScrollImageIncrements)
+		foreach (var aKeyboardScrollThumbnailIncrement in
+			KeyboardScrollThumbnailIncrementExtensions.KeyboardScrollThumbnailIncrements)
 		{
-			var aKeyboardScrollImageIncrementText =
-				$"{aKeyboardScrollImageIncrement.ToInt()} images";
+			var aKeyboardScrollThumbnailIncrementText =
+				$"{aKeyboardScrollThumbnailIncrement.ToInt()} thumbnails";
 
-			var aKeyboardScrollImageIncrementItem = new ComboBoxItem
+			var aKeyboardScrollThumbnailIncrementItem = new ComboBoxItem
 			{
-				Tag = aKeyboardScrollImageIncrement,
-				Content = aKeyboardScrollImageIncrementText
+				Tag = aKeyboardScrollThumbnailIncrement,
+				Content = aKeyboardScrollThumbnailIncrementText
 			};
 
-			_keyboardScrollImageIncrementComboBox.Items.Add(aKeyboardScrollImageIncrementItem);
+			_keyboardScrollThumbnailIncrementComboBox.Items.Add(aKeyboardScrollThumbnailIncrementItem);
 
-			if (aKeyboardScrollImageIncrement == TabOptions!.KeyboardScrollImageIncrement)
+			if (aKeyboardScrollThumbnailIncrement == TabOptions!.KeyboardScrollThumbnailIncrement)
 			{
-				_keyboardScrollImageIncrementComboBox.SelectedItem =
-					aKeyboardScrollImageIncrementItem;
+				_keyboardScrollThumbnailIncrementComboBox.SelectedItem =
+					aKeyboardScrollThumbnailIncrementItem;
 			}
 		}
 	}
@@ -440,8 +440,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_applyImageOrientationCheckBox.IsCheckedChanged += OnApplyImageOrientationIsCheckedChanged;
 		_showThumbnailImageFileNameCheckBox.IsCheckedChanged +=
 			OnShowThumbnailImageFileNameIsCheckedChanged;
-		_keyboardScrollImageIncrementComboBox.SelectionChanged +=
-			OnKeyboardScrollImageIncrementSelectionChanged;
+		_keyboardScrollThumbnailIncrementComboBox.SelectionChanged +=
+			OnKeyboardScrollThumbnailIncrementSelectionChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged += OnSaveAsDefaultIsCheckedChanged;
 	}
@@ -467,8 +467,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_applyImageOrientationCheckBox.IsCheckedChanged -= OnApplyImageOrientationIsCheckedChanged;
 		_showThumbnailImageFileNameCheckBox.IsCheckedChanged -=
 			OnShowThumbnailImageFileNameIsCheckedChanged;
-		_keyboardScrollImageIncrementComboBox.SelectionChanged -=
-			OnKeyboardScrollImageIncrementSelectionChanged;
+		_keyboardScrollThumbnailIncrementComboBox.SelectionChanged -=
+			OnKeyboardScrollThumbnailIncrementSelectionChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged -= OnSaveAsDefaultIsCheckedChanged;
 	}

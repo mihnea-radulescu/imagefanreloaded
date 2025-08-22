@@ -44,9 +44,9 @@
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="4*"/>
-			<ColumnDefinition Width="56*"/>
+			<ColumnDefinition Width="58*"/>
 			<ColumnDefinition Width="1*"/>
-			<ColumnDefinition Width="35*"/>
+			<ColumnDefinition Width="33*"/>
 			<ColumnDefinition Width="4*"/>
 		</Grid.ColumnDefinitions>
 
@@ -177,9 +177,9 @@
 		<TextBlock Grid.Row="25"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
-				   Text="Keyboard scroll image increment (using PageUp and PageDown):"
+				   Text="Keyboard scroll thumbnail increment (using PageUp and PageDown):"
 				   Margin="0 6 0 0"/>
-		<ComboBox Name="_keyboardScrollImageIncrementComboBox"
+		<ComboBox Name="_keyboardScrollThumbnailIncrementComboBox"
 				  Grid.Row="25"
 				  Grid.Column="3"
 				  HorizontalAlignment="Stretch"

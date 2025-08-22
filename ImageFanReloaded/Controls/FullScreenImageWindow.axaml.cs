@@ -419,13 +419,6 @@ public partial class FullScreenImageWindow : Window, IImageView
 		{
 			_ctsSlideshow = new CancellationTokenSource();
 
-			await PauseBetweenImages(slideshowInterval);
-
-			if (_ctsSlideshow.IsCancellationRequested)
-			{
-				return;
-			}
-
 			do
 			{
 				if (_ctsSlideshow.IsCancellationRequested)
@@ -433,14 +426,14 @@ public partial class FullScreenImageWindow : Window, IImageView
 					return;
 				}
 
-				await RaiseImageChanged(OneImageForward, true);
+				await PauseBetweenImages(slideshowInterval);
 
 				if (_ctsSlideshow.IsCancellationRequested)
 				{
 					return;
 				}
 
-				await PauseBetweenImages(slideshowInterval);
+				await RaiseImageChanged(OneImageForward, true);
 			} while (CanAdvanceToDesignatedImage);
 
 			await CloseWindow();
