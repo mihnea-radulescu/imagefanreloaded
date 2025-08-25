@@ -71,6 +71,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.08.26" date="2025-08-26">
+			<description>
+				<p>Fixed post-edit thumbnail refresh issue</p>
+			</description>
+		</release>
 		<release version="1.2025.08.23" date="2025-08-23">
 			<description>
 				<p>Fixed slideshow initial delay issue</p>

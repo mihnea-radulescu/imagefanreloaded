@@ -402,8 +402,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		try
 		{
-			await FolderChangedMutex!.Wait();
-
 			var previousSelectedImageSizeOnDiscInKilobytes =
 				GetSelectedImageSizeOnDiscInKilobytes();
 
@@ -423,9 +421,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 			BringThumbnailIntoView();
 		}
-		finally
+		catch
 		{
-			FolderChangedMutex!.Signal();
 		}
 	}
 
