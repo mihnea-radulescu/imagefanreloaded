@@ -15,8 +15,7 @@
 				  HorizontalScrollBarVisibility="Auto"
 				  VerticalScrollBarVisibility="Auto"
 				  Focusable="True">
-		<TextBox Name="_aboutTextBox"
-				 IsReadOnly="True"
+		<SelectableTextBlock Name="_aboutTextBox"
 				 Background="Transparent"
 				 Margin="4"/>
 	</ScrollViewer>
