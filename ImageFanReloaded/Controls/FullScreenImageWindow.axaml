@@ -21,10 +21,9 @@
 				   Stretch="None"/>
 		</ScrollViewer>
 		<Canvas Grid.Row="0">
-			<TextBox Name="_imageInfoTextBox"
+			<SelectableTextBlock Name="_imageInfoTextBox"
 					 Canvas.Bottom="0"
 					 Canvas.Right="0"
-					 IsReadOnly="True"
 					 Background="Transparent"
 					 Foreground="Lime"
 					 FontWeight="Bold"

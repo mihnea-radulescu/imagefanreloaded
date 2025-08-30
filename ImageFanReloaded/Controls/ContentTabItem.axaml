@@ -66,16 +66,14 @@
 						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
 
-					<TextBox Name="_folderInfoTextBox"
+					<SelectableTextBlock Name="_folderInfoTextBox"
 							 Grid.Column="0"
-							 IsReadOnly="True"
 							 Background="Transparent"
 							 TextAlignment="Left"/>
-					<TextBox Name="_imageInfoTextBox"
-							 Grid.Column="2"
-							 IsReadOnly="True"
-							 Background="Transparent"
-							 TextAlignment="Right"/>
+					<SelectableTextBlock Name="_imageInfoTextBox"
+					                     Grid.Column="2"
+					                     Background="Transparent"
+					                     TextAlignment="Right"/>
 				</Grid>
 
 			</Grid>
