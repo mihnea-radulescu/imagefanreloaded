@@ -156,6 +156,20 @@ public class EditableImage : DisposableBase, IEditableImage
 		CreateTransformedImage(anImageFrame => anImageFrame.Flip());
 	}
 
+	public void Contrast()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.Contrast());
+	}
+
+	public void Gamma()
+	{
+		ThrowObjectDisposedExceptionIfNecessary();
+
+		CreateTransformedImage(anImageFrame => anImageFrame.AutoGamma());
+	}
+
 	public void Enhance()
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
@@ -260,10 +274,7 @@ public class EditableImage : DisposableBase, IEditableImage
 			IgnoreAspectRatio = true
 		};
 
-		CreateTransformedImage(anImageFrame =>
-		{
-			anImageFrame.Crop(imageFrameCropGeometry);
-		});
+		CreateTransformedImage(anImageFrame => anImageFrame.Crop(imageFrameCropGeometry));
 	}
 
 	public void DownsizeToPercentage(int percentage)

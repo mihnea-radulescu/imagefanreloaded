@@ -20,7 +20,7 @@
 			<li>support for multiple folder tabs</li>
 			<li>keyboard and mouse user interaction</li>
 			<li>44 supported image formats: bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm</li>
-			<li>full-screen and windowed image viewing modes</li>
+			<li>fast and seamless full-screen and windowed navigation across images</li>
 			<li>image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize</li>
 			<li>image animation support for the formats gif, mng and webp</li>
 			<li>folder and image file ordering by name and last modification time, ascending and descending</li>
@@ -30,7 +30,6 @@
 			<li>automatic image orientation according to the EXIF Orientation tag</li>
 			<li>toggle-able recursive folder browsing</li>
 			<li>targeted zooming in, and moving over the zoomed image</li>
-			<li>fast and seamless full-screen navigation across images</li>
 		</ul>
 	</description>
 
@@ -71,6 +70,14 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.08.31" date="2025-08-31">
+			<description>
+				<ul>
+					<li>Updated text info controls (contribution by rabbitism)</li>
+					<li>Added contrast and gamma image editing effects</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2025.08.26" date="2025-08-26">
 			<description>
 				<p>Fixed post-edit thumbnail refresh issue</p>

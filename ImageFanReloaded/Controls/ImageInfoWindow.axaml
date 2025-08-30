@@ -16,7 +16,6 @@
 				  VerticalScrollBarVisibility="Auto"
 				  Focusable="True">
 		<SelectableTextBlock Name="_imageInfoTextBox"
-			 	 Background="Transparent"
-			 	 Margin="4"/>
+							 Background="Transparent"/>
 	</ScrollViewer>
 </Window>

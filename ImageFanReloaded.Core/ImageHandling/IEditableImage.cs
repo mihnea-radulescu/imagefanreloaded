@@ -20,6 +20,8 @@ public interface IEditableImage : IDisposable
 	void FlipHorizontally();
 	void FlipVertically();
 
+	void Contrast();
+	void Gamma();
 	void Enhance();
 	void WhiteBalance();
 	void ReduceNoise();

@@ -12,9 +12,8 @@
 			<Setter Property="BorderThickness" Value="0"/>
 			<Setter Property="CornerRadius" Value="5"/>
 		</Style>
-		<Style Selector="TextBox">
-			<Setter Property="BorderThickness" Value="0"/>
-			<Setter Property="CornerRadius" Value="5"/>
+		<Style Selector="SelectableTextBlock">
+			<Setter Property="Margin" Value="6"/>
 		</Style>
 		<Style Selector="StackPanel.HorizontalStackPanel">
 			<Setter Property="Orientation" Value="Horizontal"/>

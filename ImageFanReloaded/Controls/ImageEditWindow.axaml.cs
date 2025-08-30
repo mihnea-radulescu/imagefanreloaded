@@ -276,6 +276,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private async void OnFlipVertically(object? sender, RoutedEventArgs e)
 		=> await FlipVertically();
 
+	private async void OnContrast(object? sender, RoutedEventArgs e)
+		=> await Contrast();
+	private async void OnGamma(object? sender, RoutedEventArgs e)
+		=> await Gamma();
 	private async void OnEnhance(object? sender, RoutedEventArgs e)
 		=> await Enhance();
 	private async void OnWhiteBalance(object? sender, RoutedEventArgs e)
@@ -671,6 +675,22 @@ public partial class ImageEditWindow : Window, IImageEditView
 		await PerformUiUpdate(async () =>
 		{
 			await ApplyTransform(() => _editableImage!.FlipVertically());
+		});
+	}
+
+	private async Task Contrast()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Contrast());
+		});
+	}
+
+	private async Task Gamma()
+	{
+		await PerformUiUpdate(async () =>
+		{
+			await ApplyTransform(() => _editableImage!.Gamma());
 		});
 	}
 

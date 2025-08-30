@@ -58,6 +58,10 @@
 							Content="Effects">
 				<DropDownButton.Flyout>
 					<MenuFlyout>
+						<MenuItem Header="Contrast"
+								  Click="OnContrast"/>
+						<MenuItem Header="Gamma"
+								  Click="OnGamma"/>
 						<MenuItem Header="Enhance"
 								  Click="OnEnhance"/>
 						<MenuItem Header="White balance"

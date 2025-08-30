@@ -8,7 +8,7 @@ Features:
 * support for multiple folder tabs
 * keyboard and mouse user interaction
 * 44 supported image formats: bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm
-* full-screen and windowed image viewing modes
+* fast and seamless full-screen and windowed navigation across images
 * image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize
 * image animation support for the formats gif, mng and webp
 * folder and image file ordering by name and last modification time, ascending and descending
@@ -18,7 +18,6 @@ Features:
 * automatic image orientation according to the EXIF Orientation tag
 * toggle-able recursive folder browsing
 * targeted zooming in, and moving over the zoomed image
-* fast and seamless full-screen navigation across images
 * command-line direct access to the specified folder or image file
 
 User interface:

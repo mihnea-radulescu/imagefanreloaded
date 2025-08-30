@@ -67,13 +67,13 @@
 					</Grid.ColumnDefinitions>
 
 					<SelectableTextBlock Name="_folderInfoTextBox"
-							 Grid.Column="0"
-							 Background="Transparent"
-							 TextAlignment="Left"/>
+										 Grid.Column="0"
+										 Background="Transparent"
+										 TextAlignment="Left"/>
 					<SelectableTextBlock Name="_imageInfoTextBox"
-					                     Grid.Column="2"
-					                     Background="Transparent"
-					                     TextAlignment="Right"/>
+										 Grid.Column="2"
+										 Background="Transparent"
+										 TextAlignment="Right"/>
 				</Grid>
 
 			</Grid>
