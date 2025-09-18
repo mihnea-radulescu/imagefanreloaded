@@ -124,6 +124,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private bool _hasInProgressUiUpdate;
 	private bool _hasUnsavedChanges;
 
+	private double DisplayImageWidth => _displayImage.Bounds.Width;
+	private double DisplayImageHeight => _displayImage.Bounds.Height;
+
 	private async void OnWindowLoaded(object? sender, RoutedEventArgs e) => await LoadImage();
 
 	private async void OnKeyPressing(object? sender, KeyEventArgs e)
@@ -1150,8 +1153,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		var shouldPerformCrop =
 			_topLeftPointToImage.X > 0 ||
 			_topLeftPointToImage.Y > 0 ||
-			_bottomRightPointToImage.X < _displayImage.Bounds.Width ||
-			_bottomRightPointToImage.Y < _displayImage.Bounds.Height;
+			_bottomRightPointToImage.X < DisplayImageWidth ||
+			_bottomRightPointToImage.Y < DisplayImageHeight;
 
 		_cropButton.IsEnabled = shouldPerformCrop;
 
@@ -1160,52 +1163,86 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private bool ShouldEnableSnapCropEdgesCheckBox()
 	{
-		var displayImageWidth = _displayImage.Bounds.Width;
-		var displayImageHeight = _displayImage.Bounds.Height;
-
 		if (_topLeftPointToImage.X <= SnapCropEdgesThresholdInPixels)
+		{
 			return true;
+		}
 
 		if (_topLeftPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+		{
 			return true;
+		}
 
-		if (displayImageWidth - _bottomRightPointToImage.X <= SnapCropEdgesThresholdInPixels)
+		if (DisplayImageWidth - _bottomRightPointToImage.X <= SnapCropEdgesThresholdInPixels)
+		{
 			return true;
+		}
 
-		if (displayImageHeight - _bottomRightPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+		if (DisplayImageHeight - _bottomRightPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+		{
 			return true;
+		}
 
 		return false;
 	}
 
 	private void LockSnapCropEdgesCheckBox() => _snapCropEdgesCheckBox.IsEnabled = false;
 
+	private void NormalizePointsToImage()
+	{
+		if (_topLeftPointToImage.X < 0)
+		{
+			_topLeftPointToImage = new Point(0, _topLeftPointToImage.Y);
+		}
+
+		if (_topLeftPointToImage.Y < 0)
+		{
+			_topLeftPointToImage = new Point(_topLeftPointToImage.X, 0);
+		}
+
+		if (DisplayImageWidth - _bottomRightPointToImage.X < 0)
+		{
+			_bottomRightPointToImage = new Point(DisplayImageWidth, _bottomRightPointToImage.Y);
+		}
+
+		if (DisplayImageHeight - _bottomRightPointToImage.Y < 0)
+		{
+			_bottomRightPointToImage = new Point(_bottomRightPointToImage.X, DisplayImageHeight);
+		}
+	}
+
 	private void SnapCropRectangleToImageBounds()
 	{
-		var displayImageWidth = _displayImage.Bounds.Width;
-		var displayImageHeight = _displayImage.Bounds.Height;
-
 		if (_topLeftPointToImage.X <= SnapCropEdgesThresholdInPixels)
+		{
 			_topLeftPointToImage = new Point(0, _topLeftPointToImage.Y);
+		}
 
 		if (_topLeftPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+		{
 			_topLeftPointToImage = new Point(_topLeftPointToImage.X, 0);
+		}
 
-		if (displayImageWidth - _bottomRightPointToImage.X <= SnapCropEdgesThresholdInPixels)
-			_bottomRightPointToImage = new Point(displayImageWidth, _bottomRightPointToImage.Y);
+		if (DisplayImageWidth - _bottomRightPointToImage.X <= SnapCropEdgesThresholdInPixels)
+		{
+			_bottomRightPointToImage = new Point(DisplayImageWidth, _bottomRightPointToImage.Y);
+		}
 
-		if (displayImageHeight - _bottomRightPointToImage.Y <= SnapCropEdgesThresholdInPixels)
-			_bottomRightPointToImage = new Point(_bottomRightPointToImage.X, displayImageHeight);
+		if (DisplayImageHeight - _bottomRightPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+		{
+			_bottomRightPointToImage = new Point(_bottomRightPointToImage.X, DisplayImageHeight);
+		}
 	}
+
+	private Point GetPointToGrid(Point pointToImage)
+		=> _displayImage.TranslatePoint(pointToImage, _displayGrid)!.Value;
 
 	private void DrawCropToGridRectangle()
 	{
-		var topLeftPointToGrid = _displayImage
-			.TranslatePoint(_topLeftPointToImage, _displayGrid)!
-			.Value;
-		var bottomRightPointToGrid = _displayImage
-			.TranslatePoint(_bottomRightPointToImage, _displayGrid)!
-			.Value;
+		NormalizePointsToImage();
+
+		var topLeftPointToGrid = GetPointToGrid(_topLeftPointToImage);
+		var bottomRightPointToGrid = GetPointToGrid(_bottomRightPointToImage);
 
 		var cropToGridRectangle = new Rect(topLeftPointToGrid, bottomRightPointToGrid);
 
@@ -1226,7 +1263,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private Rect GetCropToEditableImageRectangle()
 	{
 		var editableImageToDisplayImageScale =
-			(double)_editableImage!.ImageSize.Width / _displayImage.Bounds.Width;
+			(double)_editableImage!.ImageSize.Width / DisplayImageWidth;
 
 		var topLeftPointToEditableImage =
 			_topLeftPointToImage * editableImageToDisplayImageScale;
