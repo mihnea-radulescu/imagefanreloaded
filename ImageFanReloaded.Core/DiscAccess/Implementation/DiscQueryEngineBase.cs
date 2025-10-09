@@ -12,9 +12,9 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 {
 	static DiscQueryEngineBase()
 	{
-		EmptyFileSystemEntryInfoCollection = Enumerable.Empty<FileSystemEntryInfo>().ToList();
+		EmptyFileSystemEntryInfoList = Enumerable.Empty<FileSystemEntryInfo>().ToList();
 
-		EmptyImageFileCollection = Enumerable.Empty<IImageFile>().ToList();
+		EmptyImageFileList = Enumerable.Empty<IImageFile>().ToList();
 	}
 
 	protected DiscQueryEngineBase(
@@ -67,8 +67,8 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 	#region Private
 
-	private static readonly IReadOnlyList<FileSystemEntryInfo> EmptyFileSystemEntryInfoCollection;
-	private static readonly IReadOnlyList<IImageFile> EmptyImageFileCollection;
+	private static readonly IReadOnlyList<FileSystemEntryInfo> EmptyFileSystemEntryInfoList;
+	private static readonly IReadOnlyList<IImageFile> EmptyImageFileList;
 
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageFileFactory _imageFileFactory;
@@ -126,7 +126,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 		catch
 		{
-			return EmptyFileSystemEntryInfoCollection;
+			return EmptyFileSystemEntryInfoList;
 		}
 	}
 
@@ -148,7 +148,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 		catch
 		{
-			return EmptyFileSystemEntryInfoCollection;
+			return EmptyFileSystemEntryInfoList;
 		}
 	}
 
@@ -190,7 +190,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 		catch
 		{
-			return EmptyFileSystemEntryInfoCollection;
+			return EmptyFileSystemEntryInfoList;
 		}
 	}
 
@@ -272,7 +272,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 		catch
 		{
-			return EmptyImageFileCollection;
+			return EmptyImageFileList;
 		}
 	}
 

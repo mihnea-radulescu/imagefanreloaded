@@ -14,7 +14,7 @@ public interface IImageFile
 	bool HasImageReadError { get; }
 
 	IImage GetImage(bool applyImageOrientation);
-	IImage GetResizedImage(ImageSize viewPortSize, bool applyImageOrientation);
+	(IImage, IImage) GetImageAndResizedImage(ImageSize viewPortSize, bool applyImageOrientation);
 	void ReadImageDataFromDisc(bool applyImageOrientation);
 
 	IImage GetThumbnail(int thumbnailSize);

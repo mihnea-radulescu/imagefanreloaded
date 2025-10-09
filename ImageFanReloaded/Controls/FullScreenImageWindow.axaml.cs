@@ -81,7 +81,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
 
-		await ResizeToScreenSize();
+		await DisplayResizedImage();
 
 		_imageInfoTextBox.Text = _imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
 		_imageInfoTextBox.IsVisible = TabOptions!.ShowImageViewImageInfo;
@@ -103,7 +103,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 	private Task? _animationTask;
 
-	private IImage? _previousImage;
+	private IImage? _image;
+	private IImage? _resizedImage;
 
 	private IGlobalParameters? _globalParameters;
 	private IMouseCursorFactory? _mouseCursorFactory;
@@ -185,7 +186,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 			}
 			else if (_imageViewState == ImageViewState.ZoomedToImageSize)
 			{
-				await ResizeToScreenSize();
+				ResizeToScreenSize();
 			}
 		}
 		else if (ShouldToggleImageInfo(keyModifiers, keyPressing))
@@ -246,7 +247,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 				if (_mouseDownCoordinates == _mouseUpCoordinates)
 				{
-					await ResizeToScreenSize();
+					ResizeToScreenSize();
 				}
 				else
 				{
@@ -481,27 +482,6 @@ public partial class FullScreenImageWindow : Window, IImageView
 		}
 	}
 
-	private async Task ResizeToScreenSize()
-	{
-		var image = _imageFile!.GetResizedImage(
-			_scaledScreenSize!, TabOptions!.ApplyImageOrientation);
-
-		_imageViewState = ImageViewState.ResizedToScreenSize;
-		Cursor = _screenSizeCursor;
-
-		await WaitForAnimationTask();
-
-		if (image.IsAnimated)
-		{
-			_ctsAnimation = new CancellationTokenSource();
-			_animationTask = Task.Run(() => AnimateImage(image, _ctsAnimation));
-		}
-		else
-		{
-			SetImageSource(image);
-		}
-	}
-
 	private (double normalizedDragX, double normalizedDragY) GetNormalizedDrag()
 	{
 		var dragX = _mouseUpCoordinates.X - _mouseDownCoordinates.X;
@@ -594,16 +574,61 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 	private Cursor GetScreenSizeCursor() => _canZoomToImageSize ? _zoomCursor! : _standardCursor!;
 
+	private void DisposePreviousImageAndResizedImage()
+	{
+		DisposeImage(_image);
+		DisposeImage(_resizedImage);
+	}
+
+	private void DisposeImage(IImage? image)
+	{
+		if (image is not null && image != _invalidImage)
+		{
+			image.Dispose();
+		}
+	}
+
+	private async Task DisplayResizedImage()
+	{
+		SetDisplayImageSource(null);
+		DisposePreviousImageAndResizedImage();
+
+		(_image, _resizedImage) = _imageFile!.GetImageAndResizedImage(
+			_scaledScreenSize!, TabOptions!.ApplyImageOrientation);
+
+		await WaitForAnimationTask();
+
+		if (_resizedImage.IsAnimated)
+		{
+			_ctsAnimation = new CancellationTokenSource();
+			_animationTask = Task.Run(() => AnimateImage(_resizedImage, _ctsAnimation));
+		}
+		else
+		{
+			SetDisplayImageSource(_resizedImage);
+		}
+
+		_imageViewState = ImageViewState.ResizedToScreenSize;
+		Cursor = _screenSizeCursor!;
+	}
+
+	private void ResizeToScreenSize()
+	{
+		SetDisplayImageSource(_resizedImage!);
+
+		_imageViewState = ImageViewState.ResizedToScreenSize;
+		Cursor = _screenSizeCursor!;
+	}
+
 	private void ZoomToImageSize(CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
 	{
-		var image = _imageFile!.GetImage(TabOptions!.ApplyImageOrientation);
-		SetImageSource(image);
+		SetDisplayImageSource(_image!);
+
+		var zoomRectangle = GetZoomRectangle(coordinatesToImageSizeRatio, _image!);
+		_displayImage.BringIntoView(zoomRectangle);
 
 		_imageViewState = ImageViewState.ZoomedToImageSize;
 		Cursor = _dragCursor!;
-
-		var zoomRectangle = GetZoomRectangle(coordinatesToImageSizeRatio, image);
-		_displayImage.BringIntoView(zoomRectangle);
 	}
 
 	private static Rect GetZoomRectangle(
@@ -637,21 +662,11 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 		Close();
 
-		SetImageSource(null);
+		SetDisplayImageSource(null);
+		DisposePreviousImageAndResizedImage();
 	}
 
-	private void SetImageSource(IImage? image)
-	{
-		_displayImage.Source = image?.GetBitmap();
-
-		if (_previousImage is not null &&
-			_previousImage != _invalidImage)
-		{
-			_previousImage.Dispose();
-		}
-
-		_previousImage = image;
-	}
+	private void SetDisplayImageSource(IImage? image) => _displayImage.Source = image?.GetBitmap();
 
 	private async Task PauseBetweenImages(TimeSpan slideshowInterval)
 	{
@@ -667,10 +682,10 @@ public partial class FullScreenImageWindow : Window, IImageView
 		if (_animationTask is not null)
 		{
 			await _animationTask;
-			_animationTask = default;
+			_animationTask = null;
 
 			_ctsAnimation?.Dispose();
-			_ctsAnimation = default;
+			_ctsAnimation = null;
 		}
 	}
 

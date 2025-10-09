@@ -44,7 +44,7 @@ User interface:
 * keys H and F1 for displaying About view
 * keys Up, Down, Left and Right for navigating through the folders tree
 * keys Up, Down, Left, Right, Backspace and Space for back and forward navigation through thumbnails and opened images
-* keys PageUp and PageDown for scrolling through thumbnails
+* keys PageUp, PageDown, Backspace and Space for scrolling through thumbnails
 * key Enter for entering image view and zoomed image view modes
 * key combos Ctrl+Up, Ctrl+Down, Ctrl+Left and Ctrl+Right for dragging zoomed images
 * key I to toggle showing image info in image view and zoomed image view modes

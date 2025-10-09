@@ -892,7 +892,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		if (_selectedThumbnailBox is not null &&
 			keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			(keyPressing == GlobalParameters!.PageUpKey ||
-			 keyPressing == GlobalParameters!.PageDownKey))
+			 keyPressing == GlobalParameters!.PageDownKey ||
+			 keyPressing == GlobalParameters!.BackspaceKey ||
+			 keyPressing == GlobalParameters!.SpaceKey))
 		{
 			return true;
 		}
@@ -1153,6 +1155,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			else if (keyPressing == GlobalParameters!.PageDownKey)
 			{
 				AdvanceFromSelectedThumbnail(TabOptions!.KeyboardScrollThumbnailIncrement.ToInt());
+			}
+			else if (keyPressing == GlobalParameters!.BackspaceKey)
+			{
+				AdvanceFromSelectedThumbnail(OneImageBackward);
+			}
+			else if (keyPressing == GlobalParameters!.SpaceKey)
+			{
+				AdvanceFromSelectedThumbnail(OneImageForward);
 			}
 		}
 	}

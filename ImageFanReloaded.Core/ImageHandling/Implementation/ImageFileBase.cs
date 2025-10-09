@@ -57,33 +57,31 @@ public abstract class ImageFileBase : IImageFile
 		return image;
 	}
 
-	public IImage GetResizedImage(ImageSize viewPortSize, bool applyImageOrientation)
+	public (IImage, IImage) GetImageAndResizedImage(
+		ImageSize viewPortSize, bool applyImageOrientation)
 	{
-		IImage? image = default;
+		IImage image = GetImage(applyImageOrientation);
 		IImage resizedImage;
 
-		try
+		if (HasImageReadError)
 		{
-			image = GetImageFromDisc(applyImageOrientation);
-			SetImageProperties(image);
-
-			resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize, ImageQuality.High);
-			HasImageReadError = false;
+			resizedImage = image;
 		}
-		catch
+		else
 		{
-			var invalidImage = _globalParameters.InvalidImage;
-			SetImageProperties(invalidImage);
-
-			resizedImage = invalidImage;
-			HasImageReadError = true;
-		}
-		finally
-		{
-			image?.Dispose();
+			try
+			{
+				resizedImage = _imageResizer.CreateResizedImage(
+					image, viewPortSize, ImageQuality.High);
+			}
+			catch
+			{
+				resizedImage = _globalParameters.InvalidImage;
+				HasImageReadError = true;
+			}
 		}
 
-		return resizedImage;
+		return (image, resizedImage);
 	}
 
 	public void ReadImageDataFromDisc(bool applyImageOrientation)

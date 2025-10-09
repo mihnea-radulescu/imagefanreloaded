@@ -93,7 +93,7 @@ public partial class WindowedImageWindow : Window, IImageView
 
 	private Task? _animationTask;
 
-	private IImage? _previousImage;
+	private IImage? _image;
 
 	private IGlobalParameters? _globalParameters;
 
@@ -385,20 +385,31 @@ public partial class WindowedImageWindow : Window, IImageView
 		}
 	}
 
+	private void DisposeImage(IImage? image)
+	{
+		if (image is not null && image != _invalidImage)
+		{
+			image.Dispose();
+		}
+	}
+
 	private async Task DisplayImage()
 	{
-		var image = _imageFile!.GetImage(TabOptions!.ApplyImageOrientation);
+		SetDisplayImageSource(null);
+		DisposeImage(_image);
+
+		_image = _imageFile!.GetImage(TabOptions!.ApplyImageOrientation);
 
 		await WaitForAnimationTask();
 
-		if (image.IsAnimated)
+		if (_image.IsAnimated)
 		{
 			_ctsAnimation = new CancellationTokenSource();
-			_animationTask = Task.Run(() => AnimateImage(image, _ctsAnimation));
+			_animationTask = Task.Run(() => AnimateImage(_image, _ctsAnimation));
 		}
 		else
 		{
-			SetImageSource(image);
+			SetDisplayImageSource(_image);
 		}
 	}
 
@@ -411,21 +422,11 @@ public partial class WindowedImageWindow : Window, IImageView
 
 		Close();
 
-		SetImageSource(null);
+		SetDisplayImageSource(null);
+		DisposeImage(_image);
 	}
 
-	private void SetImageSource(IImage? image)
-	{
-		_displayImage.Source = image?.GetBitmap();
-
-		if (_previousImage is not null &&
-			_previousImage != _invalidImage)
-		{
-			_previousImage.Dispose();
-		}
-
-		_previousImage = image;
-	}
+	private void SetDisplayImageSource(IImage? image) => _displayImage.Source = image?.GetBitmap();
 
 	private async Task PauseBetweenImages(TimeSpan slideshowInterval)
 	{
@@ -441,10 +442,10 @@ public partial class WindowedImageWindow : Window, IImageView
 		if (_animationTask is not null)
 		{
 			await _animationTask;
-			_animationTask = default;
+			_animationTask = null;
 
 			_ctsAnimation?.Dispose();
-			_ctsAnimation = default;
+			_ctsAnimation = null;
 		}
 	}
 
