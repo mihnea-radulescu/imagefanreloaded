@@ -87,6 +87,8 @@ public class GlobalParametersTest : TestBase
 		Assert.NotEqual(Key.None, _globalParameters.DownKey);
 		Assert.NotEqual(Key.None, _globalParameters.LeftKey);
 		Assert.NotEqual(Key.None, _globalParameters.RightKey);
+		Assert.NotEqual(Key.None, _globalParameters.BackspaceKey);
+		Assert.NotEqual(Key.None, _globalParameters.SpaceKey);
 
 		Assert.NotEqual(Key.None, _globalParameters.PlusKey);
 		Assert.NotEqual(Key.None, _globalParameters.MinusKey);

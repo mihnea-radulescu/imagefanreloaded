@@ -22,6 +22,8 @@ public enum Key
 	Down,
 	Left,
 	Right,
+	Backspace,
+	Space,
 
 	N,
 	M,

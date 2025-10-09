@@ -58,6 +58,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key DownKey { get; }
 	public Key LeftKey { get; }
 	public Key RightKey { get; }
+	public Key BackspaceKey { get; }
+	public Key SpaceKey { get; }
 
 	public Key PlusKey { get; }
 	public Key MinusKey { get; }
@@ -149,6 +151,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		DownKey = Key.Down;
 		LeftKey = Key.Left;
 		RightKey = Key.Right;
+		BackspaceKey = Key.Backspace;
+		SpaceKey = Key.Space;
 
 		PlusKey = Key.Plus;
 		MinusKey = Key.Minus;
@@ -240,12 +244,14 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		_backwardNavigationKeys = [
 			Key.Up,
-			Key.Left
+			Key.Left,
+			Key.Backspace
 		];
 
 		_forwardNavigationKeys = [
 			Key.Down,
-			Key.Right
+			Key.Right,
+			Key.Space
 		];
 
 		_navigationKeys = [ .._backwardNavigationKeys, .._forwardNavigationKeys ];

@@ -23,6 +23,8 @@ public static class KeyExtensions
 			Avalonia.Input.Key.Down => Core.Keyboard.Key.Down,
 			Avalonia.Input.Key.Left => Core.Keyboard.Key.Left,
 			Avalonia.Input.Key.Right => Core.Keyboard.Key.Right,
+			Avalonia.Input.Key.Back => Core.Keyboard.Key.Backspace,
+			Avalonia.Input.Key.Space => Core.Keyboard.Key.Space,
 
 			Avalonia.Input.Key.N => Core.Keyboard.Key.N,
 			Avalonia.Input.Key.M => Core.Keyboard.Key.M,

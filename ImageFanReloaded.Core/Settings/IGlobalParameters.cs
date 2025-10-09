@@ -56,6 +56,8 @@ public interface IGlobalParameters
 	Key DownKey { get; }
 	Key LeftKey { get; }
 	Key RightKey { get; }
+	Key BackspaceKey { get; }
+	Key SpaceKey { get; }
 
 	Key PlusKey { get; }
 	Key MinusKey { get; }
