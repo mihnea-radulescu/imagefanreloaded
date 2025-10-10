@@ -12,23 +12,20 @@ public abstract class ImageFileBase : IImageFile
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
 		IFileSizeEngine fileSizeEngine,
-		StaticImageFileData staticImageFileData,
-		TransientImageFileData transientImageFileData)
+		ImageFileData imageFileData)
 	{
 		_globalParameters = globalParameters;
 		_imageResizer = imageResizer;
 		_fileSizeEngine = fileSizeEngine;
 
-		StaticImageFileData = staticImageFileData;
-		TransientImageFileData = transientImageFileData;
+		ImageFileData = imageFileData;
 
 		ImageSize = _globalParameters.InvalidImage.Size;
 
 		_thumbnailGenerationLockObject = new object();
 	}
 
-	public StaticImageFileData StaticImageFileData { get; }
-	public TransientImageFileData TransientImageFileData { get; private set; }
+	public ImageFileData ImageFileData { get; }
 
 	public ImageSize ImageSize { get; private set; }
 	public bool IsAnimatedImage { get; private set; }
@@ -62,7 +59,7 @@ public abstract class ImageFileBase : IImageFile
 			}
 		}
 
-		DisposeImageFileContentStream();
+		imageFileContentStream?.Dispose();
 
 		return image;
 	}
@@ -147,38 +144,38 @@ public abstract class ImageFileBase : IImageFile
 		return thumbnail;
 	}
 
-	public void RefreshTransientImageFileData()
+	public void RefreshImageFileData()
 	{
 		try
 		{
-			var imageFileInfo = new FileInfo(StaticImageFileData.ImageFilePath);
+			var imageFileInfo = new FileInfo(ImageFileData.ImageFilePath);
 
 			if (!imageFileInfo.Exists)
 			{
-				InitializeNonExistingImageData();
+				HasImageReadError = true;
 			}
 			else
 			{
 				var sizeOnDiscInKilobytes = _fileSizeEngine.ConvertToKilobytes(imageFileInfo.Length);
 				var lastModificationTime = imageFileInfo.LastWriteTime;
 
-				TransientImageFileData = new TransientImageFileData(
-					sizeOnDiscInKilobytes, lastModificationTime);
+				ImageFileData.SizeOnDiscInKilobytes = sizeOnDiscInKilobytes;
+				ImageFileData.LastModificationTime = lastModificationTime;
 			}
 		}
 		catch
 		{
-			InitializeNonExistingImageData();
+			HasImageReadError = true;
 		}
 	}
 
 	public string GetBasicImageInfo(bool longFormat)
 	{
 		var imageFileInfo = longFormat
-			? StaticImageFileData.ImageFilePath
-			: StaticImageFileData.ImageFileName;
+			? ImageFileData.ImageFilePath
+			: ImageFileData.ImageFileName;
 
-		var sizeOnDiscInKilobytes = TransientImageFileData.SizeOnDiscInKilobytes.GetValueOrDefault();
+		var sizeOnDiscInKilobytes = ImageFileData.SizeOnDiscInKilobytes;
 		var sizeOnDiscInKilobytesForDisplay = decimal.Round(
 			sizeOnDiscInKilobytes, _globalParameters.DecimalDigitCountForDisplay);
 
@@ -210,19 +207,19 @@ public abstract class ImageFileBase : IImageFile
 
 	protected bool IsDirectlySupportedImageFileExtension
 		=> _globalParameters.DirectlySupportedImageFileExtensions.Contains(
-			StaticImageFileData.ImageFileExtension);
+			ImageFileData.ImageFileExtension);
 
 	protected bool IsAnimationEnabledImageFileExtension
 		=> _globalParameters.AnimationEnabledImageFileExtensions.Contains(
-			StaticImageFileData.ImageFileExtension);
+			ImageFileData.ImageFileExtension);
 
 	protected Stream? GetImageFileContentStream()
 	{
-		var imageFilePath = StaticImageFileData.ImageFilePath;
+		var imageFilePath = ImageFileData.ImageFilePath;
 
 		if (!File.Exists(imageFilePath))
 		{
-			InitializeNonExistingImageData();
+			HasImageReadError = true;
 
 			return default;
 		}
@@ -238,17 +235,10 @@ public abstract class ImageFileBase : IImageFile
 		}
 		catch
 		{
-			InitializeNonExistingImageData();
+			HasImageReadError = true;
 
 			return default;
 		}
-	}
-
-	protected void InitializeNonExistingImageData()
-	{
-		HasImageReadError = true;
-
-		TransientImageFileData = new TransientImageFileData(default, default);
 	}
 
 	#endregion

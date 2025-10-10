@@ -18,7 +18,7 @@ public interface IImageEditView
 	ISaveFileImageFormatFactory? SaveFileImageFormatFactory { get; set; }
 	ISaveFileDialogFactory? SaveFileDialogFactory { get; set; }
 
-	StaticImageFileData? StaticImageFileData { get; set; }
+	ImageFileData? ImageFileData { get; set; }
 
 	IContentTabItem? ContentTabItem { get; set; }
 

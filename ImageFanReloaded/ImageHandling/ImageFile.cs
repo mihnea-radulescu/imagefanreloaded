@@ -17,14 +17,8 @@ public class ImageFile : ImageFileBase
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
 		IFileSizeEngine fileSizeEngine,
-		StaticImageFileData staticImageFileData,
-		TransientImageFileData transientImageFileData)
-		: base(
-			globalParameters,
-			imageResizer,
-			fileSizeEngine,
-			staticImageFileData,
-			transientImageFileData)
+		ImageFileData imageFileData)
+		: base(globalParameters, imageResizer, fileSizeEngine, imageFileData)
 	{
 	}
 

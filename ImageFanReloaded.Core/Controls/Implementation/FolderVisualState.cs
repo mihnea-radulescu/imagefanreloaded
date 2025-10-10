@@ -49,9 +49,7 @@ public class FolderVisualState : IFolderVisualState
 			_contentTabItem.SetTabInfo(_folderName, _folderPath);
 
 			var subFolders = await _discQueryEngine.GetSubFolders(
-				_folderPath,
-				tabOptions.FolderOrdering,
-				tabOptions.FolderOrderingDirection);
+				_folderPath, tabOptions.FolderOrdering, tabOptions.FolderOrderingDirection);
 			_contentTabItem.PopulateSubFoldersTree(subFolders);
 
 			var imageFiles = await _discQueryEngine.GetImageFiles(
@@ -220,8 +218,7 @@ public class FolderVisualState : IFolderVisualState
 		IReadOnlyList<IImageFile> imageFiles)
 	{
 		var imageFilesTotalSizeOnDiscInKilobytes = imageFiles
-			.Sum(anImageFile =>
-				anImageFile.TransientImageFileData.SizeOnDiscInKilobytes.GetValueOrDefault());
+			.Sum(anImageFile => anImageFile.ImageFileData.SizeOnDiscInKilobytes);
 
 		return imageFilesTotalSizeOnDiscInKilobytes;
 	}

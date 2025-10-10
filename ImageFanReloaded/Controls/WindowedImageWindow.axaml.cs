@@ -59,7 +59,7 @@ public partial class WindowedImageWindow : Window, IImageView
 	public async Task SetImage(IImageFile imageFile)
 	{
 		_imageFile = imageFile;
-		Title = _imageFile.StaticImageFileData.ImageFileName;
+		Title = _imageFile.ImageFileData.ImageFileName;
 
 		_halfScaledScreenSize = ScreenInfo!.GetHalfScaledScreenSize(this);
 		Width = _halfScaledScreenSize.Width;

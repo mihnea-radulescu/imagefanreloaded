@@ -235,13 +235,12 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 			var imageFiles = orderedImageFileInfoCollection
 				.Select(aFileInfo => _imageFileFactory.GetImageFile(
-					new StaticImageFileData(
+					new ImageFileData(
 						aFileInfo.Name,
 						aFileInfo.FullName,
 						aFileInfo.Extension,
 						Path.GetFileNameWithoutExtension(aFileInfo.Name),
-						Path.GetDirectoryName(aFileInfo.FullName)!),
-					new TransientImageFileData(
+						Path.GetDirectoryName(aFileInfo.FullName)!,
 						_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length),
 						aFileInfo.LastWriteTime)))
 				.ToList();

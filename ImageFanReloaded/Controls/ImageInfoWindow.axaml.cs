@@ -78,10 +78,10 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 	}
 
 	private void SetLoadingImageInfoTitle()
-		=> Title = $"{ImageFile!.StaticImageFileData.ImageFileName} - loading image info...";
+		=> Title = $"{ImageFile!.ImageFileData.ImageFileName} - loading image info...";
 
 	private void SetImageInfoTitle()
-		=> Title = ImageFile!.StaticImageFileData.ImageFileName;
+		=> Title = ImageFile!.ImageFileData.ImageFileName;
 
 	#endregion
 }

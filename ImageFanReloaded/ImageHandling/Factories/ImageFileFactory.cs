@@ -17,14 +17,8 @@ public class ImageFileFactory : IImageFileFactory
 		_fileSizeEngine = fileSizeEngine;
 	}
 
-	public IImageFile GetImageFile(
-		StaticImageFileData staticImageFileData, TransientImageFileData transientImageFileData)
-		=> new ImageFile(
-			_globalParameters,
-			_imageResizer,
-			_fileSizeEngine,
-			staticImageFileData,
-			transientImageFileData);
+	public IImageFile GetImageFile(ImageFileData imageFileData)
+		=> new ImageFile(_globalParameters, _imageResizer, _fileSizeEngine, imageFileData);
 
 	#region Private
 

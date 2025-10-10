@@ -35,7 +35,7 @@ public class ImageEditViewFactory : IImageEditViewFactory
 		imageEditView.SaveFileImageFormatFactory = _saveFileImageFormatFactory;
 		imageEditView.SaveFileDialogFactory = _saveFileDialogFactory;
 
-		imageEditView.StaticImageFileData = imageFile.StaticImageFileData;
+		imageEditView.ImageFileData = imageFile.ImageFileData;
 
 		imageEditView.ContentTabItem = contentTabItem;
 

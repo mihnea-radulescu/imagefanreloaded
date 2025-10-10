@@ -70,7 +70,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 	public async Task SetImage(IImageFile imageFile)
 	{
 		_imageFile = imageFile;
-		Title = _imageFile.StaticImageFileData.ImageFileName;
+		Title = _imageFile.ImageFileData.ImageFileName;
 
 		_scaledScreenSize ??= ScreenInfo!.GetScaledScreenSize(this);
 

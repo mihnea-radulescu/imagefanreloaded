@@ -87,7 +87,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 	public ISaveFileImageFormatFactory? SaveFileImageFormatFactory { get; set; }
 	public ISaveFileDialogFactory? SaveFileDialogFactory { get; set; }
 
-	public StaticImageFileData? StaticImageFileData { get; set; }
+	public ImageFileData? ImageFileData { get; set; }
 
 	public IContentTabItem? ContentTabItem { get; set; }
 
@@ -437,7 +437,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		SetControlsEnabledStatus(false);
 
 		_editableImage = await EditableImageFactory!
-			.CreateEditableImage(StaticImageFileData!.ImageFilePath);
+			.CreateEditableImage(ImageFileData!.ImageFilePath);
 
 		var isImageLoaded = _editableImage is not null;
 		SetControlsEnabledStatus(isImageLoaded);
@@ -784,10 +784,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 			var hasSameFormat = saveFileImageFormat is null;
 
 			var imageFileName = hasSameFormat
-				? StaticImageFileData!.ImageFileName
-				: $"{StaticImageFileData!.ImageFileNameWithoutExtension}{saveFileImageFormat!.Extension}";
-			var imageFilePath = StaticImageFileData!.ImageFilePath;
-			var imageFolderPath = StaticImageFileData!.ImageFolderPath;
+				? ImageFileData!.ImageFileName
+				: $"{ImageFileData!.ImageFileNameWithoutExtension}{saveFileImageFormat!.Extension}";
+			var imageFilePath = ImageFileData!.ImageFilePath;
+			var imageFolderPath = ImageFileData!.ImageFolderPath;
 
 			var saveFileDialog = SaveFileDialogFactory!.GetSaveFileDialog();
 			var saveFileDialogTitle = hasSameFormat
@@ -1114,13 +1114,13 @@ public partial class ImageEditWindow : Window, IImageEditView
 			_downsizeToPercentageMenuItem.IsEnabled || _downsizeToDimensionsMenuItem.IsEnabled;
 
 	private void SetLoadingImageTitle()
-		=> Title = $"{StaticImageFileData!.ImageFileName} - loading image...";
+		=> Title = $"{ImageFileData!.ImageFileName} - loading image...";
 
 	private void SetImageTitle()
-		=> Title = $"{StaticImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
+		=> Title = $"{ImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
 
 	private void SetImageLoadErrorTitle()
-		=> Title = $"{StaticImageFileData!.ImageFileName} - image read error";
+		=> Title = $"{ImageFileData!.ImageFileName} - image read error";
 
 	private static void ExpandDropDownButton(DropDownButton dropDownButton)
 	{

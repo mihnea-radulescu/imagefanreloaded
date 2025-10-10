@@ -59,8 +59,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	{
 		var imageInfoBuilder = new StringBuilder();
 
-		var staticImageFileData = imageFile.StaticImageFileData;
-		IMagickImage image = new MagickImage(staticImageFileData.ImageFilePath);
+		var imageFileData = imageFile.ImageFileData;
+		IMagickImage image = new MagickImage(imageFileData.ImageFilePath);
 
 		BuildFileProfile(imageFile, imageInfoBuilder);
 
@@ -83,21 +83,18 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		imageInfoBuilder.AppendLine("File profile");
 		imageInfoBuilder.AppendLine();
 
-		var staticImageFileData = imageFile.StaticImageFileData;
-		imageInfoBuilder.AppendLine($"\tFile name:\t{staticImageFileData.ImageFileName}");
-		imageInfoBuilder.AppendLine($"\tFile path:\t{staticImageFileData.ImageFilePath}");
+		var imageFileData = imageFile.ImageFileData;
 
-		var transientImageFileData = imageFile.TransientImageFileData;
+		imageInfoBuilder.AppendLine($"\tFile name:\t{imageFileData.ImageFileName}");
+		imageInfoBuilder.AppendLine($"\tFile path:\t{imageFileData.ImageFilePath}");
 
-		var sizeOnDiscInKilobytes = transientImageFileData.SizeOnDiscInKilobytes.GetValueOrDefault();
+		var sizeOnDiscInKilobytes = imageFileData.SizeOnDiscInKilobytes;
 		var sizeOnDiscInKilobytesForDisplay = decimal.Round(
 			sizeOnDiscInKilobytes, _globalParameters.DecimalDigitCountForDisplay);
 		imageInfoBuilder.AppendLine($"\tFile size:\t{sizeOnDiscInKilobytesForDisplay} KB");
 
-		var lastModificationTime = transientImageFileData.LastModificationTime;
-		var lastModificationTimeText = lastModificationTime.HasValue
-			? lastModificationTime.ToString()
-			: "-";
+		var lastModificationTime = imageFileData.LastModificationTime;
+		var lastModificationTimeText = lastModificationTime.ToString();
 		imageInfoBuilder.AppendLine($"\tFile last modification time:\t{lastModificationTimeText}");
 	}
 

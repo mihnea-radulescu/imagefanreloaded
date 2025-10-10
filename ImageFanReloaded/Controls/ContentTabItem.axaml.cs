@@ -420,7 +420,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			await _selectedThumbnailBox!.UpdateThumbnailAfterImageFileChange();
 
 			var selectedImageFile = GetSelectedImageFile();
-			await Task.Run(() => selectedImageFile.RefreshTransientImageFileData());
+			await Task.Run(() => selectedImageFile.RefreshImageFileData());
 			UpdateSelectedImageStatus();
 
 			var currentSelectedImageSizeOnDiscInKilobytes =
@@ -1237,7 +1237,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		var selectedImageFile = GetSelectedImageFile();
 		var selectedImageSizeOnDiscInKilobytes =
-			selectedImageFile.TransientImageFileData.SizeOnDiscInKilobytes.GetValueOrDefault();
+			selectedImageFile.ImageFileData.SizeOnDiscInKilobytes;
 
 		return selectedImageSizeOnDiscInKilobytes;
 	}
