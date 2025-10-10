@@ -23,7 +23,7 @@
 			<li>fast and seamless full-screen and windowed navigation across images</li>
 			<li>image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize</li>
 			<li>image animation support for the formats gif, mng and webp</li>
-			<li>folder and image file ordering by name and last modification time, ascending and descending</li>
+			<li>folder and image file ordering by name, last modification time and random shuffle, ascending and descending</li>
 			<li>configurable thumbnail size, between 100 and 1200 pixels</li>
 			<li>slideshow navigation across images</li>
 			<li>image info containing file, image, color, EXIF, IPTC and XMP profiles</li>
