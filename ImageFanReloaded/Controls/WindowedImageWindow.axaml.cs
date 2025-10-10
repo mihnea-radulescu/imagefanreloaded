@@ -59,26 +59,21 @@ public partial class WindowedImageWindow : Window, IImageView
 	public async Task SetImage(IImageFile imageFile)
 	{
 		_imageFile = imageFile;
-
 		Title = _imageFile.StaticImageFileData.ImageFileName;
 
-		if (_halfScaledScreenSize is null)
-		{
-			_halfScaledScreenSize = ScreenInfo!.GetHalfScaledScreenSize(this);
-
-			Width = _halfScaledScreenSize.Width;
-			Height = _halfScaledScreenSize.Height;
-		}
+		_halfScaledScreenSize = ScreenInfo!.GetHalfScaledScreenSize(this);
+		Width = _halfScaledScreenSize.Width;
+		Height = _halfScaledScreenSize.Height;
 
 		if (TabOptions!.ImageViewDisplayMode == ImageViewDisplayMode.WindowedMaximized)
 		{
 			WindowState = WindowState.Maximized;
 		}
 
+		await DisplayImage();
+
 		_displayImage.MaxWidth = _imageFile.ImageSize.Width;
 		_displayImage.MaxHeight = _imageFile.ImageSize.Height;
-
-		await DisplayImage();
 	}
 
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
@@ -400,7 +395,7 @@ public partial class WindowedImageWindow : Window, IImageView
 
 		_image = _imageFile!.GetImage(TabOptions!.ApplyImageOrientation);
 
-		await WaitForAnimationTask();
+		await WaitForAnimationTaskToComplete();
 
 		if (_image.IsAnimated)
 		{
@@ -418,7 +413,7 @@ public partial class WindowedImageWindow : Window, IImageView
 		NotifyStopAnimation();
 		NotifyStopSlideshow();
 
-		await WaitForAnimationTask();
+		await WaitForAnimationTaskToComplete();
 
 		Close();
 
@@ -437,7 +432,7 @@ public partial class WindowedImageWindow : Window, IImageView
 		await Task.Delay(slideshowDelay, _ctsSlideshow!.Token);
 	}
 
-	private async Task WaitForAnimationTask()
+	private async Task WaitForAnimationTaskToComplete()
 	{
 		if (_animationTask is not null)
 		{

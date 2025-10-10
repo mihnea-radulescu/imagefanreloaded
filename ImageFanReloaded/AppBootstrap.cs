@@ -193,7 +193,6 @@ public class AppBootstrap : IAppBootstrap
 			_discQueryEngine,
 			_commandLineArgsInputPathHandler,
 			_globalParameters,
-			tabOptions,
 			imageView);
 
 		await imageViewPresenter.SetUpAccessToImages();

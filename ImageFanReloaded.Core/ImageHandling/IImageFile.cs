@@ -15,12 +15,12 @@ public interface IImageFile
 
 	IImage GetImage(bool applyImageOrientation);
 	(IImage, IImage) GetImageAndResizedImage(ImageSize viewPortSize, bool applyImageOrientation);
-	void ReadImageDataFromDisc(bool applyImageOrientation);
+	void ReadImageFile();
 
-	IImage GetThumbnail(int thumbnailSize);
+	IImage GetThumbnail(int thumbnailSize, bool applyImageOrientation);
 
 	void RefreshTransientImageFileData();
 	string GetBasicImageInfo(bool longFormat);
 
-	void DisposeImageData();
+	void DisposeImageFileContentStream();
 }

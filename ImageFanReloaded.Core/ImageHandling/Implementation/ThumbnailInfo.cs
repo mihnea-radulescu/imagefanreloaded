@@ -25,23 +25,21 @@ public class ThumbnailInfo : IThumbnailInfo
 	public IImageFile ImageFile { get; }
 	public string ThumbnailText => ImageFile.StaticImageFileData.ImageFileName;
 
-	public void ReadThumbnailInputFromDisc()
-		=> ImageFile.ReadImageDataFromDisc(_applyImageOrientation);
+	public void ReadThumbnailInputFromDisc() => ImageFile.ReadImageFile();
 
 	public void GetThumbnail()
 	{
-		ThumbnailImage = ImageFile.GetThumbnail(_thumbnailSize);
+		ThumbnailImage = ImageFile.GetThumbnail(_thumbnailSize, _applyImageOrientation);
 	}
 
 	public void RefreshThumbnail() => ThumbnailBox!.RefreshThumbnail();
 
 	public void DisposeThumbnail()
 	{
-		if (ThumbnailImage is not null &&
-			_globalParameters.CanDisposeImage(ThumbnailImage))
+		if (ThumbnailImage is not null && _globalParameters.CanDisposeImage(ThumbnailImage))
 		{
 			ThumbnailImage.Dispose();
-			ThumbnailImage = default;
+			ThumbnailImage = null;
 		}
 	}
 

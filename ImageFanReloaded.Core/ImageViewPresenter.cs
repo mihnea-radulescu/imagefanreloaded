@@ -18,12 +18,10 @@ public class ImageViewPresenter
 		IDiscQueryEngine discQueryEngine,
 		IInputPathHandler inputPathHandler,
 		IGlobalParameters globalParameters,
-		ITabOptions tabOptions,
 		IImageView imageView)
 	{
 		_discQueryEngine = discQueryEngine;
 		_inputPathHandler = inputPathHandler;
-		_tabOptions = tabOptions;
 
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
 
@@ -56,7 +54,6 @@ public class ImageViewPresenter
 
 	private readonly IDiscQueryEngine _discQueryEngine;
 	private readonly IInputPathHandler _inputPathHandler;
-	private readonly ITabOptions _tabOptions;
 
 	private readonly StringComparison _nameComparison;
 
@@ -66,12 +63,7 @@ public class ImageViewPresenter
 	private IImageFile? _currentImageFile;
 	private int _currentImageFileIndex;
 
-	private async Task LoadCurrentImage()
-	{
-		_currentImageFile!.ReadImageDataFromDisc(_tabOptions.ApplyImageOrientation);
-
-		await _imageView.SetImage(_currentImageFile);
-	}
+	private async Task LoadCurrentImage() => await _imageView.SetImage(_currentImageFile!);
 
 	private async void OnImageChanged(object? sender, ImageChangedEventArgs e)
 	{

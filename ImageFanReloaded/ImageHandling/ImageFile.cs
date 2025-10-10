@@ -30,31 +30,24 @@ public class ImageFile : ImageFileBase
 
 	#region Protected
 
-	protected override IImage GetImageFromDisc(bool applyImageOrientation)
+	protected override IImage GetImageFromStream(
+		Stream imageFileContentStream, bool applyImageOrientation)
 	{
-		var imageFilePath = StaticImageFileData.ImageFilePath;
-		if (!File.Exists(imageFilePath))
-		{
-			InitializeNonExistingImageData();
-
-			throw new FileNotFoundException($@"Image ""{imageFilePath}"" not found.", imageFilePath);
-		}
-
 		if (IsAnimationEnabledImageFileExtension)
 		{
-			return BuildAnimatedImageFromFile(imageFilePath);
+			return BuildAnimatedImageFromStream(imageFileContentStream);
 		}
 		else if (applyImageOrientation)
 		{
-			return BuildIndirectlySupportedImageFromFile(imageFilePath);
+			return BuildIndirectlySupportedImageFromStream(imageFileContentStream);
 		}
 		else if (IsDirectlySupportedImageFileExtension)
 		{
-			return BuildImageFromFile(imageFilePath);
+			return BuildDirectlySupportedImageFromStream(imageFileContentStream);
 		}
 		else
 		{
-			return BuildIndirectlySupportedImageFromFile(imageFilePath);
+			return BuildIndirectlySupportedImageFromStream(imageFileContentStream);
 		}
 	}
 
@@ -62,9 +55,9 @@ public class ImageFile : ImageFileBase
 
 	#region Private
 
-	private IImage BuildAnimatedImageFromFile(string inputFilePath)
+	private IImage BuildAnimatedImageFromStream(Stream imageFileContentStream)
 	{
-		var imageCollection = new MagickImageCollection(inputFilePath);
+		var imageCollection = new MagickImageCollection(imageFileContentStream);
 
 		if (imageCollection.Count == 1)
 		{
@@ -97,9 +90,9 @@ public class ImageFile : ImageFileBase
 		return new Image(animatedImageFrames);
 	}
 
-	private IImage BuildIndirectlySupportedImageFromFile(string inputFilePath)
+	private IImage BuildIndirectlySupportedImageFromStream(Stream imageFileContentStream)
 	{
-		IMagickImage image = new MagickImage(inputFilePath);
+		IMagickImage image = new MagickImage(imageFileContentStream);
 
 		return BuildIndirectlySupportedImage(image);
 	}
@@ -122,11 +115,13 @@ public class ImageFile : ImageFileBase
 		}
 
 		image.Write(imageStream, MagickFormat.Jpg);
+
+		imageStream.Reset();
 	}
 
-	private static IImage BuildImageFromFile(string inputFilePath)
+	private static IImage BuildDirectlySupportedImageFromStream(Stream imageFileContentStream)
 	{
-		var bitmap = new Bitmap(inputFilePath);
+		var bitmap = new Bitmap(imageFileContentStream);
 
 		return BuildImage(bitmap);
 	}
@@ -134,7 +129,6 @@ public class ImageFile : ImageFileBase
 	private static IImageFrame BuildImageFrameFromStream(
 		Stream inputStream, TimeSpan delayUntilNextFrame)
 	{
-		inputStream.Reset();
 		var bitmap = new Bitmap(inputStream);
 
 		return BuildImageFrame(bitmap, delayUntilNextFrame);
@@ -149,7 +143,6 @@ public class ImageFile : ImageFileBase
 
 	private static IImage BuildImageFromStream(Stream inputStream)
 	{
-		inputStream.Reset();
 		var bitmap = new Bitmap(inputStream);
 
 		return BuildImage(bitmap);

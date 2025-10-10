@@ -338,17 +338,8 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 		else if (fileSystemInfoOrdering == FileSystemEntryInfoOrdering.RandomShuffle)
 		{
-			if (fileSystemInfoOrderingDirection == FileSystemEntryInfoOrderingDirection.Ascending)
-			{
-				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
-					.OrderBy(aFileSystemInfo => RandomShuffler.Next());
-			}
-			else if (fileSystemInfoOrderingDirection ==
-				FileSystemEntryInfoOrderingDirection.Descending)
-			{
-				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
-					.OrderByDescending(aFileSystemInfo => RandomShuffler.Next());
-			}
+			orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
+				.OrderBy(aFileSystemInfo => RandomShuffler.Next());
 		}
 
 		return orderedFileSystemInfoCollection;

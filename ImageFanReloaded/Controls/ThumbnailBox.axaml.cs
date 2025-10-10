@@ -130,7 +130,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		_thumbnailImage.Source = null;
 
 		_thumbnailInfo!.DisposeThumbnail();
-		ImageFile!.DisposeImageData();
+		ImageFile!.DisposeImageFileContentStream();
 	}
 
 	#region Private
@@ -203,10 +203,10 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		if (_animationTask is not null)
 		{
 			await _animationTask;
-			_animationTask = default;
+			_animationTask = null;
 
 			_ctsAnimation?.Dispose();
-			_ctsAnimation = default;
+			_ctsAnimation = null;
 		}
 	}
 

@@ -80,7 +80,6 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		imageInfoBuilder.AppendLine($"\tFile name:\t{staticImageFileData.ImageFileName}");
 		imageInfoBuilder.AppendLine($"\tFile path:\t{staticImageFileData.ImageFilePath}");
 
-		imageFile.RefreshTransientImageFileData();
 		var transientImageFileData = imageFile.TransientImageFileData;
 
 		var sizeOnDiscInKilobytes = transientImageFileData.SizeOnDiscInKilobytes.GetValueOrDefault();

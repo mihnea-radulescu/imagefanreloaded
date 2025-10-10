@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -37,23 +38,31 @@ public abstract class ImageFileBase : IImageFile
 
 	public IImage GetImage(bool applyImageOrientation)
 	{
-		IImage image = default!;
+		IImage image;
 
-		try
-		{
-			image = GetImageFromDisc(applyImageOrientation);
-			HasImageReadError = false;
-		}
-		catch
+		var imageFileContentStream = GetImageFileContentStream();
+
+		if (HasImageReadError)
 		{
 			image = _globalParameters.InvalidImage;
-			HasImageReadError = true;
 		}
-		finally
+		else
 		{
-			SetImageProperties(image);
+			try
+			{
+				image = GetImageFromStream(imageFileContentStream!, applyImageOrientation);
+			}
+			catch
+			{
+				image = _globalParameters.InvalidImage;
+
+				HasImageReadError = true;
+			}
 		}
 
+		imageFileContentStream?.Dispose();
+
+		SetImageProperties(image);
 		return image;
 	}
 
@@ -65,7 +74,7 @@ public abstract class ImageFileBase : IImageFile
 
 		if (HasImageReadError)
 		{
-			resizedImage = image;
+			resizedImage = _globalParameters.InvalidImage;
 		}
 		else
 		{
@@ -77,6 +86,7 @@ public abstract class ImageFileBase : IImageFile
 			catch
 			{
 				resizedImage = _globalParameters.InvalidImage;
+
 				HasImageReadError = true;
 			}
 		}
@@ -84,40 +94,52 @@ public abstract class ImageFileBase : IImageFile
 		return (image, resizedImage);
 	}
 
-	public void ReadImageDataFromDisc(bool applyImageOrientation)
+	public void ReadImageFile()
 	{
-		var imageData = GetImage(applyImageOrientation);
+		var imageFileContentStream = GetImageFileContentStream();
 
-		lock (_thumbnailGenerationLockObject)
+		if (!HasImageReadError)
 		{
-			_imageInstance = imageData;
+			lock (_thumbnailGenerationLockObject)
+			{
+				_imageFileContentStream = imageFileContentStream;
+			}
 		}
 	}
 
-	public IImage GetThumbnail(int thumbnailSize)
+	public IImage GetThumbnail(int thumbnailSize, bool applyImageOrientation)
 	{
-		lock (_thumbnailGenerationLockObject)
+		IImage? image = default;
+		IImage thumbnail;
+
+		try
 		{
-			IImage thumbnail;
-
-			try
+			lock (_thumbnailGenerationLockObject)
 			{
-				var thumbnailImageSize = new ImageSize(thumbnailSize);
-
-				thumbnail = _imageResizer.CreateResizedImage(
-					_imageInstance!, thumbnailImageSize, ImageQuality.Medium);
-			}
-			catch
-			{
-				thumbnail = _globalParameters.GetInvalidImageThumbnail(thumbnailSize);
-			}
-			finally
-			{
-				DisposeImageData();
+				image = GetImageFromStream(_imageFileContentStream!, applyImageOrientation);
 			}
 
-			return thumbnail;
+			SetImageProperties(image);
+
+			var thumbnailImageSize = new ImageSize(thumbnailSize);
+
+			thumbnail = _imageResizer.CreateResizedImage(
+				image, thumbnailImageSize, ImageQuality.Medium);
 		}
+		catch
+		{
+			HasImageReadError = true;
+
+			thumbnail = _globalParameters.GetInvalidImageThumbnail(thumbnailSize);
+			SetImageProperties(_globalParameters.InvalidImage);
+		}
+		finally
+		{
+			DisposeImage(image);
+			DisposeImageFileContentStream();
+		}
+
+		return thumbnail;
 	}
 
 	public void RefreshTransientImageFileData()
@@ -162,15 +184,14 @@ public abstract class ImageFileBase : IImageFile
 		return imageInfo;
 	}
 
-	public void DisposeImageData()
+	public void DisposeImageFileContentStream()
 	{
 		lock (_thumbnailGenerationLockObject)
 		{
-			if (_imageInstance is not null &&
-				_globalParameters.CanDisposeImage(_imageInstance))
+			if (_imageFileContentStream is not null)
 			{
-				_imageInstance.Dispose();
-				_imageInstance = default;
+				_imageFileContentStream.Dispose();
+				_imageFileContentStream = null;
 			}
 		}
 	}
@@ -179,7 +200,8 @@ public abstract class ImageFileBase : IImageFile
 
 	protected readonly IGlobalParameters _globalParameters;
 
-	protected abstract IImage GetImageFromDisc(bool applyImageOrientation);
+	protected abstract IImage GetImageFromStream(
+		Stream imageFileContentStream, bool applyImageOrientation);
 
 	protected bool IsDirectlySupportedImageFileExtension
 		=> _globalParameters.DirectlySupportedImageFileExtensions.Contains(
@@ -188,6 +210,34 @@ public abstract class ImageFileBase : IImageFile
 	protected bool IsAnimationEnabledImageFileExtension
 		=> _globalParameters.AnimationEnabledImageFileExtensions.Contains(
 			StaticImageFileData.ImageFileExtension);
+
+	protected Stream? GetImageFileContentStream()
+	{
+		var imageFilePath = StaticImageFileData.ImageFilePath;
+
+		if (!File.Exists(imageFilePath))
+		{
+			InitializeNonExistingImageData();
+
+			return default;
+		}
+
+		try
+		{
+			var imageFileContent = File.ReadAllBytes(imageFilePath);
+
+			var imageFileContentStream = new MemoryStream(imageFileContent);
+			imageFileContentStream.Reset();
+
+			return imageFileContentStream;
+		}
+		catch
+		{
+			InitializeNonExistingImageData();
+
+			return default;
+		}
+	}
 
 	protected void InitializeNonExistingImageData()
 	{
@@ -205,13 +255,21 @@ public abstract class ImageFileBase : IImageFile
 
 	private readonly object _thumbnailGenerationLockObject;
 
-	private IImage? _imageInstance;
+	private Stream? _imageFileContentStream;
 
 	private void SetImageProperties(IImage image)
 	{
 		ImageSize = image.Size;
 		IsAnimatedImage = image.IsAnimated;
 		AnimatedImageSlideshowDelay = image.TotalImageFramesDelay;
+	}
+
+	private void DisposeImage(IImage? image)
+	{
+		if (image is not null && _globalParameters.CanDisposeImage(image))
+		{
+			image.Dispose();
+		}
 	}
 
 	#endregion

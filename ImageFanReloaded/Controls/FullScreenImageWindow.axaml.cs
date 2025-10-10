@@ -70,18 +70,14 @@ public partial class FullScreenImageWindow : Window, IImageView
 	public async Task SetImage(IImageFile imageFile)
 	{
 		_imageFile = imageFile;
-
 		Title = _imageFile.StaticImageFileData.ImageFileName;
-
-		_negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
-		_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
 
 		_scaledScreenSize ??= ScreenInfo!.GetScaledScreenSize(this);
 
-		_canZoomToImageSize = CanZoomToImageSize();
-		_screenSizeCursor = GetScreenSizeCursor();
-
 		await DisplayResizedImage();
+
+		_negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
+		_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
 
 		_imageInfoTextBox.Text = _imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
 		_imageInfoTextBox.IsVisible = TabOptions!.ShowImageViewImageInfo;
@@ -596,7 +592,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 		(_image, _resizedImage) = _imageFile!.GetImageAndResizedImage(
 			_scaledScreenSize!, TabOptions!.ApplyImageOrientation);
 
-		await WaitForAnimationTask();
+		await WaitForAnimationTaskToComplete();
 
 		if (_resizedImage.IsAnimated)
 		{
@@ -607,6 +603,9 @@ public partial class FullScreenImageWindow : Window, IImageView
 		{
 			SetDisplayImageSource(_resizedImage);
 		}
+
+		_canZoomToImageSize = CanZoomToImageSize();
+		_screenSizeCursor = GetScreenSizeCursor();
 
 		_imageViewState = ImageViewState.ResizedToScreenSize;
 		Cursor = _screenSizeCursor!;
@@ -658,7 +657,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 		NotifyStopAnimation();
 		NotifyStopSlideshow();
 
-		await WaitForAnimationTask();
+		await WaitForAnimationTaskToComplete();
 
 		Close();
 
@@ -677,7 +676,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 		await Task.Delay(slideshowDelay, _ctsSlideshow!.Token);
 	}
 
-	private async Task WaitForAnimationTask()
+	private async Task WaitForAnimationTaskToComplete()
 	{
 		if (_animationTask is not null)
 		{
