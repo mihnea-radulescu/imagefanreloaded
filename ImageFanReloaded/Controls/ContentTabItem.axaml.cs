@@ -754,7 +754,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private bool ShouldChangeFolderOrdering(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			(keyPressing == GlobalParameters!.NKey || keyPressing == GlobalParameters!.MKey))
+			(keyPressing == GlobalParameters!.NKey ||
+			 keyPressing == GlobalParameters!.MKey ||
+			 keyPressing == GlobalParameters!.BKey))
 		{
 			return true;
 		}
@@ -776,7 +778,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private bool ShouldChangeImageFileOrdering(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
-			(keyPressing == GlobalParameters!.NKey || keyPressing == GlobalParameters!.MKey))
+			(keyPressing == GlobalParameters!.NKey ||
+			 keyPressing == GlobalParameters!.MKey ||
+			 keyPressing == GlobalParameters!.BKey))
 		{
 			return true;
 		}
@@ -986,6 +990,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			newFolderOrdering = FileSystemEntryInfoOrdering.LastModificationTime;
 		}
+		else if (keyPressing == GlobalParameters!.BKey)
+		{
+			newFolderOrdering = FileSystemEntryInfoOrdering.RandomShuffle;
+		}
 
 		if (newFolderOrdering != TabOptions!.FolderOrdering)
 		{
@@ -1027,6 +1035,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (keyPressing == GlobalParameters!.MKey)
 		{
 			newImageFileOrdering = FileSystemEntryInfoOrdering.LastModificationTime;
+		}
+		else if (keyPressing == GlobalParameters!.BKey)
+		{
+			newImageFileOrdering = FileSystemEntryInfoOrdering.RandomShuffle;
 		}
 
 		if (newImageFileOrdering != TabOptions!.ImageFileOrdering)

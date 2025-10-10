@@ -27,11 +27,12 @@ User interface:
 * key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 * key combo Shift+Tab for cycling through tabs
 * key Tab for cycling through controls in the active tab
-* keys N and M for changing folder ordering between name and last modification time in the main view, and for switching between normal and maximized view modes in the windowed image view
-* key combos Ctrl+N and Ctrl+M for changing image file ordering between name and last modification time
+* keys N, M and B for changing folder ordering between name, last modification time and random shuffle
+* key combos Ctrl+N, Ctrl+M and Ctrl+B for changing image file ordering between name, last modification time and random shuffle
 * keys A and D for changing folder ordering direction between ascending and descending
 * key combos Ctrl+A and Ctrl+D for changing image file ordering direction between ascending and descending
 * digit keys 1, 2 and 3 for switching between full-screen, windowed and windowed maximized image view modes
+* keys N and M for switching between normal and maximized view modes in the windowed image view
 * keys + and - for changing thumbnail size by an increment of 50 pixels
 * key U to toggle showing file names under thumbnail images
 * key S for slideshow navigation

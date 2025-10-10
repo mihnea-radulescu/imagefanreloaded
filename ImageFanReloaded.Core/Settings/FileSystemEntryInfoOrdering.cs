@@ -5,7 +5,8 @@ namespace ImageFanReloaded.Core.Settings;
 public enum FileSystemEntryInfoOrdering
 {
 	Name = 0,
-	LastModificationTime = 1
+	LastModificationTime = 1,
+	RandomShuffle = 2
 }
 
 public static class FileSystemEntryInfoOrderingExtensions
@@ -16,6 +17,7 @@ public static class FileSystemEntryInfoOrderingExtensions
 		{
 			FileSystemEntryInfoOrdering.Name => "Name",
 			FileSystemEntryInfoOrdering.LastModificationTime => "Last modification time",
+			FileSystemEntryInfoOrdering.RandomShuffle => "Random shuffle",
 
 			_ => throw new NotSupportedException(
 				$"Enum value {fileSystemEntryInfoOrdering} not supported.")

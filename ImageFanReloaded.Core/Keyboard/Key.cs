@@ -27,6 +27,7 @@ public enum Key
 
 	N,
 	M,
+	B,
 
 	A,
 	D,

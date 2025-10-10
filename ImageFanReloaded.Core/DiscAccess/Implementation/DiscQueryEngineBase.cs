@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,8 +14,9 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	static DiscQueryEngineBase()
 	{
 		EmptyFileSystemEntryInfoList = Enumerable.Empty<FileSystemEntryInfo>().ToList();
-
 		EmptyImageFileList = Enumerable.Empty<IImageFile>().ToList();
+
+		RandomShuffler = new Random();
 	}
 
 	protected DiscQueryEngineBase(
@@ -69,6 +71,8 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 	private static readonly IReadOnlyList<FileSystemEntryInfo> EmptyFileSystemEntryInfoList;
 	private static readonly IReadOnlyList<IImageFile> EmptyImageFileList;
+
+	private static readonly Random RandomShuffler;
 
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageFileFactory _imageFileFactory;
@@ -330,6 +334,20 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 			{
 				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
 					.OrderByDescending(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc);
+			}
+		}
+		else if (fileSystemInfoOrdering == FileSystemEntryInfoOrdering.RandomShuffle)
+		{
+			if (fileSystemInfoOrderingDirection == FileSystemEntryInfoOrderingDirection.Ascending)
+			{
+				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
+					.OrderBy(aFileSystemInfo => RandomShuffler.Next());
+			}
+			else if (fileSystemInfoOrderingDirection ==
+				FileSystemEntryInfoOrderingDirection.Descending)
+			{
+				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
+					.OrderByDescending(aFileSystemInfo => RandomShuffler.Next());
 			}
 		}
 
