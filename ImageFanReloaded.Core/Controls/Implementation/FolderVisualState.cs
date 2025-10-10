@@ -116,6 +116,8 @@ public class FolderVisualState : IFolderVisualState
 
 	private async Task ProcessThumbnails(IReadOnlyList<IThumbnailInfo> thumbnails)
 	{
+		var hasSetFirstThumbnailStatus = false;
+
 		for (var thumbnailCollection = (IEnumerable<IThumbnailInfo>)thumbnails;
 			 !_ctsThumbnailGeneration.IsCancellationRequested && thumbnailCollection.Any();
 			 thumbnailCollection = thumbnailCollection.Skip(_globalParameters.ProcessorCount))
@@ -151,6 +153,18 @@ public class FolderVisualState : IFolderVisualState
 			}
 
 			_contentTabItem.RefreshThumbnailBoxes(currentThumbnails);
+
+			if (_ctsThumbnailGeneration.IsCancellationRequested)
+			{
+				return;
+			}
+
+			if (!hasSetFirstThumbnailStatus)
+			{
+				_contentTabItem.UpdateSelectedImageStatus();
+
+				hasSetFirstThumbnailStatus = true;
+			}
 
 			if (_ctsThumbnailGeneration.IsCancellationRequested)
 			{

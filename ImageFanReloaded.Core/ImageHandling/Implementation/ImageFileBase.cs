@@ -51,6 +51,8 @@ public abstract class ImageFileBase : IImageFile
 			try
 			{
 				image = GetImageFromStream(imageFileContentStream!, applyImageOrientation);
+
+				SetImageProperties(image);
 			}
 			catch
 			{
@@ -60,9 +62,8 @@ public abstract class ImageFileBase : IImageFile
 			}
 		}
 
-		imageFileContentStream?.Dispose();
+		DisposeImageFileContentStream();
 
-		SetImageProperties(image);
 		return image;
 	}
 
@@ -80,8 +81,7 @@ public abstract class ImageFileBase : IImageFile
 		{
 			try
 			{
-				resizedImage = _imageResizer.CreateResizedImage(
-					image, viewPortSize, ImageQuality.High);
+				resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 			}
 			catch
 			{
@@ -112,31 +112,36 @@ public abstract class ImageFileBase : IImageFile
 		IImage? image = default;
 		IImage thumbnail;
 
-		try
+		if (HasImageReadError)
 		{
-			lock (_thumbnailGenerationLockObject)
-			{
-				image = GetImageFromStream(_imageFileContentStream!, applyImageOrientation);
-			}
-
-			SetImageProperties(image);
-
-			var thumbnailImageSize = new ImageSize(thumbnailSize);
-
-			thumbnail = _imageResizer.CreateResizedImage(
-				image, thumbnailImageSize, ImageQuality.Medium);
-		}
-		catch
-		{
-			HasImageReadError = true;
-
 			thumbnail = _globalParameters.GetInvalidImageThumbnail(thumbnailSize);
-			SetImageProperties(_globalParameters.InvalidImage);
 		}
-		finally
+		else
 		{
-			DisposeImage(image);
-			DisposeImageFileContentStream();
+			try
+			{
+				lock (_thumbnailGenerationLockObject)
+				{
+					image = GetImageFromStream(_imageFileContentStream!, applyImageOrientation);
+				}
+
+				SetImageProperties(image);
+
+				var thumbnailImageSize = new ImageSize(thumbnailSize);
+
+				thumbnail = _imageResizer.CreateResizedImage(image, thumbnailImageSize);
+			}
+			catch
+			{
+				thumbnail = _globalParameters.GetInvalidImageThumbnail(thumbnailSize);
+
+				HasImageReadError = true;
+			}
+			finally
+			{
+				DisposeImage(image);
+				DisposeImageFileContentStream();
+			}
 		}
 
 		return thumbnail;

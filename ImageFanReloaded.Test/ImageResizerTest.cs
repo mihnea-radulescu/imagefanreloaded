@@ -39,7 +39,7 @@ public class ImageResizerTest : TestBase
 			.Returns(referenceResizedImageSize);
 
 		// Act
-		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize, ImageQuality.Medium);
+		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 
 		// Assert
 		Assert.Equal(referenceResizedImageSize.Width, resizedImage.Size.Width);
@@ -73,7 +73,7 @@ public class ImageResizerTest : TestBase
 			.Returns(referenceResizedImageSize);
 
 		// Act
-		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize, ImageQuality.Medium);
+		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
 
 		// Assert
 		Assert.Equal(referenceResizedImageSize.Width, resizedImage.Size.Width);

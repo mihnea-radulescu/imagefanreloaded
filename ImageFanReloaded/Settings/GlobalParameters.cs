@@ -77,7 +77,7 @@ public class GlobalParameters : GlobalParametersBase
 		var iconSize = new ImageSize(icon.Size.Width, icon.Size.Height);
 		var iconImage = new Image(icon, iconSize);
 
-		var resizedIcon = _imageResizer.CreateResizedImage(iconImage, newIconSize, ImageQuality.Medium);
+		var resizedIcon = _imageResizer.CreateResizedImage(iconImage, newIconSize);
 		return resizedIcon;
 	}
 
@@ -90,7 +90,7 @@ public class GlobalParameters : GlobalParametersBase
 			var thumbnailImageSize = new ImageSize(thumbnailSize);
 
 			var invalidImageThumbnail = _imageResizer.CreateResizedImage(
-				InvalidImage, thumbnailImageSize, ImageQuality.Medium);
+				InvalidImage, thumbnailImageSize);
 
 			invalidImageThumbnails.Add(thumbnailSize, invalidImageThumbnail);
 		}
@@ -112,7 +112,7 @@ public class GlobalParameters : GlobalParametersBase
 				var thumbnailImageSize = new ImageSize(thumbnailSize);
 
 				var loadingImageThumbnail = _imageResizer.CreateResizedImage(
-					loadingImage, thumbnailImageSize, ImageQuality.Medium);
+					loadingImage, thumbnailImageSize);
 
 				loadingImageThumbnails.Add(thumbnailSize, loadingImageThumbnail);
 			}

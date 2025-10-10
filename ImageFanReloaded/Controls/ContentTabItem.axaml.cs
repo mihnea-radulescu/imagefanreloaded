@@ -398,6 +398,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			100 - TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
 	}
 
+	public void UpdateSelectedImageStatus()
+	{
+		var selectedImageFile = GetSelectedImageFile();
+
+		var basicImageInfo = selectedImageFile.GetBasicImageInfo(
+			TabOptions!.RecursiveFolderBrowsing);
+		SetImageInfoText(basicImageInfo);
+
+		var hasImageReadError = _selectedThumbnailBox!.HasImageReadError;
+		_imageEditButton.IsEnabled = !hasImageReadError;
+	}
+
 	public async Task UpdateSelectedThumbnailAfterImageFileChange()
 	{
 		try
@@ -1219,17 +1231,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		catch
 		{
 		}
-	}
-
-	private void UpdateSelectedImageStatus()
-	{
-		var selectedImageFile = GetSelectedImageFile();
-		var basicImageInfo = selectedImageFile.GetBasicImageInfo(
-			TabOptions!.RecursiveFolderBrowsing);
-		SetImageInfoText(basicImageInfo);
-
-		var hasImageReadError = _selectedThumbnailBox!.HasImageReadError;
-		_imageEditButton.IsEnabled = !hasImageReadError;
 	}
 
 	private decimal GetSelectedImageSizeOnDiscInKilobytes()

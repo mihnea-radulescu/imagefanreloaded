@@ -28,13 +28,20 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 	private string BuildImageInfoInternal(IImageFile imageFile)
 	{
-		try
-		{
-			return BuildExtendedImageInfo(imageFile);
-		}
-		catch
+		if (imageFile.HasImageReadError)
 		{
 			return BuildBasicImageInfo(imageFile);
+		}
+		else
+		{
+			try
+			{
+				return BuildExtendedImageInfo(imageFile);
+			}
+			catch
+			{
+				return BuildBasicImageInfo(imageFile);
+			}
 		}
 	}
 

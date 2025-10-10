@@ -9,7 +9,7 @@ public abstract class ImageResizerBase : IImageResizer
 		_imageResizeCalculator = imageResizeCalculator;
 	}
 
-	public IImage CreateResizedImage(IImage image, ImageSize viewPortSize, ImageQuality imageQuality)
+	public IImage CreateResizedImage(IImage image, ImageSize viewPortSize)
 	{
 		var imageFrames = image.ImageFrames;
 		var resizedImageFrames = new List<IImageFrame>(imageFrames.Count);
@@ -22,9 +22,7 @@ public abstract class ImageResizerBase : IImageResizer
 				.GetResizedImageSize(anImageFrameSize, viewPortSize);
 
 			var aResizedImageFrame = BuildResizedImageFrame(
-				anImageFrame,
-				aResizedImageFrameSize,
-				imageQuality);
+				anImageFrame, aResizedImageFrameSize);
 
 			resizedImageFrames.Add(aResizedImageFrame);
 		}
@@ -36,9 +34,7 @@ public abstract class ImageResizerBase : IImageResizer
 	#region Protected
 
 	protected abstract IImageFrame BuildResizedImageFrame(
-		IImageFrame imageFrame,
-		ImageSize resizedImageFrameSize,
-		ImageQuality imageQuality);
+		IImageFrame imageFrame, ImageSize resizedImageFrameSize);
 
 	#endregion
 
