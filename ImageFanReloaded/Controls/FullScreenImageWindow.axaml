@@ -5,7 +5,6 @@
 		WindowStartupLocation="CenterScreen"
 		WindowState="FullScreen"
 		Background="Black"
-		Focusable="True"
 		Closing="OnWindowClosing">
 	<Grid>
 		<Grid.RowDefinitions>

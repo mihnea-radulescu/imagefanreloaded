@@ -9,12 +9,10 @@
 		CanMinimize="False"
 		CanResize="False"
 		CanMaximize="False"
-		Focusable="True"
 		Loaded="OnWindowLoaded">
 	<ScrollViewer Name="_aboutScrollViewer"
 				  HorizontalScrollBarVisibility="Auto"
-				  VerticalScrollBarVisibility="Auto"
-				  Focusable="True">
+				  VerticalScrollBarVisibility="Auto">
 		<SelectableTextBlock Name="_aboutTextBox"
 							 Background="Transparent"/>
 	</ScrollViewer>

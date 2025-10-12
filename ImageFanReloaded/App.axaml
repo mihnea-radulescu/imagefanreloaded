@@ -4,17 +4,29 @@
 			 RequestedThemeVariant="Default">
 	<Application.Styles>
 		<FluentTheme/>
+
+		<Style Selector="Window">
+			<Setter Property="Focusable" Value="True"/>
+		</Style>
+
+		<Style Selector="ScrollViewer">
+			<Setter Property="Focusable" Value="True"/>
+		</Style>
+
 		<Style Selector="Button">
-			<Setter Property="BorderThickness" Value="0"/>
 			<Setter Property="CornerRadius" Value="5"/>
+			<Setter Property="Cursor" Value="Hand"/>
 		</Style>
+
 		<Style Selector="DropDownButton">
-			<Setter Property="BorderThickness" Value="0"/>
 			<Setter Property="CornerRadius" Value="5"/>
+			<Setter Property="Cursor" Value="Hand"/>
 		</Style>
+
 		<Style Selector="SelectableTextBlock">
 			<Setter Property="Margin" Value="6"/>
 		</Style>
+
 		<Style Selector="StackPanel.HorizontalStackPanel">
 			<Setter Property="Orientation" Value="Horizontal"/>
 			<Setter Property="Margin" Value="4"/>

@@ -6,7 +6,6 @@
 		MinHeight="300"
 		WindowStartupLocation="CenterScreen"
 		Background="Black"
-		Focusable="True"
 		Closing="OnWindowClosing">
 	<Image Name="_displayImage"
 		   Stretch="Uniform"/>

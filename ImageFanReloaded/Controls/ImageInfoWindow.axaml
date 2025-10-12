@@ -8,13 +8,11 @@
 		CanMinimize="False"
 		CanResize="False"
 		CanMaximize="False"
-		Focusable="True"
 		Loaded="OnWindowLoaded"
 		Closing="OnWindowClosing">
 	<ScrollViewer Name="_imageInfoScrollViewer"
 				  HorizontalScrollBarVisibility="Auto"
-				  VerticalScrollBarVisibility="Auto"
-				  Focusable="True">
+				  VerticalScrollBarVisibility="Auto">
 		<SelectableTextBlock Name="_imageInfoTextBox"
 							 Background="Transparent"/>
 	</ScrollViewer>

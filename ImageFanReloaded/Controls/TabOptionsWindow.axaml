@@ -9,7 +9,6 @@
 		CanMinimize="False"
 		CanResize="False"
 		CanMaximize="False"
-		Focusable="True"
 		Closing="OnWindowClosing">
 	<Grid Margin="4">
 		<Grid.RowDefinitions>

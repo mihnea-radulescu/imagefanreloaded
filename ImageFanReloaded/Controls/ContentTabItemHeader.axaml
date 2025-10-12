@@ -17,7 +17,8 @@
 				Margin="0 2 0 0"
 				Background="DodgerBlue"
 				BorderThickness="1.5"
-				PointerPressed="OnTabClose">
+				Cursor="Hand"
+				PointerReleased="OnTabClose">
 			<TextBlock Text="✕"
 					   TextAlignment="Center"
 					   VerticalAlignment="Center"/>
