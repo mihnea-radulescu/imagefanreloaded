@@ -82,6 +82,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			ShouldChangeImageViewDisplayMode(keyModifiers, keyPressing) ||
 			ShouldChangeThumbnailSize(keyModifiers, keyPressing) ||
 			ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing) ||
+			ShouldToggleGlobalOrderingForRecursiveFolderAccess(keyModifiers, keyPressing) ||
 			ShouldChangeApplyImageOrientation(keyModifiers, keyPressing) ||
 			ShouldChangeShowThumbnailImageFileName(keyModifiers, keyPressing) ||
 			ShouldChangeImageViewImageInfoVisibility(keyModifiers, keyPressing) ||
@@ -142,6 +143,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing))
 		{
 			ToggleRecursiveFolderAccess();
+		}
+		else if (ShouldToggleGlobalOrderingForRecursiveFolderAccess(keyModifiers, keyPressing))
+		{
+			ToggleGlobalOrderingForRecursiveFolderAccess();
 		}
 		else if (ShouldChangeApplyImageOrientation(keyModifiers, keyPressing))
 		{
@@ -358,6 +363,19 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void FocusThumbnailScrollViewer() => _thumbnailScrollViewer.Focus();
 
+	public void RaiseFolderOrderingChangedEvent()
+	{
+		if (_activeFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
+		{
+			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
+			var selectedFolderPath = fileSystemEntryInfo.Path;
+
+			var folderOrderingChangedEventArgs = new FolderOrderingChangedEventArgs(this, selectedFolderPath);
+
+			FolderOrderingChanged?.Invoke(this, folderOrderingChangedEventArgs);
+		}
+	}
+
 	public void RaiseFolderChangedEvent()
 	{
 		if (_activeFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
@@ -373,19 +391,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				TabOptions!.RecursiveFolderBrowsing);
 
 			FolderChanged?.Invoke(this, folderChangedEventArgs);
-		}
-	}
-
-	public void RaiseFolderOrderingChangedEvent()
-	{
-		if (_activeFolderTreeViewItem?.Header is IFileSystemTreeViewItem fileSystemEntryItem)
-		{
-			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-			var selectedFolderPath = fileSystemEntryInfo.Path;
-
-			var folderOrderingChangedEventArgs = new FolderOrderingChangedEventArgs(this, selectedFolderPath);
-
-			FolderOrderingChanged?.Invoke(this, folderOrderingChangedEventArgs);
 		}
 	}
 
@@ -846,6 +851,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
+	private bool ShouldToggleGlobalOrderingForRecursiveFolderAccess(
+		KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.GKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool ShouldChangeApplyImageOrientation(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
@@ -1007,7 +1024,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			newFolderOrdering = FileSystemEntryInfoOrdering.RandomShuffle;
 		}
 
-		if (newFolderOrdering != TabOptions!.FolderOrdering)
+		if (newFolderOrdering != TabOptions!.FolderOrdering ||
+			TabOptions!.FolderOrdering == FileSystemEntryInfoOrdering.RandomShuffle)
 		{
 			TabOptions!.FolderOrdering = newFolderOrdering;
 
@@ -1032,7 +1050,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			TabOptions!.FolderOrderingDirection = newFolderOrderingDirection;
 
-			RaiseFolderOrderingChangedEvent();
+			if (TabOptions!.FolderOrdering != FileSystemEntryInfoOrdering.RandomShuffle)
+			{
+				RaiseFolderOrderingChangedEvent();
+			}
 		}
 	}
 
@@ -1053,7 +1074,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			newImageFileOrdering = FileSystemEntryInfoOrdering.RandomShuffle;
 		}
 
-		if (newImageFileOrdering != TabOptions!.ImageFileOrdering)
+		if (newImageFileOrdering != TabOptions!.ImageFileOrdering ||
+			TabOptions!.ImageFileOrdering == FileSystemEntryInfoOrdering.RandomShuffle)
 		{
 			TabOptions!.ImageFileOrdering = newImageFileOrdering;
 
@@ -1078,7 +1100,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			TabOptions!.ImageFileOrderingDirection = newImageFileOrderingDirection;
 
-			RaiseFolderChangedEvent();
+			if (TabOptions!.ImageFileOrdering != FileSystemEntryInfoOrdering.RandomShuffle)
+			{
+				RaiseFolderChangedEvent();
+			}
 		}
 	}
 
@@ -1152,6 +1177,17 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		TabOptions!.RecursiveFolderBrowsing = !TabOptions!.RecursiveFolderBrowsing;
 
 		RaiseFolderChangedEvent();
+	}
+
+	private void ToggleGlobalOrderingForRecursiveFolderAccess()
+	{
+		TabOptions!.GlobalOrderingForRecursiveFolderBrowsing =
+			!TabOptions!.GlobalOrderingForRecursiveFolderBrowsing;
+
+		if (TabOptions!.RecursiveFolderBrowsing)
+		{
+			RaiseFolderChangedEvent();
+		}
 	}
 
 	private void ChangeApplyImageOrientation()

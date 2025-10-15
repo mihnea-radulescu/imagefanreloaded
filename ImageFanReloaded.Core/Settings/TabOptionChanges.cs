@@ -11,7 +11,10 @@ public record TabOptionChanges
 	public bool HasChangedImageViewDisplayMode { get; set; }
 
 	public bool HasChangedThumbnailSize { get; set; }
+
 	public bool HasChangedRecursiveFolderBrowsing { get; set; }
+	public bool HasChangedGlobalOrderingForRecursiveFolderBrowsing { get; set; }
+
 	public bool HasChangedShowImageViewImageInfo { get; set; }
 	public bool HasChangedPanelsSplittingRatio { get; set; }
 	public bool HasChangedSlideshowInterval { get; set; }

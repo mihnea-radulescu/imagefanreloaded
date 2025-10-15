@@ -48,15 +48,10 @@ public class FolderVisualState : IFolderVisualState
 			await _contentTabItem.ClearThumbnailBoxes(true);
 			_contentTabItem.SetTabInfo(_folderName, _folderPath);
 
-			var subFolders = await _discQueryEngine.GetSubFolders(
-				_folderPath, tabOptions.FolderOrdering, tabOptions.FolderOrderingDirection);
+			var subFolders = await _discQueryEngine.GetSubFolders(_folderPath, tabOptions);
 			_contentTabItem.PopulateSubFoldersTree(subFolders);
 
-			var imageFiles = await _discQueryEngine.GetImageFiles(
-				_folderPath,
-				tabOptions.ImageFileOrdering,
-				tabOptions.ImageFileOrderingDirection,
-				tabOptions.RecursiveFolderBrowsing);
+			var imageFiles = await _discQueryEngine.GetImageFiles(_folderPath, tabOptions);
 
 			_imageFilesCount = imageFiles.Count;
 			_imageFilesTotalSizeOnDiscInKilobytes =

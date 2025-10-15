@@ -5,6 +5,7 @@ using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core;
 
@@ -160,33 +161,38 @@ public class MainViewPresenter
 	private static async void OnTabOptionsChanged(object? sender, TabOptionsChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
+		var tabOptions = e.TabOptions;
 		var tabOptionChanges = e.TabOptionChanges;
-
-		var shouldRaiseFolderChangedEvent =
-			tabOptionChanges.HasChangedImageFileOrdering ||
-			tabOptionChanges.HasChangedImageFileOrderingDirection ||
-			tabOptionChanges.HasChangedThumbnailSize ||
-			tabOptionChanges.HasChangedRecursiveFolderBrowsing ||
-			tabOptionChanges.HasChangedApplyImageOrientation ||
-			tabOptionChanges.HasChangedShowThumbnailImageFileName;
 
 		var shouldRaiseFolderOrderingChangedEvent =
 			tabOptionChanges.HasChangedFolderOrdering ||
-			tabOptionChanges.HasChangedFolderOrderingDirection;
+			(tabOptions.FolderOrdering != FileSystemEntryInfoOrdering.RandomShuffle &&
+			 tabOptionChanges.HasChangedFolderOrderingDirection);
+
+		var shouldRaiseFolderChangedEvent =
+			tabOptionChanges.HasChangedImageFileOrdering ||
+			(tabOptions.ImageFileOrdering != FileSystemEntryInfoOrdering.RandomShuffle &&
+			 tabOptionChanges.HasChangedImageFileOrderingDirection) ||
+			tabOptionChanges.HasChangedThumbnailSize ||
+			tabOptionChanges.HasChangedRecursiveFolderBrowsing ||
+			(tabOptions.RecursiveFolderBrowsing &&
+			 tabOptionChanges.HasChangedGlobalOrderingForRecursiveFolderBrowsing) ||
+			tabOptionChanges.HasChangedApplyImageOrientation ||
+			tabOptionChanges.HasChangedShowThumbnailImageFileName;
 
 		var shouldRaisePanelsSplittingRatioChangedEvent =
 			tabOptionChanges.HasChangedPanelsSplittingRatio;
 
 		var shouldSaveAsDefault = tabOptionChanges.ShouldSaveAsDefault;
 
-		if (shouldRaiseFolderChangedEvent)
-		{
-			contentTabItem.RaiseFolderChangedEvent();
-		}
-
 		if (shouldRaiseFolderOrderingChangedEvent)
 		{
 			contentTabItem.RaiseFolderOrderingChangedEvent();
+		}
+
+		if (shouldRaiseFolderChangedEvent)
+		{
+			contentTabItem.RaiseFolderChangedEvent();
 		}
 
 		if (shouldRaisePanelsSplittingRatioChangedEvent)
@@ -266,9 +272,7 @@ public class MainViewPresenter
 				startAtRootFolders = false;
 
 				subFolders = await _discQueryEngine.GetSubFolders(
-					matchingFileSystemEntryInfo.Path,
-					contentTabItem.TabOptions!.FolderOrdering,
-					contentTabItem.TabOptions!.FolderOrderingDirection);
+					matchingFileSystemEntryInfo.Path, contentTabItem.TabOptions!);
 				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(subFolders);
 			}
 		} while (matchingFileSystemEntryInfo is not null);

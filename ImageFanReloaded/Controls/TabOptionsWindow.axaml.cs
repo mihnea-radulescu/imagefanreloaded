@@ -42,6 +42,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		PopulateThumbnailSizes();
 
 		SetRecursiveFolderBrowsing();
+		SetGlobalOrderingForRecursiveFolderBrowsing();
+
 		SetShowImageViewImageInfo();
 
 		SetPanelsSplittingRatioSlider();
@@ -78,7 +80,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
 		TabOptionsChanged?.Invoke(
-			this, new TabOptionsChangedEventArgs(ContentTabItem!, _tabOptionChanges));
+			this, new TabOptionsChangedEventArgs(ContentTabItem!, TabOptions!, _tabOptionChanges));
 
 		UnregisterTabOptionEvents();
 	}
@@ -148,6 +150,17 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		TabOptions!.RecursiveFolderBrowsing = recursiveFolderBrowsing;
 		_tabOptionChanges.HasChangedRecursiveFolderBrowsing = true;
+	}
+
+	private void OnGlobalOrderingForRecursiveFolderBrowsingIsCheckedChanged(
+		object? sender, RoutedEventArgs e)
+	{
+		var globalOrderingForRecursiveFolderBrowsing =
+			_globalOrderingForRecursiveFolderBrowsingCheckBox.IsChecked!.Value;
+
+		TabOptions!.GlobalOrderingForRecursiveFolderBrowsing =
+			globalOrderingForRecursiveFolderBrowsing;
+		_tabOptionChanges.HasChangedGlobalOrderingForRecursiveFolderBrowsing = true;
 	}
 
 	private void OnShowImageViewImageInfoIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -352,6 +365,12 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_recursiveFolderBrowsingCheckBox.IsChecked = TabOptions!.RecursiveFolderBrowsing;
 	}
 
+	private void SetGlobalOrderingForRecursiveFolderBrowsing()
+	{
+		_globalOrderingForRecursiveFolderBrowsingCheckBox.IsChecked =
+			TabOptions!.GlobalOrderingForRecursiveFolderBrowsing;
+	}
+
 	private void SetShowImageViewImageInfo()
 	{
 		_showImageViewImageInfoCheckBox.IsChecked = TabOptions!.ShowImageViewImageInfo;
@@ -432,8 +451,12 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_imageViewDisplayModeComboBox.SelectionChanged += OnImageViewDisplayModeSelectionChanged;
 
 		_thumbnailSizeComboBox.SelectionChanged += OnThumbnailSizeSelectionChanged;
+
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged +=
 			OnRecursiveFolderBrowsingIsCheckedChanged;
+		_globalOrderingForRecursiveFolderBrowsingCheckBox.IsCheckedChanged +=
+			OnGlobalOrderingForRecursiveFolderBrowsingIsCheckedChanged;
+
 		_showImageViewImageInfoCheckBox.IsCheckedChanged += OnShowImageViewImageInfoIsCheckedChanged;
 		_panelsSplittingRatioSlider.ValueChanged += OnPanelsSplittingRatioChanged;
 		_slideshowIntervalComboBox.SelectionChanged += OnSlideshowIntervalSelectionChanged;
@@ -459,8 +482,12 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_imageViewDisplayModeComboBox.SelectionChanged -= OnImageViewDisplayModeSelectionChanged;
 
 		_thumbnailSizeComboBox.SelectionChanged -= OnThumbnailSizeSelectionChanged;
+
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged -=
 			OnRecursiveFolderBrowsingIsCheckedChanged;
+		_globalOrderingForRecursiveFolderBrowsingCheckBox.IsCheckedChanged -=
+			OnGlobalOrderingForRecursiveFolderBrowsingIsCheckedChanged;
+
 		_showImageViewImageInfoCheckBox.IsCheckedChanged -= OnShowImageViewImageInfoIsCheckedChanged;
 		_panelsSplittingRatioSlider.ValueChanged -= OnPanelsSplittingRatioChanged;
 		_slideshowIntervalComboBox.SelectionChanged -= OnSlideshowIntervalSelectionChanged;

@@ -44,6 +44,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key DKey { get; }
 
 	public Key RKey { get; }
+	public Key GKey { get; }
 	public Key EKey { get; }
 
 	public Key TKey { get; }
@@ -138,6 +139,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		DKey = Key.D;
 
 		RKey = Key.R;
+		GKey = Key.G;
 		EKey = Key.E;
 
 		TKey = Key.T;
@@ -226,9 +228,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		};
 
 		ImageFileExtensions = new HashSet<string>(
-			[.. DirectlySupportedImageFileExtensions,
-			 .. IndirectlySupportedImageFileExtensions,
-			 .. AnimationEnabledImageFileExtensions],
+			[..DirectlySupportedImageFileExtensions,
+			 ..IndirectlySupportedImageFileExtensions,
+			 ..AnimationEnabledImageFileExtensions],
 			StringComparer.InvariantCultureIgnoreCase);
 
 		ImageQualityLevel = 80;

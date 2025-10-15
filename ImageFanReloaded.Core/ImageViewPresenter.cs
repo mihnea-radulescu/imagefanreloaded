@@ -27,18 +27,11 @@ public class ImageViewPresenter
 
 		_imageView = imageView;
 		_imageView.ImageChanged += OnImageChanged;
-
-		_imageFiles = [];
-		_currentImageFileIndex = 0;
 	}
 
 	public async Task SetUpAccessToImages()
 	{
-		_imageFiles = await _discQueryEngine.GetImageFiles(
-			_inputPathHandler.FolderPath!,
-			FileSystemEntryInfoOrdering.Name,
-			FileSystemEntryInfoOrderingDirection.Ascending,
-			false);
+		_imageFiles = await _discQueryEngine.GetImageFilesDefault(_inputPathHandler.FolderPath!);
 
 		(_currentImageFile, _currentImageFileIndex) = _imageFiles
 			.Select((anImageFile, index) => (anImageFile, index))
@@ -59,7 +52,7 @@ public class ImageViewPresenter
 
 	private readonly IImageView _imageView;
 
-	private IReadOnlyList<IImageFile> _imageFiles;
+	private IReadOnlyList<IImageFile>? _imageFiles;
 	private IImageFile? _currentImageFile;
 	private int _currentImageFileIndex;
 
@@ -69,13 +62,13 @@ public class ImageViewPresenter
 	{
 		var newImageFileIndex = _currentImageFileIndex + e.Increment;
 
-		var canAdvanceToDesignatedImage = _imageFiles.IsIndexWithinBounds(newImageFileIndex);
+		var canAdvanceToDesignatedImage = _imageFiles!.IsIndexWithinBounds(newImageFileIndex);
 		_imageView.CanAdvanceToDesignatedImage = canAdvanceToDesignatedImage;
 
 		if (canAdvanceToDesignatedImage)
 		{
 			_currentImageFileIndex = newImageFileIndex;
-			_currentImageFile = _imageFiles[_currentImageFileIndex];
+			_currentImageFile = _imageFiles![_currentImageFileIndex];
 
 			await LoadCurrentImage();
 		}

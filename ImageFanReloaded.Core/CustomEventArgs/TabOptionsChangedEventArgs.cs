@@ -7,11 +7,16 @@ public class TabOptionsChangedEventArgs : ContentTabItemEventArgs
 {
 	public TabOptionsChangedEventArgs(
 		IContentTabItem contentTabItem,
+		ITabOptions tabOptions,
 		TabOptionChanges tabOptionChanges)
 		: base(contentTabItem)
 	{
+		TabOptions = tabOptions;
+
 		TabOptionChanges = tabOptionChanges;
 	}
+
+	public ITabOptions TabOptions { get; }
 
 	public TabOptionChanges TabOptionChanges { get; }
 }

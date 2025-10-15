@@ -13,6 +13,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 {
 	static DiscQueryEngineBase()
 	{
+		EmptyFileInfoList = Enumerable.Empty<FileInfo>().ToList();
 		EmptyFileSystemEntryInfoList = Enumerable.Empty<FileSystemEntryInfo>().ToList();
 		EmptyImageFileList = Enumerable.Empty<IImageFile>().ToList();
 
@@ -43,23 +44,32 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders()
 		=> await Task.Run(GetRootFoldersInternal);
 
-	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
-		string folderPath,
-		FileSystemEntryInfoOrdering folderOrdering,
-		FileSystemEntryInfoOrderingDirection folderOrderingDirection)
-		=> await Task.Run(() => GetSubFoldersInternal(
-			folderPath, folderOrdering, folderOrderingDirection));
-
 	public async Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath)
 		=> await Task.Run(() => GetFileSystemEntryInfoInternal(folderPath));
 
+	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
+		string folderPath, ITabOptions tabOptions)
+		=> await Task.Run(() => GetSubFoldersInternal(
+			folderPath,
+			tabOptions.FolderOrdering,
+			tabOptions.FolderOrderingDirection));
+
 	public async Task<IReadOnlyList<IImageFile>> GetImageFiles(
-		string folderPath,
-		FileSystemEntryInfoOrdering imageFileOrdering,
-		FileSystemEntryInfoOrderingDirection imageFileOrderingDirection,
-		bool recursive)
+		string folderPath, ITabOptions tabOptions)
 		=> await Task.Run(() => GetImageFilesInternal(
-			folderPath, imageFileOrdering, imageFileOrderingDirection, recursive));
+			folderPath,
+			tabOptions.ImageFileOrdering,
+			tabOptions.ImageFileOrderingDirection,
+			tabOptions.RecursiveFolderBrowsing,
+			tabOptions.GlobalOrderingForRecursiveFolderBrowsing));
+
+	public async Task<IReadOnlyList<IImageFile>> GetImageFilesDefault(string folderPath)
+		=> await Task.Run(() => GetImageFilesInternal(
+			folderPath,
+			FileSystemEntryInfoOrdering.Name,
+			FileSystemEntryInfoOrderingDirection.Ascending,
+			false,
+			false));
 
 	#region Protected
 
@@ -69,6 +79,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 	#region Private
 
+	private static readonly IReadOnlyList<FileInfo> EmptyFileInfoList;
 	private static readonly IReadOnlyList<FileSystemEntryInfo> EmptyFileSystemEntryInfoList;
 	private static readonly IReadOnlyList<IImageFile> EmptyImageFileList;
 
@@ -93,7 +104,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 			.ToList();
 
 		_skipRecursionFolderPaths = new HashSet<string>(
-			[homePath, .. drivePaths],
+			[homePath, ..drivePaths],
 			_globalParameters.NameComparer);
 	}
 
@@ -125,7 +136,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 					aSpecialFolderInfo => aSpecialFolderInfo.Name, _globalParameters.NameComparer)
 				.ToList();
 
-			IReadOnlyList<FileSystemEntryInfo> userFolders = [homeFolder, .. specialFolders];
+			IReadOnlyList<FileSystemEntryInfo> userFolders = [homeFolder, ..specialFolders];
 			return userFolders;
 		}
 		catch
@@ -165,6 +176,19 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		return rootFolders;
 	}
 
+	private FileSystemEntryInfo GetFileSystemEntryInfoInternal(string folderPath)
+	{
+		var folderInfo = new DirectoryInfo(folderPath);
+		var folderName = folderInfo.Name;
+
+		var hasSubFolders = HasSubFolders(folderPath);
+
+		var fileSystemEntryInfo = new FileSystemEntryInfo(
+			folderName, folderPath, hasSubFolders, _globalParameters.FolderIcon);
+
+		return fileSystemEntryInfo;
+	}
+
 	private IReadOnlyList<FileSystemEntryInfo> GetSubFoldersInternal(
 		string folderPath,
 		FileSystemEntryInfoOrdering folderOrdering,
@@ -172,16 +196,16 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	{
 		try
 		{
-			var subFolderInfoCollection = new DirectoryInfo(folderPath)
+			var subFolderInfoList = new DirectoryInfo(folderPath)
 				.GetDirectories()
-				.AsQueryable();
+				.ToList();
 
-			var orderedSubFolderInfoCollection = GetOrderedFileSystemInfoCollection(
-				subFolderInfoCollection,
+			var orderedSubFolderInfoList = GetOrderedFileSystemInfoList(
+				subFolderInfoList,
 				folderOrdering,
 				folderOrderingDirection);
 
-			var subFolders = orderedSubFolderInfoCollection
+			var subFolders = orderedSubFolderInfoList
 				.Select(aDirectory =>
 					new FileSystemEntryInfo(
 						aDirectory.Name,
@@ -198,42 +222,23 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 	}
 
-	private FileSystemEntryInfo GetFileSystemEntryInfoInternal(string folderPath)
-	{
-		var folderInfo = new DirectoryInfo(folderPath);
-		var folderName = folderInfo.Name;
-
-		var hasSubFolders = HasSubFolders(folderPath);
-
-		var fileSystemEntryInfo = new FileSystemEntryInfo(
-			folderName, folderPath, hasSubFolders, _globalParameters.FolderIcon);
-
-		return fileSystemEntryInfo;
-	}
-
 	private IReadOnlyList<IImageFile> GetImageFilesInternal(
 		string folderPath,
 		FileSystemEntryInfoOrdering imageFileOrdering,
 		FileSystemEntryInfoOrderingDirection imageFileOrderingDirection,
-		bool recursive,
-		int currentDepth = 0)
+		bool recursiveFolderBrowsing,
+		bool globalOrderingForRecursiveFolderBrowsing)
 	{
 		try
 		{
-			var folderInfo = new DirectoryInfo(folderPath);
-
-			var imageFileInfoCollection = folderInfo
-				.GetFiles("*", SearchOption.TopDirectoryOnly)
-				.Where(aFileInfo =>
-					_globalParameters.ImageFileExtensions.Contains(aFileInfo.Extension))
-				.AsQueryable();
-
-			var orderedImageFileInfoCollection = GetOrderedFileSystemInfoCollection(
-				imageFileInfoCollection,
+			var imageFileInfoList = GetImageFileInfoList(
+				folderPath,
 				imageFileOrdering,
-				imageFileOrderingDirection);
+				imageFileOrderingDirection,
+				recursiveFolderBrowsing,
+				globalOrderingForRecursiveFolderBrowsing);
 
-			var imageFiles = orderedImageFileInfoCollection
+			var imageFiles = imageFileInfoList
 				.Select(aFileInfo => _imageFileFactory.GetImageFile(
 					new ImageFileData(
 						aFileInfo.Name,
@@ -245,10 +250,49 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						aFileInfo.LastWriteTime)))
 				.ToList();
 
-			var shouldRecursivelySearchSubFolders =
-				recursive &&
-				currentDepth < _globalParameters.MaxRecursionDepth &&
-				!_skipRecursionFolderPaths!.Contains(folderPath);
+			return imageFiles;
+		}
+		catch
+		{
+			return EmptyImageFileList;
+		}
+	}
+
+	private IReadOnlyList<FileInfo> GetImageFileInfoList(
+		string folderPath,
+		FileSystemEntryInfoOrdering imageFileOrdering,
+		FileSystemEntryInfoOrderingDirection imageFileOrderingDirection,
+		bool recursiveFolderBrowsing,
+		bool globalOrderingForRecursiveFolderBrowsing,
+		int currentDepth = 0)
+	{
+		var shouldRecursivelySearchSubFolders =
+			recursiveFolderBrowsing &&
+			currentDepth < _globalParameters.MaxRecursionDepth &&
+			!_skipRecursionFolderPaths!.Contains(folderPath);
+
+		var shouldApplyLocalOrdering =
+			!recursiveFolderBrowsing || !globalOrderingForRecursiveFolderBrowsing;
+		var shouldApplyGlobalOrdering =
+			recursiveFolderBrowsing && globalOrderingForRecursiveFolderBrowsing && currentDepth == 0;
+
+		try
+		{
+			var folderInfo = new DirectoryInfo(folderPath);
+
+			var imageFileInfoList = folderInfo
+				.GetFiles("*", SearchOption.TopDirectoryOnly)
+				.Where(aFileInfo =>
+					_globalParameters.ImageFileExtensions.Contains(aFileInfo.Extension))
+				.ToList();
+
+			if (shouldApplyLocalOrdering)
+			{
+				imageFileInfoList = GetOrderedFileSystemInfoList(
+					imageFileInfoList,
+					imageFileOrdering,
+					imageFileOrderingDirection);
+			}
 
 			if (shouldRecursivelySearchSubFolders)
 			{
@@ -260,23 +304,81 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 				foreach (var aSubFolderPath in subFolderPaths)
 				{
-					var imageFilesInSubFolder = GetImageFilesInternal(
+					var subFolderImageFileInfoList = GetImageFileInfoList(
 						aSubFolderPath,
 						imageFileOrdering,
 						imageFileOrderingDirection,
-						recursive,
+						recursiveFolderBrowsing,
+						globalOrderingForRecursiveFolderBrowsing,
 						currentDepth + 1);
 
-					imageFiles.AddRange(imageFilesInSubFolder);
+					imageFileInfoList.AddRange(subFolderImageFileInfoList);
 				}
 			}
 
-			return imageFiles;
+			if (shouldApplyGlobalOrdering)
+			{
+				imageFileInfoList = GetOrderedFileSystemInfoList(
+					imageFileInfoList, imageFileOrdering, imageFileOrderingDirection);
+			}
+
+			return imageFileInfoList;
 		}
 		catch
 		{
-			return EmptyImageFileList;
+			return EmptyFileInfoList;
 		}
+	}
+
+	private List<TFileSystemInfo> GetOrderedFileSystemInfoList<TFileSystemInfo>(
+		List<TFileSystemInfo> fileSystemInfoList,
+		FileSystemEntryInfoOrdering fileSystemInfoOrdering,
+		FileSystemEntryInfoOrderingDirection fileSystemInfoOrderingDirection)
+		where TFileSystemInfo : FileSystemInfo
+	{
+		List<TFileSystemInfo> orderedFileSystemInfoList = fileSystemInfoList;
+
+		if (fileSystemInfoOrdering == FileSystemEntryInfoOrdering.Name)
+		{
+			if (fileSystemInfoOrderingDirection == FileSystemEntryInfoOrderingDirection.Ascending)
+			{
+				orderedFileSystemInfoList = orderedFileSystemInfoList
+					.OrderBy(aFileSystemInfo => aFileSystemInfo.Name, _globalParameters.NameComparer)
+					.ToList();
+			}
+			else if (fileSystemInfoOrderingDirection ==
+				FileSystemEntryInfoOrderingDirection.Descending)
+			{
+				orderedFileSystemInfoList = orderedFileSystemInfoList
+					.OrderByDescending(aFileSystemInfo =>
+						aFileSystemInfo.Name, _globalParameters.NameComparer)
+					.ToList();
+			}
+		}
+		else if (fileSystemInfoOrdering == FileSystemEntryInfoOrdering.LastModificationTime)
+		{
+			if (fileSystemInfoOrderingDirection == FileSystemEntryInfoOrderingDirection.Ascending)
+			{
+				orderedFileSystemInfoList = orderedFileSystemInfoList
+					.OrderBy(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc)
+					.ToList();
+			}
+			else if (fileSystemInfoOrderingDirection ==
+				FileSystemEntryInfoOrderingDirection.Descending)
+			{
+				orderedFileSystemInfoList = orderedFileSystemInfoList
+					.OrderByDescending(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc)
+					.ToList();
+			}
+		}
+		else if (fileSystemInfoOrdering == FileSystemEntryInfoOrdering.RandomShuffle)
+		{
+			orderedFileSystemInfoList = orderedFileSystemInfoList
+				.OrderBy(aFileSystemInfo => RandomShuffler.Next())
+				.ToList();
+		}
+
+		return orderedFileSystemInfoList;
 	}
 
 	private static bool HasSubFolders(string folderPath)
@@ -296,53 +398,6 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 	private IImage GetIcon(string aSpecialFolderName)
 		=> _specialFolderToIconMapping[aSpecialFolderName];
-
-	private IQueryable<TFileSystemInfo> GetOrderedFileSystemInfoCollection<TFileSystemInfo>(
-		IQueryable<TFileSystemInfo> fileSystemInfoCollection,
-		FileSystemEntryInfoOrdering fileSystemInfoOrdering,
-		FileSystemEntryInfoOrderingDirection fileSystemInfoOrderingDirection)
-		where TFileSystemInfo : FileSystemInfo
-	{
-		IQueryable<TFileSystemInfo> orderedFileSystemInfoCollection = fileSystemInfoCollection;
-
-		if (fileSystemInfoOrdering == FileSystemEntryInfoOrdering.Name)
-		{
-			if (fileSystemInfoOrderingDirection == FileSystemEntryInfoOrderingDirection.Ascending)
-			{
-				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
-					.OrderBy(aFileSystemInfo =>
-						aFileSystemInfo.Name, _globalParameters.NameComparer);
-			}
-			else if (fileSystemInfoOrderingDirection ==
-				FileSystemEntryInfoOrderingDirection.Descending)
-			{
-				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
-					.OrderByDescending(aFileSystemInfo =>
-						aFileSystemInfo.Name, _globalParameters.NameComparer);
-			}
-		}
-		else if (fileSystemInfoOrdering == FileSystemEntryInfoOrdering.LastModificationTime)
-		{
-			if (fileSystemInfoOrderingDirection == FileSystemEntryInfoOrderingDirection.Ascending)
-			{
-				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
-					.OrderBy(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc);
-			}
-			else if (fileSystemInfoOrderingDirection ==
-				FileSystemEntryInfoOrderingDirection.Descending)
-			{
-				orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
-					.OrderByDescending(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc);
-			}
-		}
-		else if (fileSystemInfoOrdering == FileSystemEntryInfoOrdering.RandomShuffle)
-		{
-			orderedFileSystemInfoCollection = orderedFileSystemInfoCollection
-				.OrderBy(aFileSystemInfo => RandomShuffler.Next());
-		}
-
-		return orderedFileSystemInfoCollection;
-	}
 
 	#endregion
 }

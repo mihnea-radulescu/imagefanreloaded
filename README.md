@@ -7,6 +7,7 @@ Features:
 * quick concurrent thumbnail generation, scaling to the number of processor cores present
 * support for multiple folder tabs
 * keyboard and mouse user interaction
+* dark and light modes, based on system settings
 * 44 supported image formats: bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm
 * fast and seamless full-screen and windowed navigation across images
 * image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize
@@ -40,6 +41,7 @@ User interface:
 * keys in Image edit view: U for undo, I for redo, R for rotate, F for flip, E for effects, S for save as, C for crop and D for downsize
 * key F for displaying Image info view
 * key R to toggle recursive folder browsing
+* key G to toggle global ordering for recursive folder browsing
 * key E for applying EXIF image orientation
 * key O for displaying Tab options view
 * keys H and F1 for displaying About view
@@ -51,10 +53,12 @@ User interface:
 * key I to toggle showing image info in image view and zoomed image view modes
 * key Esc for exiting image view and zoomed image view modes, and for quitting application
 
-![Screenshot 1](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-1.jpg "ImageFan Reloaded - Screenshot 1")
+![Screenshot Main Dark](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-MainDark.jpg "Screenshot Main Dark")
 
-![Screenshot 2](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-2.jpg "ImageFan Reloaded - Screenshot 2")
+![Screenshot Main Light](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-MainLight.jpg "Screenshot Main Light")
 
-![Screenshot 3](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-3.jpg "ImageFan Reloaded - Screenshot 3")
+![Screenshot Main Recursive Folder Browsing](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-MainRecursiveFolderBrowsing.jpg "Screenshot Main Recursive Folder Browsing")
 
-![Screenshot 4](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-4.jpg "ImageFan Reloaded - Screenshot 4")
+![Screenshot Image Edit](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-ImageEdit.jpg "Screenshot Image Edit")
+
+![Screenshot Tab Options](https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-TabOptions.jpg "Screenshot Tab Options")

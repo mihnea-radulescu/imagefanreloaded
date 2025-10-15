@@ -71,8 +71,8 @@ public interface IContentTabItem
 	bool AreFolderInfoOrImageInfoFocused();
 	void FocusThumbnailScrollViewer();
 
-	void RaiseFolderChangedEvent();
 	void RaiseFolderOrderingChangedEvent();
+	void RaiseFolderChangedEvent();
 	void RaisePanelsSplittingRatioChangedEvent();
 
 	void UpdateSelectedImageStatus();

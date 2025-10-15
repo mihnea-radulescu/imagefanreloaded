@@ -13,7 +13,10 @@ public interface ITabOptions
 	ImageViewDisplayMode ImageViewDisplayMode { get; set; }
 
 	ThumbnailSize ThumbnailSize { get; set; }
+
 	bool RecursiveFolderBrowsing { get; set; }
+	bool GlobalOrderingForRecursiveFolderBrowsing { get; set; }
+
 	bool ShowImageViewImageInfo { get; set; }
 	int PanelsSplittingRatio { get; set; }
 	SlideshowInterval SlideshowInterval { get; set; }

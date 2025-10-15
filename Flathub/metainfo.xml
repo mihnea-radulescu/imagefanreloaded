@@ -19,6 +19,7 @@
 			<li>quick concurrent thumbnail generation, scaling to the number of processor cores present</li>
 			<li>support for multiple folder tabs</li>
 			<li>keyboard and mouse user interaction</li>
+			<li>dark and light modes, based on system settings</li>
 			<li>44 supported image formats: bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm</li>
 			<li>fast and seamless full-screen and windowed navigation across images</li>
 			<li>image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize</li>
@@ -53,16 +54,19 @@
 
 	<screenshots>
 		<screenshot type="default">
-			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-1.jpg</image>
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-MainDark.jpg</image>
 		</screenshot>
 		<screenshot>
-			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-2.jpg</image>
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-MainLight.jpg</image>
 		</screenshot>
 		<screenshot>
-			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-3.jpg</image>
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-MainRecursiveFolderBrowsing.jpg</image>
 		</screenshot>
 		<screenshot>
-			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-4.jpg</image>
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-ImageEdit.jpg</image>
+		</screenshot>
+		<screenshot>
+			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-TabOptions.jpg</image>
 		</screenshot>
 	</screenshots>
 
@@ -70,6 +74,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.10.16" date="2025-10-16">
+			<description>
+				<p>Added tab option: apply ordering globally for recursive folder browsing</p>
+			</description>
+		</release>
 		<release version="1.2025.10.12" date="2025-10-12">
 			<description>
 				<p>Improved visual styling</p>

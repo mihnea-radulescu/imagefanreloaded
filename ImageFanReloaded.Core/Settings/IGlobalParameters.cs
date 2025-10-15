@@ -42,6 +42,7 @@ public interface IGlobalParameters
 	Key DKey { get; }
 
 	Key RKey { get; }
+	Key GKey { get; }
 	Key EKey { get; }
 
 	Key TKey { get; }

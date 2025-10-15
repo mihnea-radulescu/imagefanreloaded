@@ -16,7 +16,10 @@ public class TabOptions : ITabOptions
 	public ImageViewDisplayMode ImageViewDisplayMode { get; set; }
 
 	public ThumbnailSize ThumbnailSize { get; set; }
+
 	public bool RecursiveFolderBrowsing { get; set; }
+	public bool GlobalOrderingForRecursiveFolderBrowsing { get; set; }
+
 	public bool ShowImageViewImageInfo { get; set; }
 	public int PanelsSplittingRatio { get; set; }
 	public SlideshowInterval SlideshowInterval { get; set; }
@@ -81,7 +84,10 @@ public class TabOptions : ITabOptions
 		ImageViewDisplayMode.FullScreen;
 
 	private const ThumbnailSize DefaultThumbnailSize = ThumbnailSize.TwoHundredFixtyPixels;
+
 	private const bool DefaultRecursiveFolderBrowsing = false;
+	private const bool DefaultGlobalOrderingForRecursiveFolderBrowsing = false;
+
 	private const bool DefaultShowImageViewImageInfo = false;
 	private const int DefaultPanelsSplittingRatio = 15;
 	private const SlideshowInterval DefaultSlideshowInterval = SlideshowInterval.OneSecond;
@@ -184,7 +190,11 @@ public class TabOptions : ITabOptions
 			ImageViewDisplayMode = DefaultTabOptions.ImageViewDisplayMode;
 
 			ThumbnailSize = DefaultTabOptions.ThumbnailSize;
+
 			RecursiveFolderBrowsing = DefaultTabOptions.RecursiveFolderBrowsing;
+			GlobalOrderingForRecursiveFolderBrowsing =
+				DefaultTabOptions.GlobalOrderingForRecursiveFolderBrowsing;
+
 			ShowImageViewImageInfo = DefaultTabOptions.ShowImageViewImageInfo;
 			PanelsSplittingRatio = DefaultTabOptions.PanelsSplittingRatio;
 			SlideshowInterval = DefaultTabOptions.SlideshowInterval;
@@ -203,7 +213,11 @@ public class TabOptions : ITabOptions
 			ImageViewDisplayMode = DefaultImageViewDisplayMode;
 
 			ThumbnailSize = DefaultThumbnailSize;
+
 			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing;
+			GlobalOrderingForRecursiveFolderBrowsing =
+				DefaultGlobalOrderingForRecursiveFolderBrowsing;
+
 			ShowImageViewImageInfo = DefaultShowImageViewImageInfo;
 			PanelsSplittingRatio = DefaultPanelsSplittingRatio;
 			SlideshowInterval = DefaultSlideshowInterval;
@@ -224,7 +238,11 @@ public class TabOptions : ITabOptions
 		DefaultTabOptions!.ImageViewDisplayMode = ImageViewDisplayMode;
 
 		DefaultTabOptions!.ThumbnailSize = ThumbnailSize;
+
 		DefaultTabOptions!.RecursiveFolderBrowsing = RecursiveFolderBrowsing;
+		DefaultTabOptions!.GlobalOrderingForRecursiveFolderBrowsing =
+			GlobalOrderingForRecursiveFolderBrowsing;
+
 		DefaultTabOptions!.ShowImageViewImageInfo = ShowImageViewImageInfo;
 		DefaultTabOptions!.PanelsSplittingRatio = PanelsSplittingRatio;
 		DefaultTabOptions!.SlideshowInterval = SlideshowInterval;

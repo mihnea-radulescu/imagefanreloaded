@@ -33,6 +33,7 @@ public enum Key
 	D,
 
 	R,
+	G,
 	E,
 
 	T,
