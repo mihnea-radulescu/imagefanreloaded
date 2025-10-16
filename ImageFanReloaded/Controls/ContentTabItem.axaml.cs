@@ -770,7 +770,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldChangeFolderOrdering(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
 			(keyPressing == GlobalParameters!.NKey ||
 			 keyPressing == GlobalParameters!.MKey ||
 			 keyPressing == GlobalParameters!.BKey))
@@ -783,7 +783,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldChangeFolderOrderingDirection(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
 			(keyPressing == GlobalParameters!.AKey || keyPressing == GlobalParameters!.DKey))
 		{
 			return true;
@@ -794,7 +794,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldChangeImageFileOrdering(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			(keyPressing == GlobalParameters!.NKey ||
 			 keyPressing == GlobalParameters!.MKey ||
 			 keyPressing == GlobalParameters!.BKey))
@@ -807,7 +807,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldChangeImageFileOrderingDirection(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			(keyPressing == GlobalParameters!.AKey || keyPressing == GlobalParameters!.DKey))
 		{
 			return true;

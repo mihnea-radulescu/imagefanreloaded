@@ -74,6 +74,14 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.10.17" date="2025-10-17">
+			<description>
+				<ul>
+					<li>Remapped ordering and ordering direction keys</li>
+					<li>Updated application framework</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2025.10.16" date="2025-10-16">
 			<description>
 				<p>Added tab option: apply ordering globally for recursive folder browsing</p>
