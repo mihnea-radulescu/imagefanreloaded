@@ -11,7 +11,7 @@ using ImageFanReloaded.ImageHandling;
 using ImageFanReloaded.ImageHandling.Extensions;
 using ImageFanReloaded.Settings;
 
-namespace ImageFanReloaded.Test;
+namespace ImageFanReloaded.Test.TestClasses;
 
 public class GlobalParametersTest : TestBase
 {

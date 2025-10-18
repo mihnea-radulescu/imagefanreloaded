@@ -10,6 +10,11 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
 public class InputPathHandler : IInputPathHandler
 {
+	static InputPathHandler()
+	{
+		DirectorySeparator = Path.DirectorySeparatorChar.ToString();
+	}
+
 	public InputPathHandler(
 		IGlobalParameters globalParameters,
 		IDiscQueryEngine discQueryEngine,
@@ -64,11 +69,12 @@ public class InputPathHandler : IInputPathHandler
 		=> await Task.Run(() =>
 			{
 				var matchingFileSystemEntryInfo = folders
-					.Where(aFolder => FolderPath!.Contains(aFolder.Path, _nameComparison))
+					.Where(aFolder => FolderPath!.ContainsPath(
+						aFolder.Path, DirectorySeparator, _nameComparison))
 					.Select(aFolder => new
 					{
 						Folder = aFolder,
-						Length = aFolder.Path.Length
+						aFolder.Path.Length
 					})
 					.OrderByDescending(aFolderWithLength => aFolderWithLength.Length)
 					.Select(aFolderWithLength => aFolderWithLength.Folder)
@@ -78,6 +84,8 @@ public class InputPathHandler : IInputPathHandler
 			});
 
 	#region Private
+
+	private static readonly string DirectorySeparator;
 
 	private readonly IDiscQueryEngine _discQueryEngine;
 

@@ -2,7 +2,7 @@ using System;
 using Xunit;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 
-namespace ImageFanReloaded.Test;
+namespace ImageFanReloaded.Test.TestClasses;
 
 public class NaturalSortingComparerTest
 {

@@ -2,7 +2,7 @@ using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 
-namespace ImageFanReloaded.Test;
+namespace ImageFanReloaded.Test.TestClasses;
 
 public class ImageResizeCalculatorTest
 {
