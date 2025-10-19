@@ -74,6 +74,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.10.20" date="2025-10-20">
+			<description>
+				<p>Improved recursive folder path identification</p>
+			</description>
+		</release>
 		<release version="1.2025.10.19" date="2025-10-19">
 			<description>
 				<ul>

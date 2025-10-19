@@ -5,38 +5,38 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
 public static class PathExtensions
 {
-	public static bool ContainsPath(
+	public static bool StartsWithPath(
 		this string longerPath,
 		string shorterPath,
 		string directorySeparator,
 		StringComparison pathComparison)
 	{
-		bool containsPath;
+		bool startsWithPath;
 
 		if (longerPath.Equals(shorterPath, pathComparison))
 		{
-			containsPath = true;
+			startsWithPath = true;
 		}
-		else if (longerPath.Contains(shorterPath, pathComparison))
+		else if (longerPath.StartsWith(shorterPath, pathComparison))
 		{
 			if (shorterPath.EndsWith(directorySeparator, pathComparison))
 			{
-				containsPath = true;
+				startsWithPath = true;
 			}
 			else
 			{
 				var remainingStringAfterSubstringMatch = longerPath
 					.GetRemainingStringAfterSubstringMatch(shorterPath, pathComparison)!;
 
-				containsPath = remainingStringAfterSubstringMatch.StartsWith(
+				startsWithPath = remainingStringAfterSubstringMatch.StartsWith(
 					directorySeparator, pathComparison);
 			}
 		}
 		else
 		{
-			containsPath = false;
+			startsWithPath = false;
 		}
 
-		return containsPath;
+		return startsWithPath;
 	}
 }

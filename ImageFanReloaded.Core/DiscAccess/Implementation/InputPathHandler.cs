@@ -69,7 +69,7 @@ public class InputPathHandler : IInputPathHandler
 		=> await Task.Run(() =>
 			{
 				var matchingFileSystemEntryInfo = folders
-					.Where(aFolder => FolderPath!.ContainsPath(
+					.Where(aFolder => FolderPath!.StartsWithPath(
 						aFolder.Path, DirectorySeparator, _nameComparison))
 					.Select(aFolder => new
 					{

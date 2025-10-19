@@ -12,10 +12,12 @@ public class PathExtensionsTest
 	[InlineData(@"/home", @"/media")]
 	[InlineData(@"/media", @"/mount")]
 	[InlineData(@"/home/mihnea", @"/media/mihnea")]
+	[InlineData(@"/usr/lib/ImageFanReloaded", @"/lib/ImageFanReloaded")]
+	[InlineData(@"/usr/lib/ImageFanReloaded", @"/usr/ImageFanReloaded")]
 	[InlineData(@"/home/mihnea/Pictures", @"/media/mihnea/Pictures")]
 	[InlineData(@"/home/mihnea/Pictures", @"/home/mihnea/Pictures_Converted")]
 	[InlineData(@"/home/mihnea/Pictures_Converted", @"/home/mihnea/Pictures")]
-	public void ContainsPath_UnixOs_LongerPathDoesNotContainShorterPath_ReturnsFalse(
+	public void StartsWithPath_UnixOs_LongerPathDoesNotStartWithShorterPath_ReturnsFalse(
 		string longerPath, string shorterPath)
 	{
 		// Arrange
@@ -23,10 +25,11 @@ public class PathExtensionsTest
 		const StringComparison pathComparison = StringComparison.InvariantCulture;
 
 		// Act
-		var containsPath = longerPath.ContainsPath(shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(
+			shorterPath, directorySeparator, pathComparison);
 
 		// Assert
-		Assert.False(containsPath);
+		Assert.False(startsWithPath);
 	}
 
 	[Theory]
@@ -34,24 +37,7 @@ public class PathExtensionsTest
 	[InlineData(@"/home", @"/home")]
 	[InlineData(@"/home/mihnea", @"/home/mihnea")]
 	[InlineData(@"/home/mihnea/Pictures", @"/home/mihnea/Pictures")]
-	public void ContainsPath_UnixOs_EqualPaths_ReturnsTrue(string longerPath, string shorterPath)
-	{
-		// Arrange
-		const string directorySeparator = @"/";
-		const StringComparison pathComparison = StringComparison.InvariantCulture;
-
-		// Act
-		var containsPath = longerPath.ContainsPath(shorterPath, directorySeparator, pathComparison);
-
-		// Assert
-		Assert.True(containsPath);
-	}
-
-	[Theory]
-	[InlineData(@"/home/mihnea/Pictures", @"/")]
-	[InlineData(@"/home/mihnea/Pictures", @"/home")]
-	[InlineData(@"/home/mihnea/Pictures", @"/home/mihnea")]
-	public void ContainsPath_UnixOs_LongerPathContainsShorterPath_ReturnsTrue(
+	public void StartsWithPath_UnixOs_LongerPathEqualsShorterPath_ReturnsTrue(
 		string longerPath, string shorterPath)
 	{
 		// Arrange
@@ -59,10 +45,33 @@ public class PathExtensionsTest
 		const StringComparison pathComparison = StringComparison.InvariantCulture;
 
 		// Act
-		var containsPath = longerPath.ContainsPath(shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(
+			shorterPath, directorySeparator, pathComparison);
 
 		// Assert
-		Assert.True(containsPath);
+		Assert.True(startsWithPath);
+	}
+
+	[Theory]
+	[InlineData(@"/home/mihnea/Pictures", @"/")]
+	[InlineData(@"/home/mihnea/Pictures", @"/home")]
+	[InlineData(@"/home/mihnea/Pictures", @"/home/mihnea")]
+	[InlineData(@"/usr/lib/ImageFanReloaded", @"/")]
+	[InlineData(@"/usr/lib/ImageFanReloaded", @"/usr")]
+	[InlineData(@"/usr/lib/ImageFanReloaded", @"/usr/lib")]
+	public void StartsWithPath_UnixOs_LongerPathStartsWithShorterPath_ReturnsTrue(
+		string longerPath, string shorterPath)
+	{
+		// Arrange
+		const string directorySeparator = @"/";
+		const StringComparison pathComparison = StringComparison.InvariantCulture;
+
+		// Act
+		var startsWithPath = longerPath.StartsWithPath(
+			shorterPath, directorySeparator, pathComparison);
+
+		// Assert
+		Assert.True(startsWithPath);
 	}
 
 	#endregion
@@ -73,10 +82,14 @@ public class PathExtensionsTest
 	[InlineData(@"C:\", @"D:\")]
 	[InlineData(@"C:\Media", @"C:\Mount")]
 	[InlineData(@"C:\Users\mihnea", @"C:\Profiles\mihnea")]
+	[InlineData(@"C:\Data\Programs\ImageFanReloaded", @"d:\")]
+	[InlineData(@"C:\Data\Programs\ImageFanReloaded", @"C:\Data\ImageFanReloaded")]
+	[InlineData(@"C:\Data\Programs\ImageFanReloaded", @"C:\Programs\ImageFanReloaded")]
+	[InlineData(@"C:\Data\Programs\ImageFanReloaded", @"C:\ImageFanReloaded")]
 	[InlineData(@"C:\Users\mihnea\Pictures", @"C:\Profiles\mihnea\Pictures")]
 	[InlineData(@"C:\Users\mihnea\Pictures", @"C:\Users\mihnea\Pictures_Converted")]
 	[InlineData(@"C:\Users\mihnea\Pictures_Converted", @"C:\Users\mihnea\Pictures")]
-	public void ContainsPath_WindowsOs_LongerPathDoesNotContainShorterPath_ReturnsFalse(
+	public void StartsWithPath_WindowsOs_LongerPathDoesNotStartWithShorterPath_ReturnsFalse(
 		string longerPath, string shorterPath)
 	{
 		// Arrange
@@ -84,10 +97,11 @@ public class PathExtensionsTest
 		const StringComparison pathComparison = StringComparison.InvariantCultureIgnoreCase;
 
 		// Act
-		var containsPath = longerPath.ContainsPath(shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(
+			shorterPath, directorySeparator, pathComparison);
 
 		// Assert
-		Assert.False(containsPath);
+		Assert.False(startsWithPath);
 	}
 
 	[Theory]
@@ -95,17 +109,19 @@ public class PathExtensionsTest
 	[InlineData(@"C:\Media", @"C:\media")]
 	[InlineData(@"C:\Users\mihnea", @"C:\users\Mihnea")]
 	[InlineData(@"C:\Users\mihnea\Pictures", @"C:\users\Mihnea\pictures")]
-	public void ContainsPath_WindowsOs_EqualPaths_ReturnsTrue(string longerPath, string shorterPath)
+	public void StartsWithPath_WindowsOs_LongerPathEqualsShorterPath_ReturnsTrue(
+		string longerPath, string shorterPath)
 	{
 		// Arrange
 		const string directorySeparator = @"\";
 		const StringComparison pathComparison = StringComparison.InvariantCultureIgnoreCase;
 
 		// Act
-		var containsPath = longerPath.ContainsPath(shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(
+			shorterPath, directorySeparator, pathComparison);
 
 		// Assert
-		Assert.True(containsPath);
+		Assert.True(startsWithPath);
 	}
 
 	[Theory]
@@ -115,7 +131,7 @@ public class PathExtensionsTest
 	[InlineData(@"C:\Users\mihnea\Pictures", @"c:\")]
 	[InlineData(@"C:\Users\mihnea\Pictures", @"C:\users")]
 	[InlineData(@"C:\Users\mihnea\Pictures", @"C:\users\Mihnea")]
-	public void ContainsPath_WindowsOs_LongerPathContainsShorterPath_ReturnsTrue(
+	public void StartsWithPath_WindowsOs_LongerPathStartsWithShorterPath_ReturnsTrue(
 		string longerPath, string shorterPath)
 	{
 		// Arrange
@@ -123,10 +139,11 @@ public class PathExtensionsTest
 		const StringComparison pathComparison = StringComparison.InvariantCultureIgnoreCase;
 
 		// Act
-		var containsPath = longerPath.ContainsPath(shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(
+			shorterPath, directorySeparator, pathComparison);
 
 		// Assert
-		Assert.True(containsPath);
+		Assert.True(startsWithPath);
 	}
 
 	#endregion
