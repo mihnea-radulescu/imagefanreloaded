@@ -6,7 +6,7 @@
 			"type": "coreclr",
 			"request": "launch",
 			"preLaunchTask": "build",
-			"program": "${workspaceFolder}/ImageFanReloaded/bin/Debug/net8.0/ImageFanReloaded.dll",
+			"program": "${workspaceFolder}/ImageFanReloaded/bin/Debug/net10.0/ImageFanReloaded.dll",
 			"args": [],
 			"cwd": "${workspaceFolder}/ImageFanReloaded",
 			"console": "internalConsole",

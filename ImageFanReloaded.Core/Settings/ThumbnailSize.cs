@@ -32,8 +32,7 @@ public enum ThumbnailSize
 
 public static class ThumbnailSizeExtensions
 {
-	public static IReadOnlyList<ThumbnailSize> ThumbnailSizes
-		=> (Enum.GetValues(typeof(ThumbnailSize)) as IReadOnlyList<ThumbnailSize>)!;
+	public static IReadOnlyList<ThumbnailSize> ThumbnailSizes => Enum.GetValues<ThumbnailSize>();
 
 	public static IReadOnlyList<int> ThumbnailSizesAsIntegers
 		=> (ThumbnailSizes as IReadOnlyList<int>)!;

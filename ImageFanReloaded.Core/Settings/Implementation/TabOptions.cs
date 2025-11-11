@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 
 namespace ImageFanReloaded.Core.Settings.Implementation;
@@ -31,7 +33,7 @@ public class TabOptions : ITabOptions
 	{
 		AppDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-		JsonSerializerOptions = BuildJsonSerializerOptions();
+		TabOptionsJsonTypeInfo = TabOptionsJsonContext.Default.TabOptions;
 	}
 
 	public static void LoadDefaultTabOptions(string settingsFolderName)
@@ -98,7 +100,7 @@ public class TabOptions : ITabOptions
 
 	private static readonly string AppDataFolderPath;
 
-	private static readonly JsonSerializerOptions JsonSerializerOptions;
+	private static readonly JsonTypeInfo<TabOptions> TabOptionsJsonTypeInfo;
 
 	private static string? SettingsFolderPath;
 	private static string? SettingsFilePath;
@@ -121,8 +123,7 @@ public class TabOptions : ITabOptions
 		}
 
 		var jsonContent = File.ReadAllText(SettingsFilePath);
-		tabOptions = JsonSerializer.Deserialize<TabOptions>(
-			jsonContent, JsonSerializerOptions);
+		tabOptions = JsonSerializer.Deserialize(jsonContent, TabOptionsJsonTypeInfo);
 
 		if (tabOptions is null)
 		{
@@ -255,7 +256,7 @@ public class TabOptions : ITabOptions
 	{
 		try
 		{
-			var jsonContent = JsonSerializer.Serialize(DefaultTabOptions!, JsonSerializerOptions);
+			var jsonContent = JsonSerializer.Serialize(DefaultTabOptions!, TabOptionsJsonTypeInfo);
 
 			if (!Directory.Exists(SettingsFolderPath))
 			{
@@ -269,14 +270,6 @@ public class TabOptions : ITabOptions
 		}
 	}
 
-	private static JsonSerializerOptions BuildJsonSerializerOptions()
-	{
-		return new JsonSerializerOptions
-		{
-			WriteIndented = true
-		};
-	}
-
 	private static bool IsValidEnumValue<TEnum>(TEnum enumValue) where TEnum : Enum
 		=> Enum.IsDefined(typeof(TEnum), enumValue);
 
@@ -284,4 +277,10 @@ public class TabOptions : ITabOptions
 		=> 0 <= panelsSplittingRatio && panelsSplittingRatio <= 100;
 
 	#endregion
+}
+
+[JsonSerializable(typeof(TabOptions))]
+[JsonSourceGenerationOptions(WriteIndented = true)]
+public partial class TabOptionsJsonContext : JsonSerializerContext
+{
 }
