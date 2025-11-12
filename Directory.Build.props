@@ -7,7 +7,6 @@
 		<Copyright>Copyright © Mihnea Rădulescu 2017 - 2025</Copyright>
 		<AssemblyVersion>1.2025.11.12</AssemblyVersion>
 		<Version>$(AssemblyVersion)</Version>
-		<DebugType>embedded</DebugType>
 	</PropertyGroup>
 
 </Project>

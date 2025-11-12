@@ -28,7 +28,7 @@
 			<li>configurable thumbnail size, between 100 and 1200 pixels</li>
 			<li>slideshow navigation across images</li>
 			<li>image info containing file, image, color, EXIF, IPTC and XMP profiles</li>
-			<li>automatic image orientation according to the EXIF Orientation tag</li>
+			<li>automatic image orientation according to the EXIF orientation tag</li>
 			<li>toggle-able recursive folder browsing</li>
 			<li>targeted zooming in, and moving over the zoomed image</li>
 		</ul>
@@ -78,8 +78,7 @@
 			<description>
 				<ul>
 					<li>Updated framework and libraries</li>
-					<li>Improved startup time</li>
-					<li>Reduced size on disc</li>
+					<li>Improved startup time and reduced disc size for the x64 architecture</li>
 				</ul>
 			</description>
 		</release>

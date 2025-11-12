@@ -16,7 +16,7 @@ Features:
 * configurable thumbnail size, between 100 and 1200 pixels
 * slideshow navigation across images
 * image info containing file, image, color, EXIF, IPTC and XMP profiles
-* automatic image orientation according to the EXIF Orientation tag
+* automatic image orientation according to the EXIF orientation tag
 * toggle-able recursive folder browsing
 * targeted zooming in, and moving over the zoomed image
 * command-line direct access to the specified folder or image file
