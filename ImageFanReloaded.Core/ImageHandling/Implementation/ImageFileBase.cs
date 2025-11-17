@@ -35,9 +35,9 @@ public abstract class ImageFileBase : IImageFile
 
 	public IImage GetImage(bool applyImageOrientation)
 	{
-		IImage image;
+		using var imageFileContentStream = GetImageFileContentStream();
 
-		var imageFileContentStream = GetImageFileContentStream();
+		IImage image;
 
 		if (HasImageReadError)
 		{
@@ -58,8 +58,6 @@ public abstract class ImageFileBase : IImageFile
 				HasImageReadError = true;
 			}
 		}
-
-		imageFileContentStream?.Dispose();
 
 		return image;
 	}

@@ -51,7 +51,7 @@ public class ImageFile : ImageFileBase
 
 	private IImage BuildAnimatedImageFromStream(Stream imageFileContentStream)
 	{
-		var imageCollection = new MagickImageCollection(imageFileContentStream);
+		using var imageCollection = new MagickImageCollection(imageFileContentStream);
 
 		if (imageCollection.Count == 1)
 		{
@@ -86,7 +86,7 @@ public class ImageFile : ImageFileBase
 
 	private IImage BuildIndirectlySupportedImageFromStream(Stream imageFileContentStream)
 	{
-		IMagickImage image = new MagickImage(imageFileContentStream);
+		using IMagickImage image = new MagickImage(imageFileContentStream);
 
 		return BuildIndirectlySupportedImage(image);
 	}

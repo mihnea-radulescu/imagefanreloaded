@@ -59,20 +59,19 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	{
 		var imageInfoBuilder = new StringBuilder();
 
-		var imageFileData = imageFile.ImageFileData;
-		IMagickImage image = new MagickImage(imageFileData.ImageFilePath);
-
 		BuildFileProfile(imageFile, imageInfoBuilder);
 
-		var imageSize = imageFile.ImageSize;
-		var isAnimatedImage = imageFile.IsAnimatedImage;
-		BuildImageProfile(image, imageSize, imageInfoBuilder, isAnimatedImage);
+		using (IMagickImage image = new MagickImage(imageFile.ImageFileData.ImageFilePath))
+		{
+			BuildImageProfile(
+				image, imageFile.ImageSize, imageInfoBuilder, imageFile.IsAnimatedImage);
 
-		BuildColorProfile(image, imageInfoBuilder);
+			BuildColorProfile(image, imageInfoBuilder);
 
-		BuildExifProfile(image, imageInfoBuilder);
-		BuildIptcProfile(image, imageInfoBuilder);
-		BuildXmpProfile(image, imageInfoBuilder);
+			BuildExifProfile(image, imageInfoBuilder);
+			BuildIptcProfile(image, imageInfoBuilder);
+			BuildXmpProfile(image, imageInfoBuilder);
+		}
 
 		var imageInfo = imageInfoBuilder.ToString();
 		return imageInfo;

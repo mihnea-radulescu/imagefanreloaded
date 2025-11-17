@@ -2,7 +2,7 @@ using System;
 
 namespace ImageFanReloaded.Core.BaseTypes;
 
-public abstract class DisposableBase
+public abstract class DisposableBase : IDisposable
 {
 	public void Dispose()
 	{
@@ -20,12 +20,7 @@ public abstract class DisposableBase
 	protected abstract void DisposeSpecific();
 
 	protected void ThrowObjectDisposedExceptionIfNecessary()
-	{
-		if (_hasBeenDisposed)
-		{
-			throw new ObjectDisposedException(GetType().Name);
-		}
-	}
+		=> ObjectDisposedException.ThrowIf(_hasBeenDisposed, this);
 
 	#endregion
 

@@ -12,7 +12,7 @@ public class Image : DisposableBase, IImage
 		IImageFrame singleImageFrame = new ImageFrame(
 			imageImplementationInstance, imageSize, TimeSpan.Zero);
 
-		_imageFrames = new List<IImageFrame> { singleImageFrame };
+		_imageFrames = [singleImageFrame];
 
 		_isAnimated = false;
 		_totalImageFramesDelay = TimeSpan.Zero;
