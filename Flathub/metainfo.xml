@@ -74,6 +74,14 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.11.20" date="2025-11-20">
+			<description>
+				<ul>
+					<li>Improved image resource disposal after use</li>
+					<li>Updated application libraries</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2025.11.12" date="2025-11-12">
 			<description>
 				<ul>
