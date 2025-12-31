@@ -5,38 +5,37 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
 public static class PathExtensions
 {
-	public static bool StartsWithPath(
-		this string longerPath,
-		string shorterPath,
-		string directorySeparator,
-		StringComparison pathComparison)
+	extension(string longerPath)
 	{
-		bool startsWithPath;
+		public bool StartsWithPath(string shorterPath, string directorySeparator, StringComparison pathComparison)
+		{
+			bool startsWithPath;
 
-		if (longerPath.Equals(shorterPath, pathComparison))
-		{
-			startsWithPath = true;
-		}
-		else if (longerPath.StartsWith(shorterPath, pathComparison))
-		{
-			if (shorterPath.EndsWith(directorySeparator, pathComparison))
+			if (longerPath.Equals(shorterPath, pathComparison))
 			{
 				startsWithPath = true;
 			}
+			else if (longerPath.StartsWith(shorterPath, pathComparison))
+			{
+				if (shorterPath.EndsWith(directorySeparator, pathComparison))
+				{
+					startsWithPath = true;
+				}
+				else
+				{
+					var remainingStringAfterSubstringMatch = longerPath
+						.GetRemainingStringAfterSubstringMatch(shorterPath, pathComparison)!;
+
+					startsWithPath = remainingStringAfterSubstringMatch.StartsWith(
+						directorySeparator, pathComparison);
+				}
+			}
 			else
 			{
-				var remainingStringAfterSubstringMatch = longerPath
-					.GetRemainingStringAfterSubstringMatch(shorterPath, pathComparison)!;
-
-				startsWithPath = remainingStringAfterSubstringMatch.StartsWith(
-					directorySeparator, pathComparison);
+				startsWithPath = false;
 			}
-		}
-		else
-		{
-			startsWithPath = false;
-		}
 
-		return startsWithPath;
+			return startsWithPath;
+		}
 	}
 }

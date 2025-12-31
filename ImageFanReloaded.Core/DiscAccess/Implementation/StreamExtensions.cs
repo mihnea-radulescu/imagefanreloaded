@@ -4,5 +4,8 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
 public static class StreamExtensions
 {
-	public static void Reset(this Stream stream) => stream.Position = 0;
+	extension(Stream stream)
+	{
+		public void Reset() => stream.Position = 0;
+	}
 }

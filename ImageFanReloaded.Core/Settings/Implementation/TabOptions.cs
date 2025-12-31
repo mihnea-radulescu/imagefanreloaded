@@ -28,6 +28,7 @@ public class TabOptions : ITabOptions
 	public bool ApplyImageOrientation { get; set; }
 	public bool ShowThumbnailImageFileName { get; set; }
 	public KeyboardScrollThumbnailIncrement KeyboardScrollThumbnailIncrement { get; set; }
+	public UpsizeFullScreenImagesUpToScreenSize UpsizeFullScreenImagesUpToScreenSize { get; set; }
 
 	static TabOptions()
 	{
@@ -38,8 +39,8 @@ public class TabOptions : ITabOptions
 
 	public static void LoadDefaultTabOptions(string settingsFolderName)
 	{
-		SettingsFolderPath = GetSettingsFolderPath(settingsFolderName);
-		SettingsFilePath = GetSettingsFilePath(SettingsFolderPath);
+		_settingsFolderPath = GetSettingsFolderPath(settingsFolderName);
+		_settingsFilePath = GetSettingsFilePath(_settingsFolderPath);
 
 		var tabOptions = default(ITabOptions?);
 
@@ -52,7 +53,7 @@ public class TabOptions : ITabOptions
 		}
 		finally
 		{
-			DefaultTabOptions = tabOptions ?? new TabOptions();
+			_defaultTabOptions = tabOptions ?? new TabOptions();
 		}
 	}
 
@@ -85,7 +86,7 @@ public class TabOptions : ITabOptions
 	private const ImageViewDisplayMode DefaultImageViewDisplayMode =
 		ImageViewDisplayMode.FullScreen;
 
-	private const ThumbnailSize DefaultThumbnailSize = ThumbnailSize.TwoHundredFixtyPixels;
+	private const ThumbnailSize DefaultThumbnailSize = ThumbnailSize.TwoHundredFiftyPixels;
 
 	private const bool DefaultRecursiveFolderBrowsing = false;
 	private const bool DefaultGlobalOrderingForRecursiveFolderBrowsing = false;
@@ -97,15 +98,17 @@ public class TabOptions : ITabOptions
 	private const bool DefaultShowThumbnailImageFileName = true;
 	private const KeyboardScrollThumbnailIncrement DefaultKeyboardScrollThumbnailIncrement =
 		KeyboardScrollThumbnailIncrement.Twelve;
+	private const UpsizeFullScreenImagesUpToScreenSize DefaultUpsizeFullScreenImagesUpToScreenSize =
+		UpsizeFullScreenImagesUpToScreenSize.Disabled;
 
 	private static readonly string AppDataFolderPath;
 
 	private static readonly JsonTypeInfo<TabOptions> TabOptionsJsonTypeInfo;
 
-	private static string? SettingsFolderPath;
-	private static string? SettingsFilePath;
+	private static string? _settingsFolderPath;
+	private static string? _settingsFilePath;
 
-	private static ITabOptions? DefaultTabOptions;
+	private static ITabOptions? _defaultTabOptions;
 
 	private static string GetSettingsFolderPath(string settingsFolderName)
 		=> Path.Combine(AppDataFolderPath, settingsFolderName);
@@ -117,12 +120,12 @@ public class TabOptions : ITabOptions
 	{
 		var tabOptions = default(ITabOptions?);
 
-		if (!File.Exists(SettingsFilePath))
+		if (!File.Exists(_settingsFilePath))
 		{
 			return tabOptions;
 		}
 
-		var jsonContent = File.ReadAllText(SettingsFilePath);
+		var jsonContent = File.ReadAllText(_settingsFilePath);
 		tabOptions = JsonSerializer.Deserialize(jsonContent, TabOptionsJsonTypeInfo);
 
 		if (tabOptions is null)
@@ -175,33 +178,39 @@ public class TabOptions : ITabOptions
 			tabOptions.KeyboardScrollThumbnailIncrement = DefaultKeyboardScrollThumbnailIncrement;
 		}
 
+		if (!IsValidEnumValue(tabOptions.UpsizeFullScreenImagesUpToScreenSize))
+		{
+			tabOptions.UpsizeFullScreenImagesUpToScreenSize = DefaultUpsizeFullScreenImagesUpToScreenSize;
+		}
+
 		return tabOptions;
 	}
 
 	private void InitializeWithDefaultValues()
 	{
-		if (DefaultTabOptions is not null)
+		if (_defaultTabOptions is not null)
 		{
-			FolderOrdering = DefaultTabOptions.FolderOrdering;
-			FolderOrderingDirection = DefaultTabOptions.FolderOrderingDirection;
+			FolderOrdering = _defaultTabOptions.FolderOrdering;
+			FolderOrderingDirection = _defaultTabOptions.FolderOrderingDirection;
 
-			ImageFileOrdering = DefaultTabOptions.ImageFileOrdering;
-			ImageFileOrderingDirection = DefaultTabOptions.ImageFileOrderingDirection;
+			ImageFileOrdering = _defaultTabOptions.ImageFileOrdering;
+			ImageFileOrderingDirection = _defaultTabOptions.ImageFileOrderingDirection;
 
-			ImageViewDisplayMode = DefaultTabOptions.ImageViewDisplayMode;
+			ImageViewDisplayMode = _defaultTabOptions.ImageViewDisplayMode;
 
-			ThumbnailSize = DefaultTabOptions.ThumbnailSize;
+			ThumbnailSize = _defaultTabOptions.ThumbnailSize;
 
-			RecursiveFolderBrowsing = DefaultTabOptions.RecursiveFolderBrowsing;
+			RecursiveFolderBrowsing = _defaultTabOptions.RecursiveFolderBrowsing;
 			GlobalOrderingForRecursiveFolderBrowsing =
-				DefaultTabOptions.GlobalOrderingForRecursiveFolderBrowsing;
+				_defaultTabOptions.GlobalOrderingForRecursiveFolderBrowsing;
 
-			ShowImageViewImageInfo = DefaultTabOptions.ShowImageViewImageInfo;
-			PanelsSplittingRatio = DefaultTabOptions.PanelsSplittingRatio;
-			SlideshowInterval = DefaultTabOptions.SlideshowInterval;
-			ApplyImageOrientation = DefaultTabOptions.ApplyImageOrientation;
-			ShowThumbnailImageFileName = DefaultTabOptions.ShowThumbnailImageFileName;
-			KeyboardScrollThumbnailIncrement = DefaultTabOptions.KeyboardScrollThumbnailIncrement;
+			ShowImageViewImageInfo = _defaultTabOptions.ShowImageViewImageInfo;
+			PanelsSplittingRatio = _defaultTabOptions.PanelsSplittingRatio;
+			SlideshowInterval = _defaultTabOptions.SlideshowInterval;
+			ApplyImageOrientation = _defaultTabOptions.ApplyImageOrientation;
+			ShowThumbnailImageFileName = _defaultTabOptions.ShowThumbnailImageFileName;
+			KeyboardScrollThumbnailIncrement = _defaultTabOptions.KeyboardScrollThumbnailIncrement;
+			UpsizeFullScreenImagesUpToScreenSize = _defaultTabOptions.UpsizeFullScreenImagesUpToScreenSize;
 		}
 		else
 		{
@@ -225,45 +234,47 @@ public class TabOptions : ITabOptions
 			ApplyImageOrientation = DefaultApplyImageOrientation;
 			ShowThumbnailImageFileName = DefaultShowThumbnailImageFileName;
 			KeyboardScrollThumbnailIncrement = DefaultKeyboardScrollThumbnailIncrement;
+			UpsizeFullScreenImagesUpToScreenSize = DefaultUpsizeFullScreenImagesUpToScreenSize;
 		}
 	}
 
 	private void SetDefaultTabOptions()
 	{
-		DefaultTabOptions!.FolderOrdering = FolderOrdering;
-		DefaultTabOptions!.FolderOrderingDirection = FolderOrderingDirection;
+		_defaultTabOptions!.FolderOrdering = FolderOrdering;
+		_defaultTabOptions!.FolderOrderingDirection = FolderOrderingDirection;
 
-		DefaultTabOptions!.ImageFileOrdering = ImageFileOrdering;
-		DefaultTabOptions!.ImageFileOrderingDirection = ImageFileOrderingDirection;
+		_defaultTabOptions!.ImageFileOrdering = ImageFileOrdering;
+		_defaultTabOptions!.ImageFileOrderingDirection = ImageFileOrderingDirection;
 
-		DefaultTabOptions!.ImageViewDisplayMode = ImageViewDisplayMode;
+		_defaultTabOptions!.ImageViewDisplayMode = ImageViewDisplayMode;
 
-		DefaultTabOptions!.ThumbnailSize = ThumbnailSize;
+		_defaultTabOptions!.ThumbnailSize = ThumbnailSize;
 
-		DefaultTabOptions!.RecursiveFolderBrowsing = RecursiveFolderBrowsing;
-		DefaultTabOptions!.GlobalOrderingForRecursiveFolderBrowsing =
+		_defaultTabOptions!.RecursiveFolderBrowsing = RecursiveFolderBrowsing;
+		_defaultTabOptions!.GlobalOrderingForRecursiveFolderBrowsing =
 			GlobalOrderingForRecursiveFolderBrowsing;
 
-		DefaultTabOptions!.ShowImageViewImageInfo = ShowImageViewImageInfo;
-		DefaultTabOptions!.PanelsSplittingRatio = PanelsSplittingRatio;
-		DefaultTabOptions!.SlideshowInterval = SlideshowInterval;
-		DefaultTabOptions!.ApplyImageOrientation = ApplyImageOrientation;
-		DefaultTabOptions!.ShowThumbnailImageFileName = ShowThumbnailImageFileName;
-		DefaultTabOptions!.KeyboardScrollThumbnailIncrement = KeyboardScrollThumbnailIncrement;
+		_defaultTabOptions!.ShowImageViewImageInfo = ShowImageViewImageInfo;
+		_defaultTabOptions!.PanelsSplittingRatio = PanelsSplittingRatio;
+		_defaultTabOptions!.SlideshowInterval = SlideshowInterval;
+		_defaultTabOptions!.ApplyImageOrientation = ApplyImageOrientation;
+		_defaultTabOptions!.ShowThumbnailImageFileName = ShowThumbnailImageFileName;
+		_defaultTabOptions!.KeyboardScrollThumbnailIncrement = KeyboardScrollThumbnailIncrement;
+		_defaultTabOptions!.UpsizeFullScreenImagesUpToScreenSize = UpsizeFullScreenImagesUpToScreenSize;
 	}
 
 	private static async Task PersistDefaultTabOptions()
 	{
 		try
 		{
-			var jsonContent = JsonSerializer.Serialize(DefaultTabOptions!, TabOptionsJsonTypeInfo);
+			var jsonContent = JsonSerializer.Serialize(_defaultTabOptions!, TabOptionsJsonTypeInfo);
 
-			if (!Directory.Exists(SettingsFolderPath))
+			if (!Directory.Exists(_settingsFolderPath))
 			{
-				Directory.CreateDirectory(SettingsFolderPath!);
+				Directory.CreateDirectory(_settingsFolderPath!);
 			}
 
-			await File.WriteAllTextAsync(SettingsFilePath!, jsonContent);
+			await File.WriteAllTextAsync(_settingsFilePath!, jsonContent);
 		}
 		catch
 		{

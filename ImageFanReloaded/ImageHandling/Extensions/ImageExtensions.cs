@@ -5,7 +5,13 @@ namespace ImageFanReloaded.ImageHandling.Extensions;
 
 public static class ImageExtensions
 {
-	public static Bitmap GetBitmap(this IImage image) => image.GetInstance<Bitmap>();
+	extension(IImage image)
+	{
+		public Bitmap Bitmap => image.GetInstance<Bitmap>();
+	}
 
-	public static Bitmap GetBitmap(this IImageFrame imageFrame) => imageFrame.GetInstance<Bitmap>();
+	extension(IImageFrame imageFrame)
+	{
+		public Bitmap Bitmap => imageFrame.GetInstance<Bitmap>();
+	}
 }

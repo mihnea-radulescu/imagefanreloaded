@@ -16,19 +16,18 @@ public class ImageResizeCalculatorTest
 	[InlineData(1920, 1080, 1920, 1080)]
 	[InlineData(1280, 720, 1280, 720)]
 	[InlineData(960, 540, 960, 540)]
-	public void GetResizedImageSize_LandscapeImage_ReturnsCorrectResizedImageSize(
-		int viewPortWidth, int viewPortHeight, int resizedImageWidth, int resizedImageHeight)
+	public void GetDownsizedImageSize_LandscapeImage_ReturnsCorrectResizedImageSize(
+		int viewPortWidth, int viewPortHeight, int downsizedImageWidth, int downsizedImageHeight)
 	{
 		// Arrange
 		var viewPortSize = new ImageSize(viewPortWidth, viewPortHeight);
-		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
+		var referenceDownsizedImageSize = new ImageSize(downsizedImageWidth, downsizedImageHeight);
 
 		// Act
-		var resizedImageSize = _imageResizeCalculator.GetResizedImageSize(
-			LandscapeImageSize, viewPortSize);
+		var downsizedImageSize = _imageResizeCalculator.GetDownsizedImageSize(LandscapeImageSize, viewPortSize);
 
 		// Assert
-		Assert.Equal(referenceResizedImageSize, resizedImageSize);
+		Assert.Equal(referenceDownsizedImageSize, downsizedImageSize);
 	}
 
 	[Theory]
@@ -36,25 +35,24 @@ public class ImageResizeCalculatorTest
 	[InlineData(1920, 1080, 607, 1080)]
 	[InlineData(1280, 720, 405, 720)]
 	[InlineData(960, 540, 303, 540)]
-	public void GetResizedImageSize_PortraitImage_ReturnsCorrectResizedImageSize(
-		int viewPortWidth, int viewPortHeight, int resizedImageWidth, int resizedImageHeight)
+	public void GetDownsizedImageSize_PortraitImage_ReturnsCorrectResizedImageSize(
+		int viewPortWidth, int viewPortHeight, int downsizedImageWidth, int downsizedImageHeight)
 	{
 		// Arrange
 		var viewPortSize = new ImageSize(viewPortWidth, viewPortHeight);
-		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
+		var referenceDownsizedImageSize = new ImageSize(downsizedImageWidth, downsizedImageHeight);
 
 		// Act
-		var resizedImageSize = _imageResizeCalculator.GetResizedImageSize(
-			PortraitImageSize, viewPortSize);
+		var downsizedImageSize = _imageResizeCalculator.GetDownsizedImageSize(PortraitImageSize, viewPortSize);
 
 		// Assert
-		Assert.Equal(referenceResizedImageSize, resizedImageSize);
+		Assert.Equal(referenceDownsizedImageSize, downsizedImageSize);
 	}
 
 	#region Private
 
-	private static readonly ImageSize LandscapeImageSize = new ImageSize(1920, 1080);
-	private static readonly ImageSize PortraitImageSize = new ImageSize(1080, 1920);
+	private static readonly ImageSize LandscapeImageSize = new(1920, 1080);
+	private static readonly ImageSize PortraitImageSize = new(1080, 1920);
 
 	private readonly ImageResizeCalculator _imageResizeCalculator;
 

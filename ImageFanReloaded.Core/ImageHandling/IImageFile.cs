@@ -1,4 +1,5 @@
 using System;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.ImageHandling;
 
@@ -13,7 +14,11 @@ public interface IImageFile
 	bool HasImageReadError { get; }
 
 	IImage GetImage(bool applyImageOrientation);
-	(IImage, IImage) GetImageAndResizedImage(ImageSize viewPortSize, bool applyImageOrientation);
+	(IImage, IImage) GetImageAndResizedImage(
+		ImageSize viewPortSize,
+		UpsizeFullScreenImagesUpToScreenSize upsizeFullScreenImagesUpToScreenSize,
+		bool applyImageOrientation);
+
 	void ReadImageFile();
 
 	IImage GetThumbnail(int thumbnailSize, bool applyImageOrientation);

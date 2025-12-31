@@ -45,9 +45,9 @@ public partial class FullScreenImageWindow : Window, IImageView
 		{
 			_mouseCursorFactory = value;
 
-			_standardCursor = _mouseCursorFactory!.StandardCursor.GetCursor();
-			_zoomCursor = _mouseCursorFactory!.ZoomCursor.GetCursor();
-			_dragCursor = _mouseCursorFactory!.DragCursor.GetCursor();
+			_standardCursor = _mouseCursorFactory!.StandardCursor.Cursor;
+			_zoomCursor = _mouseCursorFactory!.ZoomCursor.Cursor;
+			_dragCursor = _mouseCursorFactory!.DragCursor.Cursor;
 		}
 	}
 
@@ -454,7 +454,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 						break;
 					}
 
-					var anImageFrameBitmap = aThumbnailImageFrame.GetBitmap();
+					var anImageFrameBitmap = aThumbnailImageFrame.Bitmap;
 
 					if (ctsAnimation.IsCancellationRequested)
 					{
@@ -572,15 +572,16 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 	private void DisposePreviousImageAndResizedImage()
 	{
-		DisposeImage(_image);
-		DisposeImage(_resizedImage);
+		DisposeImage(ref _image);
+		DisposeImage(ref _resizedImage);
 	}
 
-	private void DisposeImage(IImage? image)
+	private void DisposeImage(ref IImage? image)
 	{
 		if (image is not null && image != _invalidImage)
 		{
 			image.Dispose();
+			image = null;
 		}
 	}
 
@@ -590,7 +591,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 		DisposePreviousImageAndResizedImage();
 
 		(_image, _resizedImage) = _imageFile!.GetImageAndResizedImage(
-			_scaledScreenSize!, TabOptions!.ApplyImageOrientation);
+			_scaledScreenSize!, TabOptions!.UpsizeFullScreenImagesUpToScreenSize, TabOptions!.ApplyImageOrientation);
 
 		await WaitForAnimationTaskToComplete();
 
@@ -665,7 +666,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 		DisposePreviousImageAndResizedImage();
 	}
 
-	private void SetDisplayImageSource(IImage? image) => _displayImage.Source = image?.GetBitmap();
+	private void SetDisplayImageSource(IImage? image) => _displayImage.Source = image?.Bitmap;
 
 	private async Task PauseBetweenImages(TimeSpan slideshowInterval)
 	{

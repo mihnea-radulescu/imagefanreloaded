@@ -356,7 +356,7 @@ public partial class WindowedImageWindow : Window, IImageView
 						break;
 					}
 
-					var anImageFrameBitmap = aThumbnailImageFrame.GetBitmap();
+					var anImageFrameBitmap = aThumbnailImageFrame.Bitmap;
 
 					if (ctsAnimation.IsCancellationRequested)
 					{
@@ -380,18 +380,19 @@ public partial class WindowedImageWindow : Window, IImageView
 		}
 	}
 
-	private void DisposeImage(IImage? image)
+	private void DisposeImage(ref IImage? image)
 	{
 		if (image is not null && image != _invalidImage)
 		{
 			image.Dispose();
+			image = null;
 		}
 	}
 
 	private async Task DisplayImage()
 	{
 		SetDisplayImageSource(null);
-		DisposeImage(_image);
+		DisposeImage(ref _image);
 
 		_image = _imageFile!.GetImage(TabOptions!.ApplyImageOrientation);
 
@@ -418,10 +419,10 @@ public partial class WindowedImageWindow : Window, IImageView
 		Close();
 
 		SetDisplayImageSource(null);
-		DisposeImage(_image);
+		DisposeImage(ref _image);
 	}
 
-	private void SetDisplayImageSource(IImage? image) => _displayImage.Source = image?.GetBitmap();
+	private void SetDisplayImageSource(IImage? image) => _displayImage.Source = image?.Bitmap;
 
 	private async Task PauseBetweenImages(TimeSpan slideshowInterval)
 	{

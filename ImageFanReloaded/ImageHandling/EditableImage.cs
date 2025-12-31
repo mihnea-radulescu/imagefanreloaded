@@ -17,8 +17,8 @@ public class EditableImage : DisposableBase, IEditableImage
 {
 	public EditableImage(string imageFilePath, uint imageQualityLevel)
 	{
-		MagickImageCollection? imageFramesToEdit = default;
-		Bitmap? bitmapToDisplay = default;
+		MagickImageCollection? imageFramesToEdit = null;
+		Bitmap? bitmapToDisplay = null;
 
 		try
 		{
@@ -252,7 +252,7 @@ public class EditableImage : DisposableBase, IEditableImage
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		var magickFormat = saveFileImageFormat.GetMagickFormat();
+		var magickFormat = saveFileImageFormat.MagickFormat;
 
 		if (saveFileImageFormat.IsAnimationEnabled)
 		{

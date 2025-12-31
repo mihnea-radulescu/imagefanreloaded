@@ -84,6 +84,12 @@ public class Image : DisposableBase, IImage
 		}
 	}
 
+	public bool DoesFitWithinViewPort(ImageSize viewPortSize)
+		=> Size.Width <= viewPortSize.Width && Size.Height <= viewPortSize.Height;
+
+	public double GetMaxUpscalingFactorToViewPort(ImageSize viewPortSize)
+		=> Math.Min(viewPortSize.Width / (double)Size.Width, viewPortSize.Height / (double)Size.Height);
+
 	#region Protected
 
 	protected override void DisposeSpecific()

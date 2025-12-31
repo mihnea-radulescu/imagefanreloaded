@@ -11,18 +11,23 @@ public enum FileSystemEntryInfoOrdering
 
 public static class FileSystemEntryInfoOrderingExtensions
 {
-	public static string GetDescription(this FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering)
+	extension(FileSystemEntryInfoOrdering fileSystemEntryInfoOrdering)
 	{
-		var description = fileSystemEntryInfoOrdering switch
+		public string Description
 		{
-			FileSystemEntryInfoOrdering.Name => "Name",
-			FileSystemEntryInfoOrdering.LastModificationTime => "Last modification time",
-			FileSystemEntryInfoOrdering.RandomShuffle => "Random shuffle",
+			get
+			{
+				var description = fileSystemEntryInfoOrdering switch
+				{
+					FileSystemEntryInfoOrdering.Name => "Name",
+					FileSystemEntryInfoOrdering.LastModificationTime => "Last modification time",
+					FileSystemEntryInfoOrdering.RandomShuffle => "Random shuffle",
 
-			_ => throw new NotSupportedException(
-				$"Enum value {fileSystemEntryInfoOrdering} not supported.")
-		};
+					_ => throw new NotSupportedException($"Enum value {fileSystemEntryInfoOrdering} not supported.")
+				};
 
-		return description;
+				return description;
+			}
+		}
 	}
 }

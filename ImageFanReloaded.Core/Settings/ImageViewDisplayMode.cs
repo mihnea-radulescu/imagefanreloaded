@@ -11,18 +11,24 @@ public enum ImageViewDisplayMode
 
 public static class ImageViewDisplayModeExtensions
 {
-	public static string GetDescription(this ImageViewDisplayMode imageViewDisplayMode)
+	extension(ImageViewDisplayMode imageViewDisplayMode)
 	{
-		var description = imageViewDisplayMode switch
+		public string Description
 		{
-			ImageViewDisplayMode.FullScreen => "Full-screen",
-			ImageViewDisplayMode.Windowed => "Windowed",
-			ImageViewDisplayMode.WindowedMaximized => "Windowed maximized",
+			get
+			{
+				var description = imageViewDisplayMode switch
+				{
+					ImageViewDisplayMode.FullScreen => "Full-screen",
+					ImageViewDisplayMode.Windowed => "Windowed",
+					ImageViewDisplayMode.WindowedMaximized => "Windowed maximized",
 
-			_ => throw new NotSupportedException(
-				$"Enum value {imageViewDisplayMode} not supported.")
-		};
+					_ => throw new NotSupportedException(
+						$"Enum value {imageViewDisplayMode} not supported.")
+				};
 
-		return description;
+				return description;
+			}
+		}
 	}
 }

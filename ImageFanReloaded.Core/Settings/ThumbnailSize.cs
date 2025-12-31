@@ -8,11 +8,11 @@ public enum ThumbnailSize
 	OneHundredPixels = 100,
 	OneHundredFiftyPixels = 150,
 	TwoHundredPixels = 200,
-	TwoHundredFixtyPixels = 250,
+	TwoHundredFiftyPixels = 250,
 	ThreeHundredPixels = 300,
-	ThreeHundredFixtyPixels = 350,
+	ThreeHundredFiftyPixels = 350,
 	FourHundredPixels = 400,
-	FourHundredFixtyPixels = 450,
+	FourHundredFiftyPixels = 450,
 	FiveHundredPixels = 500,
 	FiveHundredFiftyPixels = 550,
 	SixHundredPixels = 600,
@@ -33,17 +33,17 @@ public enum ThumbnailSize
 public static class ThumbnailSizeExtensions
 {
 	public static IReadOnlyList<ThumbnailSize> ThumbnailSizes => Enum.GetValues<ThumbnailSize>();
-
-	public static IReadOnlyList<int> ThumbnailSizesAsIntegers
-		=> (ThumbnailSizes as IReadOnlyList<int>)!;
-
+	public static IReadOnlyList<int> ThumbnailSizesAsIntegers => (ThumbnailSizes as IReadOnlyList<int>)!;
 	public static int ThumbnailSizeIncrement => 50;
 
-	public static int ToInt(this ThumbnailSize thumbnailSize) => (int)thumbnailSize;
+	extension(ThumbnailSize thumbnailSize)
+	{
+		public int ToInt() => (int)thumbnailSize;
+	}
 
-	public static ThumbnailSize ToThumbnailSize(this int thumbnailSize)
-		=> (ThumbnailSize)thumbnailSize;
-
-	public static bool IsValidThumbnailSize(this int thumbnailSize)
-		=> Enum.IsDefined(typeof(ThumbnailSize), thumbnailSize);
+	extension(int thumbnailSize)
+	{
+		public ThumbnailSize ToThumbnailSize() => (ThumbnailSize)thumbnailSize;
+		public bool IsValidThumbnailSize => Enum.IsDefined(typeof(ThumbnailSize), thumbnailSize);
+	}
 }

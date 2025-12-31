@@ -14,7 +14,7 @@ public class EditableImageFactory : IEditableImageFactory
 
 	public async Task<IEditableImage?> CreateEditableImage(string imageFilePath)
 	{
-		IEditableImage? editableImage = default;
+		IEditableImage? editableImage = null;
 
 		try
 		{

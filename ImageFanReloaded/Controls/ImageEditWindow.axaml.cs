@@ -78,8 +78,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			_mouseCursorFactory = value;
 
-			_standardCursor = _mouseCursorFactory!.StandardCursor.GetCursor();
-			_selectCursor = _mouseCursorFactory!.SelectCursor.GetCursor();
+			_standardCursor = _mouseCursorFactory!.StandardCursor.Cursor;
+			_selectCursor = _mouseCursorFactory!.SelectCursor.Cursor;
 		}
 	}
 
@@ -899,7 +899,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 				await Task.Run(transformImageAction);
 			}
 
-			_displayImage.Source = _editableImage!.ImageToDisplay.GetBitmap();
+			_displayImage.Source = _editableImage!.ImageToDisplay.Bitmap;
 			_hasUnsavedChanges = true;
 		}
 		catch
@@ -992,7 +992,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		_displayImage.MaxWidth = _editableImage!.ImageSize.Width;
 		_displayImage.MaxHeight = _editableImage!.ImageSize.Height;
-		_displayImage.Source = _editableImage!.ImageToDisplay.GetBitmap();
+		_displayImage.Source = _editableImage!.ImageToDisplay.Bitmap;
 		_displayImage.InvalidateMeasure();
 		_displayImage.InvalidateArrange();
 		_displayImage.UpdateLayout();

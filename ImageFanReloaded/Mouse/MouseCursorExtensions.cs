@@ -5,6 +5,8 @@ namespace ImageFanReloaded.Mouse;
 
 public static class MouseCursorExtensions
 {
-	public static Cursor GetCursor(this IMouseCursor mouseCursor)
-		=> mouseCursor.GetInstance<Cursor>();
+	extension(IMouseCursor mouseCursor)
+	{
+		public Cursor Cursor => mouseCursor.GetInstance<Cursor>();
+	}
 }

@@ -74,6 +74,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2025.12.31" date="2025-12-31">
+			<description>
+				<p>Added tab option: full-screen images upsizing up to screen size</p>
+			</description>
+		</release>
 		<release version="1.2025.11.20" date="2025-11-20">
 			<description>
 				<ul>

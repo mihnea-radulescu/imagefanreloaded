@@ -34,12 +34,12 @@ public class ImageResizerTest : TestBase
 		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
 
 		_imageResizeCalculator
-			.GetResizedImageSize(
+			.GetDownsizedImageSize(
 				new ImageSize(image.Size.Width, image.Size.Height), viewPortSize)
 			.Returns(referenceResizedImageSize);
 
 		// Act
-		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
+		var resizedImage = _imageResizer.CreateDownsizedImage(image, viewPortSize);
 
 		// Assert
 		Assert.Equal(referenceResizedImageSize.Width, resizedImage.Size.Width);
@@ -48,7 +48,7 @@ public class ImageResizerTest : TestBase
 		var outputFileName = GetOutputImageFileName(
 			LandscapeImageFileName, viewPortSize, referenceResizedImageSize);
 
-		SaveImageToDisc(resizedImage.GetBitmap(), outputFileName);
+		SaveImageToDisc(resizedImage.Bitmap, outputFileName);
 	}
 
 	[Theory]
@@ -68,12 +68,12 @@ public class ImageResizerTest : TestBase
 		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
 
 		_imageResizeCalculator
-			.GetResizedImageSize(
+			.GetDownsizedImageSize(
 				new ImageSize(image.Size.Width, image.Size.Height), viewPortSize)
 			.Returns(referenceResizedImageSize);
 
 		// Act
-		var resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
+		var resizedImage = _imageResizer.CreateDownsizedImage(image, viewPortSize);
 
 		// Assert
 		Assert.Equal(referenceResizedImageSize.Width, resizedImage.Size.Width);
@@ -82,7 +82,7 @@ public class ImageResizerTest : TestBase
 		var outputFileName = GetOutputImageFileName(
 			PortraitImageFileName, viewPortSize, referenceResizedImageSize);
 
-		SaveImageToDisc(resizedImage.GetBitmap(), outputFileName);
+		SaveImageToDisc(resizedImage.Bitmap, outputFileName);
 	}
 
 	#region Private

@@ -19,7 +19,7 @@ public partial class FileSystemTreeViewItem : UserControl, IFileSystemTreeViewIt
 		{
 			_fileSystemEntryInfo = value!;
 
-			_fileSystemEntryImage.Source = _fileSystemEntryInfo.Icon.GetBitmap();
+			_fileSystemEntryImage.Source = _fileSystemEntryInfo.Icon.Bitmap;
 			_fileSystemEntryTextBlock.Text = _fileSystemEntryInfo.Name;
 		}
 	}

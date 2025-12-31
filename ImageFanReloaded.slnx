@@ -1,7 +1,4 @@
 <Solution>
-	<Folder Name="/">
-		<File Path="Directory.Build.props" />
-	</Folder>
 	<Project Path="ImageFanReloaded.Core/ImageFanReloaded.Core.csproj" />
 	<Project Path="ImageFanReloaded.Test/ImageFanReloaded.Test.csproj" />
 	<Project Path="ImageFanReloaded/ImageFanReloaded.csproj" />

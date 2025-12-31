@@ -15,17 +15,14 @@ public class ImageResizer : ImageResizerBase
 	#region Protected
 
 	protected override IImageFrame BuildResizedImageFrame(
-		IImageFrame imageFrame,
-		ImageSize resizedImageFrameSize)
+		IImageFrame imageFrame, ImageSize resizedImageFrameSize)
 	{
-		var destinationSize = new PixelSize(
-			resizedImageFrameSize.Width, resizedImageFrameSize.Height);
+		var destinationSize = new PixelSize(resizedImageFrameSize.Width, resizedImageFrameSize.Height);
 
-		var bitmap = imageFrame.GetBitmap();
+		var bitmap = imageFrame.Bitmap;
 		var resizedBitmap = bitmap.CreateScaledBitmap(destinationSize);
 
-		var resizedImageFrame = new ImageFrame(
-			resizedBitmap, resizedImageFrameSize, imageFrame.DelayUntilNextFrame);
+		var resizedImageFrame = new ImageFrame(resizedBitmap, resizedImageFrameSize, imageFrame.DelayUntilNextFrame);
 		return resizedImageFrame;
 	}
 

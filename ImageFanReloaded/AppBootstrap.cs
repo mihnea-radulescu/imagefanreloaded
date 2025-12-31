@@ -55,15 +55,15 @@ public class AppBootstrap : IAppBootstrap
 
 	private readonly IClassicDesktopStyleApplicationLifetime _desktop;
 
-	private IGlobalParameters _globalParameters = default!;
-	private IFileSizeEngine _fileSizeEngine = default!;
-	private IDiscQueryEngine _discQueryEngine = default!;
-	private IEnvironmentSettings _environmentSettings = default!;
-	private IMouseCursorFactory _mouseCursorFactory = default!;
-	private ITabOptionsFactory _tabOptionsFactory = default!;
-	private IImageViewFactory _imageViewFactory = default!;
-	private IInputPathHandlerFactory _inputPathHandlerFactory = default!;
-	private IInputPathHandler _commandLineArgsInputPathHandler = default!;
+	private IGlobalParameters _globalParameters = null!;
+	private IFileSizeEngine _fileSizeEngine = null!;
+	private IDiscQueryEngine _discQueryEngine = null!;
+	private IEnvironmentSettings _environmentSettings = null!;
+	private IMouseCursorFactory _mouseCursorFactory = null!;
+	private ITabOptionsFactory _tabOptionsFactory = null!;
+	private IImageViewFactory _imageViewFactory = null!;
+	private IInputPathHandlerFactory _inputPathHandlerFactory = null!;
+	private IInputPathHandler _commandLineArgsInputPathHandler = null!;
 
 	private void BootstrapTypes()
 	{

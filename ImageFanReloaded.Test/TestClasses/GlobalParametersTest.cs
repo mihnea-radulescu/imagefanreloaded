@@ -41,7 +41,7 @@ public class GlobalParametersTest : TestBase
 			_globalParameters.IsWindows,
 			_globalParameters.IsMacOS
 		];
-		Assert.Single(isOperatingSystemCollection, isOperatingSystem => isOperatingSystem == true);
+		Assert.Single(isOperatingSystemCollection, isOperatingSystem => isOperatingSystem);
 
 		Assert.Equal(6, _globalParameters.MaxRecursionDepth);
 
@@ -112,30 +112,30 @@ public class GlobalParametersTest : TestBase
 		Assert.NotEmpty(_globalParameters.UserProfilePath);
 		Assert.NotEmpty(_globalParameters.SpecialFolders);
 
-		Assert.NotNull(_globalParameters.InvalidImage.GetBitmap());
+		Assert.NotNull(_globalParameters.InvalidImage.Bitmap);
 
 		var expectedPersistentImagesCount = 1 + 2 * Enum.GetValues<ThumbnailSize>().Length;
 		Assert.Equal(expectedPersistentImagesCount, _globalParameters.PersistentImages.Count);
 
-		Assert.NotNull(_globalParameters.DriveIcon.GetBitmap());
-		Assert.NotNull(_globalParameters.FolderIcon.GetBitmap());
+		Assert.NotNull(_globalParameters.DriveIcon.Bitmap);
+		Assert.NotNull(_globalParameters.FolderIcon.Bitmap);
 
 		SaveImageToDisc(
-			_globalParameters.InvalidImage.GetBitmap(),
+			_globalParameters.InvalidImage.Bitmap,
 			$"{nameof(_globalParameters.InvalidImage)}{OutputFileExtension}");
 		SaveImageToDisc(
-			_globalParameters.GetInvalidImageThumbnail(ThumbnailSize).GetBitmap(),
+			_globalParameters.GetInvalidImageThumbnail(ThumbnailSize).Bitmap,
 			$"InvalidImageThumbnail_{OutputFileExtension}");
 
 		SaveImageToDisc(
-			_globalParameters.GetLoadingImageThumbnail(ThumbnailSize).GetBitmap(),
+			_globalParameters.GetLoadingImageThumbnail(ThumbnailSize).Bitmap,
 			$"LoadingImageThumbnail_{OutputFileExtension}");
 
 		SaveImageToDisc(
-			_globalParameters.DriveIcon.GetBitmap(),
+			_globalParameters.DriveIcon.Bitmap,
 			$"{nameof(_globalParameters.DriveIcon)}{OutputFileExtension}");
 		SaveImageToDisc(
-			_globalParameters.FolderIcon.GetBitmap(),
+			_globalParameters.FolderIcon.Bitmap,
 			$"{nameof(_globalParameters.FolderIcon)}{OutputFileExtension}");
 	}
 

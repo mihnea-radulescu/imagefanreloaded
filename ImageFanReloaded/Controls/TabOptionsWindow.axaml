@@ -40,6 +40,8 @@
 			<RowDefinition Height="10*"/>
 			<RowDefinition Height="2*"/>
 			<RowDefinition Height="10*"/>
+			<RowDefinition Height="2*"/>
+			<RowDefinition Height="10*"/>
 			<RowDefinition Height="6*"/>
 			<RowDefinition Height="10*"/>
 		</Grid.RowDefinitions>
@@ -198,11 +200,22 @@
 		<TextBlock Grid.Row="29"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
+				   Text="Upsize full-screen images up to screen size:"
+				   Margin="0 7 0 0"/>
+		<ComboBox Name="_upsizeFullScreenImagesUpToScreenSizeComboBox"
+				  Grid.Row="29"
+				  Grid.Column="3"
+				  HorizontalAlignment="Stretch"
+				  VerticalContentAlignment="Center"/>
+
+		<TextBlock Grid.Row="31"
+				   Grid.Column="1"
+				   HorizontalAlignment="Right"
 				   FontWeight="SemiBold"
 				   Text="Save as default?"
 				   Margin="0 7 0 0"/>
 		<CheckBox Name="_saveAsDefaultCheckBox"
-				  Grid.Row="29"
+				  Grid.Row="31"
 				  Grid.Column="3"/>
 	</Grid>
 </Window>

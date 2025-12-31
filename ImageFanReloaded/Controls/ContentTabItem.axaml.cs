@@ -294,7 +294,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_selectedThumbnailIndex = -1;
 		_maxThumbnailIndex = 0;
 
-		_selectedThumbnailBox = default;
+		_selectedThumbnailBox = null;
 
 		_slideshowButton.IsEnabled = false;
 		_imageInfoButton.IsEnabled = false;
@@ -1138,7 +1138,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		var newThumbnailSize = TabOptions!.ThumbnailSize.ToInt() + increment;
 
-		if (newThumbnailSize.IsValidThumbnailSize())
+		if (newThumbnailSize.IsValidThumbnailSize)
 		{
 			TabOptions!.ThumbnailSize = newThumbnailSize.ToThumbnailSize();
 

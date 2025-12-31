@@ -4,31 +4,33 @@ namespace ImageFanReloaded.Core.TextHandling.Implementation;
 
 public static class StringExtensions
 {
-	public static string? GetRemainingStringAfterSubstringMatch(
-		this string longerString, string shorterString, StringComparison stringComparison)
+	extension(string longerString)
 	{
-		string? remainingStringAfterSubstringMatch;
-
-		var matchIndex = longerString.IndexOf(shorterString, stringComparison);
-
-		if (matchIndex >= 0)
+		public string? GetRemainingStringAfterSubstringMatch(string shorterString, StringComparison stringComparison)
 		{
-			var remainingStringStartIndex = matchIndex + shorterString.Length;
+			string? remainingStringAfterSubstringMatch;
 
-			if (remainingStringStartIndex < longerString.Length)
+			var matchIndex = longerString.IndexOf(shorterString, stringComparison);
+
+			if (matchIndex >= 0)
 			{
-				remainingStringAfterSubstringMatch = longerString[remainingStringStartIndex..];
+				var remainingStringStartIndex = matchIndex + shorterString.Length;
+
+				if (remainingStringStartIndex < longerString.Length)
+				{
+					remainingStringAfterSubstringMatch = longerString[remainingStringStartIndex..];
+				}
+				else
+				{
+					remainingStringAfterSubstringMatch = string.Empty;
+				}
 			}
 			else
 			{
-				remainingStringAfterSubstringMatch = string.Empty;
+				remainingStringAfterSubstringMatch = null;
 			}
-		}
-		else
-		{
-			remainingStringAfterSubstringMatch = default;
-		}
 
-		return remainingStringAfterSubstringMatch;
+			return remainingStringAfterSubstringMatch;
+		}
 	}
 }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Linq;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
@@ -9,38 +9,39 @@ public abstract class ImageResizerBase : IImageResizer
 		_imageResizeCalculator = imageResizeCalculator;
 	}
 
-	public IImage CreateResizedImage(IImage image, ImageSize viewPortSize)
+	public IImage CreateDownsizedImage(IImage image, ImageSize viewPortSize)
 	{
-		var imageFrames = image.ImageFrames;
-		var resizedImageFrames = new List<IImageFrame>(imageFrames.Count);
+		var downsizedImageSize = _imageResizeCalculator.GetDownsizedImageSize(image.Size, viewPortSize);
 
-		foreach (var anImageFrame in imageFrames)
-		{
-			var anImageFrameSize = new ImageSize(anImageFrame.Size.Width, anImageFrame.Size.Height);
+		return GetResizedImage(image, downsizedImageSize);
+	}
 
-			var aResizedImageFrameSize = _imageResizeCalculator
-				.GetResizedImageSize(anImageFrameSize, viewPortSize);
+	public IImage CreateUpsizedImage(IImage image, double scalingFactor)
+	{
+		var upsizedImageSize = _imageResizeCalculator.GetUpsizedImageSize(image.Size, scalingFactor);
 
-			var aResizedImageFrame = BuildResizedImageFrame(
-				anImageFrame, aResizedImageFrameSize);
-
-			resizedImageFrames.Add(aResizedImageFrame);
-		}
-
-		var resizedImage = new Image(resizedImageFrames);
-		return resizedImage;
+		return GetResizedImage(image, upsizedImageSize);
 	}
 
 	#region Protected
 
-	protected abstract IImageFrame BuildResizedImageFrame(
-		IImageFrame imageFrame, ImageSize resizedImageFrameSize);
+	protected abstract IImageFrame BuildResizedImageFrame(IImageFrame imageFrame, ImageSize resizedImageFrameSize);
 
 	#endregion
 
 	#region Private
 
 	private readonly IImageResizeCalculator _imageResizeCalculator;
+
+	private IImage GetResizedImage(IImage image, ImageSize resizedImageSize)
+	{
+		var resizedImageFrames = image.ImageFrames
+			.Select(anImageFrame => BuildResizedImageFrame(anImageFrame, resizedImageSize))
+			.ToList();
+
+		var resizedImage = new Image(resizedImageFrames);
+		return resizedImage;
+	}
 
 	#endregion
 }

@@ -14,13 +14,13 @@ public abstract class ImageFileBase : IImageFile
 		IFileSizeEngine fileSizeEngine,
 		ImageFileData imageFileData)
 	{
-		_globalParameters = globalParameters;
+		GlobalParameters = globalParameters;
 		_imageResizer = imageResizer;
 		_fileSizeEngine = fileSizeEngine;
 
 		ImageFileData = imageFileData;
 
-		ImageSize = _globalParameters.InvalidImage.Size;
+		ImageSize = GlobalParameters.InvalidImage.Size;
 
 		_thumbnailGenerationLockObject = new object();
 	}
@@ -41,7 +41,7 @@ public abstract class ImageFileBase : IImageFile
 
 		if (HasImageReadError)
 		{
-			image = _globalParameters.InvalidImage;
+			image = GlobalParameters.InvalidImage;
 		}
 		else
 		{
@@ -53,7 +53,7 @@ public abstract class ImageFileBase : IImageFile
 			}
 			catch
 			{
-				image = _globalParameters.InvalidImage;
+				image = GlobalParameters.InvalidImage;
 
 				HasImageReadError = true;
 			}
@@ -63,26 +63,60 @@ public abstract class ImageFileBase : IImageFile
 	}
 
 	public (IImage, IImage) GetImageAndResizedImage(
-		ImageSize viewPortSize, bool applyImageOrientation)
+		ImageSize viewPortSize,
+		UpsizeFullScreenImagesUpToScreenSize upsizeFullScreenImagesUpToScreenSize,
+		bool applyImageOrientation)
 	{
-		IImage image = GetImage(applyImageOrientation);
+		var image = GetImage(applyImageOrientation);
+
 		IImage resizedImage;
 
 		if (HasImageReadError)
 		{
-			resizedImage = _globalParameters.InvalidImage;
+			resizedImage = GlobalParameters.InvalidImage;
 		}
 		else
 		{
-			try
+			var doesFitWithinViewPort = image.DoesFitWithinViewPort(viewPortSize);
+			if (doesFitWithinViewPort)
 			{
-				resizedImage = _imageResizer.CreateResizedImage(image, viewPortSize);
-			}
-			catch
-			{
-				resizedImage = _globalParameters.InvalidImage;
+				if (upsizeFullScreenImagesUpToScreenSize == UpsizeFullScreenImagesUpToScreenSize.Disabled)
+				{
+					resizedImage = image;
+				}
+				else
+				{
+					var maxUpscalingFactorToViewPort = image.GetMaxUpscalingFactorToViewPort(viewPortSize);
+					var upscalingFactor = Math.Min(
+						maxUpscalingFactorToViewPort, upsizeFullScreenImagesUpToScreenSize.Value);
 
-				HasImageReadError = true;
+					try
+					{
+						resizedImage = _imageResizer.CreateUpsizedImage(image, upscalingFactor);
+
+						image.Dispose();
+						image = resizedImage;
+					}
+					catch
+					{
+						resizedImage = GlobalParameters.InvalidImage;
+
+						HasImageReadError = true;
+					}
+				}
+			}
+			else
+			{
+				try
+				{
+					resizedImage = _imageResizer.CreateDownsizedImage(image, viewPortSize);
+				}
+				catch
+				{
+					resizedImage = GlobalParameters.InvalidImage;
+
+					HasImageReadError = true;
+				}
 			}
 		}
 
@@ -104,12 +138,12 @@ public abstract class ImageFileBase : IImageFile
 
 	public IImage GetThumbnail(int thumbnailSize, bool applyImageOrientation)
 	{
-		IImage? image = default;
+		IImage? image = null;
 		IImage thumbnail;
 
 		if (HasImageReadError)
 		{
-			thumbnail = _globalParameters.GetInvalidImageThumbnail(thumbnailSize);
+			thumbnail = GlobalParameters.GetInvalidImageThumbnail(thumbnailSize);
 		}
 		else
 		{
@@ -124,11 +158,11 @@ public abstract class ImageFileBase : IImageFile
 
 				var thumbnailImageSize = new ImageSize(thumbnailSize);
 
-				thumbnail = _imageResizer.CreateResizedImage(image, thumbnailImageSize);
+				thumbnail = _imageResizer.CreateDownsizedImage(image, thumbnailImageSize);
 			}
 			catch
 			{
-				thumbnail = _globalParameters.GetInvalidImageThumbnail(thumbnailSize);
+				thumbnail = GlobalParameters.GetInvalidImageThumbnail(thumbnailSize);
 
 				HasImageReadError = true;
 			}
@@ -175,7 +209,7 @@ public abstract class ImageFileBase : IImageFile
 
 		var sizeOnDiscInKilobytes = ImageFileData.SizeOnDiscInKilobytes;
 		var sizeOnDiscInKilobytesForDisplay = decimal.Round(
-			sizeOnDiscInKilobytes, _globalParameters.DecimalDigitCountForDisplay);
+			sizeOnDiscInKilobytes, GlobalParameters.DecimalDigitCountForDisplay);
 
 		var imageInfo = HasImageReadError
 			? $"{imageFileInfo} - image read error - {sizeOnDiscInKilobytesForDisplay} KB"
@@ -198,46 +232,18 @@ public abstract class ImageFileBase : IImageFile
 
 	#region Protected
 
-	protected readonly IGlobalParameters _globalParameters;
+	protected readonly IGlobalParameters GlobalParameters;
 
 	protected abstract IImage GetImageFromStream(
 		Stream imageFileContentStream, bool applyImageOrientation);
 
 	protected bool IsDirectlySupportedImageFileExtension
-		=> _globalParameters.DirectlySupportedImageFileExtensions.Contains(
+		=> GlobalParameters.DirectlySupportedImageFileExtensions.Contains(
 			ImageFileData.ImageFileExtension);
 
 	protected bool IsAnimationEnabledImageFileExtension
-		=> _globalParameters.AnimationEnabledImageFileExtensions.Contains(
+		=> GlobalParameters.AnimationEnabledImageFileExtensions.Contains(
 			ImageFileData.ImageFileExtension);
-
-	protected Stream? GetImageFileContentStream()
-	{
-		var imageFilePath = ImageFileData.ImageFilePath;
-
-		if (!File.Exists(imageFilePath))
-		{
-			HasImageReadError = true;
-
-			return default;
-		}
-
-		try
-		{
-			var imageFileContent = File.ReadAllBytes(imageFilePath);
-
-			var imageFileContentStream = new MemoryStream(imageFileContent);
-			imageFileContentStream.Reset();
-
-			return imageFileContentStream;
-		}
-		catch
-		{
-			HasImageReadError = true;
-
-			return default;
-		}
-	}
 
 	#endregion
 
@@ -257,9 +263,37 @@ public abstract class ImageFileBase : IImageFile
 		AnimatedImageSlideshowDelay = image.TotalImageFramesDelay;
 	}
 
+	private Stream? GetImageFileContentStream()
+	{
+		var imageFilePath = ImageFileData.ImageFilePath;
+
+		if (!File.Exists(imageFilePath))
+		{
+			HasImageReadError = true;
+
+			return null;
+		}
+
+		try
+		{
+			var imageFileContent = File.ReadAllBytes(imageFilePath);
+
+			var imageFileContentStream = new MemoryStream(imageFileContent);
+			imageFileContentStream.Reset();
+
+			return imageFileContentStream;
+		}
+		catch
+		{
+			HasImageReadError = true;
+
+			return null;
+		}
+	}
+
 	private void DisposeImage(IImage? image)
 	{
-		if (image is not null && _globalParameters.CanDisposeImage(image))
+		if (image is not null && GlobalParameters.CanDisposeImage(image))
 		{
 			image.Dispose();
 		}

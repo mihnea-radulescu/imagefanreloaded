@@ -101,7 +101,7 @@ public class ImageFile : ImageFileBase
 
 	private void WriteImageToStream(IMagickImage image, Stream imageStream, bool autoOrientImage)
 	{
-		image.Quality = _globalParameters.ImageQualityLevel;
+		image.Quality = GlobalParameters.ImageQualityLevel;
 
 		if (autoOrientImage)
 		{

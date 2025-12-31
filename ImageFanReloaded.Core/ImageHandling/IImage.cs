@@ -9,4 +9,7 @@ public interface IImage : IImageFrame
 	TimeSpan TotalImageFramesDelay { get; }
 
 	IReadOnlyList<IImageFrame> ImageFrames { get; }
+
+	bool DoesFitWithinViewPort(ImageSize viewPortSize);
+	double GetMaxUpscalingFactorToViewPort(ImageSize viewPortSize);
 }

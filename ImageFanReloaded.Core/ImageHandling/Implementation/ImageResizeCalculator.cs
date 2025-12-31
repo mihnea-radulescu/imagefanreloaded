@@ -2,7 +2,7 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
 public class ImageResizeCalculator : IImageResizeCalculator
 {
-	public ImageSize GetResizedImageSize(ImageSize imageSize, ImageSize viewPortSize)
+	public ImageSize GetDownsizedImageSize(ImageSize imageSize, ImageSize viewPortSize)
 	{
 		if (imageSize.Width <= viewPortSize.Width &&
 			imageSize.Height <= viewPortSize.Height)
@@ -10,37 +10,40 @@ public class ImageResizeCalculator : IImageResizeCalculator
 			return imageSize;
 		}
 
-		var resizedWidth = imageSize.Width;
-		var resizedHeight = imageSize.Height;
+		var downsizedWidth = imageSize.Width;
+		var downsizedHeight = imageSize.Height;
 
-		if (resizedWidth >= resizedHeight)
+		if (downsizedWidth >= downsizedHeight)
 		{
-			var aspectRatio = (float)resizedWidth / (float)resizedHeight;
+			var aspectRatio = downsizedWidth / (double)downsizedHeight;
 
-			resizedWidth = viewPortSize.Width;
-			resizedHeight = (int)(resizedWidth / aspectRatio);
+			downsizedWidth = viewPortSize.Width;
+			downsizedHeight = (int)(downsizedWidth / aspectRatio);
 
-			if (resizedHeight > viewPortSize.Height)
+			if (downsizedHeight > viewPortSize.Height)
 			{
-				resizedHeight = viewPortSize.Height;
-				resizedWidth = (int)(resizedHeight * aspectRatio);
+				downsizedHeight = viewPortSize.Height;
+				downsizedWidth = (int)(downsizedHeight * aspectRatio);
 			}
 		}
 		else
 		{
-			var aspectRatio = (float)resizedHeight / (float)resizedWidth;
+			var aspectRatio = downsizedHeight / (double)downsizedWidth;
 
-			resizedHeight = viewPortSize.Height;
-			resizedWidth = (int)(resizedHeight / aspectRatio);
+			downsizedHeight = viewPortSize.Height;
+			downsizedWidth = (int)(downsizedHeight / aspectRatio);
 
-			if (resizedWidth > viewPortSize.Width)
+			if (downsizedWidth > viewPortSize.Width)
 			{
-				resizedWidth = viewPortSize.Width;
-				resizedHeight = (int)(resizedWidth * aspectRatio);
+				downsizedWidth = viewPortSize.Width;
+				downsizedHeight = (int)(downsizedWidth * aspectRatio);
 			}
 		}
 
-		var resizedImageSize = new ImageSize(resizedWidth, resizedHeight);
-		return resizedImageSize;
+		var downsizedImageSize = new ImageSize(downsizedWidth, downsizedHeight);
+		return downsizedImageSize;
 	}
+
+	public ImageSize GetUpsizedImageSize(ImageSize imageSize, double scalingFactor)
+		=> new ImageSize(imageSize.Width * scalingFactor, imageSize.Height * scalingFactor);
 }

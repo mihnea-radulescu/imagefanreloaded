@@ -2,5 +2,7 @@ namespace ImageFanReloaded.Core.ImageHandling;
 
 public interface IImageResizeCalculator
 {
-	ImageSize GetResizedImageSize(ImageSize imageSize, ImageSize viewPortSize);
+	ImageSize GetDownsizedImageSize(ImageSize imageSize, ImageSize viewPortSize);
+
+	ImageSize GetUpsizedImageSize(ImageSize imageSize, double scalingFactor);
 }

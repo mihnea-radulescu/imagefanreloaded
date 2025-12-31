@@ -33,6 +33,8 @@ public static class KeyboardScrollThumbnailIncrementExtensions
 	public static IReadOnlyList<KeyboardScrollThumbnailIncrement> KeyboardScrollThumbnailIncrements
 		=> Enum.GetValues<KeyboardScrollThumbnailIncrement>();
 
-	public static int ToInt(this KeyboardScrollThumbnailIncrement keyboardScrollThumbnailIncrement)
-		=> (int)keyboardScrollThumbnailIncrement;
+	extension(KeyboardScrollThumbnailIncrement keyboardScrollThumbnailIncrement)
+	{
+		public int ToInt() => (int)keyboardScrollThumbnailIncrement;
+	}
 }

@@ -2,5 +2,7 @@ namespace ImageFanReloaded.Core.ImageHandling;
 
 public interface IImageResizer
 {
-	IImage CreateResizedImage(IImage image, ImageSize viewPortSize);
+	IImage CreateDownsizedImage(IImage image, ImageSize viewPortSize);
+
+	IImage CreateUpsizedImage(IImage image, double scalingFactor);
 }

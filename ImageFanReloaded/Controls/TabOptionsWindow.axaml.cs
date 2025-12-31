@@ -54,6 +54,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		SetShowThumbnailImageFileName();
 
 		PopulateKeyboardScrollThumbnailIncrements();
+		PopulateUpsizeFullScreenImagesUpToScreenSizes();
 
 		RegisterTabOptionEvents();
 	}
@@ -204,8 +205,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_tabOptionChanges.HasChangedShowThumbnailImageFileName = true;
 	}
 
-	private void OnKeyboardScrollThumbnailIncrementSelectionChanged(
-		object? sender, SelectionChangedEventArgs e)
+	private void OnKeyboardScrollThumbnailIncrementSelectionChanged(object? sender, SelectionChangedEventArgs e)
 	{
 		var keyboardScrollThumbnailIncrementComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
 		var keyboardScrollThumbnailIncrement =
@@ -213,6 +213,16 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		TabOptions!.KeyboardScrollThumbnailIncrement = keyboardScrollThumbnailIncrement;
 		_tabOptionChanges.HasChangedKeyboardScrollThumbnailIncrement = true;
+	}
+
+	private void OnUpsizeFullScreenImagesUpToScreenSizeSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	{
+		var upsizeFullScreenImagesUpToScreenSizeComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
+		var upsizeFullScreenImagesUpToScreenSize =
+			(UpsizeFullScreenImagesUpToScreenSize)upsizeFullScreenImagesUpToScreenSizeComboBoxItem.Tag!;
+
+		TabOptions!.UpsizeFullScreenImagesUpToScreenSize = upsizeFullScreenImagesUpToScreenSize;
+		_tabOptionChanges.HasChangedUpsizeFullScreenImagesUpToScreenSize = true;
 	}
 
 	private void OnSaveAsDefaultIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -223,8 +233,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	}
 
 	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
-		ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.EscapeKey)
@@ -244,7 +253,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			var aFolderOrderingItem = new ComboBoxItem
 			{
 				Tag = aFolderOrderingValue,
-				Content = aFolderOrderingValue.GetDescription()
+				Content = aFolderOrderingValue.Description
 			};
 
 			_folderOrderingComboBox.Items.Add(aFolderOrderingItem);
@@ -286,7 +295,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			var anImageFileOrderingItem = new ComboBoxItem
 			{
 				Tag = anImageFileOrderingValue,
-				Content = anImageFileOrderingValue.GetDescription()
+				Content = anImageFileOrderingValue.Description
 			};
 
 			_imageFileOrderingComboBox.Items.Add(anImageFileOrderingItem);
@@ -329,7 +338,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			var anImageViewDisplayModeItem = new ComboBoxItem
 			{
 				Tag = anImageViewDisplayModeValue,
-				Content = anImageViewDisplayModeValue.GetDescription()
+				Content = anImageViewDisplayModeValue.Description
 			};
 
 			_imageViewDisplayModeComboBox.Items.Add(anImageViewDisplayModeItem);
@@ -438,6 +447,27 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		}
 	}
 
+	private void PopulateUpsizeFullScreenImagesUpToScreenSizes()
+	{
+		foreach (var anUpsizeFullScreenImagesUpToScreenSize in
+		         UpsizeFullScreenImagesUpToScreenSizeExtensions.UpsizeFullScreenImagesUpToScreenSizes)
+		{
+			var anUpsizeFullScreenImagesUpToScreenSizeItem = new ComboBoxItem
+			{
+				Tag = anUpsizeFullScreenImagesUpToScreenSize,
+				Content = anUpsizeFullScreenImagesUpToScreenSize.Description
+			};
+
+			_upsizeFullScreenImagesUpToScreenSizeComboBox.Items.Add(anUpsizeFullScreenImagesUpToScreenSizeItem);
+
+			if (anUpsizeFullScreenImagesUpToScreenSize == TabOptions!.UpsizeFullScreenImagesUpToScreenSize)
+			{
+				_upsizeFullScreenImagesUpToScreenSizeComboBox.SelectedItem =
+					anUpsizeFullScreenImagesUpToScreenSizeItem;
+			}
+		}
+	}
+
 	private void RegisterTabOptionEvents()
 	{
 		_folderOrderingComboBox.SelectionChanged += OnFolderOrderingSelectionChanged;
@@ -465,6 +495,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			OnShowThumbnailImageFileNameIsCheckedChanged;
 		_keyboardScrollThumbnailIncrementComboBox.SelectionChanged +=
 			OnKeyboardScrollThumbnailIncrementSelectionChanged;
+		_upsizeFullScreenImagesUpToScreenSizeComboBox.SelectionChanged +=
+			OnUpsizeFullScreenImagesUpToScreenSizeSelectionChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged += OnSaveAsDefaultIsCheckedChanged;
 	}
@@ -496,6 +528,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			OnShowThumbnailImageFileNameIsCheckedChanged;
 		_keyboardScrollThumbnailIncrementComboBox.SelectionChanged -=
 			OnKeyboardScrollThumbnailIncrementSelectionChanged;
+		_upsizeFullScreenImagesUpToScreenSizeComboBox.SelectionChanged -=
+			OnUpsizeFullScreenImagesUpToScreenSizeSelectionChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged -= OnSaveAsDefaultIsCheckedChanged;
 	}
