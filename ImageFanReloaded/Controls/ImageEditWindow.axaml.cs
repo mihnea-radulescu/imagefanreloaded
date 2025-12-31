@@ -245,6 +245,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 				"You have unsaved image changes. Are you sure you want to close the window?",
 				MsBox.Avalonia.Enums.ButtonEnum.YesNoCancel,
 				MsBox.Avalonia.Enums.Icon.Question,
+				null,
 				WindowStartupLocation.CenterOwner);
 
 			var closeWindowButtonResult = await closeWindowMessageBox.ShowWindowDialogAsync(this);
@@ -837,6 +838,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 						string.Format(SaveImageErrorMessage, imageToSaveFileName),
 						MsBox.Avalonia.Enums.ButtonEnum.Ok,
 						MsBox.Avalonia.Enums.Icon.Error,
+						null,
 						WindowStartupLocation.CenterOwner);
 
 					await saveImageAsErrorMessageBox.ShowWindowDialogAsync(this);
@@ -907,6 +909,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 				TransformImageErrorMessage,
 				MsBox.Avalonia.Enums.ButtonEnum.Ok,
 				MsBox.Avalonia.Enums.Icon.Error,
+				null,
 				WindowStartupLocation.CenterOwner);
 
 			await applyTransformErrorMessageBox.ShowWindowDialogAsync(this);
