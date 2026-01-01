@@ -55,18 +55,23 @@
 	<screenshots>
 		<screenshot type="default">
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-MainDark.jpg</image>
+			<caption>Main view - dark mode</caption>
 		</screenshot>
 		<screenshot>
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-MainLight.jpg</image>
+			<caption>Main view - light mode</caption>
 		</screenshot>
 		<screenshot>
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-MainRecursiveFolderBrowsing.jpg</image>
+			<caption>Main view - recursive folder browsing</caption>
 		</screenshot>
 		<screenshot>
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-ImageEdit.jpg</image>
+			<caption>Image edit view</caption>
 		</screenshot>
 		<screenshot>
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-TabOptions.jpg</image>
+			<caption>Tab options view</caption>
 		</screenshot>
 	</screenshots>
 
@@ -74,6 +79,11 @@
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
 
 	<releases>
+		<release version="1.2026.01.01" date="2026-01-01">
+			<description>
+				<p>Improved support for full-screen image display on portrait monitors</p>
+			</description>
+		</release>
 		<release version="1.2025.12.31" date="2025-12-31">
 			<description>
 				<p>Added tab option: full-screen images upsizing up to screen size</p>
