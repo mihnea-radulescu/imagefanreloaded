@@ -63,6 +63,7 @@
 
 	<url type="homepage">https://github.com/mihnea-radulescu/imagefanreloaded</url>
 	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
+	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
 		<release version="1.2026.01.01" date="2026-01-01">
