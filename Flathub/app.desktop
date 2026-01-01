@@ -3,6 +3,7 @@ Type=Application
 Name=ImageFan Reloaded
 Comment=Feature-rich, tab-based image viewer, supporting multi-core processing
 Categories=Graphics;2DGraphics;RasterGraphics;Viewer;
+Keywords=viewer;image viewer;image gallery;image catalog;photo viewer;photo gallery;
 Icon=io.github.mihnea_radulescu.imagefanreloaded
 Exec=ImageFanReloaded
 Terminal=false
