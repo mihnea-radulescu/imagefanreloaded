@@ -34,22 +34,6 @@
 		</ul>
 	</description>
 
-	<categories>
-		<category>Graphics</category>
-		<category>2DGraphics</category>
-		<category>RasterGraphics</category>
-		<category>Viewer</category>
-	</categories>
-
-	<keywords>
-		<keyword>viewer</keyword>
-		<keyword>image viewer</keyword>
-		<keyword>image gallery</keyword>
-		<keyword>image catalog</keyword>
-		<keyword>photo viewer</keyword>
-		<keyword>photo gallery</keyword>
-	</keywords>
-
 	<launchable type="desktop-id">io.github.mihnea_radulescu.imagefanreloaded.desktop</launchable>
 
 	<screenshots>
