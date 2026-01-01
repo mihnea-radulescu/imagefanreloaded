@@ -7,7 +7,9 @@
 	<name>ImageFan Reloaded</name>
 	<summary>Feature-rich, tab-based image viewer, supporting multi-core processing</summary>
 
-	<developer_name>Mihnea Rădulescu</developer_name>
+	<developer id="io.github.mihnea_radulescu">
+		<name>Mihnea Rădulescu</name>
+	</developer>
 	<content_rating type="oars-1.1" />
 
 	<metadata_license>CC0-1.0</metadata_license>
