@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Platform;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.ImageHandling;
 
@@ -13,14 +12,14 @@ public class ScreenInfo : IScreenInfo
 		var currentWindow = (Window)currentWindowObject;
 		var currentScreen = currentWindow.Screens.ScreenFromWindow(currentWindow)!;
 
+		var windowClientSize = currentWindow.ClientSize;
 		var screenBounds = currentScreen.Bounds;
-		var screenOrientation = currentScreen.CurrentOrientation;
 		var screenScaling = currentScreen.Scaling;
 
 		int screenWidth;
 		int screenHeight;
 
-		var shouldSwapDimensions = ShouldSwapDimensions(screenBounds, screenOrientation);
+		var shouldSwapDimensions = ShouldSwapDimensions(screenBounds, windowClientSize);
 		if (shouldSwapDimensions)
 		{
 			screenWidth = screenBounds.Height;
@@ -49,11 +48,10 @@ public class ScreenInfo : IScreenInfo
 
 	#region Private
 
-	private static bool ShouldSwapDimensions(PixelRect screenBounds, ScreenOrientation screenOrientation)
+	private static bool ShouldSwapDimensions(PixelRect screenBounds, Size windowClientSize)
 	{
 		var areLandscapeDimensions = screenBounds.Width > screenBounds.Height;
-		var isPortraitOrientation =
-			screenOrientation is ScreenOrientation.Portrait or ScreenOrientation.PortraitFlipped;
+		var isPortraitOrientation = windowClientSize.Width < windowClientSize.Height;
 
 		var shouldSwapDimensions = areLandscapeDimensions && isPortraitOrientation;
 		return shouldSwapDimensions;

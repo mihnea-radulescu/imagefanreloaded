@@ -67,6 +67,11 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.01.02" date="2026-01-02">
+			<description>
+				<p>Rectified screen portrait orientation detection in edge cases</p>
+			</description>
+		</release>
 		<release version="1.2026.01.01" date="2026-01-01">
 			<description>
 				<p>Improved support for full-screen image display on portrait monitors</p>
