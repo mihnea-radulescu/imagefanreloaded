@@ -4,7 +4,6 @@
 		Icon="/MainWindowIcon.ico"
 		MinWidth="400"
 		MinHeight="300"
-		CanMaximize="False"
 		WindowStartupLocation="CenterScreen"
 		Background="Black"
 		Closing="OnWindowClosing">

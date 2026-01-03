@@ -61,18 +61,25 @@ public partial class WindowedImageWindow : Window, IImageView
 		_imageFile = imageFile;
 		Title = _imageFile.ImageFileData.ImageFileName;
 
-		_halfScaledScreenSize = ScreenInfo!.GetHalfScaledScreenSize(this);
-		Width = _halfScaledScreenSize.Width;
-		Height = _halfScaledScreenSize.Height;
-
-		if (TabOptions!.ImageViewDisplayMode == ImageViewDisplayMode.WindowedMaximized)
+		switch (TabOptions!.ImageViewDisplayMode)
 		{
-			WindowState = WindowState.Maximized;
-		}
-		else if (TabOptions!.ImageViewDisplayMode == ImageViewDisplayMode.WindowedMaximizedBorderless)
-		{
-			WindowState = WindowState.Maximized;
-			SystemDecorations = SystemDecorations.None;
+			case ImageViewDisplayMode.Windowed:
+			{
+				if (_halfScaledScreenSize is null)
+				{
+					_halfScaledScreenSize = ScreenInfo!.GetHalfScaledScreenSize(this);
+					Width = _halfScaledScreenSize.Width;
+					Height = _halfScaledScreenSize.Height;
+				}
+				break;
+			}
+			case ImageViewDisplayMode.WindowedMaximized:
+				WindowState = WindowState.Maximized;
+				break;
+			case ImageViewDisplayMode.WindowedMaximizedBorderless:
+				WindowState = WindowState.Maximized;
+				SystemDecorations = SystemDecorations.None;
+				break;
 		}
 
 		await DisplayImage();
@@ -115,7 +122,15 @@ public partial class WindowedImageWindow : Window, IImageView
 		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 		var keyPressing = e.Key.ToCoreKey();
 
-		if (ShouldStartSlideshow(keyModifiers, keyPressing))
+		if (ShouldMaximizeWindow(keyModifiers, keyPressing))
+		{
+			MaximizeWindow();
+		}
+		else if (ShouldRestoreNormalWindowSize(keyModifiers, keyPressing))
+		{
+			RestoreNormalWindowSize();
+		}
+		else if (ShouldStartSlideshow(keyModifiers, keyPressing))
 		{
 			await StartSlideshow();
 		}
@@ -181,9 +196,32 @@ public partial class WindowedImageWindow : Window, IImageView
 		ViewClosing?.Invoke(this, new ImageViewClosingEventArgs(_showMainViewAfterImageViewClosing));
 	}
 
+	private bool ShouldMaximizeWindow(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+		    keyPressing == _globalParameters!.MKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldRestoreNormalWindowSize(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+		    keyPressing == _globalParameters!.NKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool ShouldStartSlideshow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
-		ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			keyPressing == _globalParameters!.SKey)
@@ -195,8 +233,7 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleBackwardNavigation(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
-		ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			_globalParameters!.IsBackwardNavigationKey(keyPressing))
@@ -208,8 +245,7 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleForwardNavigation(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
-		ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			_globalParameters!.IsForwardNavigationKey(keyPressing))
@@ -221,8 +257,7 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleEscapeAction(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
-		ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			keyPressing == _globalParameters!.EscapeKey)
@@ -234,8 +269,7 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldShowMainViewAfterImageViewClosing(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
-		ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (IsStandaloneView &&
 			keyModifiers == _globalParameters!.NoneKeyModifier &&
@@ -258,6 +292,27 @@ public partial class WindowedImageWindow : Window, IImageView
 		if (!isSlideshow && !CanAdvanceToDesignatedImage)
 		{
 			await CloseWindow();
+		}
+	}
+
+	private void MaximizeWindow()
+	{
+		if (WindowState == WindowState.Normal)
+		{
+			WindowState = WindowState.Maximized;
+
+			TabOptions!.ImageViewDisplayMode = ImageViewDisplayMode.WindowedMaximized;
+		}
+	}
+
+	private void RestoreNormalWindowSize()
+	{
+		if (WindowState == WindowState.Maximized &&
+		    TabOptions!.ImageViewDisplayMode != ImageViewDisplayMode.WindowedMaximizedBorderless)
+		{
+			WindowState = WindowState.Normal;
+
+			TabOptions!.ImageViewDisplayMode = ImageViewDisplayMode.Windowed;
 		}
 	}
 

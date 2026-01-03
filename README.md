@@ -33,6 +33,7 @@ User interface:
 * keys N, M and B for changing image file ordering between name, last modification time and random shuffle
 * keys A and D for changing image file ordering direction between ascending and descending
 * digit keys 1, 2, 3 and 4 for switching between full-screen, windowed, windowed maximized and windowed maximized borderless image view modes
+* keys N and M for switching between normal and maximized view modes in the windowed and windowed maximized image views
 * keys + and - for changing thumbnail size by an increment of 50 pixels
 * key U to toggle showing file names under thumbnail images
 * key S for slideshow navigation
