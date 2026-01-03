@@ -47,6 +47,7 @@ public static class KeyExtensions
 				Avalonia.Input.Key.D1 => Core.Keyboard.Key.Digit1,
 				Avalonia.Input.Key.D2 => Core.Keyboard.Key.Digit2,
 				Avalonia.Input.Key.D3 => Core.Keyboard.Key.Digit3,
+				Avalonia.Input.Key.D4 => Core.Keyboard.Key.Digit4,
 
 				Avalonia.Input.Key.OemPlus => Core.Keyboard.Key.Plus,
 				Avalonia.Input.Key.Add => Core.Keyboard.Key.Plus,

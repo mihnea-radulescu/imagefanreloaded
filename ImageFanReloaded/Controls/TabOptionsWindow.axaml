@@ -46,11 +46,11 @@
 			<RowDefinition Height="10*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="3*"/>
-			<ColumnDefinition Width="63*"/>
 			<ColumnDefinition Width="1*"/>
-			<ColumnDefinition Width="30*"/>
-			<ColumnDefinition Width="3*"/>
+			<ColumnDefinition Width="62*"/>
+			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="35*"/>
+			<ColumnDefinition Width="1*"/>
 		</Grid.ColumnDefinitions>
 
 		<TextBlock Grid.Row="1"

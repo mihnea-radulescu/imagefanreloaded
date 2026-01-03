@@ -69,6 +69,11 @@ public partial class WindowedImageWindow : Window, IImageView
 		{
 			WindowState = WindowState.Maximized;
 		}
+		else if (TabOptions!.ImageViewDisplayMode == ImageViewDisplayMode.WindowedMaximizedBorderless)
+		{
+			WindowState = WindowState.Maximized;
+			SystemDecorations = SystemDecorations.None;
+		}
 
 		await DisplayImage();
 
@@ -110,15 +115,7 @@ public partial class WindowedImageWindow : Window, IImageView
 		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 		var keyPressing = e.Key.ToCoreKey();
 
-		if (ShouldMaximizeWindow(keyModifiers, keyPressing))
-		{
-			MaximizeWindow();
-		}
-		else if (ShouldRestoreNormalWindowSize(keyModifiers, keyPressing))
-		{
-			RestoreNormalWindowSize();
-		}
-		else if (ShouldStartSlideshow(keyModifiers, keyPressing))
+		if (ShouldStartSlideshow(keyModifiers, keyPressing))
 		{
 			await StartSlideshow();
 		}
@@ -182,32 +179,6 @@ public partial class WindowedImageWindow : Window, IImageView
 	private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
 		ViewClosing?.Invoke(this, new ImageViewClosingEventArgs(_showMainViewAfterImageViewClosing));
-	}
-
-	private bool ShouldMaximizeWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
-		ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
-			keyPressing == _globalParameters!.MKey)
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	private bool ShouldRestoreNormalWindowSize(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
-		ImageFanReloaded.Core.Keyboard.Key keyPressing)
-	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
-			keyPressing == _globalParameters!.NKey)
-		{
-			return true;
-		}
-
-		return false;
 	}
 
 	private bool ShouldStartSlideshow(
@@ -287,26 +258,6 @@ public partial class WindowedImageWindow : Window, IImageView
 		if (!isSlideshow && !CanAdvanceToDesignatedImage)
 		{
 			await CloseWindow();
-		}
-	}
-
-	private void MaximizeWindow()
-	{
-		if (WindowState == WindowState.Normal)
-		{
-			WindowState = WindowState.Maximized;
-
-			TabOptions!.ImageViewDisplayMode = ImageViewDisplayMode.WindowedMaximized;
-		}
-	}
-
-	private void RestoreNormalWindowSize()
-	{
-		if (WindowState == WindowState.Maximized)
-		{
-			WindowState = WindowState.Normal;
-
-			TabOptions!.ImageViewDisplayMode = ImageViewDisplayMode.Windowed;
 		}
 	}
 

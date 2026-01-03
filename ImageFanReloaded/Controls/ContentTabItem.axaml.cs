@@ -821,7 +821,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			(keyPressing == GlobalParameters!.Digit1Key ||
 			 keyPressing == GlobalParameters!.Digit2Key ||
-			 keyPressing == GlobalParameters!.Digit3Key))
+			 keyPressing == GlobalParameters!.Digit3Key ||
+			 keyPressing == GlobalParameters!.Digit4Key))
 		{
 			return true;
 		}
@@ -1122,6 +1123,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (keyPressing == GlobalParameters!.Digit3Key)
 		{
 			newImageViewDisplayMode = ImageViewDisplayMode.WindowedMaximized;
+		}
+		else if (keyPressing == GlobalParameters!.Digit4Key)
+		{
+			newImageViewDisplayMode = ImageViewDisplayMode.WindowedMaximizedBorderless;
 		}
 
 		if (newImageViewDisplayMode != TabOptions!.ImageViewDisplayMode)

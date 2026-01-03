@@ -16,7 +16,7 @@
 	<project_license>GPL-3.0-or-later</project_license>
 
 	<description>
-		<p>A fast and easy-to-use image viewer with broad format support for everyday photo browsing and management.</p>
+		<p>A fast and easy-to-use image viewer with broad format support for everyday photo browsing and management</p>
 		<p>Features:</p>
 		<ul>
 			<li>quick concurrent thumbnail generation, scaling to the number of processor cores present</li>
@@ -67,14 +67,9 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
-		<release version="1.2026.01.02" date="2026-01-02">
+		<release version="1.2026.01.03" date="2026-01-03">
 			<description>
-				<p>Rectified screen portrait orientation detection in edge cases</p>
-			</description>
-		</release>
-		<release version="1.2026.01.01" date="2026-01-01">
-			<description>
-				<p>Improved support for full-screen image display on portrait monitors</p>
+				<p>Added windowed maximized borderless image view mode</p>
 			</description>
 		</release>
 		<release version="1.2025.12.31" date="2025-12-31">

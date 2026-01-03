@@ -53,6 +53,7 @@ public interface IGlobalParameters
 	Key Digit1Key { get; }
 	Key Digit2Key { get; }
 	Key Digit3Key { get; }
+	Key Digit4Key { get; }
 
 	Key UpKey { get; }
 	Key DownKey { get; }

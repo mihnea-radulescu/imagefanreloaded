@@ -55,6 +55,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key Digit1Key { get; }
 	public Key Digit2Key { get; }
 	public Key Digit3Key { get; }
+	public Key Digit4Key { get; }
 
 	public Key UpKey { get; }
 	public Key DownKey { get; }
@@ -150,6 +151,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		Digit1Key = Key.Digit1;
 		Digit2Key = Key.Digit2;
 		Digit3Key = Key.Digit3;
+		Digit4Key = Key.Digit4;
 
 		UpKey = Key.Up;
 		DownKey = Key.Down;

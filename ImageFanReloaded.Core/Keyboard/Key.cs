@@ -44,6 +44,7 @@ public enum Key
 	Digit1,
 	Digit2,
 	Digit3,
+	Digit4,
 
 	Plus,
 	Minus,
