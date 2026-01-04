@@ -13,7 +13,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 	public bool IsLinux { get; }
 	public bool IsWindows { get; }
-	public bool IsMacOS { get; }
+	public bool IsMacOs { get; }
 
 	public int MaxRecursionDepth => 6;
 
@@ -103,15 +103,13 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public abstract IImage GetInvalidImageThumbnail(int thumbnailSize);
 	public abstract IImage GetLoadingImageThumbnail(int thumbnailSize);
 
-	#region Protected
-
 	protected GlobalParametersBase(IOperatingSystemSettings operatingSystemSettings)
 	{
 		ProcessorCount = Environment.ProcessorCount;
 
 		IsLinux = operatingSystemSettings.IsLinux;
 		IsWindows = operatingSystemSettings.IsWindows;
-		IsMacOS = operatingSystemSettings.IsMacOS;
+		IsMacOs = operatingSystemSettings.IsMacOs;
 
 		TabKey = Key.Tab;
 		EscapeKey = Key.Escape;
@@ -170,8 +168,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)
 			: new NaturalSortingComparer(StringComparer.InvariantCulture);
 
-		DirectlySupportedImageFileExtensions = new HashSet<string>(
-			StringComparer.InvariantCultureIgnoreCase)
+		DirectlySupportedImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
 		{
 			".bmp",
 			".cr2",
@@ -190,8 +187,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".wbmp"
 		};
 
-		IndirectlySupportedImageFileExtensions = new HashSet<string>(
-			StringComparer.InvariantCultureIgnoreCase)
+		IndirectlySupportedImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
 		{
 			".dds",
 			".exr",
@@ -221,8 +217,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".xpm"
 		};
 
-		AnimationEnabledImageFileExtensions = new HashSet<string>(
-			StringComparer.InvariantCultureIgnoreCase)
+		AnimationEnabledImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
 		{
 			".gif",
 			".mng",
@@ -230,7 +225,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		};
 
 		ImageFileExtensions = new HashSet<string>(
-			[..DirectlySupportedImageFileExtensions,
+			[..DirectlySupportedImageFileExtensions, 
 			 ..IndirectlySupportedImageFileExtensions,
 			 ..AnimationEnabledImageFileExtensions],
 			StringComparer.InvariantCultureIgnoreCase);
@@ -248,30 +243,16 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			"Pictures"
 		};
 
-		_backwardNavigationKeys = [
-			Key.Up,
-			Key.Left,
-			Key.Backspace
-		];
+		_backwardNavigationKeys = [Key.Up, Key.Left, Key.Backspace];
 
-		_forwardNavigationKeys = [
-			Key.Down,
-			Key.Right,
-			Key.Space
-		];
+		_forwardNavigationKeys = [Key.Down, Key.Right, Key.Space];
 
-		_navigationKeys = [ .._backwardNavigationKeys, .._forwardNavigationKeys ];
+		_navigationKeys = [.._backwardNavigationKeys, .._forwardNavigationKeys];
 	}
 
 	protected const int IconSizeSquareLength = 36;
 
-	#endregion
-
-	#region Private
-
 	private readonly HashSet<Key> _backwardNavigationKeys;
 	private readonly HashSet<Key> _forwardNavigationKeys;
 	private readonly HashSet<Key> _navigationKeys;
-
-	#endregion
 }

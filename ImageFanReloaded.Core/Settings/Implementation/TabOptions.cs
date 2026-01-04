@@ -69,22 +69,17 @@ public class TabOptions : ITabOptions
 		await PersistDefaultTabOptions();
 	}
 
-	#region Private
-
 	private const string SettingsFileName = "DefaultTabOptions.json";
 
-	private const FileSystemEntryInfoOrdering DefaultFolderOrdering =
-		FileSystemEntryInfoOrdering.Name;
+	private const FileSystemEntryInfoOrdering DefaultFolderOrdering = FileSystemEntryInfoOrdering.Name;
 	private const FileSystemEntryInfoOrderingDirection DefaultFolderOrderingDirection =
 		FileSystemEntryInfoOrderingDirection.Ascending;
 
-	private const FileSystemEntryInfoOrdering DefaultImageFileOrdering =
-		FileSystemEntryInfoOrdering.Name;
+	private const FileSystemEntryInfoOrdering DefaultImageFileOrdering = FileSystemEntryInfoOrdering.Name;
 	private const FileSystemEntryInfoOrderingDirection DefaultImageFileOrderingDirection =
 		FileSystemEntryInfoOrderingDirection.Ascending;
 
-	private const ImageViewDisplayMode DefaultImageViewDisplayMode =
-		ImageViewDisplayMode.FullScreen;
+	private const ImageViewDisplayMode DefaultImageViewDisplayMode = ImageViewDisplayMode.FullScreen;
 
 	private const ThumbnailSize DefaultThumbnailSize = ThumbnailSize.TwoHundredFiftyPixels;
 
@@ -201,8 +196,7 @@ public class TabOptions : ITabOptions
 			ThumbnailSize = _defaultTabOptions.ThumbnailSize;
 
 			RecursiveFolderBrowsing = _defaultTabOptions.RecursiveFolderBrowsing;
-			GlobalOrderingForRecursiveFolderBrowsing =
-				_defaultTabOptions.GlobalOrderingForRecursiveFolderBrowsing;
+			GlobalOrderingForRecursiveFolderBrowsing = _defaultTabOptions.GlobalOrderingForRecursiveFolderBrowsing;
 
 			ShowImageViewImageInfo = _defaultTabOptions.ShowImageViewImageInfo;
 			PanelsSplittingRatio = _defaultTabOptions.PanelsSplittingRatio;
@@ -225,8 +219,7 @@ public class TabOptions : ITabOptions
 			ThumbnailSize = DefaultThumbnailSize;
 
 			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing;
-			GlobalOrderingForRecursiveFolderBrowsing =
-				DefaultGlobalOrderingForRecursiveFolderBrowsing;
+			GlobalOrderingForRecursiveFolderBrowsing = DefaultGlobalOrderingForRecursiveFolderBrowsing;
 
 			ShowImageViewImageInfo = DefaultShowImageViewImageInfo;
 			PanelsSplittingRatio = DefaultPanelsSplittingRatio;
@@ -251,8 +244,7 @@ public class TabOptions : ITabOptions
 		_defaultTabOptions!.ThumbnailSize = ThumbnailSize;
 
 		_defaultTabOptions!.RecursiveFolderBrowsing = RecursiveFolderBrowsing;
-		_defaultTabOptions!.GlobalOrderingForRecursiveFolderBrowsing =
-			GlobalOrderingForRecursiveFolderBrowsing;
+		_defaultTabOptions!.GlobalOrderingForRecursiveFolderBrowsing = GlobalOrderingForRecursiveFolderBrowsing;
 
 		_defaultTabOptions!.ShowImageViewImageInfo = ShowImageViewImageInfo;
 		_defaultTabOptions!.PanelsSplittingRatio = PanelsSplittingRatio;
@@ -285,13 +277,9 @@ public class TabOptions : ITabOptions
 		=> Enum.IsDefined(typeof(TEnum), enumValue);
 
 	private static bool IsValidPanelsSplittingRatio(int panelsSplittingRatio)
-		=> 0 <= panelsSplittingRatio && panelsSplittingRatio <= 100;
-
-	#endregion
+		=> panelsSplittingRatio is >= 0 and <= 100;
 }
 
 [JsonSerializable(typeof(TabOptions))]
 [JsonSourceGenerationOptions(WriteIndented = true)]
-public partial class TabOptionsJsonContext : JsonSerializerContext
-{
-}
+public partial class TabOptionsJsonContext : JsonSerializerContext;

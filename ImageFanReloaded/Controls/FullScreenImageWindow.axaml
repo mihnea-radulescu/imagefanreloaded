@@ -10,6 +10,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
+
 		<ScrollViewer Name="_imageScrollViewer"
 					  Grid.Row="0"
 					  HorizontalScrollBarVisibility="Hidden"
@@ -19,8 +20,9 @@
 			<Image Name="_displayImage"
 				   Stretch="None"/>
 		</ScrollViewer>
+
 		<Canvas Grid.Row="0">
-			<SelectableTextBlock Name="_imageInfoTextBox"
+			<SelectableTextBlock Name="_imageInfoSelectableTextBlock"
 								 Canvas.Bottom="0"
 								 Canvas.Right="0"
 								 Background="Transparent"

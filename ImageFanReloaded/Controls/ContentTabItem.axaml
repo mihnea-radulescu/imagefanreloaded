@@ -65,11 +65,11 @@
 						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
 
-					<SelectableTextBlock Name="_folderInfoTextBox"
+					<SelectableTextBlock Name="_folderInfoSelectableTextBlock"
 										 Grid.Column="0"
 										 Background="Transparent"
 										 TextAlignment="Left"/>
-					<SelectableTextBlock Name="_imageInfoTextBox"
+					<SelectableTextBlock Name="_imageInfoSelectableTextBlock"
 										 Grid.Column="2"
 										 Background="Transparent"
 										 TextAlignment="Right"/>

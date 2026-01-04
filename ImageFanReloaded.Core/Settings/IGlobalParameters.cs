@@ -11,7 +11,7 @@ public interface IGlobalParameters
 
 	bool IsLinux { get; }
 	bool IsWindows { get; }
-	bool IsMacOS { get; }
+	bool IsMacOs { get; }
 
 	int MaxRecursionDepth { get; }
 

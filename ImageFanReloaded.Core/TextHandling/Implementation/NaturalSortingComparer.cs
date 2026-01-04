@@ -75,8 +75,6 @@ public class NaturalSortingComparer : StringComparer, IStringComparisonEnabled
 		return StringComparison.InvariantCulture;
 	}
 
-	#region Private
-
 	private static readonly Regex ContiguousDigitBlockRegex;
 
 	private readonly StringComparer _defaultStringComparer;
@@ -85,11 +83,10 @@ public class NaturalSortingComparer : StringComparer, IStringComparisonEnabled
 
 	private static int GetMaximumContiguousDigitBlockLength(string text)
 	{
-		var maximumContiguousDigitBlockLength =
-			ContiguousDigitBlockRegex
-				.Matches(text)
-				.Select(aMatch => aMatch.Value.Length)
-				.Max();
+		var maximumContiguousDigitBlockLength = ContiguousDigitBlockRegex
+			.Matches(text)
+			.Select(aMatch => aMatch.Value.Length)
+			.Max();
 
 		return maximumContiguousDigitBlockLength;
 	}
@@ -97,11 +94,8 @@ public class NaturalSortingComparer : StringComparer, IStringComparisonEnabled
 	private static string PadDigitBlocks(string text, int digitBlockLength)
 	{
 		var paddedText = ContiguousDigitBlockRegex.Replace(
-			text,
-			aMatch => aMatch.Value.PadLeft(digitBlockLength, '0'));
+			text, aMatch => aMatch.Value.PadLeft(digitBlockLength, '0'));
 
 		return paddedText;
 	}
-
-	#endregion
 }

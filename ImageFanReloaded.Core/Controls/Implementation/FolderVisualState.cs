@@ -54,8 +54,7 @@ public class FolderVisualState : IFolderVisualState
 			var imageFiles = await _discQueryEngine.GetImageFiles(_folderPath, tabOptions);
 
 			_imageFilesCount = imageFiles.Count;
-			_imageFilesTotalSizeOnDiscInKilobytes =
-				GetImageFilesTotalSizeOnDiscInKilobytes(imageFiles);
+			_imageFilesTotalSizeOnDiscInKilobytes = GetImageFilesTotalSizeOnDiscInKilobytes(imageFiles);
 
 			SetFolderInfoText(tabOptions);
 			_contentTabItem.SetImageInfoText(string.Empty);
@@ -82,8 +81,6 @@ public class FolderVisualState : IFolderVisualState
 	}
 
 	public void DisposeCancellationTokenSource() => _ctsThumbnailGeneration.Dispose();
-
-	#region Private
 
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IFileSizeEngine _fileSizeEngine;
@@ -186,8 +183,7 @@ public class FolderVisualState : IFolderVisualState
 				{
 					var currentIndex = i;
 
-					var aThumbnailGenerationTask = new Task(() =>
-						currentThumbnails[currentIndex].GetThumbnail());
+					var aThumbnailGenerationTask = new Task(() => currentThumbnails[currentIndex].GetThumbnail());
 
 					thumbnailGenerationTasks[currentIndex] = aThumbnailGenerationTask;
 				}
@@ -224,17 +220,13 @@ public class FolderVisualState : IFolderVisualState
 			_imageFilesTotalSizeOnDiscInKilobytes);
 
 		var folderStatusBarText = GetFolderStatusBarText(
-			_imageFilesCount,
-			imageFilesTotalSizeOnDiscInMegabytes,
-			tabOptions.RecursiveFolderBrowsing);
+			_imageFilesCount, imageFilesTotalSizeOnDiscInMegabytes, tabOptions.RecursiveFolderBrowsing);
 
 		_contentTabItem.SetFolderInfoText(folderStatusBarText);
 	}
 
 	private string GetFolderStatusBarText(
-		int imageFilesCount,
-		decimal imageFilesTotalSizeOnDiscInMegabytes,
-		bool recursiveFolderAccess)
+		int imageFilesCount, decimal imageFilesTotalSizeOnDiscInMegabytes, bool recursiveFolderAccess)
 	{
 		var imageFilesTotalSizeOnDiscInMegabytesForDisplay = decimal.Round(
 			imageFilesTotalSizeOnDiscInMegabytes, _globalParameters.DecimalDigitCountForDisplay);
@@ -250,11 +242,8 @@ public class FolderVisualState : IFolderVisualState
 			? " (recursive)"
 			: string.Empty;
 
-		var folderStatusBarText =
-			$"{_folderPath}{recursiveFolderAccessInfo} - {imageFilesCountAndTotalSizeText}";
+		var folderStatusBarText = $"{_folderPath}{recursiveFolderAccessInfo} - {imageFilesCountAndTotalSizeText}";
 
 		return folderStatusBarText;
 	}
-
-	#endregion
 }

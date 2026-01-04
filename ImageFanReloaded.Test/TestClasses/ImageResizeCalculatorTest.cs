@@ -49,12 +49,8 @@ public class ImageResizeCalculatorTest
 		Assert.Equal(referenceDownsizedImageSize, downsizedImageSize);
 	}
 
-	#region Private
-
 	private static readonly ImageSize LandscapeImageSize = new(1920, 1080);
 	private static readonly ImageSize PortraitImageSize = new(1080, 1920);
 
 	private readonly ImageResizeCalculator _imageResizeCalculator;
-
-	#endregion
 }

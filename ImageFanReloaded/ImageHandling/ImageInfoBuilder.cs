@@ -22,8 +22,6 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	public async Task<string> BuildImageInfo(IImageFile imageFile)
 		=> await Task.Run(() => BuildImageInfoInternal(imageFile));
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
 
 	private string BuildImageInfoInternal(IImageFile imageFile)
@@ -32,16 +30,14 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		{
 			return BuildBasicImageInfo(imageFile);
 		}
-		else
+
+		try
 		{
-			try
-			{
-				return BuildExtendedImageInfo(imageFile);
-			}
-			catch
-			{
-				return BuildBasicImageInfo(imageFile);
-			}
+			return BuildExtendedImageInfo(imageFile);
+		}
+		catch
+		{
+			return BuildBasicImageInfo(imageFile);
 		}
 	}
 
@@ -63,8 +59,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 		using (IMagickImage image = new MagickImage(imageFile.ImageFileData.ImageFilePath))
 		{
-			BuildImageProfile(
-				image, imageFile.ImageSize, imageInfoBuilder, imageFile.IsAnimatedImage);
+			BuildImageProfile(image, imageFile.ImageSize, imageInfoBuilder, imageFile.IsAnimatedImage);
 
 			BuildColorProfile(image, imageInfoBuilder);
 
@@ -98,10 +93,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	}
 
 	private static void BuildImageProfile(
-		IMagickImage image,
-		ImageSize imageSize,
-		StringBuilder imageInfoBuilder,
-		bool isAnimatedImage)
+		IMagickImage image, ImageSize imageSize, StringBuilder imageInfoBuilder, bool isAnimatedImage)
 	{
 		imageInfoBuilder.AppendLine();
 		imageInfoBuilder.AppendLine("Image profile");
@@ -162,8 +154,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 					ValueTag = aValueTagValueContentPair.Tag,
 					ValueContent = aValueTagValueContentPair.GetValue()
 				})
-				.Where(aValueTagValueContentPair =>
-					aValueTagValueContentPair.ValueContent is not null)
+				.Where(aValueTagValueContentPair => aValueTagValueContentPair.ValueContent is not null)
 				.ToList();
 
 			if (valueTagValueContentPairs.Any())
@@ -186,7 +177,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 					}
 					else
 					{
-						imageInfoBuilder.AppendLine($"\t{aValueTagValueContentPair.ValueTag}:\t{aValueTagValueContentPair.ValueContent}");
+						imageInfoBuilder.AppendLine(
+							$"\t{aValueTagValueContentPair.ValueTag}:\t{aValueTagValueContentPair.ValueContent}");
 					}
 				}
 			}
@@ -217,7 +209,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 				foreach (var aValueTagValueContentPair in valueTagValueContentPairs)
 				{
-					imageInfoBuilder.AppendLine($"\t{aValueTagValueContentPair.ValueTag}:\t{aValueTagValueContentPair.ValueContent}");
+					imageInfoBuilder.AppendLine(
+						$"\t{aValueTagValueContentPair.ValueTag}:\t{aValueTagValueContentPair.ValueContent}");
 				}
 			}
 		}
@@ -298,6 +291,4 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		var indentedText = indentedTextBuilder.ToString();
 		return indentedText;
 	}
-
-	#endregion
 }

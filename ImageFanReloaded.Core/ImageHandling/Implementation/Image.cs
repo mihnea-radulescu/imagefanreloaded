@@ -9,8 +9,7 @@ public class Image : DisposableBase, IImage
 {
 	public Image(IDisposable imageImplementationInstance, ImageSize imageSize)
 	{
-		IImageFrame singleImageFrame = new ImageFrame(
-			imageImplementationInstance, imageSize, TimeSpan.Zero);
+		IImageFrame singleImageFrame = new ImageFrame(imageImplementationInstance, imageSize, TimeSpan.Zero);
 
 		_imageFrames = [singleImageFrame];
 
@@ -90,8 +89,6 @@ public class Image : DisposableBase, IImage
 	public double GetMaxUpscalingFactorToViewPort(ImageSize viewPortSize)
 		=> Math.Min(viewPortSize.Width / (double)Size.Width, viewPortSize.Height / (double)Size.Height);
 
-	#region Protected
-
 	protected override void DisposeSpecific()
 	{
 		foreach (var anImageFrame in _imageFrames)
@@ -100,19 +97,17 @@ public class Image : DisposableBase, IImage
 		}
 	}
 
-	#endregion
-
-	#region Private
-
 	private readonly bool _isAnimated;
 	private readonly TimeSpan _totalImageFramesDelay;
 
 	private readonly IReadOnlyList<IImageFrame> _imageFrames;
 
 	private TimeSpan GetTotalImageFramesDelay()
-		=> TimeSpan.FromMilliseconds(
-			_imageFrames.Sum(
-				anImageFrame => anImageFrame.DelayUntilNextFrame.TotalMilliseconds));
+	{
+		var imageFramesTotalMilliseconds =
+			_imageFrames.Sum(anImageFrame => anImageFrame.DelayUntilNextFrame.TotalMilliseconds);
 
-	#endregion
+		var imageFramesTotalTimeSpan = TimeSpan.FromMilliseconds(imageFramesTotalMilliseconds);
+		return imageFramesTotalTimeSpan;
+	}
 }

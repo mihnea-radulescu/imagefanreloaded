@@ -55,8 +55,6 @@ public class GlobalParameters : GlobalParametersBase
 	public override IImage GetInvalidImageThumbnail(int thumbnailSize) => _invalidImageThumbnails[thumbnailSize];
 	public override IImage GetLoadingImageThumbnail(int thumbnailSize) => _loadingImageThumbnails[thumbnailSize];
 
-	#region Private
-
 	private readonly IImageResizer _imageResizer;
 
 	private readonly IReadOnlyDictionary<int, IImage> _invalidImageThumbnails;
@@ -120,6 +118,4 @@ public class GlobalParameters : GlobalParametersBase
 
 		return loadingImageThumbnails;
 	}
-
-	#endregion
 }

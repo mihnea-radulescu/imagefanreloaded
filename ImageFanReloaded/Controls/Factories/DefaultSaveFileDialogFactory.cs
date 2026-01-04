@@ -15,9 +15,5 @@ public class DefaultSaveFileDialogFactory : ISaveFileDialogFactory
 
 	public ISaveFileDialog GetSaveFileDialog() => new DefaultSaveFileDialog(_storageProvider);
 
-	#region Private
-
 	private readonly IStorageProvider _storageProvider;
-
-	#endregion
 }

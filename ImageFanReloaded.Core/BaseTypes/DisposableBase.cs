@@ -15,18 +15,9 @@ public abstract class DisposableBase : IDisposable
 		}
 	}
 
-	#region Protected
-
 	protected abstract void DisposeSpecific();
 
-	protected void ThrowObjectDisposedExceptionIfNecessary()
-		=> ObjectDisposedException.ThrowIf(_hasBeenDisposed, this);
-
-	#endregion
-
-	#region Private
+	protected void ThrowObjectDisposedExceptionIfNecessary() => ObjectDisposedException.ThrowIf(_hasBeenDisposed, this);
 
 	private bool _hasBeenDisposed;
-
-	#endregion
 }

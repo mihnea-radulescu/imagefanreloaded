@@ -6,8 +6,6 @@ namespace ImageFanReloaded.Test.TestClasses;
 
 public class PathExtensionsTest
 {
-	#region UnixOs
-
 	[Theory]
 	[InlineData(@"/home", @"/media")]
 	[InlineData(@"/media", @"/mount")]
@@ -25,8 +23,7 @@ public class PathExtensionsTest
 		const StringComparison pathComparison = StringComparison.InvariantCulture;
 
 		// Act
-		var startsWithPath = longerPath.StartsWithPath(
-			shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(shorterPath, directorySeparator, pathComparison);
 
 		// Assert
 		Assert.False(startsWithPath);
@@ -37,16 +34,14 @@ public class PathExtensionsTest
 	[InlineData(@"/home", @"/home")]
 	[InlineData(@"/home/mihnea", @"/home/mihnea")]
 	[InlineData(@"/home/mihnea/Pictures", @"/home/mihnea/Pictures")]
-	public void StartsWithPath_UnixOs_LongerPathEqualsShorterPath_ReturnsTrue(
-		string longerPath, string shorterPath)
+	public void StartsWithPath_UnixOs_LongerPathEqualsShorterPath_ReturnsTrue(string longerPath, string shorterPath)
 	{
 		// Arrange
 		const string directorySeparator = @"/";
 		const StringComparison pathComparison = StringComparison.InvariantCulture;
 
 		// Act
-		var startsWithPath = longerPath.StartsWithPath(
-			shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(shorterPath, directorySeparator, pathComparison);
 
 		// Assert
 		Assert.True(startsWithPath);
@@ -59,24 +54,18 @@ public class PathExtensionsTest
 	[InlineData(@"/usr/lib/ImageFanReloaded", @"/")]
 	[InlineData(@"/usr/lib/ImageFanReloaded", @"/usr")]
 	[InlineData(@"/usr/lib/ImageFanReloaded", @"/usr/lib")]
-	public void StartsWithPath_UnixOs_LongerPathStartsWithShorterPath_ReturnsTrue(
-		string longerPath, string shorterPath)
+	public void StartsWithPath_UnixOs_LongerPathStartsWithShorterPath_ReturnsTrue(string longerPath, string shorterPath)
 	{
 		// Arrange
 		const string directorySeparator = @"/";
 		const StringComparison pathComparison = StringComparison.InvariantCulture;
 
 		// Act
-		var startsWithPath = longerPath.StartsWithPath(
-			shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(shorterPath, directorySeparator, pathComparison);
 
 		// Assert
 		Assert.True(startsWithPath);
 	}
-
-	#endregion
-
-	#region WindowsOs
 
 	[Theory]
 	[InlineData(@"C:\", @"D:\")]
@@ -97,8 +86,7 @@ public class PathExtensionsTest
 		const StringComparison pathComparison = StringComparison.InvariantCultureIgnoreCase;
 
 		// Act
-		var startsWithPath = longerPath.StartsWithPath(
-			shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(shorterPath, directorySeparator, pathComparison);
 
 		// Assert
 		Assert.False(startsWithPath);
@@ -109,16 +97,14 @@ public class PathExtensionsTest
 	[InlineData(@"C:\Media", @"C:\media")]
 	[InlineData(@"C:\Users\mihnea", @"C:\users\Mihnea")]
 	[InlineData(@"C:\Users\mihnea\Pictures", @"C:\users\Mihnea\pictures")]
-	public void StartsWithPath_WindowsOs_LongerPathEqualsShorterPath_ReturnsTrue(
-		string longerPath, string shorterPath)
+	public void StartsWithPath_WindowsOs_LongerPathEqualsShorterPath_ReturnsTrue(string longerPath, string shorterPath)
 	{
 		// Arrange
 		const string directorySeparator = @"\";
 		const StringComparison pathComparison = StringComparison.InvariantCultureIgnoreCase;
 
 		// Act
-		var startsWithPath = longerPath.StartsWithPath(
-			shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(shorterPath, directorySeparator, pathComparison);
 
 		// Assert
 		Assert.True(startsWithPath);
@@ -139,12 +125,9 @@ public class PathExtensionsTest
 		const StringComparison pathComparison = StringComparison.InvariantCultureIgnoreCase;
 
 		// Act
-		var startsWithPath = longerPath.StartsWithPath(
-			shorterPath, directorySeparator, pathComparison);
+		var startsWithPath = longerPath.StartsWithPath(shorterPath, directorySeparator, pathComparison);
 
 		// Assert
 		Assert.True(startsWithPath);
 	}
-
-	#endregion
 }

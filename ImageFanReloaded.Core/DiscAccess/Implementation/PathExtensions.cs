@@ -26,8 +26,7 @@ public static class PathExtensions
 					var remainingStringAfterSubstringMatch = longerPath
 						.GetRemainingStringAfterSubstringMatch(shorterPath, pathComparison)!;
 
-					startsWithPath = remainingStringAfterSubstringMatch.StartsWith(
-						directorySeparator, pathComparison);
+					startsWithPath = remainingStringAfterSubstringMatch.StartsWith(directorySeparator, pathComparison);
 				}
 			}
 			else

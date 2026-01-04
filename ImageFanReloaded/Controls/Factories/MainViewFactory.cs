@@ -32,12 +32,8 @@ public class MainViewFactory : IMainViewFactory
 		return mainView;
 	}
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IMouseCursorFactory _mouseCursorFactory;
 	private readonly ITabOptionsFactory _tabOptionsFactory;
 	private readonly IAsyncMutexFactory _asyncMutexFactory;
-
-	#endregion
 }

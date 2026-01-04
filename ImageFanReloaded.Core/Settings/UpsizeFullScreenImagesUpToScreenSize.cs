@@ -58,16 +58,16 @@ public static class UpsizeFullScreenImagesUpToScreenSizeExtensions
 				var description = upsizeFullScreenImagesUpToScreenSize switch
 				{
 					UpsizeFullScreenImagesUpToScreenSize.Disabled => "Disabled",
-					UpsizeFullScreenImagesUpToScreenSize.UpTo1Dot25X => "Up to 1.25X",
-					UpsizeFullScreenImagesUpToScreenSize.UpTo1Dot50X => "Up to 1.50X",
-					UpsizeFullScreenImagesUpToScreenSize.UpTo1Dot75X => "Up to 1.75X",
-					UpsizeFullScreenImagesUpToScreenSize.UpTo2X => "Up to 2X",
-					UpsizeFullScreenImagesUpToScreenSize.UpTo3X => "Up to 3X",
-					UpsizeFullScreenImagesUpToScreenSize.UpTo4X => "Up to 4X",
-					UpsizeFullScreenImagesUpToScreenSize.UpTo5X => "Up to 5X",
-					UpsizeFullScreenImagesUpToScreenSize.UpTo6X => "Up to 6X",
-					UpsizeFullScreenImagesUpToScreenSize.UpTo7X => "Up to 7X",
-					UpsizeFullScreenImagesUpToScreenSize.UpTo8X => "Up to 8X",
+					UpsizeFullScreenImagesUpToScreenSize.UpTo1Dot25X => "Up to 1.25x image size",
+					UpsizeFullScreenImagesUpToScreenSize.UpTo1Dot50X => "Up to 1.50x image size",
+					UpsizeFullScreenImagesUpToScreenSize.UpTo1Dot75X => "Up to 1.75x image size",
+					UpsizeFullScreenImagesUpToScreenSize.UpTo2X => "Up to 2x image size",
+					UpsizeFullScreenImagesUpToScreenSize.UpTo3X => "Up to 3x image size",
+					UpsizeFullScreenImagesUpToScreenSize.UpTo4X => "Up to 4x image size",
+					UpsizeFullScreenImagesUpToScreenSize.UpTo5X => "Up to 5x image size",
+					UpsizeFullScreenImagesUpToScreenSize.UpTo6X => "Up to 6x image size",
+					UpsizeFullScreenImagesUpToScreenSize.UpTo7X => "Up to 7x image size",
+					UpsizeFullScreenImagesUpToScreenSize.UpTo8X => "Up to 8x image size",
 
 					_ => throw new NotSupportedException(
 						$"Enum value {upsizeFullScreenImagesUpToScreenSize} not supported.")

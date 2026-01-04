@@ -330,14 +330,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void SetFolderInfoText(string folderInfoText)
-		=> _folderInfoTextBox.Text = folderInfoText;
+	public void SetFolderInfoText(string folderInfoText) => _folderInfoSelectableTextBlock.Text = folderInfoText;
 
-	public void SetImageInfoText(string imageInfoText)
-		=> _imageInfoTextBox.Text = imageInfoText;
+	public void SetImageInfoText(string imageInfoText) => _imageInfoSelectableTextBlock.Text = imageInfoText;
 
-	public void SaveMatchingTreeViewItem(
-		FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders)
+	public void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders)
 	{
 		var subItems = _activeFolderTreeViewItem is null || startAtRootFolders
 			? _folderTreeView.Items
@@ -358,8 +355,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public bool AreFolderInfoOrImageInfoFocused()
-		=> _folderInfoTextBox.IsFocused || _imageInfoTextBox.IsFocused;
+	public bool AreSelectedFolderInfoTextOrImageInfoText()
+	{
+		var isSelectedFolderInfoText = _folderInfoSelectableTextBlock.SelectedText != string.Empty;
+		var isSelectedImageInfoText = _imageInfoSelectableTextBlock.SelectedText != string.Empty;
+
+		var areSelectedFolderInfoTextOrImageInfoText = isSelectedFolderInfoText || isSelectedImageInfoText;
+		return areSelectedFolderInfoTextOrImageInfoText;
+	}
 
 	public void FocusThumbnailScrollViewer() => _thumbnailScrollViewer.Focus();
 
@@ -384,11 +387,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var selectedFolderName = fileSystemEntryInfo.Name;
 			var selectedFolderPath = fileSystemEntryInfo.Path;
 
-			var folderChangedEventArgs = new FolderChangedEventArgs(
-				this,
-				selectedFolderName,
-				selectedFolderPath,
-				TabOptions!.RecursiveFolderBrowsing);
+			var folderChangedEventArgs = new FolderChangedEventArgs(this, selectedFolderName, selectedFolderPath);
 
 			FolderChanged?.Invoke(this, folderChangedEventArgs);
 		}
@@ -396,8 +395,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void RaisePanelsSplittingRatioChangedEvent()
 	{
-		_folderTreeViewColumn!.Width = new GridLength(
-			TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
+		_folderTreeViewColumn!.Width = new GridLength(TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
 
 		_thumbnailsScrollViewerColumn!.Width = new GridLength(
 			100 - TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
@@ -407,8 +405,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		var selectedImageFile = GetSelectedImageFile();
 
-		var basicImageInfo = selectedImageFile.GetBasicImageInfo(
-			TabOptions!.RecursiveFolderBrowsing);
+		var basicImageInfo = selectedImageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
 		SetImageInfoText(basicImageInfo);
 
 		var hasImageReadError = _selectedThumbnailBox!.HasImageReadError;
@@ -419,8 +416,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		try
 		{
-			var previousSelectedImageSizeOnDiscInKilobytes =
-				GetSelectedImageSizeOnDiscInKilobytes();
+			var previousSelectedImageSizeOnDiscInKilobytes = GetSelectedImageSizeOnDiscInKilobytes();
 
 			await _selectedThumbnailBox!.UpdateThumbnailAfterImageFileChange();
 
@@ -428,13 +424,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			await Task.Run(() => selectedImageFile.RefreshImageFileData());
 			UpdateSelectedImageStatus();
 
-			var currentSelectedImageSizeOnDiscInKilobytes =
-				GetSelectedImageSizeOnDiscInKilobytes();
+			var currentSelectedImageSizeOnDiscInKilobytes = GetSelectedImageSizeOnDiscInKilobytes();
 
 			FolderVisualState!.UpdateFolderInfoText(
-				TabOptions!,
-				previousSelectedImageSizeOnDiscInKilobytes,
-				currentSelectedImageSizeOnDiscInKilobytes);
+				TabOptions!, previousSelectedImageSizeOnDiscInKilobytes, currentSelectedImageSizeOnDiscInKilobytes);
 
 			BringThumbnailIntoView();
 		}
@@ -443,16 +436,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public async Task ShowImageEdit(IImageEditView imageEditView)
-		=> await imageEditView.ShowDialog(MainView!);
-	public async Task ShowTabOptions(ITabOptionsView tabOptionsView)
-		=> await tabOptionsView.ShowDialog(MainView!);
-	public async Task ShowAboutInfo(IAboutView aboutView)
-		=> await aboutView.ShowDialog(MainView!);
-	public async Task ShowImageInfo(IImageInfoView imageInfoView)
-		=> await imageInfoView.ShowDialog(MainView!);
-
-	#region Private
+	public async Task ShowImageEdit(IImageEditView imageEditView) => await imageEditView.ShowDialog(MainView!);
+	public async Task ShowTabOptions(ITabOptionsView tabOptionsView) => await tabOptionsView.ShowDialog(MainView!);
+	public async Task ShowAboutInfo(IAboutView aboutView) => await aboutView.ShowDialog(MainView!);
+	public async Task ShowImageInfo(IImageInfoView imageInfoView) => await imageInfoView.ShowDialog(MainView!);
 
 	private const string FakeTreeViewItemText = "Loading...";
 
@@ -473,8 +460,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private TreeViewItem? _activeFolderTreeViewItem;
 
-	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxSelectedEventArgs e)
-		=> UpdateSelectedImageStatus();
+	private void OnThumbnailBoxSelected(object? sender, ThumbnailBoxSelectedEventArgs e) => UpdateSelectedImageStatus();
 
 	private void OnThumbnailBoxClicked(object? sender, ThumbnailBoxClickedEventArgs e)
 	{
@@ -542,20 +528,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	private void OnImageViewClosing(object? sender, ImageViewClosingEventArgs e)
-		=> UpdateSelectedImageStatus();
+	private void OnImageViewClosing(object? sender, ImageViewClosingEventArgs e) => UpdateSelectedImageStatus();
 
-	private void OnSlideshowButtonClicked(object? sender, RoutedEventArgs e)
-		=> RaiseSlideshowRequested();
-	private void OnImageInfoButtonClicked(object? sender, RoutedEventArgs e)
-		=> RaiseImageInfoRequested();
-	private void OnImageEditButtonClicked(object? sender, RoutedEventArgs e)
-		=> RaiseImageEditRequested();
+	private void OnSlideshowButtonClicked(object? sender, RoutedEventArgs e) => RaiseSlideshowRequested();
+	private void OnImageInfoButtonClicked(object? sender, RoutedEventArgs e) => RaiseImageInfoRequested();
+	private void OnImageEditButtonClicked(object? sender, RoutedEventArgs e) => RaiseImageEditRequested();
 
-	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e)
-		=> RaiseTabOptionsRequested();
-	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e)
-		=> RaiseAboutInfoRequested();
+	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e) => RaiseTabOptionsRequested();
+	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e) => RaiseAboutInfoRequested();
 
 	private void AddMainGridColumnDefinitions()
 	{
@@ -715,8 +695,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldStartSlideshow(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.SKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.SKey)
 		{
 			return true;
 		}
@@ -726,8 +705,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldDisplayImageInfo(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.FKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.FKey)
 		{
 			return true;
 		}
@@ -737,8 +715,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldDisplayImageEdit(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.TKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.TKey)
 		{
 			return true;
 		}
@@ -748,8 +725,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldDisplayTabOptions(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.OKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.OKey)
 		{
 			return true;
 		}
@@ -843,8 +819,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldToggleRecursiveFolderAccess(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.RKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.RKey)
 		{
 			return true;
 		}
@@ -852,11 +827,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
-	private bool ShouldToggleGlobalOrderingForRecursiveFolderAccess(
-		KeyModifiers keyModifiers, Key keyPressing)
+	private bool ShouldToggleGlobalOrderingForRecursiveFolderAccess(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.GKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.GKey)
 		{
 			return true;
 		}
@@ -866,8 +839,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldChangeApplyImageOrientation(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.EKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EKey)
 		{
 			return true;
 		}
@@ -877,8 +849,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldChangeShowThumbnailImageFileName(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.UKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.UKey)
 		{
 			return true;
 		}
@@ -886,8 +857,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
-	private bool ShouldChangeImageViewImageInfoVisibility(
-		KeyModifiers keyModifiers, Key keyPressing)
+	private bool ShouldChangeImageViewImageInfoVisibility(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.IKey)
@@ -900,8 +870,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool ShouldSwitchControlFocus(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.TabKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.TabKey)
 		{
 			return true;
 		}
@@ -943,8 +912,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			return false;
 		}
 
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			GlobalParameters!.IsNavigationKey(keyPressing))
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && GlobalParameters!.IsNavigationKey(keyPressing))
 		{
 			var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem()!;
 
@@ -1186,8 +1154,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void ToggleGlobalOrderingForRecursiveFolderAccess()
 	{
-		TabOptions!.GlobalOrderingForRecursiveFolderBrowsing =
-			!TabOptions!.GlobalOrderingForRecursiveFolderBrowsing;
+		TabOptions!.GlobalOrderingForRecursiveFolderBrowsing = !TabOptions!.GlobalOrderingForRecursiveFolderBrowsing;
 
 		if (TabOptions!.RecursiveFolderBrowsing)
 		{
@@ -1244,13 +1211,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	private TreeViewItem? GetFolderTreeViewSelectedItem()
-		=> (TreeViewItem?)_folderTreeView.SelectedItem;
+	private TreeViewItem? GetFolderTreeViewSelectedItem() => (TreeViewItem?)_folderTreeView.SelectedItem;
 
 	private IImageFile GetSelectedImageFile() => _selectedThumbnailBox!.ImageFile!;
 
-	private static async Task StopThumbnailAnimation(
-		IReadOnlyList<IThumbnailBox> thumbnailBoxCollectionToClear)
+	private static async Task StopThumbnailAnimation(IReadOnlyList<IThumbnailBox> thumbnailBoxCollectionToClear)
 	{
 		var animatedThumbnailBoxes = thumbnailBoxCollectionToClear
 			.Where(aThumbnailBox => aThumbnailBox.IsAnimated)
@@ -1277,11 +1242,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private decimal GetSelectedImageSizeOnDiscInKilobytes()
 	{
 		var selectedImageFile = GetSelectedImageFile();
-		var selectedImageSizeOnDiscInKilobytes =
-			selectedImageFile.ImageFileData.SizeOnDiscInKilobytes;
+		var selectedImageSizeOnDiscInKilobytes = selectedImageFile.ImageFileData.SizeOnDiscInKilobytes;
 
 		return selectedImageSizeOnDiscInKilobytes;
 	}
-
-	#endregion
 }

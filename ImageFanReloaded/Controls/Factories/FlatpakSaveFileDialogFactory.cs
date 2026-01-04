@@ -15,9 +15,5 @@ public class FlatpakSaveFileDialogFactory : ISaveFileDialogFactory
 
 	public ISaveFileDialog GetSaveFileDialog() => new FlatpakSaveFileDialog(_storageProvider);
 
-	#region Private
-
 	private readonly IStorageProvider _storageProvider;
-
-	#endregion
 }

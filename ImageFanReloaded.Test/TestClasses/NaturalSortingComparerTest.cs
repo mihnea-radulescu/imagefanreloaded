@@ -65,9 +65,5 @@ public class NaturalSortingComparerTest
 		Assert.Equal(expectedComparisonResult, actualComparisonResult);
 	}
 
-	#region Private
-
 	private readonly NaturalSortingComparer _naturalSortingComparer;
-
-	#endregion
 }

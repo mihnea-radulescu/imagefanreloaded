@@ -39,7 +39,7 @@ public class GlobalParametersTest : TestBase
 		[
 			_globalParameters.IsLinux,
 			_globalParameters.IsWindows,
-			_globalParameters.IsMacOS
+			_globalParameters.IsMacOs
 		];
 		Assert.Single(isOperatingSystemCollection, isOperatingSystem => isOperatingSystem);
 
@@ -122,8 +122,7 @@ public class GlobalParametersTest : TestBase
 		Assert.NotNull(_globalParameters.FolderIcon.Bitmap);
 
 		SaveImageToDisc(
-			_globalParameters.InvalidImage.Bitmap,
-			$"{nameof(_globalParameters.InvalidImage)}{OutputFileExtension}");
+			_globalParameters.InvalidImage.Bitmap, $"{nameof(_globalParameters.InvalidImage)}{OutputFileExtension}");
 		SaveImageToDisc(
 			_globalParameters.GetInvalidImageThumbnail(ThumbnailSize).Bitmap,
 			$"InvalidImageThumbnail_{OutputFileExtension}");
@@ -133,18 +132,12 @@ public class GlobalParametersTest : TestBase
 			$"LoadingImageThumbnail_{OutputFileExtension}");
 
 		SaveImageToDisc(
-			_globalParameters.DriveIcon.Bitmap,
-			$"{nameof(_globalParameters.DriveIcon)}{OutputFileExtension}");
+			_globalParameters.DriveIcon.Bitmap, $"{nameof(_globalParameters.DriveIcon)}{OutputFileExtension}");
 		SaveImageToDisc(
-			_globalParameters.FolderIcon.Bitmap,
-			$"{nameof(_globalParameters.FolderIcon)}{OutputFileExtension}");
+			_globalParameters.FolderIcon.Bitmap, $"{nameof(_globalParameters.FolderIcon)}{OutputFileExtension}");
 	}
-
-	#region Private
 
 	private const int ThumbnailSize = 250;
 
 	private readonly GlobalParameters _globalParameters;
-
-	#endregion
 }

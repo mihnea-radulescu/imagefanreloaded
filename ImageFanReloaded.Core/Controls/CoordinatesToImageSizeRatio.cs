@@ -13,20 +13,16 @@ public record CoordinatesToImageSizeRatio
 
 	public CoordinatesToImageSizeRatio(ImagePoint coordinates, ImageSize imageSize)
 	{
-		RatioX = (double)coordinates.X / (double)imageSize.Width;
-		RatioY = (double)coordinates.Y / (double)imageSize.Height;
+		RatioX = coordinates.X / (double)imageSize.Width;
+		RatioY = coordinates.Y / (double)imageSize.Height;
 	}
 
 	public double RatioX { get; }
 	public double RatioY { get; }
-
-	#region Private
 
 	private CoordinatesToImageSizeRatio(double ratioX, double ratioY)
 	{
 		RatioX = ratioX;
 		RatioY = ratioY;
 	}
-
-	#endregion
 }

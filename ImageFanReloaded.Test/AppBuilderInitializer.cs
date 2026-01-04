@@ -22,8 +22,6 @@ public class AppBuilderInitializer
 		Locker = new object();
 	}
 
-	#region Private
-
 	private static readonly object Locker;
 
 	private static AppBuilderInitializer? _instance;
@@ -37,6 +35,4 @@ public class AppBuilderInitializer
 			.LogToTrace()
 			.SetupWithoutStarting();
 	}
-
-	#endregion
 }

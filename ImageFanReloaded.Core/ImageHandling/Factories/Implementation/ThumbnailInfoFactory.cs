@@ -13,9 +13,5 @@ public class ThumbnailInfoFactory : IThumbnailInfoFactory
 	public IThumbnailInfo GetThumbnailInfo(ITabOptions tabOptions, IImageFile imageFile)
 		=> new ThumbnailInfo(_globalParameters, tabOptions, imageFile);
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
-
-	#endregion
 }

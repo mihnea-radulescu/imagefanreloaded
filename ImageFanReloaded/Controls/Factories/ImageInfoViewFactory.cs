@@ -7,9 +7,7 @@ namespace ImageFanReloaded.Controls.Factories;
 
 public class ImageInfoViewFactory : IImageInfoViewFactory
 {
-	public ImageInfoViewFactory(
-		IGlobalParameters globalParameters,
-		IImageInfoBuilder imageInfoBuilder)
+	public ImageInfoViewFactory(IGlobalParameters globalParameters, IImageInfoBuilder imageInfoBuilder)
 	{
 		_globalParameters = globalParameters;
 		_imageInfoBuilder = imageInfoBuilder;
@@ -27,10 +25,6 @@ public class ImageInfoViewFactory : IImageInfoViewFactory
 		return imageInfoView;
 	}
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageInfoBuilder _imageInfoBuilder;
-
-	#endregion
 }

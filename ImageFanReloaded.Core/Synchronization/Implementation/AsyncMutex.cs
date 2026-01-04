@@ -51,11 +51,7 @@ public class AsyncMutex : IAsyncMutex
 		}
 	}
 
-	#region Private
-
 	private readonly MutexSlim _mutexSlim;
 
 	private volatile bool _hasBeenDisposed;
-
-	#endregion
 }

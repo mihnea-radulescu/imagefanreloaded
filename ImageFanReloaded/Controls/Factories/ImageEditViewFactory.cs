@@ -42,14 +42,10 @@ public class ImageEditViewFactory : IImageEditViewFactory
 		return imageEditView;
 	}
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
 
 	private readonly IMouseCursorFactory _mouseCursorFactory;
 	private readonly IEditableImageFactory _editableImageFactory;
 	private readonly ISaveFileImageFormatFactory _saveFileImageFormatFactory;
 	private readonly ISaveFileDialogFactory _saveFileDialogFactory;
-
-	#endregion
 }

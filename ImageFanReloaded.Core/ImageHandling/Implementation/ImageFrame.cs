@@ -5,10 +5,7 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
 public class ImageFrame : DisposableBase, IImageFrame
 {
-	public ImageFrame(
-		IDisposable imageFrameImplementationInstance,
-		ImageSize imageSize,
-		TimeSpan delayUntilNextFrame)
+	public ImageFrame(IDisposable imageFrameImplementationInstance, ImageSize imageSize, TimeSpan delayUntilNextFrame)
 	{
 		_imageFrameImplementationInstance = imageFrameImplementationInstance;
 		_imageSize = imageSize;
@@ -45,22 +42,14 @@ public class ImageFrame : DisposableBase, IImageFrame
 		return (TImageImplementation)_imageFrameImplementationInstance;
 	}
 
-	#region Protected
-
 	protected override void DisposeSpecific()
 	{
 		_imageFrameImplementationInstance.Dispose();
 	}
-
-	#endregion
-
-	#region Private
 
 	private static TimeSpan MinimumDelayUntilNextFrame => TimeSpan.FromMilliseconds(50);
 
 	private readonly IDisposable _imageFrameImplementationInstance;
 	private readonly ImageSize _imageSize;
 	private readonly TimeSpan _delayUntilNextFrame;
-
-	#endregion
 }

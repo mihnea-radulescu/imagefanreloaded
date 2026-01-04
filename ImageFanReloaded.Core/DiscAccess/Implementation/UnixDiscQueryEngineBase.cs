@@ -9,12 +9,8 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
 public abstract class UnixDiscQueryEngineBase : DiscQueryEngineBase
 {
-	#region Protected
-
 	protected UnixDiscQueryEngineBase(
-		IGlobalParameters globalParameters,
-		IImageFileFactory imageFileFactory,
-		IFileSizeEngine fileSizeEngine)
+		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory, IFileSizeEngine fileSizeEngine)
 		: base(globalParameters, imageFileFactory, fileSizeEngine)
 	{
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
@@ -35,13 +31,7 @@ public abstract class UnixDiscQueryEngineBase : DiscQueryEngineBase
 
 	protected abstract IReadOnlyList<string> SupportedDrivePrefixes { get; }
 
-	#endregion
-
-	#region Private
-
 	private const string RootPath = "/";
 
 	private readonly StringComparison _nameComparison;
-
-	#endregion
 }

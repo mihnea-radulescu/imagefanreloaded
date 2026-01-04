@@ -6,7 +6,27 @@
 		MinHeight="300"
 		WindowStartupLocation="CenterScreen"
 		Background="Black"
+		PointerPressed="OnMouseDown"
+		PointerReleased="OnMouseUp"
 		Closing="OnWindowClosing">
-	<Image Name="_displayImage"
-		   Stretch="Uniform"/>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<Image Name="_displayImage"
+		       Grid.Row="0"
+		       Stretch="Uniform"/>
+
+		<Canvas Grid.Row="0">
+			<SelectableTextBlock Name="_imageInfoSelectableTextBlock"
+			                     Canvas.Bottom="0"
+			                     Canvas.Right="0"
+			                     Background="Transparent"
+			                     Foreground="Lime"
+			                     FontWeight="Bold"
+			                     TextAlignment="Right"
+			                     IsVisible="False"/>
+		</Canvas>
+	</Grid>
 </Window>

@@ -94,7 +94,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 		if (thumbnailImage.IsAnimated)
 		{
-			_isAnimated = true;
+			IsAnimated = true;
 			_ctsAnimation = new CancellationTokenSource();
 			_animationTask = Task.Run(() => AnimateImage(_ctsAnimation), _ctsAnimation.Token);
 		}
@@ -119,7 +119,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		RefreshThumbnail();
 	}
 
-	public bool IsAnimated => _isAnimated;
+	public bool IsAnimated { get; private set; }
+
 	public Task AnimationTask => _animationTask ?? Task.CompletedTask;
 	public void NotifyStopAnimation() => _ctsAnimation?.Cancel();
 
@@ -133,8 +134,6 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		ImageFile!.DisposeImageFileContentStream();
 	}
 
-	#region Private
-
 	private IThumbnailInfo? _thumbnailInfo;
 
 	private IMouseCursorFactory? _mouseCursorFactory;
@@ -142,7 +141,6 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	private Cursor? _standardCursor;
 	private Cursor? _zoomCursor;
 
-	private bool _isAnimated;
 	private CancellationTokenSource? _ctsAnimation;
 	private Task? _animationTask;
 
@@ -150,13 +148,11 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	{
 		if (e.InitialPressMouseButton == MouseButton.Left)
 		{
-			ThumbnailBoxClicked?.Invoke(
-				this, new ThumbnailBoxClickedEventArgs(this, MouseClickType.Left));
+			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxClickedEventArgs(this, MouseClickType.Left));
 		}
 		else if (e.InitialPressMouseButton == MouseButton.Right)
 		{
-			ThumbnailBoxClicked?.Invoke(
-				this, new ThumbnailBoxClickedEventArgs(this, MouseClickType.Right));
+			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxClickedEventArgs(this, MouseClickType.Right));
 		}
 	}
 
@@ -181,8 +177,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 						return;
 					}
 
-					await Dispatcher.UIThread.InvokeAsync(()
-						=> _thumbnailImage.Source = anImageFrameBitmap);
+					await Dispatcher.UIThread.InvokeAsync(() => _thumbnailImage.Source = anImageFrameBitmap);
 
 					if (ctsAnimation.IsCancellationRequested)
 					{
@@ -209,6 +204,4 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 			_ctsAnimation = null;
 		}
 	}
-
-	#endregion
 }

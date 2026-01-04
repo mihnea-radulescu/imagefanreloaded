@@ -43,8 +43,6 @@ public class MainViewPresenter
 		_mainView.ContentTabItemClosed += OnContentTabItemClosed;
 	}
 
-	#region Private
-
 	private readonly IDiscQueryEngine _discQueryEngine;
 
 	private readonly IFolderVisualStateFactory _folderVisualStateFactory;
@@ -180,8 +178,7 @@ public class MainViewPresenter
 			tabOptionChanges.HasChangedApplyImageOrientation ||
 			tabOptionChanges.HasChangedShowThumbnailImageFileName;
 
-		var shouldRaisePanelsSplittingRatioChangedEvent =
-			tabOptionChanges.HasChangedPanelsSplittingRatio;
+		var shouldRaisePanelsSplittingRatioChangedEvent = tabOptionChanges.HasChangedPanelsSplittingRatio;
 
 		var shouldSaveAsDefault = tabOptionChanges.ShouldSaveAsDefault;
 
@@ -214,9 +211,7 @@ public class MainViewPresenter
 		previousFolderVisualState?.NotifyStopThumbnailGeneration();
 
 		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
-			contentTabItem,
-			e.Name,
-			e.Path);
+			contentTabItem, e.Name, e.Path);
 
 		await contentTabItem.FolderVisualState.UpdateVisualState(contentTabItem.TabOptions!);
 
@@ -227,8 +222,7 @@ public class MainViewPresenter
 	{
 		var contentTabItem = e.ContentTabItem;
 
-		var isExpandedFolderTreeViewSelectedItem = contentTabItem.GetFolderTreeViewSelectedItemExpandedState()
-			?? false;
+		var isExpandedFolderTreeViewSelectedItem = contentTabItem.GetFolderTreeViewSelectedItemExpandedState() ?? false;
 
 		DisableContentTabEventHandling(contentTabItem);
 
@@ -324,6 +318,4 @@ public class MainViewPresenter
 			folderVisualState.DisposeCancellationTokenSource();
 		}
 	}
-
-	#endregion
 }

@@ -4,8 +4,7 @@ public class ImageResizeCalculator : IImageResizeCalculator
 {
 	public ImageSize GetDownsizedImageSize(ImageSize imageSize, ImageSize viewPortSize)
 	{
-		if (imageSize.Width <= viewPortSize.Width &&
-			imageSize.Height <= viewPortSize.Height)
+		if (imageSize.Width <= viewPortSize.Width && imageSize.Height <= viewPortSize.Height)
 		{
 			return imageSize;
 		}
@@ -45,5 +44,5 @@ public class ImageResizeCalculator : IImageResizeCalculator
 	}
 
 	public ImageSize GetUpsizedImageSize(ImageSize imageSize, double scalingFactor)
-		=> new ImageSize(imageSize.Width * scalingFactor, imageSize.Height * scalingFactor);
+		=> new(imageSize.Width * scalingFactor, imageSize.Height * scalingFactor);
 }

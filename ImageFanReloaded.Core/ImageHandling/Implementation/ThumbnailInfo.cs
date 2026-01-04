@@ -5,10 +5,7 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
 public class ThumbnailInfo : IThumbnailInfo
 {
-	public ThumbnailInfo(
-		IGlobalParameters globalParameters,
-		ITabOptions tabOptions,
-		IImageFile imageFile)
+	public ThumbnailInfo(IGlobalParameters globalParameters, ITabOptions tabOptions, IImageFile imageFile)
 	{
 		_globalParameters = globalParameters;
 
@@ -43,12 +40,8 @@ public class ThumbnailInfo : IThumbnailInfo
 		}
 	}
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
 
 	private readonly int _thumbnailSize;
 	private readonly bool _applyImageOrientation;
-
-	#endregion
 }

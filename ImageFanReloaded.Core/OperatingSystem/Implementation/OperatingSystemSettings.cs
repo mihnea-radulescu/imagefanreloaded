@@ -6,10 +6,10 @@ public class OperatingSystemSettings : IOperatingSystemSettings
 	{
 		IsLinux = System.OperatingSystem.IsLinux();
 		IsWindows = System.OperatingSystem.IsWindows();
-		IsMacOS = System.OperatingSystem.IsMacOS();
+		IsMacOs = System.OperatingSystem.IsMacOS();
 	}
 
 	public bool IsLinux { get; }
 	public bool IsWindows { get; }
-	public bool IsMacOS { get; }
+	public bool IsMacOs { get; }
 }

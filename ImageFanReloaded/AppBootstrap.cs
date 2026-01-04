@@ -51,8 +51,6 @@ public class AppBootstrap : IAppBootstrap
 		}
 	}
 
-	#region Private
-
 	private readonly IClassicDesktopStyleApplicationLifetime _desktop;
 
 	private IGlobalParameters _globalParameters = null!;
@@ -75,8 +73,7 @@ public class AppBootstrap : IAppBootstrap
 		_globalParameters = new GlobalParameters(operatingSystemSettings, imageResizer);
 
 		_fileSizeEngine = new FileSizeEngine();
-		IImageFileFactory imageFileFactory = new ImageFileFactory(
-			_globalParameters, imageResizer, _fileSizeEngine);
+		IImageFileFactory imageFileFactory = new ImageFileFactory(_globalParameters, imageResizer, _fileSizeEngine);
 
 		IDiscQueryEngineFactory discQueryEngineFactory = new DiscQueryEngineFactory(
 			_globalParameters, imageFileFactory, _fileSizeEngine);
@@ -100,8 +97,7 @@ public class AppBootstrap : IAppBootstrap
 
 		_inputPathHandlerFactory = new InputPathHandlerFactory(_globalParameters, _discQueryEngine);
 		string? commandLineArgsInputPath = GetCommandLineArgsInputPath();
-		_commandLineArgsInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(
-			commandLineArgsInputPath);
+		_commandLineArgsInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(commandLineArgsInputPath);
 	}
 
 	private string? GetCommandLineArgsInputPath()
@@ -112,8 +108,7 @@ public class AppBootstrap : IAppBootstrap
 		return inputPath;
 	}
 
-	private bool IsMainViewAccess()
-		=> _commandLineArgsInputPathHandler.InputPathType != InputPathType.File;
+	private bool IsMainViewAccess() => _commandLineArgsInputPathHandler.InputPathType != InputPathType.File;
 
 	private void ShowMainView()
 	{
@@ -155,12 +150,10 @@ public class AppBootstrap : IAppBootstrap
 		ITabOptionsViewFactory tabOptionsViewFactory = new TabOptionsViewFactory(_globalParameters);
 
 		IAboutInfoProvider aboutInfoProvider = new AboutInfoProvider();
-		IAboutViewFactory aboutViewFactory = new AboutViewFactory(
-			aboutInfoProvider, _globalParameters);
+		IAboutViewFactory aboutViewFactory = new AboutViewFactory(aboutInfoProvider, _globalParameters);
 
 		IImageInfoBuilder imageInfoBuilder = new ImageInfoBuilder(_globalParameters);
-		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(
-			_globalParameters, imageInfoBuilder);
+		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(_globalParameters, imageInfoBuilder);
 
 		var mainViewPresenter = new MainViewPresenter(
 			_discQueryEngine,
@@ -190,10 +183,7 @@ public class AppBootstrap : IAppBootstrap
 		imageView.ViewClosing += OnImageViewClosing;
 
 		var imageViewPresenter = new ImageViewPresenter(
-			_discQueryEngine,
-			_commandLineArgsInputPathHandler,
-			_globalParameters,
-			imageView);
+			_discQueryEngine, _commandLineArgsInputPathHandler, _globalParameters, imageView);
 
 		await imageViewPresenter.SetUpAccessToImages();
 
@@ -212,6 +202,4 @@ public class AppBootstrap : IAppBootstrap
 			ShowMainView();
 		}
 	}
-
-	#endregion
 }

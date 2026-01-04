@@ -13,7 +13,7 @@
 	<ScrollViewer Name="_aboutScrollViewer"
 				  HorizontalScrollBarVisibility="Auto"
 				  VerticalScrollBarVisibility="Auto">
-		<SelectableTextBlock Name="_aboutTextBox"
+		<SelectableTextBlock Name="_aboutSelectableTextBlock"
 							 Background="Transparent"/>
 	</ScrollViewer>
 </Window>

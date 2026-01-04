@@ -35,15 +35,11 @@ public class ImageViewPresenter
 
 		(_currentImageFile, _currentImageFileIndex) = _imageFiles
 			.Select((anImageFile, index) => (anImageFile, index))
-			.Single(anImageFileWithIndex =>
-				anImageFileWithIndex.anImageFile.ImageFileData.ImageFilePath.Equals(
-					_inputPathHandler.FilePath,
-					_nameComparison));
+			.Single(anImageFileWithIndex => anImageFileWithIndex.anImageFile.ImageFileData.ImageFilePath.Equals(
+				_inputPathHandler.FilePath, _nameComparison));
 
 		await LoadCurrentImage();
 	}
-
-	#region Private
 
 	private readonly IDiscQueryEngine _discQueryEngine;
 	private readonly IInputPathHandler _inputPathHandler;
@@ -73,6 +69,4 @@ public class ImageViewPresenter
 			await LoadCurrentImage();
 		}
 	}
-
-	#endregion
 }

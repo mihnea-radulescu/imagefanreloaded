@@ -4,26 +4,16 @@ using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
-public class MacOSDiscQueryEngine : UnixDiscQueryEngineBase
+public class MacOsDiscQueryEngine : UnixDiscQueryEngineBase
 {
-	public MacOSDiscQueryEngine(
-		IGlobalParameters globalParameters,
-		IImageFileFactory imageFileFactory,
-		IFileSizeEngine fileSizeEngine)
+	public MacOsDiscQueryEngine(
+		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory, IFileSizeEngine fileSizeEngine)
 		: base(globalParameters, imageFileFactory, fileSizeEngine)
 	{
-		_supportedDrivePrefixes = [ "/Volumes/" ];
+		_supportedDrivePrefixes = ["/Volumes/"];
 	}
-
-	#region Protected
 
 	protected override IReadOnlyList<string> SupportedDrivePrefixes => _supportedDrivePrefixes;
 
-	#endregion
-
-	#region Private
-
 	private readonly IReadOnlyList<string> _supportedDrivePrefixes;
-
-	#endregion
 }

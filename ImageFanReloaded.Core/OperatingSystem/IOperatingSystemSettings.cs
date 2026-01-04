@@ -4,5 +4,5 @@ public interface IOperatingSystemSettings
 {
 	bool IsWindows { get; }
 	bool IsLinux { get; }
-	bool IsMacOS { get; }
+	bool IsMacOs { get; }
 }

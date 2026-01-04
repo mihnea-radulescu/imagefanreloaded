@@ -12,8 +12,7 @@ public abstract class SaveFileDialogBase : ISaveFileDialog
 		SupportedFileTypes = GetSupportedFileTypes();
 	}
 
-	public async Task<string?> ShowDialog(
-		string imageFileName, string imageFolderPath, string saveFileDialogTitle)
+	public async Task<string?> ShowDialog(string imageFileName, string imageFolderPath, string saveFileDialogTitle)
 	{
 		var imageStorageFolder = await GetStorageFolderFromPath(imageFolderPath);
 
@@ -34,16 +33,10 @@ public abstract class SaveFileDialogBase : ISaveFileDialog
 
 	public abstract bool ShouldAlwaysRefreshSaveFolder { get; }
 
-	#region Protected
-
 	protected SaveFileDialogBase(IStorageProvider storageProvider)
 	{
 		_storageProvider = storageProvider;
 	}
-
-	#endregion
-
-	#region Private
 
 	private static readonly IReadOnlyList<FilePickerFileType> SupportedFileTypes;
 
@@ -56,14 +49,12 @@ public abstract class SaveFileDialogBase : ISaveFileDialog
 	{
 		var supportedFileTypes = new List<FilePickerFileType>
 		{
-			new FilePickerFileType("All files")
+			new("All files")
 			{
-				Patterns = [ "*.*" ]
+				Patterns = ["*.*"]
 			}
 		};
 
 		return supportedFileTypes;
 	}
-
-	#endregion
 }

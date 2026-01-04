@@ -23,13 +23,7 @@ public abstract class ImageResizerBase : IImageResizer
 		return GetResizedImage(image, upsizedImageSize);
 	}
 
-	#region Protected
-
 	protected abstract IImageFrame BuildResizedImageFrame(IImageFrame imageFrame, ImageSize resizedImageFrameSize);
-
-	#endregion
-
-	#region Private
 
 	private readonly IImageResizeCalculator _imageResizeCalculator;
 
@@ -42,6 +36,4 @@ public abstract class ImageResizerBase : IImageResizer
 		var resizedImage = new Image(resizedImageFrames);
 		return resizedImage;
 	}
-
-	#endregion
 }

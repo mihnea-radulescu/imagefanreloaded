@@ -68,7 +68,7 @@ public interface IContentTabItem
 
 	void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders);
 
-	bool AreFolderInfoOrImageInfoFocused();
+	bool AreSelectedFolderInfoTextOrImageInfoText();
 	void FocusThumbnailScrollViewer();
 
 	void RaiseFolderOrderingChangedEvent();

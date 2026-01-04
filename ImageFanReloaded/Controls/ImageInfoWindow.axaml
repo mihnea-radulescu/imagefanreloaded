@@ -13,7 +13,7 @@
 	<ScrollViewer Name="_imageInfoScrollViewer"
 				  HorizontalScrollBarVisibility="Auto"
 				  VerticalScrollBarVisibility="Auto">
-		<SelectableTextBlock Name="_imageInfoTextBox"
+		<SelectableTextBlock Name="_imageInfoSelectableTextBlock"
 							 Background="Transparent"/>
 	</ScrollViewer>
 </Window>

@@ -230,24 +230,15 @@ public abstract class ImageFileBase : IImageFile
 		}
 	}
 
-	#region Protected
-
 	protected readonly IGlobalParameters GlobalParameters;
 
-	protected abstract IImage GetImageFromStream(
-		Stream imageFileContentStream, bool applyImageOrientation);
+	protected abstract IImage GetImageFromStream(Stream imageFileContentStream, bool applyImageOrientation);
 
 	protected bool IsDirectlySupportedImageFileExtension
-		=> GlobalParameters.DirectlySupportedImageFileExtensions.Contains(
-			ImageFileData.ImageFileExtension);
+		=> GlobalParameters.DirectlySupportedImageFileExtensions.Contains(ImageFileData.ImageFileExtension);
 
 	protected bool IsAnimationEnabledImageFileExtension
-		=> GlobalParameters.AnimationEnabledImageFileExtensions.Contains(
-			ImageFileData.ImageFileExtension);
-
-	#endregion
-
-	#region Private
+		=> GlobalParameters.AnimationEnabledImageFileExtensions.Contains(ImageFileData.ImageFileExtension);
 
 	private readonly IImageResizer _imageResizer;
 	private readonly IFileSizeEngine _fileSizeEngine;
@@ -298,6 +289,4 @@ public abstract class ImageFileBase : IImageFile
 			image.Dispose();
 		}
 	}
-
-	#endregion
 }

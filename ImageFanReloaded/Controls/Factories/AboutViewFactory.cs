@@ -17,8 +17,7 @@ public class AboutViewFactory : IAboutViewFactory
 
 	public IAboutView GetAboutView()
 	{
-		var aboutText = string.Format(
-			AboutTextTemplate, _aboutInfoProvider.VersionString, _aboutInfoProvider.Year);
+		var aboutText = string.Format(AboutTextTemplate, _aboutInfoProvider.VersionString, _aboutInfoProvider.Year);
 
 		IAboutView aboutView = new AboutWindow();
 		aboutView.GlobalParameters = _globalParameters;
@@ -26,8 +25,6 @@ public class AboutViewFactory : IAboutViewFactory
 
 		return aboutView;
 	}
-
-	#region Private
 
 	private const string AboutTextTemplate =
 		@"Cross-platform, feature-rich, tab-based image viewer, supporting multi-core processing
@@ -81,6 +78,4 @@ User interface:
 
 	private readonly IAboutInfoProvider _aboutInfoProvider;
 	private readonly IGlobalParameters _globalParameters;
-
-	#endregion
 }

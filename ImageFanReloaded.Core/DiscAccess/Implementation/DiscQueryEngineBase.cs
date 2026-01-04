@@ -21,9 +21,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	}
 
 	protected DiscQueryEngineBase(
-		IGlobalParameters globalParameters,
-		IImageFileFactory imageFileFactory,
-		IFileSizeEngine fileSizeEngine)
+		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory, IFileSizeEngine fileSizeEngine)
 	{
 		_globalParameters = globalParameters;
 		_imageFileFactory = imageFileFactory;
@@ -38,24 +36,20 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		};
 	}
 
-	public async Task BuildSkipRecursionFolderPaths()
-		=> await Task.Run(BuildSkipRecursionFolderPathsInternal);
+	public async Task BuildSkipRecursionFolderPaths() => await Task.Run(BuildSkipRecursionFolderPathsInternal);
 
-	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders()
-		=> await Task.Run(GetRootFoldersInternal);
+	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders() => await Task.Run(GetRootFoldersInternal);
 
 	public async Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath)
 		=> await Task.Run(() => GetFileSystemEntryInfoInternal(folderPath));
 
-	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
-		string folderPath, ITabOptions tabOptions)
+	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(string folderPath, ITabOptions tabOptions)
 		=> await Task.Run(() => GetSubFoldersInternal(
 			folderPath,
 			tabOptions.FolderOrdering,
 			tabOptions.FolderOrderingDirection));
 
-	public async Task<IReadOnlyList<IImageFile>> GetImageFiles(
-		string folderPath, ITabOptions tabOptions)
+	public async Task<IReadOnlyList<IImageFile>> GetImageFiles(string folderPath, ITabOptions tabOptions)
 		=> await Task.Run(() => GetImageFilesInternal(
 			folderPath,
 			tabOptions.ImageFileOrdering,
@@ -71,13 +65,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 			false,
 			false));
 
-	#region Protected
-
 	protected abstract bool IsSupportedDrive(string driveName);
-
-	#endregion
-
-	#region Private
 
 	private static readonly IReadOnlyList<FileInfo> EmptyFileInfoList;
 	private static readonly IReadOnlyList<FileSystemEntryInfo> EmptyFileSystemEntryInfoList;
@@ -103,9 +91,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 			.OrderBy(aDriveName => aDriveName, _globalParameters.NameComparer)
 			.ToList();
 
-		_skipRecursionFolderPaths = new HashSet<string>(
-			[homePath, ..drivePaths],
-			_globalParameters.NameComparer);
+		_skipRecursionFolderPaths = new HashSet<string>([homePath, ..drivePaths], _globalParameters.NameComparer);
 	}
 
 	private IReadOnlyList<FileSystemEntryInfo> GetUserFolders()
@@ -132,8 +118,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						aSpecialFolderWithPath.Path,
 						HasSubFolders(aSpecialFolderWithPath.Path),
 						GetIcon(aSpecialFolderWithPath.Name)))
-				.OrderBy(
-					aSpecialFolderInfo => aSpecialFolderInfo.Name, _globalParameters.NameComparer)
+				.OrderBy(aSpecialFolderInfo => aSpecialFolderInfo.Name, _globalParameters.NameComparer)
 				.ToList();
 
 			IReadOnlyList<FileSystemEntryInfo> userFolders = [homeFolder, ..specialFolders];
@@ -271,8 +256,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 			currentDepth < _globalParameters.MaxRecursionDepth &&
 			!_skipRecursionFolderPaths!.Contains(folderPath);
 
-		var shouldApplyLocalOrdering =
-			!recursiveFolderBrowsing || !globalOrderingForRecursiveFolderBrowsing;
+		var shouldApplyLocalOrdering = !recursiveFolderBrowsing || !globalOrderingForRecursiveFolderBrowsing;
 		var shouldApplyGlobalOrdering =
 			recursiveFolderBrowsing && globalOrderingForRecursiveFolderBrowsing && currentDepth == 0;
 
@@ -282,16 +266,13 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 			var imageFileInfoList = folderInfo
 				.GetFiles("*", SearchOption.TopDirectoryOnly)
-				.Where(aFileInfo =>
-					_globalParameters.ImageFileExtensions.Contains(aFileInfo.Extension))
+				.Where(aFileInfo => _globalParameters.ImageFileExtensions.Contains(aFileInfo.Extension))
 				.ToList();
 
 			if (shouldApplyLocalOrdering)
 			{
 				imageFileInfoList = GetOrderedFileSystemInfoList(
-					imageFileInfoList,
-					imageFileOrdering,
-					imageFileOrderingDirection);
+					imageFileInfoList, imageFileOrdering, imageFileOrderingDirection);
 			}
 
 			if (shouldRecursivelySearchSubFolders)
@@ -346,12 +327,10 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 					.OrderBy(aFileSystemInfo => aFileSystemInfo.Name, _globalParameters.NameComparer)
 					.ToList();
 			}
-			else if (fileSystemInfoOrderingDirection ==
-				FileSystemEntryInfoOrderingDirection.Descending)
+			else if (fileSystemInfoOrderingDirection == FileSystemEntryInfoOrderingDirection.Descending)
 			{
 				orderedFileSystemInfoList = orderedFileSystemInfoList
-					.OrderByDescending(aFileSystemInfo =>
-						aFileSystemInfo.Name, _globalParameters.NameComparer)
+					.OrderByDescending(aFileSystemInfo => aFileSystemInfo.Name, _globalParameters.NameComparer)
 					.ToList();
 			}
 		}
@@ -363,8 +342,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 					.OrderBy(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc)
 					.ToList();
 			}
-			else if (fileSystemInfoOrderingDirection ==
-				FileSystemEntryInfoOrderingDirection.Descending)
+			else if (fileSystemInfoOrderingDirection == FileSystemEntryInfoOrderingDirection.Descending)
 			{
 				orderedFileSystemInfoList = orderedFileSystemInfoList
 					.OrderByDescending(aFileSystemInfo => aFileSystemInfo.LastWriteTimeUtc)
@@ -374,7 +352,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		else if (fileSystemInfoOrdering == FileSystemEntryInfoOrdering.RandomShuffle)
 		{
 			orderedFileSystemInfoList = orderedFileSystemInfoList
-				.OrderBy(aFileSystemInfo => RandomShuffler.Next())
+				.OrderBy(_ => RandomShuffler.Next())
 				.ToList();
 		}
 
@@ -396,8 +374,5 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		}
 	}
 
-	private IImage GetIcon(string aSpecialFolderName)
-		=> _specialFolderToIconMapping[aSpecialFolderName];
-
-	#endregion
+	private IImage GetIcon(string aSpecialFolderName) => _specialFolderToIconMapping[aSpecialFolderName];
 }

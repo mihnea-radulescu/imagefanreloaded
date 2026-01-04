@@ -6,8 +6,7 @@ namespace ImageFanReloaded.ImageHandling;
 
 public class EditableImageData : DisposableBase
 {
-	public EditableImageData(
-		MagickImageCollection imageFramesToEdit, IImage imageToDisplay, ImageSize imageSize)
+	public EditableImageData(MagickImageCollection imageFramesToEdit, IImage imageToDisplay, ImageSize imageSize)
 	{
 		_imageFramesToEdit = imageFramesToEdit;
 		_imageToDisplay = imageToDisplay;
@@ -44,21 +43,13 @@ public class EditableImageData : DisposableBase
 		}
 	}
 
-	#region Protected
-
 	protected override void DisposeSpecific()
 	{
 		_imageFramesToEdit.Dispose();
 		_imageToDisplay.Dispose();
 	}
 
-	#endregion
-
-	#region Private
-
 	private readonly MagickImageCollection _imageFramesToEdit;
 	private readonly IImage _imageToDisplay;
 	private readonly ImageSize _imageSize;
-
-	#endregion
 }

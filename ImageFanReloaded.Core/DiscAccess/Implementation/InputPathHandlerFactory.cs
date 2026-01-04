@@ -13,10 +13,6 @@ public class InputPathHandlerFactory : IInputPathHandlerFactory
 	public IInputPathHandler GetInputPathHandler(string? inputPath)
 		=> new InputPathHandler(_globalParameters, _discQueryEngine, inputPath);
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IDiscQueryEngine _discQueryEngine;
-
-	#endregion
 }

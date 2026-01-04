@@ -7,9 +7,7 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 {
 	public DiscQueryEngineFactory(
-		IGlobalParameters globalParameters,
-		IImageFileFactory imageFileFactory,
-		IFileSizeEngine fileSizeEngine)
+		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory, IFileSizeEngine fileSizeEngine)
 	{
 		_globalParameters = globalParameters;
 		_imageFileFactory = imageFileFactory;
@@ -28,19 +26,15 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 			return new WindowsDiscQueryEngine(_globalParameters, _imageFileFactory, _fileSizeEngine);
 		}
 
-		if (_globalParameters.IsMacOS)
+		if (_globalParameters.IsMacOs)
 		{
-			return new MacOSDiscQueryEngine(_globalParameters, _imageFileFactory, _fileSizeEngine);
+			return new MacOsDiscQueryEngine(_globalParameters, _imageFileFactory, _fileSizeEngine);
 		}
 
 		throw new PlatformNotSupportedException("Operating system not supported!");
 	}
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageFileFactory _imageFileFactory;
 	private readonly IFileSizeEngine _fileSizeEngine;
-
-	#endregion
 }

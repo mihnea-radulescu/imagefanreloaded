@@ -24,9 +24,5 @@ public partial class FileSystemTreeViewItem : UserControl, IFileSystemTreeViewIt
 		}
 	}
 
-	#region Private
-
 	private FileSystemEntryInfo? _fileSystemEntryInfo;
-
-	#endregion
 }

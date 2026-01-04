@@ -24,16 +24,11 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 		_tabToolTipTextBlock.Text = tabTooltip;
 	}
 
-	public void ShowTabCloseButton(bool showTabCloseButton)
-		=> _tabCloseBorder.IsVisible = showTabCloseButton;
-
-	#region Private
+	public void ShowTabCloseButton(bool showTabCloseButton) => _tabCloseBorder.IsVisible = showTabCloseButton;
 
 	private void OnControlLoaded(object? sender, RoutedEventArgs e)
 		=> _tabToolTipTextBlock.FontSize = _tabTitleTextBlock.FontSize;
 
 	private void OnTabClose(object? sender, PointerReleasedEventArgs e)
 		=> TabClosed?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
-
-	#endregion
 }

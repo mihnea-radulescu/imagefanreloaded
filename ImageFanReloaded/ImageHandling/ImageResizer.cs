@@ -12,10 +12,7 @@ public class ImageResizer : ImageResizerBase
 	{
 	}
 
-	#region Protected
-
-	protected override IImageFrame BuildResizedImageFrame(
-		IImageFrame imageFrame, ImageSize resizedImageFrameSize)
+	protected override IImageFrame BuildResizedImageFrame(IImageFrame imageFrame, ImageSize resizedImageFrameSize)
 	{
 		var destinationSize = new PixelSize(resizedImageFrameSize.Width, resizedImageFrameSize.Height);
 
@@ -25,6 +22,4 @@ public class ImageResizer : ImageResizerBase
 		var resizedImageFrame = new ImageFrame(resizedBitmap, resizedImageFrameSize, imageFrame.DelayUntilNextFrame);
 		return resizedImageFrame;
 	}
-
-	#endregion
 }

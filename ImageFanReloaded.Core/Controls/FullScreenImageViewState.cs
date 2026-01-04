@@ -1,6 +1,6 @@
 namespace ImageFanReloaded.Core.Controls;
 
-public enum ImageViewState
+public enum FullScreenImageViewState
 {
 	ResizedToScreenSize = 0,
 	ZoomedToImageSize = 1

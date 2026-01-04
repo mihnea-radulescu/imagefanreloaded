@@ -25,9 +25,5 @@ public class TabOptionsViewFactory : ITabOptionsViewFactory
 		return tabOptionsView;
 	}
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
-
-	#endregion
 }

@@ -12,14 +12,10 @@ public abstract class MouseCursorFactoryBase : IMouseCursorFactory
 
 	public abstract IMouseCursor DragCursor { get; }
 
-	#region Protected
-
 	protected MouseCursorFactoryBase()
 	{
 		StandardCursor = new MouseCursor(new Cursor(StandardCursorType.Arrow));
 		ZoomCursor = new MouseCursor(new Cursor(StandardCursorType.Hand));
 		SelectCursor = new MouseCursor(new Cursor(StandardCursorType.Cross));
 	}
-
-	#endregion
 }

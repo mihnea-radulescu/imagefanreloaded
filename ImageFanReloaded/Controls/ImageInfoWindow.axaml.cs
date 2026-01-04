@@ -25,8 +25,6 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 
 	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
 
-	#region Private
-
 	private bool _isLoading;
 
 	private async void OnWindowLoaded(object? sender, RoutedEventArgs e)
@@ -35,7 +33,7 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 		SetLoadingImageInfoTitle();
 
 		var imageInfo = await Task.Run(() => ImageInfoBuilder!.BuildImageInfo(ImageFile!));
-		_imageInfoTextBox.Text = imageInfo;
+		_imageInfoSelectableTextBlock.Text = imageInfo;
 
 		_imageInfoScrollViewer.Focus();
 
@@ -65,11 +63,9 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 	}
 
 	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
-		ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-			keyPressing == GlobalParameters!.EscapeKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EscapeKey)
 		{
 			return true;
 		}
@@ -80,8 +76,5 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 	private void SetLoadingImageInfoTitle()
 		=> Title = $"{ImageFile!.ImageFileData.ImageFileName} - loading image info...";
 
-	private void SetImageInfoTitle()
-		=> Title = ImageFile!.ImageFileData.ImageFileName;
-
-	#endregion
+	private void SetImageInfoTitle() => Title = ImageFile!.ImageFileData.ImageFileName;
 }

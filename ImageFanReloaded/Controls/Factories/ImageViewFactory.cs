@@ -42,11 +42,7 @@ public class ImageViewFactory : IImageViewFactory
 		return imageView;
 	}
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IMouseCursorFactory _mouseCursorFactory;
 	private readonly IScreenInfo _screenInfo;
-
-	#endregion
 }

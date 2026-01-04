@@ -18,8 +18,7 @@ public class EditableImageFactory : IEditableImageFactory
 
 		try
 		{
-			editableImage = await Task.Run(() =>
-				new EditableImage(imageFilePath, _globalParameters.ImageQualityLevel));
+			editableImage = await Task.Run(() => new EditableImage(imageFilePath, _globalParameters.ImageQualityLevel));
 		}
 		catch
 		{
@@ -28,9 +27,5 @@ public class EditableImageFactory : IEditableImageFactory
 		return editableImage;
 	}
 
-	#region Private
-
 	private readonly IGlobalParameters _globalParameters;
-
-	#endregion
 }

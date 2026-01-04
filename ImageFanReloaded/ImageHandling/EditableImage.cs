@@ -47,8 +47,7 @@ public class EditableImage : DisposableBase, IEditableImage
 			var imageSize = new ImageSize(bitmapToDisplay.Size.Width, bitmapToDisplay.Size.Height);
 			var imageToDisplay = new Image(bitmapToDisplay, imageSize);
 
-			_editableImageData = new EditableImageData(
-				imageFramesToEdit, imageToDisplay, imageSize);
+			_editableImageData = new EditableImageData(imageFramesToEdit, imageToDisplay, imageSize);
 
 			_previousOperationsStack = new Stack<EditableImageData>();
 			_revertedOperationsStack = new Stack<EditableImageData>();
@@ -268,8 +267,7 @@ public class EditableImage : DisposableBase, IEditableImage
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		var imageFrameCropGeometry = new MagickGeometry(
-			$"{width}x{height}+{topLeftPointX}+{topLeftPointY}")
+		var imageFrameCropGeometry = new MagickGeometry($"{width}x{height}+{topLeftPointX}+{topLeftPointY}")
 		{
 			IgnoreAspectRatio = true
 		};
@@ -281,7 +279,7 @@ public class EditableImage : DisposableBase, IEditableImage
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		if (percentage < 1 || percentage >= 100)
+		if (percentage is < 1 or >= 100)
 		{
 			throw new ArgumentOutOfRangeException(nameof(percentage));
 		}
@@ -306,8 +304,6 @@ public class EditableImage : DisposableBase, IEditableImage
 		CreateTransformedImage(anImageFrame => anImageFrame.Resize((uint)width, (uint)height));
 	}
 
-	#region Protected
-
 	protected override void DisposeSpecific()
 	{
 		_editableImageData.Dispose();
@@ -322,10 +318,6 @@ public class EditableImage : DisposableBase, IEditableImage
 			editableImageData.Dispose();
 		}
 	}
-
-	#endregion
-
-	#region Private
 
 	private EditableImageData _editableImageData;
 
@@ -374,10 +366,7 @@ public class EditableImage : DisposableBase, IEditableImage
 		sourceImageFrames.Write(copyImageFramesStream);
 		copyImageFramesStream.Reset();
 
-		MagickImageCollection destinationImageFrames = new MagickImageCollection(
-			copyImageFramesStream);
+		var destinationImageFrames = new MagickImageCollection(copyImageFramesStream);
 		return destinationImageFrames;
 	}
-
-	#endregion
 }

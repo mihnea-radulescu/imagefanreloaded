@@ -22,10 +22,7 @@ public class ImageFile : ImageFileBase
 	{
 	}
 
-	#region Protected
-
-	protected override IImage GetImageFromStream(
-		Stream imageFileContentStream, bool applyImageOrientation)
+	protected override IImage GetImageFromStream(Stream imageFileContentStream, bool applyImageOrientation)
 	{
 		if (IsAnimationEnabledImageFileExtension)
 		{
@@ -44,10 +41,6 @@ public class ImageFile : ImageFileBase
 			return BuildIndirectlySupportedImageFromStream(imageFileContentStream);
 		}
 	}
-
-	#endregion
-
-	#region Private
 
 	private IImage BuildAnimatedImageFromStream(Stream imageFileContentStream)
 	{
@@ -120,8 +113,7 @@ public class ImageFile : ImageFileBase
 		return BuildImage(bitmap);
 	}
 
-	private static IImageFrame BuildImageFrameFromStream(
-		Stream inputStream, TimeSpan delayUntilNextFrame)
+	private static IImageFrame BuildImageFrameFromStream(Stream inputStream, TimeSpan delayUntilNextFrame)
 	{
 		var bitmap = new Bitmap(inputStream);
 
@@ -148,6 +140,4 @@ public class ImageFile : ImageFileBase
 
 		return new Image(bitmap, bitmapSize);
 	}
-
-	#endregion
 }

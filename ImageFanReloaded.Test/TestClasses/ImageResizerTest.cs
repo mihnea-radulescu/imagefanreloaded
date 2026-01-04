@@ -34,8 +34,7 @@ public class ImageResizerTest : TestBase
 		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
 
 		_imageResizeCalculator
-			.GetDownsizedImageSize(
-				new ImageSize(image.Size.Width, image.Size.Height), viewPortSize)
+			.GetDownsizedImageSize(new ImageSize(image.Size.Width, image.Size.Height), viewPortSize)
 			.Returns(referenceResizedImageSize);
 
 		// Act
@@ -45,8 +44,7 @@ public class ImageResizerTest : TestBase
 		Assert.Equal(referenceResizedImageSize.Width, resizedImage.Size.Width);
 		Assert.Equal(referenceResizedImageSize.Height, resizedImage.Size.Height);
 
-		var outputFileName = GetOutputImageFileName(
-			LandscapeImageFileName, viewPortSize, referenceResizedImageSize);
+		var outputFileName = GetOutputImageFileName(LandscapeImageFileName, viewPortSize, referenceResizedImageSize);
 
 		SaveImageToDisc(resizedImage.Bitmap, outputFileName);
 	}
@@ -68,8 +66,7 @@ public class ImageResizerTest : TestBase
 		var referenceResizedImageSize = new ImageSize(resizedImageWidth, resizedImageHeight);
 
 		_imageResizeCalculator
-			.GetDownsizedImageSize(
-				new ImageSize(image.Size.Width, image.Size.Height), viewPortSize)
+			.GetDownsizedImageSize(new ImageSize(image.Size.Width, image.Size.Height), viewPortSize)
 			.Returns(referenceResizedImageSize);
 
 		// Act
@@ -79,13 +76,10 @@ public class ImageResizerTest : TestBase
 		Assert.Equal(referenceResizedImageSize.Width, resizedImage.Size.Width);
 		Assert.Equal(referenceResizedImageSize.Height, resizedImage.Size.Height);
 
-		var outputFileName = GetOutputImageFileName(
-			PortraitImageFileName, viewPortSize, referenceResizedImageSize);
+		var outputFileName = GetOutputImageFileName(PortraitImageFileName, viewPortSize, referenceResizedImageSize);
 
 		SaveImageToDisc(resizedImage.Bitmap, outputFileName);
 	}
-
-	#region Private
 
 	private const string LandscapeImageFileName = "Landscape";
 	private const string PortraitImageFileName = "Portrait";
@@ -99,6 +93,4 @@ public class ImageResizerTest : TestBase
 	private static string GetOutputImageFileName(
 		string imageFileName, ImageSize viewPortSize, ImageSize resizedImageSize)
 		=> $"{imageFileName}-ViewPort-{viewPortSize.Width}x{viewPortSize.Height}-Resized-{resizedImageSize.Width}x{resizedImageSize.Height}{OutputFileExtension}";
-
-	#endregion
 }

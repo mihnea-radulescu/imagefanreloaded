@@ -10,10 +10,8 @@ public class AboutInfoProvider : IAboutInfoProvider
 
 		var major = assemblyVersion.Major;
 		var minor = assemblyVersion.Minor;
-		var build = assemblyVersion.Build.ToString().PadLeft(
-			PaddingMinimumLength, PaddingCharacter);
-		var revision = assemblyVersion.Revision.ToString().PadLeft(
-			PaddingMinimumLength, PaddingCharacter);
+		var build = assemblyVersion.Build.ToString().PadLeft(PaddingMinimumLength, PaddingCharacter);
+		var revision = assemblyVersion.Revision.ToString().PadLeft(PaddingMinimumLength, PaddingCharacter);
 
 		VersionString = $"{major}.{minor}.{build}.{revision}";
 		Year = minor;
@@ -22,10 +20,6 @@ public class AboutInfoProvider : IAboutInfoProvider
 	public string VersionString { get; }
 	public int Year { get; }
 
-	#region Private
-
 	private const int PaddingMinimumLength = 2;
 	private const char PaddingCharacter = '0';
-
-	#endregion
 }

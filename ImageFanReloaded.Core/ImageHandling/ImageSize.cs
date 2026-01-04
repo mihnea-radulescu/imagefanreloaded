@@ -7,7 +7,7 @@ public record ImageSize
 		Width = width;
 		Height = height;
 
-		AspectRatio = (double)Width / (double)Height;
+		AspectRatio = Width / (double)Height;
 	}
 
 	public ImageSize(double width, double height)
