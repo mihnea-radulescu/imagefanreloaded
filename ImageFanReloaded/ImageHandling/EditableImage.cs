@@ -243,24 +243,16 @@ public class EditableImage : DisposableBase, IEditableImage
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		await _editableImageData.ImageFramesToEdit.WriteAsync(imageFilePath);
+		ApplyImageCompression(CurrentImage);
+		await CurrentImage.WriteAsync(imageFilePath);
 	}
 
-	public async Task SaveImageWithFormat(
-		string imageFilePath, ISaveFileImageFormat saveFileImageFormat)
+	public async Task SaveImageWithFormat(string imageFilePath, ISaveFileImageFormat saveFileImageFormat)
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		var magickFormat = saveFileImageFormat.MagickFormat;
-
-		if (saveFileImageFormat.IsAnimationEnabled)
-		{
-			await _editableImageData.ImageFramesToEdit.WriteAsync(imageFilePath, magickFormat);
-		}
-		else
-		{
-			await _editableImageData.ImageFramesToEdit[0].WriteAsync(imageFilePath, magickFormat);
-		}
+		ApplyImageCompression(CurrentImage);
+		await CurrentImage.WriteAsync(imageFilePath, saveFileImageFormat.MagickFormat);
 	}
 
 	public void Crop(int topLeftPointX, int topLeftPointY, int width, int height)
@@ -319,14 +311,18 @@ public class EditableImage : DisposableBase, IEditableImage
 		}
 	}
 
+	private const int ImageSaveQuality = 80;
+
 	private EditableImageData _editableImageData;
 
 	private readonly Stack<EditableImageData> _previousOperationsStack;
 	private readonly Stack<EditableImageData> _revertedOperationsStack;
 
+	private MagickImageCollection CurrentImage => _editableImageData.ImageFramesToEdit;
+
 	private void CreateTransformedImage(Action<IMagickImage> transformImageFrameAction)
 	{
-		var transformedImageFramesToEdit = CopyMagickImage(_editableImageData.ImageFramesToEdit);
+		var transformedImageFramesToEdit = CopyImage(CurrentImage);
 
 		try
 		{
@@ -360,7 +356,7 @@ public class EditableImage : DisposableBase, IEditableImage
 		_editableImageData = transformedEditableImageData;
 	}
 
-	private static MagickImageCollection CopyMagickImage(MagickImageCollection sourceImageFrames)
+	private static MagickImageCollection CopyImage(MagickImageCollection sourceImageFrames)
 	{
 		using var copyImageFramesStream = new MemoryStream();
 		sourceImageFrames.Write(copyImageFramesStream);
@@ -368,5 +364,13 @@ public class EditableImage : DisposableBase, IEditableImage
 
 		var destinationImageFrames = new MagickImageCollection(copyImageFramesStream);
 		return destinationImageFrames;
+	}
+
+	private static void ApplyImageCompression(MagickImageCollection image)
+	{
+		foreach (var anImageFrame in image)
+		{
+			anImageFrame.Quality = ImageSaveQuality;
+		}
 	}
 }
