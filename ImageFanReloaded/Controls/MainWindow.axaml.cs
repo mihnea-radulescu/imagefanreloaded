@@ -25,7 +25,7 @@ public partial class MainWindow : Window, IMainView
 
 	public IGlobalParameters? GlobalParameters { get; set; }
 	public IMouseCursorFactory? MouseCursorFactory { get; set; }
-	public ITabOptionsFactory? TabOptionsFactory { get; set; }
+	public ISettingsFactory? SettingsFactory { get; set; }
 	public IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 
 	public event EventHandler<ContentTabItemCollectionEventArgs>? WindowClosing;
@@ -171,7 +171,7 @@ public partial class MainWindow : Window, IMainView
 			MainView = this,
 			GlobalParameters = GlobalParameters,
 			MouseCursorFactory = MouseCursorFactory,
-			TabOptions = TabOptionsFactory!.GetTabOptions(),
+			TabOptions = SettingsFactory!.GetTabOptions(),
 			FolderChangedMutex = AsyncMutexFactory!.GetAsyncMutex()
 		};
 

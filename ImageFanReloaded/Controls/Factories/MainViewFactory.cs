@@ -11,12 +11,12 @@ public class MainViewFactory : IMainViewFactory
 	public MainViewFactory(
 		IGlobalParameters globalParameters,
 		IMouseCursorFactory mouseCursorFactory,
-		ITabOptionsFactory tabOptionsFactory,
+		ISettingsFactory settingsFactory,
 		IAsyncMutexFactory asyncMutexFactory)
 	{
 		_globalParameters = globalParameters;
 		_mouseCursorFactory = mouseCursorFactory;
-		_tabOptionsFactory = tabOptionsFactory;
+		_settingsFactory = settingsFactory;
 		_asyncMutexFactory = asyncMutexFactory;
 	}
 
@@ -26,7 +26,7 @@ public class MainViewFactory : IMainViewFactory
 
 		mainView.GlobalParameters = _globalParameters;
 		mainView.MouseCursorFactory = _mouseCursorFactory;
-		mainView.TabOptionsFactory = _tabOptionsFactory;
+		mainView.SettingsFactory = _settingsFactory;
 		mainView.AsyncMutexFactory = _asyncMutexFactory;
 
 		return mainView;
@@ -34,6 +34,6 @@ public class MainViewFactory : IMainViewFactory
 
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IMouseCursorFactory _mouseCursorFactory;
-	private readonly ITabOptionsFactory _tabOptionsFactory;
+	private readonly ISettingsFactory _settingsFactory;
 	private readonly IAsyncMutexFactory _asyncMutexFactory;
 }

@@ -1,5 +1,6 @@
-using System;
+using ImageFanReloaded.Core.Exceptions;
 using ImageFanReloaded.Core.ImageHandling.Factories;
+using ImageFanReloaded.Core.RuntimeEnvironment;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation;
@@ -7,7 +8,9 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 {
 	public DiscQueryEngineFactory(
-		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory, IFileSizeEngine fileSizeEngine)
+		IGlobalParameters globalParameters,
+		IImageFileFactory imageFileFactory,
+		IFileSizeEngine fileSizeEngine)
 	{
 		_globalParameters = globalParameters;
 		_imageFileFactory = imageFileFactory;
@@ -16,22 +19,28 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 
 	public IDiscQueryEngine GetDiscQueryEngine()
 	{
-		if (_globalParameters.IsLinux)
+		if (_globalParameters.RuntimeEnvironmentType is
+			RuntimeEnvironmentType.Linux or RuntimeEnvironmentType.LinuxFlatpak)
 		{
-			return new LinuxDiscQueryEngine(_globalParameters, _imageFileFactory, _fileSizeEngine);
+			return new LinuxDiscQueryEngine(
+				_globalParameters, _imageFileFactory, _fileSizeEngine);
 		}
 
-		if (_globalParameters.IsWindows)
+		if (_globalParameters.RuntimeEnvironmentType is
+			RuntimeEnvironmentType.Windows)
 		{
-			return new WindowsDiscQueryEngine(_globalParameters, _imageFileFactory, _fileSizeEngine);
+			return new WindowsDiscQueryEngine(
+				_globalParameters, _imageFileFactory, _fileSizeEngine);
 		}
 
-		if (_globalParameters.IsMacOs)
+		if (_globalParameters.RuntimeEnvironmentType is
+			RuntimeEnvironmentType.MacOs)
 		{
-			return new MacOsDiscQueryEngine(_globalParameters, _imageFileFactory, _fileSizeEngine);
+			return new MacOsDiscQueryEngine(
+				_globalParameters, _imageFileFactory, _fileSizeEngine);
 		}
 
-		throw new PlatformNotSupportedException("Operating system not supported!");
+		throw new RuntimeEnvironmentNotSupportedException();
 	}
 
 	private readonly IGlobalParameters _globalParameters;

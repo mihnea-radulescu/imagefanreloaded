@@ -8,7 +8,8 @@ public static class StringComparerExtensions
 	{
 		public StringComparison ToStringComparison()
 		{
-			if (stringComparer is IStringComparisonEnabled stringComparisonEnabled)
+			if (stringComparer is
+				IStringComparisonEnabled stringComparisonEnabled)
 			{
 				return stringComparisonEnabled.GetStringComparison();
 			}

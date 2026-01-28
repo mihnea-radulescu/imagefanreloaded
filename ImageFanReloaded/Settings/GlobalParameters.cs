@@ -5,7 +5,7 @@ using Avalonia.Media.Imaging;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
-using ImageFanReloaded.Core.OperatingSystem;
+using ImageFanReloaded.Core.RuntimeEnvironment;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Settings.Implementation;
 using ImageFanReloaded.Properties;
@@ -14,8 +14,10 @@ namespace ImageFanReloaded.Settings;
 
 public class GlobalParameters : GlobalParametersBase
 {
-	public GlobalParameters(IOperatingSystemSettings operatingSystemSettings, IImageResizer imageResizer)
-		: base(operatingSystemSettings)
+	public GlobalParameters(
+		IRuntimeEnvironmentSettings runtimeEnvironmentSettings,
+		IImageResizer imageResizer)
+		: base(runtimeEnvironmentSettings)
 	{
 		_imageResizer = imageResizer;
 

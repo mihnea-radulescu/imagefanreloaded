@@ -1,8 +1,0 @@
-namespace ImageFanReloaded.Core.OperatingSystem;
-
-public interface IOperatingSystemSettings
-{
-	bool IsWindows { get; }
-	bool IsLinux { get; }
-	bool IsMacOs { get; }
-}

@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
 using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Keyboard;
-using ImageFanReloaded.Core.OperatingSystem;
-using ImageFanReloaded.Core.OperatingSystem.Implementation;
+using ImageFanReloaded.Core.RuntimeEnvironment;
+using ImageFanReloaded.Core.RuntimeEnvironment.Implementation;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.ImageHandling;
 using ImageFanReloaded.ImageHandling.Extensions;
@@ -17,12 +16,15 @@ public class GlobalParametersTest : TestBase
 {
 	public GlobalParametersTest()
 	{
-		IOperatingSystemSettings operatingSystemSettings = new OperatingSystemSettings();
+		IRuntimeEnvironmentSettings runtimeEnvironmentSettings =
+			new RuntimeEnvironmentSettings();
 
-		IImageResizeCalculator imageResizeCalculator = new ImageResizeCalculator();
+		IImageResizeCalculator imageResizeCalculator =
+			new ImageResizeCalculator();
 		IImageResizer imageResizer = new ImageResizer(imageResizeCalculator);
 
-		_globalParameters = new GlobalParameters(operatingSystemSettings, imageResizer);
+		_globalParameters = new GlobalParameters(
+			runtimeEnvironmentSettings, imageResizer);
 	}
 
 	[Fact]
@@ -35,13 +37,9 @@ public class GlobalParametersTest : TestBase
 		// Assert
 		Assert.NotEqual(0, _globalParameters.ProcessorCount);
 
-		List<bool> isOperatingSystemCollection =
-		[
-			_globalParameters.IsLinux,
-			_globalParameters.IsWindows,
-			_globalParameters.IsMacOs
-		];
-		Assert.Single(isOperatingSystemCollection, isOperatingSystem => isOperatingSystem);
+		Assert.NotEqual(
+			RuntimeEnvironmentType.None,
+			_globalParameters.RuntimeEnvironmentType);
 
 		Assert.Equal(6, _globalParameters.MaxRecursionDepth);
 
@@ -102,7 +100,8 @@ public class GlobalParametersTest : TestBase
 		Assert.NotNull(_globalParameters.NameComparer);
 
 		Assert.NotEmpty(_globalParameters.DirectlySupportedImageFileExtensions);
-		Assert.NotEmpty(_globalParameters.IndirectlySupportedImageFileExtensions);
+		Assert.NotEmpty(_globalParameters
+			.IndirectlySupportedImageFileExtensions);
 		Assert.NotEmpty(_globalParameters.AnimationEnabledImageFileExtensions);
 		Assert.NotEmpty(_globalParameters.ImageFileExtensions);
 
@@ -115,14 +114,18 @@ public class GlobalParametersTest : TestBase
 
 		Assert.NotNull(_globalParameters.InvalidImage.Bitmap);
 
-		var expectedPersistentImagesCount = 1 + 2 * Enum.GetValues<ThumbnailSize>().Length;
-		Assert.Equal(expectedPersistentImagesCount, _globalParameters.PersistentImages.Count);
+		var expectedPersistentImagesCount =
+			1 + 2 * Enum.GetValues<ThumbnailSize>().Length;
+		Assert.Equal(
+			expectedPersistentImagesCount,
+			_globalParameters.PersistentImages.Count);
 
 		Assert.NotNull(_globalParameters.DriveIcon.Bitmap);
 		Assert.NotNull(_globalParameters.FolderIcon.Bitmap);
 
 		SaveImageToDisc(
-			_globalParameters.InvalidImage.Bitmap, $"{nameof(_globalParameters.InvalidImage)}{OutputFileExtension}");
+			_globalParameters.InvalidImage.Bitmap,
+			$"{nameof(_globalParameters.InvalidImage)}{OutputFileExtension}");
 		SaveImageToDisc(
 			_globalParameters.GetInvalidImageThumbnail(ThumbnailSize).Bitmap,
 			$"InvalidImageThumbnail_{OutputFileExtension}");
@@ -132,9 +135,11 @@ public class GlobalParametersTest : TestBase
 			$"LoadingImageThumbnail_{OutputFileExtension}");
 
 		SaveImageToDisc(
-			_globalParameters.DriveIcon.Bitmap, $"{nameof(_globalParameters.DriveIcon)}{OutputFileExtension}");
+			_globalParameters.DriveIcon.Bitmap,
+			$"{nameof(_globalParameters.DriveIcon)}{OutputFileExtension}");
 		SaveImageToDisc(
-			_globalParameters.FolderIcon.Bitmap, $"{nameof(_globalParameters.FolderIcon)}{OutputFileExtension}");
+			_globalParameters.FolderIcon.Bitmap,
+			$"{nameof(_globalParameters.FolderIcon)}{OutputFileExtension}");
 	}
 
 	private const int ThumbnailSize = 250;

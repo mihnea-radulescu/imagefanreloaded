@@ -16,7 +16,8 @@ public interface IImageFile
 	IImage GetImage(bool applyImageOrientation);
 	(IImage, IImage) GetImageAndResizedImage(
 		ImageSize viewPortSize,
-		UpsizeFullScreenImagesUpToScreenSize upsizeFullScreenImagesUpToScreenSize,
+		UpsizeFullScreenImagesUpToScreenSize
+			upsizeFullScreenImagesUpToScreenSize,
 		bool applyImageOrientation);
 
 	void ReadImageFile();

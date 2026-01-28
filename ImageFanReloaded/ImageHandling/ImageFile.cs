@@ -17,12 +17,19 @@ public class ImageFile : ImageFileBase
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
 		IFileSizeEngine fileSizeEngine,
+		IImageFileContentReader imageFileContentReader,
 		ImageFileData imageFileData)
-		: base(globalParameters, imageResizer, fileSizeEngine, imageFileData)
+		: base(
+			globalParameters,
+			imageResizer,
+			fileSizeEngine,
+			imageFileContentReader,
+			imageFileData)
 	{
 	}
 
-	protected override IImage GetImageFromStream(Stream imageFileContentStream, bool applyImageOrientation)
+	protected override IImage GetImageFromStream(
+		Stream imageFileContentStream, bool applyImageOrientation)
 	{
 		if (IsAnimationEnabledImageFileExtension)
 		{
@@ -30,21 +37,25 @@ public class ImageFile : ImageFileBase
 		}
 		else if (applyImageOrientation)
 		{
-			return BuildIndirectlySupportedImageFromStream(imageFileContentStream);
+			return BuildIndirectlySupportedImageFromStream(
+				imageFileContentStream);
 		}
 		else if (IsDirectlySupportedImageFileExtension)
 		{
-			return BuildDirectlySupportedImageFromStream(imageFileContentStream);
+			return BuildDirectlySupportedImageFromStream(
+				imageFileContentStream);
 		}
 		else
 		{
-			return BuildIndirectlySupportedImageFromStream(imageFileContentStream);
+			return BuildIndirectlySupportedImageFromStream(
+				imageFileContentStream);
 		}
 	}
 
 	private IImage BuildAnimatedImageFromStream(Stream imageFileContentStream)
 	{
-		using var imageCollection = new MagickImageCollection(imageFileContentStream);
+		using var imageCollection = new MagickImageCollection(
+			imageFileContentStream);
 
 		if (imageCollection.Count == 1)
 		{
@@ -65,19 +76,22 @@ public class ImageFile : ImageFileBase
 		foreach (var image in imageCollection)
 		{
 			var animationDelayInMilliseconds = image.AnimationDelay * 10;
-			var delayUntilNextFrame = TimeSpan.FromMilliseconds(animationDelayInMilliseconds);
+			var delayUntilNextFrame = TimeSpan.FromMilliseconds(
+				animationDelayInMilliseconds);
 
 			using var imageStream = new MemoryStream();
 			WriteImageToStream(image, imageStream, false);
 
-			var imageFrame = BuildImageFrameFromStream(imageStream, delayUntilNextFrame);
+			var imageFrame = BuildImageFrameFromStream(
+				imageStream, delayUntilNextFrame);
 			animatedImageFrames.Add(imageFrame);
 		}
 
 		return new Image(animatedImageFrames);
 	}
 
-	private IImage BuildIndirectlySupportedImageFromStream(Stream imageFileContentStream)
+	private IImage BuildIndirectlySupportedImageFromStream(
+		Stream imageFileContentStream)
 	{
 		using IMagickImage image = new MagickImage(imageFileContentStream);
 
@@ -92,7 +106,8 @@ public class ImageFile : ImageFileBase
 		return BuildImageFromStream(imageStream);
 	}
 
-	private void WriteImageToStream(IMagickImage image, Stream imageStream, bool autoOrientImage)
+	private void WriteImageToStream(
+		IMagickImage image, Stream imageStream, bool autoOrientImage)
 	{
 		image.Quality = GlobalParameters.ImageQualityLevel;
 
@@ -106,21 +121,24 @@ public class ImageFile : ImageFileBase
 		imageStream.Reset();
 	}
 
-	private static IImage BuildDirectlySupportedImageFromStream(Stream imageFileContentStream)
+	private static IImage BuildDirectlySupportedImageFromStream(
+		Stream imageFileContentStream)
 	{
 		var bitmap = new Bitmap(imageFileContentStream);
 
 		return BuildImage(bitmap);
 	}
 
-	private static IImageFrame BuildImageFrameFromStream(Stream inputStream, TimeSpan delayUntilNextFrame)
+	private static IImageFrame BuildImageFrameFromStream(
+		Stream inputStream, TimeSpan delayUntilNextFrame)
 	{
 		var bitmap = new Bitmap(inputStream);
 
 		return BuildImageFrame(bitmap, delayUntilNextFrame);
 	}
 
-	private static IImageFrame BuildImageFrame(Bitmap bitmap, TimeSpan delayUntilNextFrame)
+	private static IImageFrame BuildImageFrame(
+		Bitmap bitmap, TimeSpan delayUntilNextFrame)
 	{
 		var bitmapSize = new ImageSize(bitmap.Size.Width, bitmap.Size.Height);
 

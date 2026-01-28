@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
-using ImageFanReloaded.Core.OperatingSystem;
+using ImageFanReloaded.Core.RuntimeEnvironment;
+using ImageFanReloaded.Core.RuntimeEnvironment.Implementation.Extensions;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 
 namespace ImageFanReloaded.Core.Settings.Implementation;
@@ -11,9 +12,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 {
 	public int ProcessorCount { get; }
 
-	public bool IsLinux { get; }
-	public bool IsWindows { get; }
-	public bool IsMacOs { get; }
+	public RuntimeEnvironmentType RuntimeEnvironmentType { get; }
 
 	public int MaxRecursionDepth => 6;
 
@@ -70,13 +69,16 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key PageUpKey { get; }
 	public Key PageDownKey { get; }
 
-	public bool IsBackwardNavigationKey(Key aKey) => _backwardNavigationKeys.Contains(aKey);
-	public bool IsForwardNavigationKey(Key aKey) => _forwardNavigationKeys.Contains(aKey);
+	public bool IsBackwardNavigationKey(Key aKey)
+		=> _backwardNavigationKeys.Contains(aKey);
+	public bool IsForwardNavigationKey(Key aKey)
+		=> _forwardNavigationKeys.Contains(aKey);
 	public bool IsNavigationKey(Key aKey) => _navigationKeys.Contains(aKey);
 
 	public StringComparer NameComparer { get; }
 
-	public bool CanDisposeImage(IImage image) => !PersistentImages.Contains(image);
+	public bool CanDisposeImage(IImage image)
+		=> !PersistentImages.Contains(image);
 
 	public HashSet<string> DirectlySupportedImageFileExtensions { get; }
 	public HashSet<string> IndirectlySupportedImageFileExtensions { get; }
@@ -103,13 +105,13 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public abstract IImage GetInvalidImageThumbnail(int thumbnailSize);
 	public abstract IImage GetLoadingImageThumbnail(int thumbnailSize);
 
-	protected GlobalParametersBase(IOperatingSystemSettings operatingSystemSettings)
+	protected GlobalParametersBase(
+		IRuntimeEnvironmentSettings runtimeEnvironmentSettings)
 	{
 		ProcessorCount = Environment.ProcessorCount;
 
-		IsLinux = operatingSystemSettings.IsLinux;
-		IsWindows = operatingSystemSettings.IsWindows;
-		IsMacOs = operatingSystemSettings.IsMacOs;
+		RuntimeEnvironmentType = runtimeEnvironmentSettings
+			.RuntimeEnvironmentType;
 
 		TabKey = Key.Tab;
 		EscapeKey = Key.Escape;
@@ -164,11 +166,13 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		PageUpKey = Key.PageUp;
 		PageDownKey = Key.PageDown;
 
-		NameComparer = operatingSystemSettings.IsWindows
-			? new NaturalSortingComparer(StringComparer.InvariantCultureIgnoreCase)
-			: new NaturalSortingComparer(StringComparer.InvariantCulture);
+		var stringComparer = runtimeEnvironmentSettings
+			.RuntimeEnvironmentType
+			.GetStringComparer();
+		NameComparer = new NaturalSortingComparer(stringComparer);
 
-		DirectlySupportedImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
+		DirectlySupportedImageFileExtensions =
+			new HashSet<string>(ExtensionsStringComparer)
 		{
 			".bmp",
 			".cr2",
@@ -187,7 +191,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".wbmp"
 		};
 
-		IndirectlySupportedImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
+		IndirectlySupportedImageFileExtensions = new HashSet<string>(
+			ExtensionsStringComparer)
 		{
 			".dds",
 			".exr",
@@ -217,7 +222,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".xpm"
 		};
 
-		AnimationEnabledImageFileExtensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
+		AnimationEnabledImageFileExtensions = new HashSet<string>(
+			ExtensionsStringComparer)
 		{
 			".gif",
 			".mng",
@@ -228,20 +234,21 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			[..DirectlySupportedImageFileExtensions, 
 			 ..IndirectlySupportedImageFileExtensions,
 			 ..AnimationEnabledImageFileExtensions],
-			StringComparer.InvariantCultureIgnoreCase);
+			ExtensionsStringComparer);
 
 		ImageQualityLevel = 80;
 		DecimalDigitCountForDisplay = 2;
 
-		UserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+		UserProfilePath = Environment.GetFolderPath(
+			Environment.SpecialFolder.UserProfile);
 
-		SpecialFolders = new List<string>
-		{
+		SpecialFolders =
+		[
 			"Desktop",
 			"Documents",
 			"Downloads",
 			"Pictures"
-		};
+		];
 
 		_backwardNavigationKeys = [Key.Up, Key.Left, Key.Backspace];
 
@@ -251,6 +258,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	}
 
 	protected const int IconSizeSquareLength = 36;
+
+	private static readonly StringComparer ExtensionsStringComparer =
+		StringComparer.InvariantCultureIgnoreCase;
 
 	private readonly HashSet<Key> _backwardNavigationKeys;
 	private readonly HashSet<Key> _forwardNavigationKeys;

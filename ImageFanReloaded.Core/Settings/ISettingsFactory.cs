@@ -1,6 +1,6 @@
 namespace ImageFanReloaded.Core.Settings;
 
-public interface ITabOptionsFactory
+public interface ISettingsFactory
 {
 	ITabOptions GetTabOptions();
 }

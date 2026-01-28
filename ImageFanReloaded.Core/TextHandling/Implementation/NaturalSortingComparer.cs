@@ -6,11 +6,6 @@ namespace ImageFanReloaded.Core.TextHandling.Implementation;
 
 public class NaturalSortingComparer : StringComparer, IStringComparisonEnabled
 {
-	static NaturalSortingComparer()
-	{
-		ContiguousDigitBlockRegex = new Regex(@"\d+", RegexOptions.Compiled);
-	}
-
 	public NaturalSortingComparer(StringComparer defaultStringComparer)
 	{
 		_defaultStringComparer = defaultStringComparer;
@@ -38,11 +33,14 @@ public class NaturalSortingComparer : StringComparer, IStringComparisonEnabled
 			return _defaultStringComparer.Compare(x, y);
 		}
 
-		var maximumContiguousDigitBlockLengthX = GetMaximumContiguousDigitBlockLength(x);
-		var maximumContiguousDigitBlockLengthY = GetMaximumContiguousDigitBlockLength(y);
+		var maximumContiguousDigitBlockLengthX =
+			GetMaximumContiguousDigitBlockLength(x);
+		var maximumContiguousDigitBlockLengthY =
+			GetMaximumContiguousDigitBlockLength(y);
 
 		var maximumContiguousDigitBlockLength = Math.Max(
-			maximumContiguousDigitBlockLengthX, maximumContiguousDigitBlockLengthY);
+			maximumContiguousDigitBlockLengthX,
+			maximumContiguousDigitBlockLengthY);
 
 		var paddedX = PadDigitBlocks(x, maximumContiguousDigitBlockLength);
 		var paddedY = PadDigitBlocks(y, maximumContiguousDigitBlockLength);
@@ -59,27 +57,31 @@ public class NaturalSortingComparer : StringComparer, IStringComparisonEnabled
 			return _defaultStringComparer.GetHashCode(obj);
 		}
 
-		var maximumContiguousDigitBlockLengthObj = GetMaximumContiguousDigitBlockLength(obj);
-		var paddedObj = PadDigitBlocks(obj, maximumContiguousDigitBlockLengthObj);
+		var maximumContiguousDigitBlockLengthObj =
+			GetMaximumContiguousDigitBlockLength(obj);
+		var paddedObj = PadDigitBlocks(
+			obj, maximumContiguousDigitBlockLengthObj);
 
 		return _defaultStringComparer.GetHashCode(paddedObj);
 	}
 
 	public StringComparison GetStringComparison()
 	{
-		if (_defaultStringComparer == InvariantCultureIgnoreCase)
-		{
-			return StringComparison.InvariantCultureIgnoreCase;
-		}
+		var stringComparison =
+			_defaultStringComparer == InvariantCultureIgnoreCase
+				? StringComparison.InvariantCultureIgnoreCase
+				: StringComparison.InvariantCulture;
 
-		return StringComparison.InvariantCulture;
+		return stringComparison;
 	}
 
-	private static readonly Regex ContiguousDigitBlockRegex;
+	private static readonly Regex ContiguousDigitBlockRegex =
+		new Regex(@"\d+", RegexOptions.Compiled);
 
 	private readonly StringComparer _defaultStringComparer;
 
-	private static bool ContainsDigits(string text) => ContiguousDigitBlockRegex.IsMatch(text);
+	private static bool ContainsDigits(string text)
+		=> ContiguousDigitBlockRegex.IsMatch(text);
 
 	private static int GetMaximumContiguousDigitBlockLength(string text)
 	{

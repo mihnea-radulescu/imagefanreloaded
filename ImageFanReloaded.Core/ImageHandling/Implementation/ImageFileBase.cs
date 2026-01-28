@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using ImageFanReloaded.Core.DiscAccess;
-using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -12,14 +11,16 @@ public abstract class ImageFileBase : IImageFile
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
 		IFileSizeEngine fileSizeEngine,
+		IImageFileContentReader imageFileContentReader,
 		ImageFileData imageFileData)
 	{
 		GlobalParameters = globalParameters;
+
 		_imageResizer = imageResizer;
 		_fileSizeEngine = fileSizeEngine;
+		_imageFileContentReader = imageFileContentReader;
 
 		ImageFileData = imageFileData;
-
 		ImageSize = GlobalParameters.InvalidImage.Size;
 
 		_thumbnailGenerationLockObject = new object();
@@ -47,7 +48,8 @@ public abstract class ImageFileBase : IImageFile
 		{
 			try
 			{
-				image = GetImageFromStream(imageFileContentStream!, applyImageOrientation);
+				image = GetImageFromStream(
+					imageFileContentStream!, applyImageOrientation);
 
 				SetImageProperties(image);
 			}
@@ -64,7 +66,8 @@ public abstract class ImageFileBase : IImageFile
 
 	public (IImage, IImage) GetImageAndResizedImage(
 		ImageSize viewPortSize,
-		UpsizeFullScreenImagesUpToScreenSize upsizeFullScreenImagesUpToScreenSize,
+		UpsizeFullScreenImagesUpToScreenSize
+			upsizeFullScreenImagesUpToScreenSize,
 		bool applyImageOrientation)
 	{
 		var image = GetImage(applyImageOrientation);
@@ -77,22 +80,27 @@ public abstract class ImageFileBase : IImageFile
 		}
 		else
 		{
-			var doesFitWithinViewPort = image.DoesFitWithinViewPort(viewPortSize);
+			var doesFitWithinViewPort = image.DoesFitWithinViewPort(
+				viewPortSize);
 			if (doesFitWithinViewPort)
 			{
-				if (upsizeFullScreenImagesUpToScreenSize == UpsizeFullScreenImagesUpToScreenSize.Disabled)
+				if (upsizeFullScreenImagesUpToScreenSize ==
+					UpsizeFullScreenImagesUpToScreenSize.Disabled)
 				{
 					resizedImage = image;
 				}
 				else
 				{
-					var maxUpscalingFactorToViewPort = image.GetMaxUpscalingFactorToViewPort(viewPortSize);
+					var maxUpscalingFactorToViewPort = image
+						.GetMaxUpscalingFactorToViewPort(viewPortSize);
 					var upscalingFactor = Math.Min(
-						maxUpscalingFactorToViewPort, upsizeFullScreenImagesUpToScreenSize.Value);
+						maxUpscalingFactorToViewPort,
+						upsizeFullScreenImagesUpToScreenSize.Value);
 
 					try
 					{
-						resizedImage = _imageResizer.CreateUpsizedImage(image, upscalingFactor);
+						resizedImage = _imageResizer.CreateUpsizedImage(
+							image, upscalingFactor);
 
 						image.Dispose();
 						image = resizedImage;
@@ -109,7 +117,8 @@ public abstract class ImageFileBase : IImageFile
 			{
 				try
 				{
-					resizedImage = _imageResizer.CreateDownsizedImage(image, viewPortSize);
+					resizedImage = _imageResizer.CreateDownsizedImage(
+						image, viewPortSize);
 				}
 				catch
 				{
@@ -143,7 +152,8 @@ public abstract class ImageFileBase : IImageFile
 
 		if (HasImageReadError)
 		{
-			thumbnail = GlobalParameters.GetInvalidImageThumbnail(thumbnailSize);
+			thumbnail = GlobalParameters.GetInvalidImageThumbnail(
+				thumbnailSize);
 		}
 		else
 		{
@@ -151,18 +161,21 @@ public abstract class ImageFileBase : IImageFile
 			{
 				lock (_thumbnailGenerationLockObject)
 				{
-					image = GetImageFromStream(_imageFileContentStream!, applyImageOrientation);
+					image = GetImageFromStream(
+						_imageFileContentStream!, applyImageOrientation);
 				}
 
 				SetImageProperties(image);
 
 				var thumbnailImageSize = new ImageSize(thumbnailSize);
 
-				thumbnail = _imageResizer.CreateDownsizedImage(image, thumbnailImageSize);
+				thumbnail = _imageResizer.CreateDownsizedImage(
+					image, thumbnailImageSize);
 			}
 			catch
 			{
-				thumbnail = GlobalParameters.GetInvalidImageThumbnail(thumbnailSize);
+				thumbnail = GlobalParameters.GetInvalidImageThumbnail(
+					thumbnailSize);
 
 				HasImageReadError = true;
 			}
@@ -188,7 +201,8 @@ public abstract class ImageFileBase : IImageFile
 			}
 			else
 			{
-				var sizeOnDiscInKilobytes = _fileSizeEngine.ConvertToKilobytes(imageFileInfo.Length);
+				var sizeOnDiscInKilobytes = _fileSizeEngine.ConvertToKilobytes(
+					imageFileInfo.Length);
 				var lastModificationTime = imageFileInfo.LastWriteTime;
 
 				ImageFileData.SizeOnDiscInKilobytes = sizeOnDiscInKilobytes;
@@ -209,7 +223,8 @@ public abstract class ImageFileBase : IImageFile
 
 		var sizeOnDiscInKilobytes = ImageFileData.SizeOnDiscInKilobytes;
 		var sizeOnDiscInKilobytesForDisplay = decimal.Round(
-			sizeOnDiscInKilobytes, GlobalParameters.DecimalDigitCountForDisplay);
+			sizeOnDiscInKilobytes,
+			GlobalParameters.DecimalDigitCountForDisplay);
 
 		var imageInfo = HasImageReadError
 			? $"{imageFileInfo} - image read error - {sizeOnDiscInKilobytesForDisplay} KB"
@@ -232,16 +247,20 @@ public abstract class ImageFileBase : IImageFile
 
 	protected readonly IGlobalParameters GlobalParameters;
 
-	protected abstract IImage GetImageFromStream(Stream imageFileContentStream, bool applyImageOrientation);
+	protected abstract IImage GetImageFromStream(
+		Stream imageFileContentStream, bool applyImageOrientation);
 
 	protected bool IsDirectlySupportedImageFileExtension
-		=> GlobalParameters.DirectlySupportedImageFileExtensions.Contains(ImageFileData.ImageFileExtension);
+		=> GlobalParameters.DirectlySupportedImageFileExtensions.Contains(
+			ImageFileData.ImageFileExtension);
 
 	protected bool IsAnimationEnabledImageFileExtension
-		=> GlobalParameters.AnimationEnabledImageFileExtensions.Contains(ImageFileData.ImageFileExtension);
+		=> GlobalParameters.AnimationEnabledImageFileExtensions.Contains(
+			ImageFileData.ImageFileExtension);
 
 	private readonly IImageResizer _imageResizer;
 	private readonly IFileSizeEngine _fileSizeEngine;
+	private readonly IImageFileContentReader _imageFileContentReader;
 
 	private readonly object _thumbnailGenerationLockObject;
 
@@ -256,30 +275,15 @@ public abstract class ImageFileBase : IImageFile
 
 	private Stream? GetImageFileContentStream()
 	{
-		var imageFilePath = ImageFileData.ImageFilePath;
+		var imageFileContentStream = _imageFileContentReader
+			.GetImageFileContentStream(ImageFileData.ImageFilePath);
 
-		if (!File.Exists(imageFilePath))
+		if (imageFileContentStream is null)
 		{
 			HasImageReadError = true;
-
-			return null;
 		}
 
-		try
-		{
-			var imageFileContent = File.ReadAllBytes(imageFilePath);
-
-			var imageFileContentStream = new MemoryStream(imageFileContent);
-			imageFileContentStream.Reset();
-
-			return imageFileContentStream;
-		}
-		catch
-		{
-			HasImageReadError = true;
-
-			return null;
-		}
+		return imageFileContentStream;
 	}
 
 	private void DisposeImage(IImage? image)

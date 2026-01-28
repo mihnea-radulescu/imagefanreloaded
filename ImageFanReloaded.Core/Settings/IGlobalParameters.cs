@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
+using ImageFanReloaded.Core.RuntimeEnvironment;
 
 namespace ImageFanReloaded.Core.Settings;
 
@@ -9,9 +10,7 @@ public interface IGlobalParameters
 {
 	int ProcessorCount { get; }
 
-	bool IsLinux { get; }
-	bool IsWindows { get; }
-	bool IsMacOs { get; }
+	RuntimeEnvironmentType RuntimeEnvironmentType { get; }
 
 	int MaxRecursionDepth { get; }
 

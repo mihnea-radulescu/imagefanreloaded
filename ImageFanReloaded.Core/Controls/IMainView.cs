@@ -10,7 +10,7 @@ public interface IMainView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
 	IMouseCursorFactory? MouseCursorFactory { get; set; }
-	ITabOptionsFactory? TabOptionsFactory { get; set; }
+	ISettingsFactory? SettingsFactory { get; set; }
 	IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 
 	event EventHandler<ContentTabItemCollectionEventArgs>? WindowClosing;
