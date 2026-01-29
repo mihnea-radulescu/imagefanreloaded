@@ -148,7 +148,7 @@ public abstract class ImageFileBase : IImageFile
 	public IImage GetThumbnail(int thumbnailSize, bool applyImageOrientation)
 	{
 		IImage? image = null;
-		IImage thumbnail;
+		IImage? thumbnail = null;
 
 		if (HasImageReadError)
 		{
@@ -169,8 +169,15 @@ public abstract class ImageFileBase : IImageFile
 
 				var thumbnailImageSize = new ImageSize(thumbnailSize);
 
-				thumbnail = _imageResizer.CreateDownsizedImage(
-					image, thumbnailImageSize);
+				if (image.DoesFitWithinViewPort(thumbnailImageSize))
+				{
+					thumbnail = image;
+				}
+				else
+				{
+					thumbnail = _imageResizer.CreateDownsizedImage(
+						image, thumbnailImageSize);
+				}
 			}
 			catch
 			{
@@ -181,7 +188,11 @@ public abstract class ImageFileBase : IImageFile
 			}
 			finally
 			{
-				DisposeImage(image);
+				if (thumbnail != image)
+				{
+					DisposeImage(image);
+				}
+
 				DisposeImageFileContentStream();
 			}
 		}
