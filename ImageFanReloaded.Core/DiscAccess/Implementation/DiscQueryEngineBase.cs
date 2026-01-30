@@ -83,7 +83,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 	private void BuildSkipRecursionFolderPathsInternal()
 	{
-		var homePath = _globalParameters.UserProfilePath;
+		var homePath = _globalParameters.UserHomePath;
 
 		var drivePaths = DriveInfo.GetDrives()
 			.Select(aDriveInfo => aDriveInfo.Name)
@@ -100,8 +100,8 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		{
 			var homeFolder = new FileSystemEntryInfo(
 				"Home",
-				_globalParameters.UserProfilePath,
-				HasSubFolders(_globalParameters.UserProfilePath),
+				_globalParameters.UserHomePath,
+				HasSubFolders(_globalParameters.UserHomePath),
 				_globalParameters.HomeFolderIcon);
 
 			var specialFolders = _globalParameters.SpecialFolders
@@ -109,7 +109,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 					new
 					{
 						Name = aSpecialFolder,
-						Path = Path.Combine(_globalParameters.UserProfilePath, aSpecialFolder)
+						Path = Path.Combine(_globalParameters.UserHomePath, aSpecialFolder)
 					})
 				.Where(aSpecialFolderWithPath => Path.Exists(aSpecialFolderWithPath.Path))
 				.Select(aSpecialFolderWithPath =>

@@ -9,7 +9,8 @@ public class Image : DisposableBase, IImage
 {
 	public Image(IDisposable imageImplementationInstance, ImageSize imageSize)
 	{
-		IImageFrame singleImageFrame = new ImageFrame(imageImplementationInstance, imageSize, TimeSpan.Zero);
+		IImageFrame singleImageFrame = new ImageFrame(
+			imageImplementationInstance, imageSize, TimeSpan.Zero);
 
 		_imageFrames = [singleImageFrame];
 
@@ -84,10 +85,12 @@ public class Image : DisposableBase, IImage
 	}
 
 	public bool DoesFitWithinViewPort(ImageSize viewPortSize)
-		=> Size.Width <= viewPortSize.Width && Size.Height <= viewPortSize.Height;
+		=> Size.Width <= viewPortSize.Width &&
+		   Size.Height <= viewPortSize.Height;
 
 	public double GetMaxUpscalingFactorToViewPort(ImageSize viewPortSize)
-		=> Math.Min(viewPortSize.Width / (double)Size.Width, viewPortSize.Height / (double)Size.Height);
+		=> Math.Min(viewPortSize.Width / (double)Size.Width,
+					viewPortSize.Height / (double)Size.Height);
 
 	protected override void DisposeSpecific()
 	{
@@ -105,9 +108,13 @@ public class Image : DisposableBase, IImage
 	private TimeSpan GetTotalImageFramesDelay()
 	{
 		var imageFramesTotalMilliseconds =
-			_imageFrames.Sum(anImageFrame => anImageFrame.DelayUntilNextFrame.TotalMilliseconds);
+			_imageFrames.Sum(
+				anImageFrame => anImageFrame
+					.DelayUntilNextFrame.TotalMilliseconds);
 
-		var imageFramesTotalTimeSpan = TimeSpan.FromMilliseconds(imageFramesTotalMilliseconds);
+		var imageFramesTotalTimeSpan = TimeSpan.FromMilliseconds(
+			imageFramesTotalMilliseconds);
+
 		return imageFramesTotalTimeSpan;
 	}
 }

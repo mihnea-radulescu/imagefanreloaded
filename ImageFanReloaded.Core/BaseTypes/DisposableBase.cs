@@ -17,7 +17,8 @@ public abstract class DisposableBase : IDisposable
 
 	protected abstract void DisposeSpecific();
 
-	protected void ThrowObjectDisposedExceptionIfNecessary() => ObjectDisposedException.ThrowIf(_hasBeenDisposed, this);
+	protected void ThrowObjectDisposedExceptionIfNecessary()
+		=> ObjectDisposedException.ThrowIf(_hasBeenDisposed, this);
 
 	private bool _hasBeenDisposed;
 }

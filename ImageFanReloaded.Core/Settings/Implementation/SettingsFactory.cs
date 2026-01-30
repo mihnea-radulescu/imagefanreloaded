@@ -1,3 +1,4 @@
+using System.IO;
 using ImageFanReloaded.Core.RuntimeEnvironment;
 
 namespace ImageFanReloaded.Core.Settings.Implementation;
@@ -8,20 +9,34 @@ public class SettingsFactory : ISettingsFactory
 
 	public SettingsFactory(IGlobalParameters globalParameters)
 	{
-		string configFolderName;
+		SetupDefaultTabOptions(globalParameters);
+	}
+
+	private static void SetupDefaultTabOptions(
+		IGlobalParameters globalParameters)
+	{
+		string configFolderPath;
 
 		if (globalParameters.RuntimeEnvironmentType is
-			RuntimeEnvironmentType.LinuxFlatpak)
+			RuntimeEnvironmentType.Linux)
 		{
-			configFolderName = string.Empty;
+			configFolderPath = Path.Combine(
+				globalParameters.UserHomePath,
+				".config",
+				globalParameters.ApplicationName);
+		}
+		else if (globalParameters.RuntimeEnvironmentType is
+				 RuntimeEnvironmentType.LinuxFlatpak)
+		{
+			configFolderPath = globalParameters.UserConfigPath;
 		}
 		else
 		{
-			configFolderName = ApplicationName;
+			configFolderPath = Path.Combine(
+				globalParameters.UserConfigPath,
+				globalParameters.ApplicationName);
 		}
 
-		TabOptions.LoadDefaultTabOptions(configFolderName);
+		TabOptions.LoadDefaultTabOptions(configFolderPath);
 	}
-
-	private const string ApplicationName = "ImageFanReloaded";
 }

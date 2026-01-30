@@ -11,14 +11,14 @@ public abstract class ImageFileBase : IImageFile
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
 		IFileSizeEngine fileSizeEngine,
-		IImageFileContentReader imageFileContentReader,
+		IImageFileContentLogic imageFileContentLogic,
 		ImageFileData imageFileData)
 	{
 		GlobalParameters = globalParameters;
 
 		_imageResizer = imageResizer;
 		_fileSizeEngine = fileSizeEngine;
-		_imageFileContentReader = imageFileContentReader;
+		_imageFileContentLogic = imageFileContentLogic;
 
 		ImageFileData = imageFileData;
 		ImageSize = GlobalParameters.InvalidImage.Size;
@@ -36,7 +36,13 @@ public abstract class ImageFileBase : IImageFile
 
 	public IImage GetImage(bool applyImageOrientation)
 	{
-		using var imageFileContentStream = GetImageFileContentStream();
+		using var imageData = _imageFileContentLogic.GetImageData(
+			ImageFileData.ImageFilePath, applyImageOrientation);
+
+		if (imageData.ImageDataStream is null)
+		{
+			HasImageReadError = true;
+		}
 
 		IImage image;
 
@@ -49,7 +55,7 @@ public abstract class ImageFileBase : IImageFile
 			try
 			{
 				image = GetImageFromStream(
-					imageFileContentStream!, applyImageOrientation);
+					imageData.ImageDataStream!, applyImageOrientation);
 
 				SetImageProperties(image);
 			}
@@ -132,15 +138,21 @@ public abstract class ImageFileBase : IImageFile
 		return (image, resizedImage);
 	}
 
-	public void ReadImageFile()
+	public void ReadImageFile(int thumbnailSize, bool applyImageOrientation)
 	{
-		var imageFileContentStream = GetImageFileContentStream();
+		var imageData = _imageFileContentLogic.GetImageData(
+			ImageFileData.ImageFilePath, thumbnailSize, applyImageOrientation);
+
+		if (imageData.ImageDataStream is null)
+		{
+			HasImageReadError = true;
+		}
 
 		if (!HasImageReadError)
 		{
 			lock (_thumbnailGenerationLockObject)
 			{
-				_imageFileContentStream = imageFileContentStream;
+				_imageData = imageData;
 			}
 		}
 	}
@@ -162,7 +174,7 @@ public abstract class ImageFileBase : IImageFile
 				lock (_thumbnailGenerationLockObject)
 				{
 					image = GetImageFromStream(
-						_imageFileContentStream!, applyImageOrientation);
+						_imageData!.ImageDataStream!, applyImageOrientation);
 				}
 
 				SetImageProperties(image);
@@ -188,12 +200,21 @@ public abstract class ImageFileBase : IImageFile
 			}
 			finally
 			{
+				if (ShouldUpdateThumbnail(thumbnail))
+				{
+					_imageFileContentLogic.UpdateThumbnail(
+						ImageFileData.ImageFilePath,
+						thumbnailSize,
+						applyImageOrientation,
+						thumbnail!);
+				}
+
 				if (thumbnail != image)
 				{
 					DisposeImage(image);
 				}
 
-				DisposeImageFileContentStream();
+				DisposeImageData();
 			}
 		}
 
@@ -244,15 +265,12 @@ public abstract class ImageFileBase : IImageFile
 		return imageInfo;
 	}
 
-	public void DisposeImageFileContentStream()
+	public void DisposeImageData()
 	{
 		lock (_thumbnailGenerationLockObject)
 		{
-			if (_imageFileContentStream is not null)
-			{
-				_imageFileContentStream.Dispose();
-				_imageFileContentStream = null;
-			}
+			_imageData?.Dispose();
+			_imageData = null;
 		}
 	}
 
@@ -271,11 +289,11 @@ public abstract class ImageFileBase : IImageFile
 
 	private readonly IImageResizer _imageResizer;
 	private readonly IFileSizeEngine _fileSizeEngine;
-	private readonly IImageFileContentReader _imageFileContentReader;
+	private readonly IImageFileContentLogic _imageFileContentLogic;
 
 	private readonly object _thumbnailGenerationLockObject;
 
-	private Stream? _imageFileContentStream;
+	private ImageData? _imageData;
 
 	private void SetImageProperties(IImage image)
 	{
@@ -284,18 +302,8 @@ public abstract class ImageFileBase : IImageFile
 		AnimatedImageSlideshowDelay = image.TotalImageFramesDelay;
 	}
 
-	private Stream? GetImageFileContentStream()
-	{
-		var imageFileContentStream = _imageFileContentReader
-			.GetImageFileContentStream(ImageFileData.ImageFilePath);
-
-		if (imageFileContentStream is null)
-		{
-			HasImageReadError = true;
-		}
-
-		return imageFileContentStream;
-	}
+	private bool ShouldUpdateThumbnail(IImage? thumbnail)
+		=> _imageData?.ShouldUpdateThumbnail == true && !thumbnail!.IsAnimated;
 
 	private void DisposeImage(IImage? image)
 	{

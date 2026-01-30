@@ -10,6 +10,8 @@ namespace ImageFanReloaded.Core.Settings.Implementation;
 
 public abstract class GlobalParametersBase : IGlobalParameters
 {
+	public string ApplicationName => "ImageFanReloaded";
+
 	public int ProcessorCount { get; }
 
 	public RuntimeEnvironmentType RuntimeEnvironmentType { get; }
@@ -88,7 +90,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public uint ImageQualityLevel { get; }
 	public int DecimalDigitCountForDisplay { get; }
 
-	public string UserProfilePath { get; }
+	public string UserHomePath { get; }
+	public string UserConfigPath { get; }
+
 	public IReadOnlyList<string> SpecialFolders { get; }
 
 	public abstract IImage InvalidImage { get; }
@@ -239,8 +243,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		ImageQualityLevel = 80;
 		DecimalDigitCountForDisplay = 2;
 
-		UserProfilePath = Environment.GetFolderPath(
+		UserHomePath = Environment.GetFolderPath(
 			Environment.SpecialFolder.UserProfile);
+		UserConfigPath = Environment.GetFolderPath(
+			Environment.SpecialFolder.ApplicationData);
 
 		SpecialFolders =
 		[

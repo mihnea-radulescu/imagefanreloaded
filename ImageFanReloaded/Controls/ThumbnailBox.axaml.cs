@@ -131,7 +131,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		_thumbnailImage.Source = null;
 
 		_thumbnailInfo!.DisposeThumbnail();
-		ImageFile!.DisposeImageFileContentStream();
+		ImageFile!.DisposeImageData();
 	}
 
 	private IThumbnailInfo? _thumbnailInfo;

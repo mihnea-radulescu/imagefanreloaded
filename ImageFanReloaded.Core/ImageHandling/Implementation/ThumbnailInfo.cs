@@ -5,7 +5,10 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
 public class ThumbnailInfo : IThumbnailInfo
 {
-	public ThumbnailInfo(IGlobalParameters globalParameters, ITabOptions tabOptions, IImageFile imageFile)
+	public ThumbnailInfo(
+		IGlobalParameters globalParameters,
+		ITabOptions tabOptions,
+		IImageFile imageFile)
 	{
 		_globalParameters = globalParameters;
 
@@ -13,7 +16,8 @@ public class ThumbnailInfo : IThumbnailInfo
 		_applyImageOrientation = tabOptions.ApplyImageOrientation;
 
 		ImageFile = imageFile;
-		ThumbnailImage = _globalParameters.GetLoadingImageThumbnail(_thumbnailSize);
+		ThumbnailImage = _globalParameters.GetLoadingImageThumbnail(
+			_thumbnailSize);
 	}
 
 	public IThumbnailBox? ThumbnailBox { get; set; }
@@ -22,18 +26,21 @@ public class ThumbnailInfo : IThumbnailInfo
 	public IImageFile ImageFile { get; }
 	public string ThumbnailText => ImageFile.ImageFileData.ImageFileName;
 
-	public void ReadThumbnailInputFromDisc() => ImageFile.ReadImageFile();
+	public void ReadThumbnailInputFromDisc() => ImageFile.ReadImageFile(
+		_thumbnailSize, _applyImageOrientation);
 
 	public void GetThumbnail()
 	{
-		ThumbnailImage = ImageFile.GetThumbnail(_thumbnailSize, _applyImageOrientation);
+		ThumbnailImage = ImageFile.GetThumbnail(
+			_thumbnailSize, _applyImageOrientation);
 	}
 
 	public void RefreshThumbnail() => ThumbnailBox!.RefreshThumbnail();
 
 	public void DisposeThumbnail()
 	{
-		if (ThumbnailImage is not null && _globalParameters.CanDisposeImage(ThumbnailImage))
+		if (ThumbnailImage is not null &&
+			_globalParameters.CanDisposeImage(ThumbnailImage))
 		{
 			ThumbnailImage.Dispose();
 			ThumbnailImage = null;

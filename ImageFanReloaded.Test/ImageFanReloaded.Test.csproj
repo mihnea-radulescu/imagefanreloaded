@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ImageFanReloaded\ImageFanReloaded.csproj" />
+		<ProjectReference Include="../ImageFanReloaded/ImageFanReloaded.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

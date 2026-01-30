@@ -17,13 +17,13 @@ public class ImageFile : ImageFileBase
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
 		IFileSizeEngine fileSizeEngine,
-		IImageFileContentReader imageFileContentReader,
+		IImageFileContentLogic imageFileContentLogic,
 		ImageFileData imageFileData)
 		: base(
 			globalParameters,
 			imageResizer,
 			fileSizeEngine,
-			imageFileContentReader,
+			imageFileContentLogic,
 			imageFileData)
 	{
 	}

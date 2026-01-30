@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Title>ImageFan Reloaded - Caching</Title>
+		<Product>ImageFan Reloaded - Caching</Product>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="../ImageFanReloaded.Core/ImageFanReloaded.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.2" />
+	</ItemGroup>
+
+</Project>

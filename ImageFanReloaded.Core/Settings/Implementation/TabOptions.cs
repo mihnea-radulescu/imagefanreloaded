@@ -34,17 +34,9 @@ public class TabOptions : ITabOptions
 	public UpsizeFullScreenImagesUpToScreenSize
 		UpsizeFullScreenImagesUpToScreenSize { get; set; }
 
-	static TabOptions()
+	public static void LoadDefaultTabOptions(string configFolderPath)
 	{
-		AppDataFolderPath = Environment.GetFolderPath(
-			Environment.SpecialFolder.ApplicationData);
-
-		TabOptionsJsonTypeInfo = TabOptionsJsonContext.Default.TabOptions;
-	}
-
-	public static void LoadDefaultTabOptions(string configFolderName)
-	{
-		_configFolderPath = GetConfigFolderPath(configFolderName);
+		_configFolderPath = configFolderPath;
 		_configFilePath = GetConfigFilePath(_configFolderPath);
 
 		ITabOptions? tabOptions = null;
@@ -110,17 +102,16 @@ public class TabOptions : ITabOptions
 		DefaultUpsizeFullScreenImagesUpToScreenSize =
 			UpsizeFullScreenImagesUpToScreenSize.Disabled;
 
-	private static readonly string AppDataFolderPath;
+	private static readonly string AppDataFolderPath =
+		Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-	private static readonly JsonTypeInfo<TabOptions> TabOptionsJsonTypeInfo;
+	private static readonly JsonTypeInfo<TabOptions> TabOptionsJsonTypeInfo =
+		TabOptionsJsonContext.Default.TabOptions;
 
 	private static string? _configFolderPath;
 	private static string? _configFilePath;
 
 	private static ITabOptions? _defaultTabOptions;
-
-	private static string GetConfigFolderPath(string configFolderName)
-		=> Path.Combine(AppDataFolderPath, configFolderName);
 
 	private static string GetConfigFilePath(string configFolderPath)
 		=> Path.Combine(configFolderPath, ConfigFileName);

@@ -11,13 +11,13 @@ public class ImageFileFactory : IImageFileFactory
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
 		IFileSizeEngine fileSizeEngine,
-		IImageFileContentReader imageFileContentReader)
+		IImageFileContentLogic imageFileContentLogic)
 	{
 		_globalParameters = globalParameters;
 
 		_imageResizer = imageResizer;
 		_fileSizeEngine = fileSizeEngine;
-		_imageFileContentReader = imageFileContentReader;
+		_imageFileContentLogic = imageFileContentLogic;
 	}
 
 	public IImageFile GetImageFile(ImageFileData imageFileData)
@@ -25,11 +25,11 @@ public class ImageFileFactory : IImageFileFactory
 			_globalParameters,
 			_imageResizer,
 			_fileSizeEngine,
-			_imageFileContentReader,
+			_imageFileContentLogic,
 			imageFileData);
 
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageResizer _imageResizer;
 	private readonly IFileSizeEngine _fileSizeEngine;
-	private readonly IImageFileContentReader _imageFileContentReader;
+	private readonly IImageFileContentLogic _imageFileContentLogic;
 }

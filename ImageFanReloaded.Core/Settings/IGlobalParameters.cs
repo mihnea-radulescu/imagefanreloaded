@@ -8,6 +8,8 @@ namespace ImageFanReloaded.Core.Settings;
 
 public interface IGlobalParameters
 {
+	string ApplicationName { get; }
+
 	int ProcessorCount { get; }
 
 	RuntimeEnvironmentType RuntimeEnvironmentType { get; }
@@ -83,7 +85,9 @@ public interface IGlobalParameters
 	uint ImageQualityLevel { get; }
 	int DecimalDigitCountForDisplay { get; }
 
-	string UserProfilePath { get; }
+	string UserHomePath { get; }
+	string UserConfigPath { get; }
+
 	IReadOnlyList<string> SpecialFolders { get; }
 
 	IImage InvalidImage { get; }

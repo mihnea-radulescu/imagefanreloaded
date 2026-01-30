@@ -1,11 +1,13 @@
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using ImageFanReloaded.Caching;
 using ImageFanReloaded.Controls;
 using ImageFanReloaded.Controls.Factories;
 using ImageFanReloaded.Core;
 using ImageFanReloaded.Core.AboutInfo;
 using ImageFanReloaded.Core.AboutInfo.Implementation;
+using ImageFanReloaded.Core.Caching;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.Controls.Factories.Implementation;
@@ -54,10 +56,10 @@ public class AppBootstrap : IAppBootstrap
 	private readonly IClassicDesktopStyleApplicationLifetime _desktop;
 
 	private IGlobalParameters _globalParameters = null!;
+	private ISettingsFactory _settingsFactory = null!;
+	private IMouseCursorFactory _mouseCursorFactory = null!;
 	private IFileSizeEngine _fileSizeEngine = null!;
 	private IDiscQueryEngine _discQueryEngine = null!;
-	private IMouseCursorFactory _mouseCursorFactory = null!;
-	private ISettingsFactory _settingsFactory = null!;
 	private IImageViewFactory _imageViewFactory = null!;
 	private IInputPathHandlerFactory _inputPathHandlerFactory = null!;
 	private IInputPathHandler _commandLineArgsInputPathHandler = null!;
@@ -74,23 +76,37 @@ public class AppBootstrap : IAppBootstrap
 		_globalParameters = new GlobalParameters(
 			runtimeEnvironmentSettings, imageResizer);
 
+		_settingsFactory = new SettingsFactory(_globalParameters);
+		_mouseCursorFactory = new MouseCursorFactory(_globalParameters);
+
 		_fileSizeEngine = new FileSizeEngine();
 
-		IImageFileContentReader imageFileContentReader =
-			new ImageFileContentReader();
+		IImageDataExtractor imageDataExtractor = new ImageDataExtractor(
+			_globalParameters);
+
+		IThumbnailCacheConfig thumbnailCacheConfig = new ThumbnailCacheConfig(
+			_globalParameters);
+		IDatabaseLogic databaseLogic =
+			new SqliteDatabaseLogic(_globalParameters, thumbnailCacheConfig);
+
+		databaseLogic.CreateDatabaseIfNotExisting();
+
+		IImageFileContentLogic imageFileContentLogic =
+			new ImageFileContentLogic();
+		IImageFileContentLogic cachedImageFileContentLogic =
+			new CachedImageFileContentLogic(
+				imageFileContentLogic, imageDataExtractor, databaseLogic);
+
 		IImageFileFactory imageFileFactory = new ImageFileFactory(
 			_globalParameters,
 			imageResizer,
 			_fileSizeEngine,
-			imageFileContentReader);
+			imageFileContentLogic); //cachedImageFileContentLogic);
 
 		IDiscQueryEngineFactory discQueryEngineFactory =
 			new DiscQueryEngineFactory(
 				_globalParameters, imageFileFactory, _fileSizeEngine);
 		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
-
-		_mouseCursorFactory = new MouseCursorFactory(_globalParameters);
-		_settingsFactory = new SettingsFactory(_globalParameters);
 
 		IScreenInfo screenInfo = new ScreenInfo();
 		_imageViewFactory = new ImageViewFactory(

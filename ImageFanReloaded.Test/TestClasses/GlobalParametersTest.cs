@@ -35,6 +35,8 @@ public class GlobalParametersTest : TestBase
 		// Act
 
 		// Assert
+		Assert.False(string.IsNullOrEmpty(_globalParameters.ApplicationName));
+
 		Assert.NotEqual(0, _globalParameters.ProcessorCount);
 
 		Assert.NotEqual(
@@ -108,8 +110,9 @@ public class GlobalParametersTest : TestBase
 		Assert.NotEqual(0U, _globalParameters.ImageQualityLevel);
 		Assert.NotEqual(0, _globalParameters.DecimalDigitCountForDisplay);
 
-		Assert.NotNull(_globalParameters.UserProfilePath);
-		Assert.NotEmpty(_globalParameters.UserProfilePath);
+		Assert.False(string.IsNullOrEmpty(_globalParameters.UserHomePath));
+		Assert.False(string.IsNullOrEmpty(_globalParameters.UserConfigPath));
+
 		Assert.NotEmpty(_globalParameters.SpecialFolders);
 
 		Assert.NotNull(_globalParameters.InvalidImage.Bitmap);

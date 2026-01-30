@@ -20,12 +20,11 @@ public interface IImageFile
 			upsizeFullScreenImagesUpToScreenSize,
 		bool applyImageOrientation);
 
-	void ReadImageFile();
-
+	void ReadImageFile(int thumbnailSize, bool applyImageOrientation);
 	IImage GetThumbnail(int thumbnailSize, bool applyImageOrientation);
 
 	void RefreshImageFileData();
 	string GetBasicImageInfo(bool longFormat);
 
-	void DisposeImageFileContentStream();
+	void DisposeImageData();
 }
