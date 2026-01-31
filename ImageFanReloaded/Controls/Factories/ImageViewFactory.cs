@@ -28,9 +28,11 @@ public class ImageViewFactory : IImageViewFactory
 
 			ImageViewDisplayMode.Windowed => new WindowedImageWindow(),
 			ImageViewDisplayMode.WindowedMaximized => new WindowedImageWindow(),
-			ImageViewDisplayMode.WindowedMaximizedBorderless => new WindowedImageWindow(),
+			ImageViewDisplayMode.WindowedMaximizedBorderless
+				=> new WindowedImageWindow(),
 
-			_ => throw new NotSupportedException($"Image view display mode {imageViewDisplayMode} not supported.")
+			_ => throw new NotSupportedException(
+					$"Image view display mode {imageViewDisplayMode} not supported.")
 		};
 
 		imageView.GlobalParameters = _globalParameters;

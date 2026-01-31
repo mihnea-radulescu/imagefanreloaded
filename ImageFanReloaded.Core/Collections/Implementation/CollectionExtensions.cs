@@ -6,6 +6,7 @@ public static class CollectionExtensions
 {
 	extension<T>(IReadOnlyCollection<T> collection)
 	{
-		public bool IsIndexWithinBounds(int index) => index >= 0 && index < collection.Count;
+		public bool IsIndexWithinBounds(int index)
+			=> index >= 0 && index < collection.Count;
 	}
 }

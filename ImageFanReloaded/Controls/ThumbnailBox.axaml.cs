@@ -22,8 +22,10 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		InitializeComponent();
 	}
 
-	public event EventHandler<ThumbnailBoxSelectedEventArgs>? ThumbnailBoxSelected;
-	public event EventHandler<ThumbnailBoxClickedEventArgs>? ThumbnailBoxClicked;
+	public event EventHandler<ThumbnailBoxSelectedEventArgs>?
+		ThumbnailBoxSelected;
+	public event EventHandler<ThumbnailBoxClickedEventArgs>?
+		ThumbnailBoxClicked;
 
 	public ITabOptions? TabOptions { get; set; }
 
@@ -53,7 +55,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 			_thumbnailImage.Source = _thumbnailInfo.ThumbnailImage!.Bitmap;
 
 			_thumbnailTextBlock.Text = _thumbnailInfo.ThumbnailText;
-			_thumbnailTextBlock.IsVisible = TabOptions!.ShowThumbnailImageFileName;
+			_thumbnailTextBlock.IsVisible =
+				TabOptions!.ShowThumbnailImageFileName;
 		}
 	}
 
@@ -62,7 +65,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	public bool IsSelected { get; private set; }
 
-	public void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters)
+	public void SetControlProperties(
+		int thumbnailSize, IGlobalParameters globalParameters)
 	{
 		_thumbnailImage.MaxWidth = thumbnailSize;
 		_thumbnailImage.MaxHeight = thumbnailSize;
@@ -76,7 +80,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 		BringThumbnailIntoView();
 
-		ThumbnailBoxSelected?.Invoke(this, new ThumbnailBoxSelectedEventArgs(this));
+		ThumbnailBoxSelected?.Invoke(
+			this, new ThumbnailBoxSelectedEventArgs(this));
 	}
 
 	public void UnselectThumbnail()
@@ -96,7 +101,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		{
 			IsAnimated = true;
 			_ctsAnimation = new CancellationTokenSource();
-			_animationTask = Task.Run(() => AnimateImage(_ctsAnimation), _ctsAnimation.Token);
+			_animationTask = Task.Run(()
+				=> AnimateImage(_ctsAnimation), _ctsAnimation.Token);
 		}
 		else
 		{
@@ -148,11 +154,15 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	{
 		if (e.InitialPressMouseButton == MouseButton.Left)
 		{
-			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxClickedEventArgs(this, MouseClickType.Left));
+			ThumbnailBoxClicked?.Invoke(
+				this,
+				new ThumbnailBoxClickedEventArgs(this, MouseClickType.Left));
 		}
 		else if (e.InitialPressMouseButton == MouseButton.Right)
 		{
-			ThumbnailBoxClicked?.Invoke(this, new ThumbnailBoxClickedEventArgs(this, MouseClickType.Right));
+			ThumbnailBoxClicked?.Invoke(
+				this,
+				new ThumbnailBoxClickedEventArgs(this, MouseClickType.Right));
 		}
 	}
 
@@ -162,7 +172,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 		{
 			while (!ctsAnimation.IsCancellationRequested)
 			{
-				var thumbnailImageFrames = _thumbnailInfo!.ThumbnailImage!.ImageFrames;
+				var thumbnailImageFrames =
+					_thumbnailInfo!.ThumbnailImage!.ImageFrames;
 				foreach (var aThumbnailImageFrame in thumbnailImageFrames)
 				{
 					if (ctsAnimation.IsCancellationRequested)
@@ -177,14 +188,17 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 						return;
 					}
 
-					await Dispatcher.UIThread.InvokeAsync(() => _thumbnailImage.Source = anImageFrameBitmap);
+					await Dispatcher.UIThread.InvokeAsync(()
+						=> _thumbnailImage.Source = anImageFrameBitmap);
 
 					if (ctsAnimation.IsCancellationRequested)
 					{
 						return;
 					}
 
-					await Task.Delay(aThumbnailImageFrame.DelayUntilNextFrame, ctsAnimation.Token);
+					await Task.Delay(
+						aThumbnailImageFrame.DelayUntilNextFrame,
+						ctsAnimation.Token);
 				}
 			}
 		}

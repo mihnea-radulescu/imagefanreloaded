@@ -19,11 +19,14 @@ public partial class AboutWindow : Window, IAboutView
 
 	public IGlobalParameters? GlobalParameters { get; set; }
 
-	public void SetAboutText(string text) => _aboutSelectableTextBlock.Text = text;
+	public void SetAboutText(string text)
+		=> _aboutSelectableTextBlock.Text = text;
 
-	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
+	public async Task ShowDialog(IMainView owner)
+		=> await ShowDialog((Window)owner);
 
-	private void OnWindowLoaded(object? sender, RoutedEventArgs e) => _aboutScrollViewer.Focus();
+	private void OnWindowLoaded(object? sender, RoutedEventArgs e)
+		=> _aboutScrollViewer.Focus();
 
 	private void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -39,7 +42,8 @@ public partial class AboutWindow : Window, IAboutView
 	}
 
 	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.EscapeKey)

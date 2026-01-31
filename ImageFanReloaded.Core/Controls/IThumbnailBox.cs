@@ -23,7 +23,8 @@ public interface IThumbnailBox
 
 	bool IsSelected { get; }
 
-	void SetControlProperties(int thumbnailSize, IGlobalParameters globalParameters);
+	void SetControlProperties(
+		int thumbnailSize, IGlobalParameters globalParameters);
 
 	void SelectThumbnail();
 	void UnselectThumbnail();

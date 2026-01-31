@@ -1,4 +1,5 @@
-namespace ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormats;
+namespace
+	ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormats;
 
 public class PngSaveFileImageFormat : ISaveFileImageFormat
 {

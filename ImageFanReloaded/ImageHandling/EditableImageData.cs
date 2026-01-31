@@ -6,7 +6,10 @@ namespace ImageFanReloaded.ImageHandling;
 
 public class EditableImageData : DisposableBase
 {
-	public EditableImageData(MagickImageCollection imageFramesToEdit, IImage imageToDisplay, ImageSize imageSize)
+	public EditableImageData(
+		MagickImageCollection imageFramesToEdit,
+		IImage imageToDisplay,
+		ImageSize imageSize)
 	{
 		_imageFramesToEdit = imageFramesToEdit;
 		_imageToDisplay = imageToDisplay;

@@ -44,10 +44,12 @@ public class EditableImage : DisposableBase, IEditableImage
 
 			bitmapToDisplay = new Bitmap(imageToDisplayStream);
 
-			var imageSize = new ImageSize(bitmapToDisplay.Size.Width, bitmapToDisplay.Size.Height);
+			var imageSize = new ImageSize(
+				bitmapToDisplay.Size.Width, bitmapToDisplay.Size.Height);
 			var imageToDisplay = new Image(bitmapToDisplay, imageSize);
 
-			_editableImageData = new EditableImageData(imageFramesToEdit, imageToDisplay, imageSize);
+			_editableImageData = new EditableImageData(
+				imageFramesToEdit, imageToDisplay, imageSize);
 
 			_previousOperationsStack = new Stack<EditableImageData>();
 			_revertedOperationsStack = new Stack<EditableImageData>();
@@ -247,24 +249,30 @@ public class EditableImage : DisposableBase, IEditableImage
 		await CurrentImage.WriteAsync(imageFilePath);
 	}
 
-	public async Task SaveImageWithFormat(string imageFilePath, ISaveFileImageFormat saveFileImageFormat)
+	public async Task SaveImageWithFormat(
+		string imageFilePath, ISaveFileImageFormat saveFileImageFormat)
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
 		ApplyImageCompression(CurrentImage);
-		await CurrentImage.WriteAsync(imageFilePath, saveFileImageFormat.MagickFormat);
+		await CurrentImage.WriteAsync(
+			imageFilePath, saveFileImageFormat.MagickFormat);
 	}
 
-	public void Crop(int topLeftPointX, int topLeftPointY, int width, int height)
+	public void Crop(
+		int topLeftPointX, int topLeftPointY, int width, int height)
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		var imageFrameCropGeometry = new MagickGeometry($"{width}x{height}+{topLeftPointX}+{topLeftPointY}")
-		{
-			IgnoreAspectRatio = true
-		};
+		var imageFrameCropGeometry =
+			new MagickGeometry(
+				$"{width}x{height}+{topLeftPointX}+{topLeftPointY}")
+			{
+				IgnoreAspectRatio = true
+			};
 
-		CreateTransformedImage(anImageFrame => anImageFrame.Crop(imageFrameCropGeometry));
+		CreateTransformedImage(anImageFrame
+			=> anImageFrame.Crop(imageFrameCropGeometry));
 	}
 
 	public void DownsizeToPercentage(int percentage)
@@ -276,7 +284,8 @@ public class EditableImage : DisposableBase, IEditableImage
 			throw new ArgumentOutOfRangeException(nameof(percentage));
 		}
 
-		CreateTransformedImage(anImageFrame => anImageFrame.Resize(new Percentage(percentage)));
+		CreateTransformedImage(anImageFrame
+			=> anImageFrame.Resize(new Percentage(percentage)));
 	}
 
 	public void DownsizeToDimensions(int width, int height)
@@ -293,7 +302,8 @@ public class EditableImage : DisposableBase, IEditableImage
 			throw new ArgumentOutOfRangeException(nameof(height));
 		}
 
-		CreateTransformedImage(anImageFrame => anImageFrame.Resize((uint)width, (uint)height));
+		CreateTransformedImage(anImageFrame
+			=> anImageFrame.Resize((uint)width, (uint)height));
 	}
 
 	protected override void DisposeSpecific()
@@ -318,15 +328,18 @@ public class EditableImage : DisposableBase, IEditableImage
 	private readonly Stack<EditableImageData> _previousOperationsStack;
 	private readonly Stack<EditableImageData> _revertedOperationsStack;
 
-	private MagickImageCollection CurrentImage => _editableImageData.ImageFramesToEdit;
+	private MagickImageCollection CurrentImage
+		=> _editableImageData.ImageFramesToEdit;
 
-	private void CreateTransformedImage(Action<IMagickImage> transformImageFrameAction)
+	private void CreateTransformedImage(
+		Action<IMagickImage> transformImageFrameAction)
 	{
 		var transformedImageFramesToEdit = CopyImage(CurrentImage);
 
 		try
 		{
-			foreach (var aTransformedImageFrameToEdit in transformedImageFramesToEdit)
+			foreach (var aTransformedImageFrameToEdit in
+						 transformedImageFramesToEdit)
 			{
 				transformImageFrameAction(aTransformedImageFrameToEdit);
 			}
@@ -339,30 +352,37 @@ public class EditableImage : DisposableBase, IEditableImage
 		}
 
 		using var imageToDisplayStream = new MemoryStream();
-		transformedImageFramesToEdit[0].Write(imageToDisplayStream, MagickFormat.Jpg);
+		transformedImageFramesToEdit[0].Write(
+			imageToDisplayStream, MagickFormat.Jpg);
 		imageToDisplayStream.Reset();
 
 		var transformedBitmapToDisplay = new Bitmap(imageToDisplayStream);
 
 		var transformedImageSize = new ImageSize(
-			transformedBitmapToDisplay.Size.Width, transformedBitmapToDisplay.Size.Height);
-		var transformedImageToDisplay = new Image(transformedBitmapToDisplay, transformedImageSize);
+			transformedBitmapToDisplay.Size.Width,
+			transformedBitmapToDisplay.Size.Height);
+		var transformedImageToDisplay = new Image(
+			transformedBitmapToDisplay, transformedImageSize);
 
 		var transformedEditableImageData = new EditableImageData(
-			transformedImageFramesToEdit, transformedImageToDisplay, transformedImageSize);
+			transformedImageFramesToEdit,
+			transformedImageToDisplay,
+			transformedImageSize);
 
 		_previousOperationsStack.Push(_editableImageData);
 		_revertedOperationsStack.Clear();
 		_editableImageData = transformedEditableImageData;
 	}
 
-	private static MagickImageCollection CopyImage(MagickImageCollection sourceImageFrames)
+	private static MagickImageCollection CopyImage(
+		MagickImageCollection sourceImageFrames)
 	{
 		using var copyImageFramesStream = new MemoryStream();
 		sourceImageFrames.Write(copyImageFramesStream);
 		copyImageFramesStream.Reset();
 
-		var destinationImageFrames = new MagickImageCollection(copyImageFramesStream);
+		var destinationImageFrames = new MagickImageCollection(
+			copyImageFramesStream);
 		return destinationImageFrames;
 	}
 

@@ -57,9 +57,14 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 		BuildFileProfile(imageFile, imageInfoBuilder);
 
-		using (IMagickImage image = new MagickImage(imageFile.ImageFileData.ImageFilePath))
+		using (IMagickImage image = new MagickImage(
+			imageFile.ImageFileData.ImageFilePath))
 		{
-			BuildImageProfile(image, imageFile.ImageSize, imageInfoBuilder, imageFile.IsAnimatedImage);
+			BuildImageProfile(
+				image,
+				imageFile.ImageSize,
+				imageInfoBuilder,
+				imageFile.IsAnimatedImage);
 
 			BuildColorProfile(image, imageInfoBuilder);
 
@@ -72,28 +77,37 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		return imageInfo;
 	}
 
-	private void BuildFileProfile(IImageFile imageFile, StringBuilder imageInfoBuilder)
+	private void BuildFileProfile(
+		IImageFile imageFile, StringBuilder imageInfoBuilder)
 	{
 		imageInfoBuilder.AppendLine("File profile");
 		imageInfoBuilder.AppendLine();
 
 		var imageFileData = imageFile.ImageFileData;
 
-		imageInfoBuilder.AppendLine($"\tFile name:\t{imageFileData.ImageFileName}");
-		imageInfoBuilder.AppendLine($"\tFile path:\t{imageFileData.ImageFilePath}");
+		imageInfoBuilder.AppendLine(
+			$"\tFile name:\t{imageFileData.ImageFileName}");
+		imageInfoBuilder.AppendLine(
+			$"\tFile path:\t{imageFileData.ImageFilePath}");
 
 		var sizeOnDiscInKilobytes = imageFileData.SizeOnDiscInKilobytes;
 		var sizeOnDiscInKilobytesForDisplay = decimal.Round(
-			sizeOnDiscInKilobytes, _globalParameters.DecimalDigitCountForDisplay);
-		imageInfoBuilder.AppendLine($"\tFile size:\t{sizeOnDiscInKilobytesForDisplay} KB");
+			sizeOnDiscInKilobytes,
+			_globalParameters.DecimalDigitCountForDisplay);
+		imageInfoBuilder.AppendLine(
+			$"\tFile size:\t{sizeOnDiscInKilobytesForDisplay} KB");
 
 		var lastModificationTime = imageFileData.LastModificationTime;
 		var lastModificationTimeText = lastModificationTime.ToString();
-		imageInfoBuilder.AppendLine($"\tFile last modification time:\t{lastModificationTimeText}");
+		imageInfoBuilder.AppendLine(
+			$"\tFile last modification time:\t{lastModificationTimeText}");
 	}
 
 	private static void BuildImageProfile(
-		IMagickImage image, ImageSize imageSize, StringBuilder imageInfoBuilder, bool isAnimatedImage)
+		IMagickImage image,
+		ImageSize imageSize,
+		StringBuilder imageInfoBuilder,
+		bool isAnimatedImage)
 	{
 		imageInfoBuilder.AppendLine();
 		imageInfoBuilder.AppendLine("Image profile");
@@ -104,10 +118,12 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		imageInfoBuilder.AppendLine($"\tImage depth:\t{image.Depth} bpp");
 
 		var isAnimatedImageInfo = isAnimatedImage ? "yes" : "no";
-		imageInfoBuilder.AppendLine($"\tImage animation:\t{isAnimatedImageInfo}");
+		imageInfoBuilder.AppendLine(
+			$"\tImage animation:\t{isAnimatedImageInfo}");
 	}
 
-	private static void BuildColorProfile(IMagickImage image, StringBuilder imageInfoBuilder)
+	private static void BuildColorProfile(
+		IMagickImage image, StringBuilder imageInfoBuilder)
 	{
 		var colorProfile = image.GetColorProfile();
 
@@ -118,11 +134,13 @@ public class ImageInfoBuilder : IImageInfoBuilder
 			imageInfoBuilder.AppendLine();
 
 			imageInfoBuilder.AppendLine($"\tName:\t{colorProfile.Name}");
-			imageInfoBuilder.AppendLine($"\tColor space:\t{colorProfile.ColorSpace.ToString()}");
+			imageInfoBuilder.AppendLine(
+				$"\tColor space:\t{colorProfile.ColorSpace.ToString()}");
 
 			if (colorProfile.Manufacturer is not null)
 			{
-				imageInfoBuilder.AppendLine($"\tManufacturer:\t{colorProfile.Manufacturer}");
+				imageInfoBuilder.AppendLine(
+					$"\tManufacturer:\t{colorProfile.Manufacturer}");
 			}
 
 			if (colorProfile.Model is not null)
@@ -132,17 +150,20 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 			if (colorProfile.Description is not null)
 			{
-				imageInfoBuilder.AppendLine($"\tDescription:\t{colorProfile.Description}");
+				imageInfoBuilder.AppendLine(
+					$"\tDescription:\t{colorProfile.Description}");
 			}
 
 			if (colorProfile.Copyright is not null)
 			{
-				imageInfoBuilder.AppendLine($"\tCopyright:\t{colorProfile.Copyright}");
+				imageInfoBuilder.AppendLine(
+					$"\tCopyright:\t{colorProfile.Copyright}");
 			}
 		}
 	}
 
-	private static void BuildExifProfile(IMagickImage image, StringBuilder imageInfoBuilder)
+	private static void BuildExifProfile(
+		IMagickImage image, StringBuilder imageInfoBuilder)
 	{
 		var exifProfile = image.GetExifProfile();
 
@@ -154,7 +175,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 					ValueTag = aValueTagValueContentPair.Tag,
 					ValueContent = aValueTagValueContentPair.GetValue()
 				})
-				.Where(aValueTagValueContentPair => aValueTagValueContentPair.ValueContent is not null)
+				.Where(aValueTagValueContentPair
+						=> aValueTagValueContentPair.ValueContent is not null)
 				.ToList();
 
 			if (valueTagValueContentPairs.Any())
@@ -163,17 +185,23 @@ public class ImageInfoBuilder : IImageInfoBuilder
 				imageInfoBuilder.AppendLine("EXIF profile");
 				imageInfoBuilder.AppendLine();
 
-				foreach (var aValueTagValueContentPair in valueTagValueContentPairs)
+				foreach (var aValueTagValueContentPair in
+							 valueTagValueContentPairs)
 				{
-					if (aValueTagValueContentPair.ValueContent is Array valueContentArray)
+					if (aValueTagValueContentPair.ValueContent is
+							Array valueContentArray)
 					{
-						var valueContentText = GetValueContentText(valueContentArray);
-						imageInfoBuilder.AppendLine($"\t{aValueTagValueContentPair.ValueTag}:\t[ {valueContentText} ]");
+						var valueContentText = GetValueContentText(
+							valueContentArray);
+						imageInfoBuilder.AppendLine(
+							$"\t{aValueTagValueContentPair.ValueTag}:\t[ {valueContentText} ]");
 					}
-					else if (aValueTagValueContentPair.ValueContent is Number valueContentNumber)
+					else if (aValueTagValueContentPair.ValueContent is
+								Number valueContentNumber)
 					{
 						var valueContentText = (uint)valueContentNumber;
-						imageInfoBuilder.AppendLine($"\t{aValueTagValueContentPair.ValueTag}:\t{valueContentText}");
+						imageInfoBuilder.AppendLine(
+							$"\t{aValueTagValueContentPair.ValueTag}:\t{valueContentText}");
 					}
 					else
 					{
@@ -185,7 +213,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		}
 	}
 
-	private static void BuildIptcProfile(IMagickImage image, StringBuilder imageInfoBuilder)
+	private static void BuildIptcProfile(
+		IMagickImage image, StringBuilder imageInfoBuilder)
 	{
 		var iptcProfile = image.GetIptcProfile();
 
@@ -207,7 +236,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 				imageInfoBuilder.AppendLine("IPTC profile");
 				imageInfoBuilder.AppendLine();
 
-				foreach (var aValueTagValueContentPair in valueTagValueContentPairs)
+				foreach (var aValueTagValueContentPair in
+							 valueTagValueContentPairs)
 				{
 					imageInfoBuilder.AppendLine(
 						$"\t{aValueTagValueContentPair.ValueTag}:\t{aValueTagValueContentPair.ValueContent}");
@@ -216,7 +246,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		}
 	}
 
-	private static void BuildXmpProfile(IMagickImage image, StringBuilder imageInfoBuilder)
+	private static void BuildXmpProfile(
+		IMagickImage image, StringBuilder imageInfoBuilder)
 	{
 		var xmpProfile = image.GetXmpProfile();
 
@@ -233,8 +264,10 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		if (xmpProfileXmlContent is not null)
 		{
 			var xmpProfileXmlContentString = xmpProfileXmlContent.ToString();
-			var xmlContentForDisplay = FormatXmlContentForDisplay(xmpProfileXmlContentString);
-			var indentedXmlContentForDisplay = IndentText(xmlContentForDisplay, "\t");
+			var xmlContentForDisplay = FormatXmlContentForDisplay(
+				xmpProfileXmlContentString);
+			var indentedXmlContentForDisplay = IndentText(
+				xmlContentForDisplay, "\t");
 
 			imageInfoBuilder.AppendLine();
 			imageInfoBuilder.AppendLine("XMP profile");
@@ -247,7 +280,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	private static string GetValueContentText(Array valueContentArray)
 	{
 		var valueContentItems = new object[valueContentArray.Length];
-		Array.Copy(valueContentArray, valueContentItems, valueContentArray.Length);
+		Array.Copy(
+			valueContentArray, valueContentItems, valueContentArray.Length);
 
 		var valueContentText = string.Join(", ", valueContentItems);
 		return valueContentText;
@@ -256,7 +290,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 	private static string FormatXmlContentForDisplay(string xmlContent)
 	{
 		using var xmlContentStream = new MemoryStream();
-		using var xmlTextWriter = new XmlTextWriter(xmlContentStream, Encoding.UTF8);
+		using var xmlTextWriter = new XmlTextWriter(
+			xmlContentStream, Encoding.UTF8);
 
 		var xmlDocument = new XmlDocument();
 		xmlDocument.LoadXml(xmlContent);
@@ -271,7 +306,8 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		xmlContentStream.Flush();
 		xmlContentStream.Reset();
 
-		var formattedXmlContentStreamReader = new StreamReader(xmlContentStream);
+		var formattedXmlContentStreamReader = new StreamReader(
+			xmlContentStream);
 		var formattedXmlContent = formattedXmlContentStreamReader.ReadToEnd();
 
 		return formattedXmlContent;

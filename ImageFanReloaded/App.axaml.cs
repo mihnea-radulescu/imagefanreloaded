@@ -14,7 +14,8 @@ public class App : Application
 
 	public override async void OnFrameworkInitializationCompleted()
 	{
-		var desktop = (IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
+		var desktop =
+			(IClassicDesktopStyleApplicationLifetime)ApplicationLifetime!;
 
 		IAppBootstrap appBootstrap = new AppBootstrap(desktop);
 		await appBootstrap.BootstrapApplication();

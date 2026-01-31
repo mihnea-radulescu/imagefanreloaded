@@ -7,7 +7,10 @@ public static class PathExtensions
 {
 	extension(string longerPath)
 	{
-		public bool StartsWithPath(string shorterPath, string directorySeparator, StringComparison pathComparison)
+		public bool StartsWithPath(
+			string shorterPath,
+			string directorySeparator,
+			StringComparison pathComparison)
 		{
 			bool startsWithPath;
 
@@ -24,9 +27,11 @@ public static class PathExtensions
 				else
 				{
 					var remainingStringAfterSubstringMatch = longerPath
-						.GetRemainingStringAfterSubstringMatch(shorterPath, pathComparison)!;
+						.GetRemainingStringAfterSubstringMatch(
+							shorterPath, pathComparison)!;
 
-					startsWithPath = remainingStringAfterSubstringMatch.StartsWith(directorySeparator, pathComparison);
+					startsWithPath = remainingStringAfterSubstringMatch
+						.StartsWith(directorySeparator, pathComparison);
 				}
 			}
 			else

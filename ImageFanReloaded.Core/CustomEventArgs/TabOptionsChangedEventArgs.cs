@@ -6,8 +6,10 @@ namespace ImageFanReloaded.Core.CustomEventArgs;
 public class TabOptionsChangedEventArgs : ContentTabItemEventArgs
 {
 	public TabOptionsChangedEventArgs(
-		IContentTabItem contentTabItem, ITabOptions tabOptions, TabOptionChanges tabOptionChanges)
-		: base(contentTabItem)
+		IContentTabItem contentTabItem,
+		ITabOptions tabOptions,
+		TabOptionChanges tabOptionChanges)
+			: base(contentTabItem)
 	{
 		TabOptions = tabOptions;
 

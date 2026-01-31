@@ -8,7 +8,8 @@ public interface ITabOptions
 	FileSystemEntryInfoOrderingDirection FolderOrderingDirection { get; set; }
 
 	FileSystemEntryInfoOrdering ImageFileOrdering { get; set; }
-	FileSystemEntryInfoOrderingDirection ImageFileOrderingDirection { get; set; }
+	FileSystemEntryInfoOrderingDirection ImageFileOrderingDirection
+		{ get; set; }
 
 	ImageViewDisplayMode ImageViewDisplayMode { get; set; }
 
@@ -22,8 +23,10 @@ public interface ITabOptions
 	SlideshowInterval SlideshowInterval { get; set; }
 	bool ApplyImageOrientation { get; set; }
 	bool ShowThumbnailImageFileName { get; set; }
-	KeyboardScrollThumbnailIncrement KeyboardScrollThumbnailIncrement { get; set; }
-	UpsizeFullScreenImagesUpToScreenSize UpsizeFullScreenImagesUpToScreenSize { get; set; }
+	KeyboardScrollThumbnailIncrement KeyboardScrollThumbnailIncrement
+		{ get; set; }
+	UpsizeFullScreenImagesUpToScreenSize UpsizeFullScreenImagesUpToScreenSize
+		{ get; set; }
 
 	Task SaveDefaultTabOptions();
 }

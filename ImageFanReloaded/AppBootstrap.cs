@@ -101,7 +101,7 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters,
 			imageResizer,
 			_fileSizeEngine,
-			imageFileContentLogic); //cachedImageFileContentLogic);
+			imageFileContentLogic); // cachedImageFileContentLogic);
 
 		IDiscQueryEngineFactory discQueryEngineFactory =
 			new DiscQueryEngineFactory(
@@ -113,7 +113,7 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters, _mouseCursorFactory, screenInfo);
 
 		_inputPathHandlerFactory = new InputPathHandlerFactory(
-			_globalParameters, _discQueryEngine);
+			_globalParameters);
 		string? commandLineArgsInputPath = GetCommandLineArgsInputPath();
 		_commandLineArgsInputPathHandler = _inputPathHandlerFactory
 			.GetInputPathHandler(commandLineArgsInputPath);
@@ -128,7 +128,8 @@ public class AppBootstrap : IAppBootstrap
 	}
 
 	private bool IsMainViewAccess()
-		=> _commandLineArgsInputPathHandler.InputPathType != InputPathType.File;
+		=> _commandLineArgsInputPathHandler.InputPathType !=
+			InputPathType.File;
 
 	private void ShowMainView()
 	{

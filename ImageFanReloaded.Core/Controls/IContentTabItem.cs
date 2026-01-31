@@ -42,7 +42,8 @@ public interface IContentTabItem
 	void EnableFolderTreeViewSelectedItemChanged();
 	void DisableFolderTreeViewSelectedItemChanged();
 
-	bool ShouldHandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
+	bool ShouldHandleControlKeyFunctions(
+		KeyModifiers keyModifiers, Key keyPressing);
 	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
 
 	void SetFocusOnSelectedFolderTreeViewItem();
@@ -55,18 +56,24 @@ public interface IContentTabItem
 	void RegisterMainViewEvents();
 	void UnregisterMainViewEvents();
 
-	void PopulateRootNodesSubFoldersTree(IReadOnlyList<FileSystemEntryInfo> rootFolders);
+	void PopulateRootNodesSubFoldersTree(
+		IReadOnlyList<FileSystemEntryInfo> rootFolders);
 	void PopulateSubFoldersTree(IReadOnlyList<FileSystemEntryInfo> subFolders);
-	void PopulateSubFoldersTreeOfParentTreeViewItem(IReadOnlyList<FileSystemEntryInfo> subFolders);
+	void PopulateSubFoldersTreeOfParentTreeViewItem(
+		IReadOnlyList<FileSystemEntryInfo> subFolders);
 
 	Task ClearThumbnailBoxes(bool resetContent);
-	void PopulateThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
-	void RefreshThumbnailBoxes(IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
+	void PopulateThumbnailBoxes(
+		IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
+	void RefreshThumbnailBoxes(
+		IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
 
 	void SetFolderInfoText(string folderInfoText);
 	void SetImageInfoText(string imageInfoText);
 
-	void SaveMatchingTreeViewItem(FileSystemEntryInfo selectedFileSystemEntryInfo, bool startAtRootFolders);
+	void SaveMatchingTreeViewItem(
+		FileSystemEntryInfo selectedFileSystemEntryInfo,
+		bool startAtRootFolders);
 
 	bool AreSelectedFolderInfoTextOrImageInfoText();
 	void FocusThumbnailScrollViewer();

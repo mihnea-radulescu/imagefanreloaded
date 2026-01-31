@@ -19,7 +19,8 @@ public enum SlideshowInterval
 
 public static class SlideshowIntervalExtensions
 {
-	public static IReadOnlyList<SlideshowInterval> SlideshowIntervals => Enum.GetValues<SlideshowInterval>();
+	public static IReadOnlyList<SlideshowInterval> SlideshowIntervals
+		=> Enum.GetValues<SlideshowInterval>();
 
 	extension(SlideshowInterval slideshowInterval)
 	{

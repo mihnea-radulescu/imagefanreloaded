@@ -6,7 +6,9 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 public class WindowsDiscQueryEngine : DiscQueryEngineBase
 {
 	public WindowsDiscQueryEngine(
-		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory, IFileSizeEngine fileSizeEngine)
+		IGlobalParameters globalParameters,
+		IImageFileFactory imageFileFactory,
+		IFileSizeEngine fileSizeEngine)
 		: base(globalParameters, imageFileFactory, fileSizeEngine)
 	{
 	}

@@ -58,13 +58,15 @@ public class MainViewPresenter
 
 	private readonly IMainView _mainView;
 
-	private void OnWindowClosing(object? sender, ContentTabItemCollectionEventArgs e)
+	private void OnWindowClosing(
+		object? sender, ContentTabItemCollectionEventArgs e)
 	{
 		var runningProcess = Process.GetCurrentProcess();
 		runningProcess.Kill();
 	}
 
-	private async void OnContentTabItemAdded(object? sender, ContentTabItemEventArgs e)
+	private async void OnContentTabItemAdded(
+		object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 		contentTabItem.ImageViewFactory = _imageViewFactory;
@@ -72,12 +74,14 @@ public class MainViewPresenter
 		var rootFolders = await PopulateRootFolders(contentTabItem);
 
 		var shouldProcessInputPath = _shouldProcessCommandLineArgsInputPath &&
-									 _commandLineArgsInputPathHandler.CanProcessInputPath();
+									 _commandLineArgsInputPathHandler
+									 	.CanProcessInputPath();
 		if (shouldProcessInputPath)
 		{
 			_shouldProcessCommandLineArgsInputPath = false;
 
-			await BuildInputFolderTreeView(contentTabItem, rootFolders, _commandLineArgsInputPathHandler);
+			await BuildInputFolderTreeView(
+				contentTabItem, rootFolders, _commandLineArgsInputPathHandler);
 
 			EnableContentTabEventHandling(contentTabItem);
 
@@ -91,14 +95,16 @@ public class MainViewPresenter
 		}
 	}
 
-	private async void OnContentTabItemClosed(object? sender, ContentTabItemEventArgs e)
+	private async void OnContentTabItemClosed(
+		object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 
 		await ClearContentTabItem(contentTabItem);
 	}
 
-	private async void OnImageInfoRequested(object? sender, ImageSelectedEventArgs e)
+	private async void OnImageInfoRequested(
+		object? sender, ImageSelectedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 		var imageFile = e.ImageFile;
@@ -107,34 +113,43 @@ public class MainViewPresenter
 		await contentTabItem.ShowImageInfo(imageInfoView);
 	}
 
-	private async void OnImageEditRequested(object? sender, ImageSelectedEventArgs e)
+	private async void OnImageEditRequested(
+		object? sender, ImageSelectedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 		var imageFile = e.ImageFile;
 
-		var imageEditView = _imageEditViewFactory.GetImageEditView(contentTabItem, imageFile);
+		var imageEditView = _imageEditViewFactory.GetImageEditView(
+			contentTabItem, imageFile);
 
-		imageEditView.ImageFileOverwritten += OnImageEditViewImageFileOverwritten;
-		imageEditView.FolderContentChanged += OnImageEditViewFolderContentChanged;
+		imageEditView.ImageFileOverwritten +=
+			OnImageEditViewImageFileOverwritten;
+		imageEditView.FolderContentChanged +=
+			OnImageEditViewFolderContentChanged;
 
 		await contentTabItem.ShowImageEdit(imageEditView);
 
-		imageEditView.ImageFileOverwritten -= OnImageEditViewImageFileOverwritten;
-		imageEditView.FolderContentChanged -= OnImageEditViewFolderContentChanged;
+		imageEditView.ImageFileOverwritten -=
+			OnImageEditViewImageFileOverwritten;
+		imageEditView.FolderContentChanged -=
+			OnImageEditViewFolderContentChanged;
 	}
 
-	private async void OnTabOptionsRequested(object? sender, ContentTabItemEventArgs e)
+	private async void OnTabOptionsRequested(
+		object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 
-		var tabOptionsView = _tabOptionsViewFactory.GetTabOptionsView(contentTabItem);
+		var tabOptionsView = _tabOptionsViewFactory.GetTabOptionsView(
+			contentTabItem);
 
 		tabOptionsView.TabOptionsChanged += OnTabOptionsChanged;
 		await contentTabItem.ShowTabOptions(tabOptionsView);
 		tabOptionsView.TabOptionsChanged -= OnTabOptionsChanged;
 	}
 
-	private async void OnAboutInfoRequested(object? sender, ContentTabItemEventArgs e)
+	private async void OnAboutInfoRequested(
+		object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 
@@ -142,21 +157,24 @@ public class MainViewPresenter
 		await contentTabItem.ShowAboutInfo(aboutView);
 	}
 
-	private async void OnImageEditViewImageFileOverwritten(object? sender, ContentTabItemEventArgs e)
+	private async void OnImageEditViewImageFileOverwritten(
+		object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 
 		await contentTabItem.UpdateSelectedThumbnailAfterImageFileChange();
 	}
 
-	private void OnImageEditViewFolderContentChanged(object? sender, ContentTabItemEventArgs e)
+	private void OnImageEditViewFolderContentChanged(
+		object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 
 		contentTabItem.RaiseFolderChangedEvent();
 	}
 
-	private static async void OnTabOptionsChanged(object? sender, TabOptionsChangedEventArgs e)
+	private static async void OnTabOptionsChanged(
+		object? sender, TabOptionsChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 		var tabOptions = e.TabOptions;
@@ -164,21 +182,25 @@ public class MainViewPresenter
 
 		var shouldRaiseFolderOrderingChangedEvent =
 			tabOptionChanges.HasChangedFolderOrdering ||
-			(tabOptions.FolderOrdering != FileSystemEntryInfoOrdering.RandomShuffle &&
+			(tabOptions.FolderOrdering !=
+				FileSystemEntryInfoOrdering.RandomShuffle &&
 			 tabOptionChanges.HasChangedFolderOrderingDirection);
 
 		var shouldRaiseFolderChangedEvent =
 			tabOptionChanges.HasChangedImageFileOrdering ||
-			(tabOptions.ImageFileOrdering != FileSystemEntryInfoOrdering.RandomShuffle &&
+			(tabOptions.ImageFileOrdering !=
+				FileSystemEntryInfoOrdering.RandomShuffle &&
 			 tabOptionChanges.HasChangedImageFileOrderingDirection) ||
 			tabOptionChanges.HasChangedThumbnailSize ||
 			tabOptionChanges.HasChangedRecursiveFolderBrowsing ||
 			(tabOptions.RecursiveFolderBrowsing &&
-			 tabOptionChanges.HasChangedGlobalOrderingForRecursiveFolderBrowsing) ||
+			 tabOptionChanges
+			 	.HasChangedGlobalOrderingForRecursiveFolderBrowsing) ||
 			tabOptionChanges.HasChangedApplyImageOrientation ||
 			tabOptionChanges.HasChangedShowThumbnailImageFileName;
 
-		var shouldRaisePanelsSplittingRatioChangedEvent = tabOptionChanges.HasChangedPanelsSplittingRatio;
+		var shouldRaisePanelsSplittingRatioChangedEvent =
+				tabOptionChanges.HasChangedPanelsSplittingRatio;
 
 		var shouldSaveAsDefault = tabOptionChanges.ShouldSaveAsDefault;
 
@@ -210,34 +232,41 @@ public class MainViewPresenter
 		var previousFolderVisualState = contentTabItem.FolderVisualState;
 		previousFolderVisualState?.NotifyStopThumbnailGeneration();
 
-		contentTabItem.FolderVisualState = _folderVisualStateFactory.GetFolderVisualState(
-			contentTabItem, e.Name, e.Path);
+		contentTabItem.FolderVisualState = _folderVisualStateFactory
+			.GetFolderVisualState(contentTabItem, e.Name, e.Path);
 
-		await contentTabItem.FolderVisualState.UpdateVisualState(contentTabItem.TabOptions!);
+		await contentTabItem.FolderVisualState.UpdateVisualState(
+			contentTabItem.TabOptions!);
 
 		previousFolderVisualState?.DisposeCancellationTokenSource();
 	}
 
-	private async void OnFolderOrderingChanged(object? sender, FolderOrderingChangedEventArgs e)
+	private async void OnFolderOrderingChanged(
+		object? sender, FolderOrderingChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 
-		var isExpandedFolderTreeViewSelectedItem = contentTabItem.GetFolderTreeViewSelectedItemExpandedState() ?? false;
+		var isExpandedFolderTreeViewSelectedItem = contentTabItem
+				.GetFolderTreeViewSelectedItemExpandedState() ?? false;
 
 		DisableContentTabEventHandling(contentTabItem);
 
 		var rootFolders = await PopulateRootFolders(contentTabItem);
 
-		var folderChangedInputPathHandler = _inputPathHandlerFactory.GetInputPathHandler(e.Path);
-		await BuildInputFolderTreeView(contentTabItem, rootFolders, folderChangedInputPathHandler);
+		var folderChangedInputPathHandler = _inputPathHandlerFactory
+			.GetInputPathHandler(e.Path);
+		await BuildInputFolderTreeView(
+			contentTabItem, rootFolders, folderChangedInputPathHandler);
 
 		EnableContentTabEventHandling(contentTabItem);
 
 		contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
-		contentTabItem.SetFolderTreeViewSelectedItemExpandedState(isExpandedFolderTreeViewSelectedItem);
+		contentTabItem.SetFolderTreeViewSelectedItemExpandedState(
+			isExpandedFolderTreeViewSelectedItem);
 	}
 
-	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(IContentTabItem contentTabItem)
+	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(
+		IContentTabItem contentTabItem)
 	{
 		await _discQueryEngine.BuildSkipRecursionFolderPaths();
 		var rootFolders = await _discQueryEngine.GetRootFolders();
@@ -258,16 +287,20 @@ public class MainViewPresenter
 
 		do
 		{
-			matchingFileSystemEntryInfo = await inputPathHandler.GetMatchingFileSystemEntryInfo(subFolders);
+			matchingFileSystemEntryInfo = await inputPathHandler
+				.GetMatchingFileSystemEntryInfo(subFolders);
 
 			if (matchingFileSystemEntryInfo is not null)
 			{
-				contentTabItem.SaveMatchingTreeViewItem(matchingFileSystemEntryInfo, startAtRootFolders);
+				contentTabItem.SaveMatchingTreeViewItem(
+					matchingFileSystemEntryInfo, startAtRootFolders);
 				startAtRootFolders = false;
 
 				subFolders = await _discQueryEngine.GetSubFolders(
-					matchingFileSystemEntryInfo.Path, contentTabItem.TabOptions!);
-				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(subFolders);
+					matchingFileSystemEntryInfo.Path,
+					contentTabItem.TabOptions!);
+				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(
+					subFolders);
 			}
 		} while (matchingFileSystemEntryInfo is not null);
 	}
@@ -308,7 +341,8 @@ public class MainViewPresenter
 		contentTabItem.DisposeFolderChangedMutex();
 	}
 
-	private static async Task ClearFolderVisualState(IFolderVisualState? folderVisualState)
+	private static async Task ClearFolderVisualState(
+		IFolderVisualState? folderVisualState)
 	{
 		if (folderVisualState is not null)
 		{

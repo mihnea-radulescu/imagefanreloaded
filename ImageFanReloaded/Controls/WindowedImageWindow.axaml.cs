@@ -22,7 +22,8 @@ public partial class WindowedImageWindow : Window, IImageView
 		InitializeComponent();
 
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
-		AddHandler(PointerWheelChangedEvent, OnMouseWheel, RoutingStrategies.Tunnel);
+		AddHandler(
+			PointerWheelChangedEvent, OnMouseWheel, RoutingStrategies.Tunnel);
 	}
 
 	public IGlobalParameters? GlobalParameters
@@ -51,7 +52,8 @@ public partial class WindowedImageWindow : Window, IImageView
 	public async Task<bool> CanStartSlideshowFromContentTabItem()
 		=> await Dispatcher.UIThread.InvokeAsync(() => IsVisible);
 
-	public async Task StartSlideshowFromContentTabItem() => await Dispatcher.UIThread.InvokeAsync(StartSlideshow);
+	public async Task StartSlideshowFromContentTabItem()
+		=> await Dispatcher.UIThread.InvokeAsync(StartSlideshow);
 
 	public async Task SetImage(IImageFile imageFile)
 	{
@@ -64,7 +66,8 @@ public partial class WindowedImageWindow : Window, IImageView
 			{
 				if (_halfScaledScreenSize is null)
 				{
-					_halfScaledScreenSize = ScreenInfo!.GetHalfScaledScreenSize(this);
+					_halfScaledScreenSize = ScreenInfo!.GetHalfScaledScreenSize(
+						this);
 					Width = _halfScaledScreenSize.Width;
 					Height = _halfScaledScreenSize.Height;
 				}
@@ -84,11 +87,13 @@ public partial class WindowedImageWindow : Window, IImageView
 		_displayImage.MaxWidth = _imageFile.ImageSize.Width;
 		_displayImage.MaxHeight = _imageFile.ImageSize.Height;
 
-		_imageInfoSelectableTextBlock.Text = _imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
+		_imageInfoSelectableTextBlock.Text = _imageFile.GetBasicImageInfo(
+			TabOptions!.RecursiveFolderBrowsing);
 		_imageInfoSelectableTextBlock.IsVisible = ShouldShowImageInfo();
 	}
 
-	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
+	public async Task ShowDialog(IMainView owner)
+		=> await ShowDialog((Window)owner);
 
 	private const int OneImageForward = 1;
 	private const int OneImageBackward = -1;
@@ -115,7 +120,8 @@ public partial class WindowedImageWindow : Window, IImageView
 
 	private bool ShouldShowImageInfo() =>
 		TabOptions!.ShowImageViewImageInfo &&
-		TabOptions!.ImageViewDisplayMode == ImageViewDisplayMode.WindowedMaximizedBorderless;
+		TabOptions!.ImageViewDisplayMode ==
+			ImageViewDisplayMode.WindowedMaximizedBorderless;
 
 	private async void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -152,7 +158,8 @@ public partial class WindowedImageWindow : Window, IImageView
 		{
 			await HandleEscapeAction();
 		}
-		else if (ShouldShowMainViewAfterImageViewClosing(keyModifiers, keyPressing))
+		else if (ShouldShowMainViewAfterImageViewClosing(
+			keyModifiers, keyPressing))
 		{
 			_showMainViewAfterImageViewClosing = true;
 
@@ -199,13 +206,17 @@ public partial class WindowedImageWindow : Window, IImageView
 
 	private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
-		ViewClosing?.Invoke(this, new ImageViewClosingEventArgs(_showMainViewAfterImageViewClosing));
+		ViewClosing?.Invoke(
+			this,
+			new ImageViewClosingEventArgs(_showMainViewAfterImageViewClosing));
 	}
 
 	private bool ShouldMaximizeWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.MKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.MKey)
 		{
 			return true;
 		}
@@ -214,9 +225,11 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldRestoreNormalWindowSize(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.NKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.NKey)
 		{
 			return true;
 		}
@@ -225,9 +238,11 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldStartSlideshow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.SKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.SKey)
 		{
 			return true;
 		}
@@ -236,7 +251,8 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleBackwardNavigation(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 		    _globalParameters!.IsBackwardNavigationKey(keyPressing))
@@ -248,7 +264,8 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleForwardNavigation(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			_globalParameters!.IsForwardNavigationKey(keyPressing))
@@ -260,9 +277,11 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldToggleImageInfo(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.IKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.IKey)
 		{
 			return true;
 		}
@@ -271,9 +290,11 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleEscapeAction(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.EscapeKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.EscapeKey)
 		{
 			return true;
 		}
@@ -282,7 +303,8 @@ public partial class WindowedImageWindow : Window, IImageView
 	}
 
 	private bool ShouldShowMainViewAfterImageViewClosing(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (IsStandaloneView &&
 			keyModifiers == _globalParameters!.NoneKeyModifier &&
@@ -296,7 +318,8 @@ public partial class WindowedImageWindow : Window, IImageView
 
 	private async Task HandleEscapeAction()
 	{
-		var isSelectedImageInfoText = _imageInfoSelectableTextBlock.SelectedText != string.Empty;
+		var isSelectedImageInfoText =
+			_imageInfoSelectableTextBlock.SelectedText != string.Empty;
 
 		if (isSelectedImageInfoText)
 		{
@@ -326,14 +349,16 @@ public partial class WindowedImageWindow : Window, IImageView
 		{
 			WindowState = WindowState.Maximized;
 
-			TabOptions!.ImageViewDisplayMode = ImageViewDisplayMode.WindowedMaximized;
+			TabOptions!.ImageViewDisplayMode =
+				ImageViewDisplayMode.WindowedMaximized;
 		}
 	}
 
 	private void RestoreNormalWindowSize()
 	{
 		if (WindowState == WindowState.Maximized &&
-		    TabOptions!.ImageViewDisplayMode != ImageViewDisplayMode.WindowedMaximizedBorderless)
+		    TabOptions!.ImageViewDisplayMode !=
+				ImageViewDisplayMode.WindowedMaximizedBorderless)
 		{
 			WindowState = WindowState.Normal;
 
@@ -343,7 +368,8 @@ public partial class WindowedImageWindow : Window, IImageView
 
 	private async Task StartSlideshow()
 	{
-		var slideshowInterval = TimeSpan.FromSeconds(TabOptions!.SlideshowInterval.ToInt());
+		var slideshowInterval = TimeSpan.FromSeconds(
+			TabOptions!.SlideshowInterval.ToInt());
 
 		try
 		{
@@ -373,7 +399,8 @@ public partial class WindowedImageWindow : Window, IImageView
 		}
 	}
 
-	private async Task AnimateImage(IImage image, CancellationTokenSource ctsAnimation)
+	private async Task AnimateImage(
+		IImage image, CancellationTokenSource ctsAnimation)
 	{
 		try
 		{
@@ -394,14 +421,17 @@ public partial class WindowedImageWindow : Window, IImageView
 						break;
 					}
 
-					await Dispatcher.UIThread.InvokeAsync(() => _displayImage.Source = anImageFrameBitmap);
+					await Dispatcher.UIThread.InvokeAsync(()
+						=> _displayImage.Source = anImageFrameBitmap);
 
 					if (ctsAnimation.IsCancellationRequested)
 					{
 						break;
 					}
 
-					await Task.Delay(aThumbnailImageFrame.DelayUntilNextFrame, ctsAnimation.Token);
+					await Task.Delay(
+						aThumbnailImageFrame.DelayUntilNextFrame,
+						ctsAnimation.Token);
 				}
 			}
 		}
@@ -431,7 +461,8 @@ public partial class WindowedImageWindow : Window, IImageView
 		if (_image.IsAnimated)
 		{
 			_ctsAnimation = new CancellationTokenSource();
-			_animationTask = Task.Run(() => AnimateImage(_image, _ctsAnimation));
+			_animationTask = Task.Run(()
+				=> AnimateImage(_image, _ctsAnimation));
 		}
 		else
 		{
@@ -441,7 +472,8 @@ public partial class WindowedImageWindow : Window, IImageView
 
 	private void ToggleImageInfo()
 	{
-		TabOptions!.ShowImageViewImageInfo = !TabOptions!.ShowImageViewImageInfo;
+		TabOptions!.ShowImageViewImageInfo =
+			!TabOptions!.ShowImageViewImageInfo;
 
 		_imageInfoSelectableTextBlock.IsVisible = ShouldShowImageInfo();
 	}
@@ -459,7 +491,8 @@ public partial class WindowedImageWindow : Window, IImageView
 		DisposeImage(ref _image);
 	}
 
-	private void SetDisplayImageSource(IImage? image) => _displayImage.Source = image?.Bitmap;
+	private void SetDisplayImageSource(IImage? image)
+		=> _displayImage.Source = image?.Bitmap;
 
 	private async Task PauseBetweenImages(TimeSpan slideshowInterval)
 	{

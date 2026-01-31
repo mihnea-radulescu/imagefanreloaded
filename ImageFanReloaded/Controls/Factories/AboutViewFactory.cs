@@ -17,7 +17,10 @@ public class AboutViewFactory : IAboutViewFactory
 
 	public IAboutView GetAboutView()
 	{
-		var aboutText = string.Format(AboutTextTemplate, _aboutInfoProvider.VersionString, _aboutInfoProvider.Year);
+		var aboutText = string.Format(
+			AboutTextTemplate,
+			_aboutInfoProvider.VersionString,
+			_aboutInfoProvider.Year);
 
 		IAboutView aboutView = new AboutWindow();
 		aboutView.GlobalParameters = _globalParameters;

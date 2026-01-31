@@ -6,19 +6,23 @@ public static class StringExtensions
 {
 	extension(string longerString)
 	{
-		public string? GetRemainingStringAfterSubstringMatch(string shorterString, StringComparison stringComparison)
+		public string? GetRemainingStringAfterSubstringMatch(
+			string shorterString, StringComparison stringComparison)
 		{
 			string? remainingStringAfterSubstringMatch;
 
-			var matchIndex = longerString.IndexOf(shorterString, stringComparison);
+			var matchIndex = longerString.IndexOf(
+				shorterString, stringComparison);
 
 			if (matchIndex >= 0)
 			{
-				var remainingStringStartIndex = matchIndex + shorterString.Length;
+				var remainingStringStartIndex =
+					matchIndex + shorterString.Length;
 
 				if (remainingStringStartIndex < longerString.Length)
 				{
-					remainingStringAfterSubstringMatch = longerString[remainingStringStartIndex..];
+					remainingStringAfterSubstringMatch =
+						longerString[remainingStringStartIndex..];
 				}
 				else
 				{

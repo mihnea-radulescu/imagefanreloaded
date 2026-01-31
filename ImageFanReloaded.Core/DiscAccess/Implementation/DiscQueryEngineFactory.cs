@@ -26,14 +26,14 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 				_globalParameters, _imageFileFactory, _fileSizeEngine);
 		}
 
-		if (_globalParameters.RuntimeEnvironmentType is
+		if (_globalParameters.RuntimeEnvironmentType ==
 			RuntimeEnvironmentType.Windows)
 		{
 			return new WindowsDiscQueryEngine(
 				_globalParameters, _imageFileFactory, _fileSizeEngine);
 		}
 
-		if (_globalParameters.RuntimeEnvironmentType is
+		if (_globalParameters.RuntimeEnvironmentType ==
 			RuntimeEnvironmentType.MacOs)
 		{
 			return new MacOsDiscQueryEngine(

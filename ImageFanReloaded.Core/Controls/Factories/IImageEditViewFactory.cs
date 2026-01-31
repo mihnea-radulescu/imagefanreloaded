@@ -4,5 +4,6 @@ namespace ImageFanReloaded.Core.Controls.Factories;
 
 public interface IImageEditViewFactory
 {
-	IImageEditView GetImageEditView(IContentTabItem contentTabItem, IImageFile imageFile);
+	IImageEditView GetImageEditView(
+		IContentTabItem contentTabItem, IImageFile imageFile);
 }

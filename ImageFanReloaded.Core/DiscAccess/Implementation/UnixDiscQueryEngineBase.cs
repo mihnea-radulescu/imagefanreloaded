@@ -10,7 +10,9 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 public abstract class UnixDiscQueryEngineBase : DiscQueryEngineBase
 {
 	protected UnixDiscQueryEngineBase(
-		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory, IFileSizeEngine fileSizeEngine)
+		IGlobalParameters globalParameters,
+		IImageFileFactory imageFileFactory,
+		IFileSizeEngine fileSizeEngine)
 		: base(globalParameters, imageFileFactory, fileSizeEngine)
 	{
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
@@ -24,7 +26,8 @@ public abstract class UnixDiscQueryEngineBase : DiscQueryEngineBase
 		}
 
 		var isSupportedDrive = SupportedDrivePrefixes.Any(
-			aSupportedDrivePrefix => driveName.StartsWith(aSupportedDrivePrefix, _nameComparison));
+			aSupportedDrivePrefix => driveName.StartsWith(
+				aSupportedDrivePrefix, _nameComparison));
 
 		return isSupportedDrive;
 	}

@@ -23,7 +23,8 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 
 	public IImageFile? ImageFile { get; set; }
 
-	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
+	public async Task ShowDialog(IMainView owner)
+		=> await ShowDialog((Window)owner);
 
 	private bool _isLoading;
 
@@ -32,7 +33,8 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 		_isLoading = true;
 		SetLoadingImageInfoTitle();
 
-		var imageInfo = await Task.Run(() => ImageInfoBuilder!.BuildImageInfo(ImageFile!));
+		var imageInfo = await Task.Run(()
+			=> ImageInfoBuilder!.BuildImageInfo(ImageFile!));
 		_imageInfoSelectableTextBlock.Text = imageInfo;
 
 		_imageInfoScrollViewer.Focus();
@@ -63,9 +65,11 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 	}
 
 	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EscapeKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.EscapeKey)
 		{
 			return true;
 		}
@@ -76,5 +80,6 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 	private void SetLoadingImageInfoTitle()
 		=> Title = $"{ImageFile!.ImageFileData.ImageFileName} - loading image info...";
 
-	private void SetImageInfoTitle() => Title = ImageFile!.ImageFileData.ImageFileName;
+	private void SetImageInfoTitle()
+		=> Title = ImageFile!.ImageFileData.ImageFileName;
 }

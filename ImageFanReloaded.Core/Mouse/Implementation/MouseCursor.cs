@@ -17,7 +17,8 @@ public class MouseCursor : DisposableBase, IMouseCursor
 		return (TCursor)_mouseCursorImplementationInstance;
 	}
 
-	protected override void DisposeSpecific() => _mouseCursorImplementationInstance.Dispose();
+	protected override void DisposeSpecific()
+		=> _mouseCursorImplementationInstance.Dispose();
 
 	private readonly IDisposable _mouseCursorImplementationInstance;
 }

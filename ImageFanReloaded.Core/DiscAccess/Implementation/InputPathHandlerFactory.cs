@@ -4,15 +4,13 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
 public class InputPathHandlerFactory : IInputPathHandlerFactory
 {
-	public InputPathHandlerFactory(IGlobalParameters globalParameters, IDiscQueryEngine discQueryEngine)
+	public InputPathHandlerFactory(IGlobalParameters globalParameters)
 	{
 		_globalParameters = globalParameters;
-		_discQueryEngine = discQueryEngine;
 	}
 
 	public IInputPathHandler GetInputPathHandler(string? inputPath)
-		=> new InputPathHandler(_globalParameters, _discQueryEngine, inputPath);
+		=> new InputPathHandler(_globalParameters, inputPath);
 
 	private readonly IGlobalParameters _globalParameters;
-	private readonly IDiscQueryEngine _discQueryEngine;
 }

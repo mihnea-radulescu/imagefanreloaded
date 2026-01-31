@@ -106,7 +106,8 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 					{
 						if (dataReader.Read())
 						{
-							var thumbnailData = dataReader.GetFieldValue<byte[]>(0);
+							var thumbnailData = dataReader
+								.GetFieldValue<byte[]>(0);
 
 							return new ThumbnailCacheEntry
 							{

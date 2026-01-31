@@ -11,7 +11,8 @@ public record CoordinatesToImageSizeRatio
 
 	public static CoordinatesToImageSizeRatio ImageCenter { get; }
 
-	public CoordinatesToImageSizeRatio(ImagePoint coordinates, ImageSize imageSize)
+	public CoordinatesToImageSizeRatio(
+		ImagePoint coordinates, ImageSize imageSize)
 	{
 		RatioX = coordinates.X / (double)imageSize.Width;
 		RatioY = coordinates.Y / (double)imageSize.Height;

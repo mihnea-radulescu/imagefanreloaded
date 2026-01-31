@@ -19,7 +19,8 @@ public class FolderVisualStateFactory : IFolderVisualStateFactory
 		_discQueryEngine = discQueryEngine;
 	}
 
-	public IFolderVisualState GetFolderVisualState(IContentTabItem contentTabItem, string folderName, string folderPath)
+	public IFolderVisualState GetFolderVisualState(
+		IContentTabItem contentTabItem, string folderName, string folderPath)
 	{
 		IFolderVisualState folderVisualState = new FolderVisualState(
 			_globalParameters,

@@ -12,5 +12,6 @@ public interface IInputPathHandler
 
 	bool CanProcessInputPath();
 
-	Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(IReadOnlyList<FileSystemEntryInfo> folders);
+	Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(
+		IReadOnlyList<FileSystemEntryInfo> folders);
 }

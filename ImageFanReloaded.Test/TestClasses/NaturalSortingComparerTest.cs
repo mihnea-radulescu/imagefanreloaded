@@ -8,7 +8,8 @@ public class NaturalSortingComparerTest
 {
 	public NaturalSortingComparerTest()
 	{
-		_naturalSortingComparer = new NaturalSortingComparer(StringComparer.InvariantCulture);
+		_naturalSortingComparer = new NaturalSortingComparer(
+			StringComparer.InvariantCulture);
 	}
 
 	[InlineData("a", "b", -1)]

@@ -24,7 +24,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 		InitializeComponent();
 
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
-		AddHandler(PointerWheelChangedEvent, OnMouseWheel, RoutingStrategies.Tunnel);
+		AddHandler(
+			PointerWheelChangedEvent, OnMouseWheel, RoutingStrategies.Tunnel);
 	}
 
 	public IGlobalParameters? GlobalParameters
@@ -64,7 +65,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 	public async Task<bool> CanStartSlideshowFromContentTabItem()
 		=> await Dispatcher.UIThread.InvokeAsync(() => IsVisible);
 
-	public async Task StartSlideshowFromContentTabItem() => await Dispatcher.UIThread.InvokeAsync(StartSlideshow);
+	public async Task StartSlideshowFromContentTabItem()
+		=> await Dispatcher.UIThread.InvokeAsync(StartSlideshow);
 
 	public async Task SetImage(IImageFile imageFile)
 	{
@@ -75,14 +77,18 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 		await DisplayResizedImage();
 
-		_negligibleImageDragX = imageFile.ImageSize.Width * NegligibleImageDragFactor;
-		_negligibleImageDragY = imageFile.ImageSize.Height * NegligibleImageDragFactor;
+		_negligibleImageDragX =
+			imageFile.ImageSize.Width * NegligibleImageDragFactor;
+		_negligibleImageDragY =
+			imageFile.ImageSize.Height * NegligibleImageDragFactor;
 
-		_imageInfoSelectableTextBlock.Text = _imageFile.GetBasicImageInfo(TabOptions!.RecursiveFolderBrowsing);
+		_imageInfoSelectableTextBlock.Text = _imageFile.GetBasicImageInfo(
+			TabOptions!.RecursiveFolderBrowsing);
 		_imageInfoSelectableTextBlock.IsVisible = ShouldShowImageInfo();
 	}
 
-	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
+	public async Task ShowDialog(IMainView owner)
+		=> await ShowDialog((Window)owner);
 
 	private const double ImageZoomScalingFactor = 0.1;
 	private const double ImageScrollFactor = 0.1;
@@ -175,11 +181,13 @@ public partial class FullScreenImageWindow : Window, IImageView
 				return;
 			}
 
-			if (_fullScreenImageViewState == FullScreenImageViewState.ResizedToScreenSize)
+			if (_fullScreenImageViewState ==
+				FullScreenImageViewState.ResizedToScreenSize)
 			{
 				ZoomToImageSize(CoordinatesToImageSizeRatio.ImageCenter);
 			}
-			else if (_fullScreenImageViewState == FullScreenImageViewState.ZoomedToImageSize)
+			else if (_fullScreenImageViewState ==
+					 FullScreenImageViewState.ZoomedToImageSize)
 			{
 				ResizeToScreenSize();
 			}
@@ -192,7 +200,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 		{
 			await HandleEscapeAction();
 		}
-		else if (ShouldShowMainViewAfterImageViewClosing(keyModifiers, keyPressing))
+		else if (ShouldShowMainViewAfterImageViewClosing(
+					keyModifiers, keyPressing))
 		{
 			_showMainViewAfterImageViewClosing = true;
 
@@ -206,7 +215,9 @@ public partial class FullScreenImageWindow : Window, IImageView
 	{
 		NotifyStopSlideshow();
 
-		if (!_canZoomToImageSize || _fullScreenImageViewState == FullScreenImageViewState.ResizedToScreenSize)
+		if (!_canZoomToImageSize ||
+			_fullScreenImageViewState ==
+				FullScreenImageViewState.ResizedToScreenSize)
 		{
 			return;
 		}
@@ -216,14 +227,20 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 	private async void OnMouseUp(object? sender, PointerReleasedEventArgs e)
 	{
-		if (_fullScreenImageViewState == FullScreenImageViewState.ResizedToScreenSize)
+		if (_fullScreenImageViewState ==
+			FullScreenImageViewState.ResizedToScreenSize)
 		{
-			if (e.InitialPressMouseButton == MouseButton.Left && _canZoomToImageSize)
+			if (e.InitialPressMouseButton == MouseButton.Left &&
+				_canZoomToImageSize)
 			{
 				var mousePositionToImage = e.GetPosition(_displayImage);
-				var imageSize = new ImageSize(_displayImage.Source!.Size.Width, _displayImage.Source!.Size.Height);
+				var imageSize = new ImageSize(
+					_displayImage.Source!.Size.Width,
+					_displayImage.Source!.Size.Height);
 
-				var coordinatesToImageSizeRatio = GetCoordinatesToImageSizeRatio(mousePositionToImage, imageSize);
+				var coordinatesToImageSizeRatio =
+					GetCoordinatesToImageSizeRatio(
+						mousePositionToImage, imageSize);
 
 				ZoomToImageSize(coordinatesToImageSizeRatio);
 			}
@@ -232,7 +249,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 				await HandleEscapeAction();
 			}
 		}
-		else if (_fullScreenImageViewState == FullScreenImageViewState.ZoomedToImageSize)
+		else if (_fullScreenImageViewState ==
+				 FullScreenImageViewState.ZoomedToImageSize)
 		{
 			if (e.InitialPressMouseButton == MouseButton.Left)
 			{
@@ -244,7 +262,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 				}
 				else
 				{
-					var (normalizedDragX, normalizedDragY) = GetNormalizedDrag();
+					var (normalizedDragX, normalizedDragY) =
+						GetNormalizedDrag();
 					DragImage(normalizedDragX, normalizedDragY);
 				}
 			}
@@ -275,13 +294,16 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 	private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
-		ViewClosing?.Invoke(this, new ImageViewClosingEventArgs(_showMainViewAfterImageViewClosing));
+		ViewClosing?.Invoke(this, new ImageViewClosingEventArgs(
+			_showMainViewAfterImageViewClosing));
 	}
 
 	private bool ShouldStartSlideshow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.SKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.SKey)
 		{
 			return true;
 		}
@@ -289,10 +311,12 @@ public partial class FullScreenImageWindow : Window, IImageView
 		return false;
 	}
 
-	private bool ShouldHandleImageDrag(ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
+	private bool ShouldHandleImageDrag(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers)
 	{
 		if (keyModifiers == _globalParameters!.CtrlKeyModifier &&
-		    _fullScreenImageViewState == FullScreenImageViewState.ZoomedToImageSize)
+		    _fullScreenImageViewState ==
+				FullScreenImageViewState.ZoomedToImageSize)
 		{
 			return true;
 		}
@@ -301,7 +325,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleBackwardNavigation(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 		    _globalParameters!.IsBackwardNavigationKey(keyPressing))
@@ -313,7 +338,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleForwardNavigation(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
 			_globalParameters!.IsForwardNavigationKey(keyPressing))
@@ -325,9 +351,11 @@ public partial class FullScreenImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleImageZoom(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.EnterKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.EnterKey)
 		{
 			return true;
 		}
@@ -336,9 +364,11 @@ public partial class FullScreenImageWindow : Window, IImageView
 	}
 
 	private bool ShouldToggleImageInfo(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.IKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.IKey)
 		{
 			return true;
 		}
@@ -347,9 +377,11 @@ public partial class FullScreenImageWindow : Window, IImageView
 	}
 
 	private bool ShouldHandleEscapeAction(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == _globalParameters!.NoneKeyModifier && keyPressing == _globalParameters!.EscapeKey)
+		if (keyModifiers == _globalParameters!.NoneKeyModifier &&
+			keyPressing == _globalParameters!.EscapeKey)
 		{
 			return true;
 		}
@@ -358,7 +390,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 	}
 
 	private bool ShouldShowMainViewAfterImageViewClosing(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
 		if (IsStandaloneView &&
 		    keyModifiers == _globalParameters!.NoneKeyModifier &&
@@ -372,7 +405,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 	private async Task HandleEscapeAction()
 	{
-		var isSelectedImageInfoText = _imageInfoSelectableTextBlock.SelectedText != string.Empty;
+		var isSelectedImageInfoText =
+			_imageInfoSelectableTextBlock.SelectedText != string.Empty;
 
 		if (isSelectedImageInfoText)
 		{
@@ -398,7 +432,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 	private async Task StartSlideshow()
 	{
-		var slideshowInterval = TimeSpan.FromSeconds(TabOptions!.SlideshowInterval.ToInt());
+		var slideshowInterval = TimeSpan.FromSeconds(
+			TabOptions!.SlideshowInterval.ToInt());
 
 		try
 		{
@@ -428,7 +463,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 		}
 	}
 
-	private async Task AnimateImage(IImage image, CancellationTokenSource ctsAnimation)
+	private async Task AnimateImage(
+		IImage image, CancellationTokenSource ctsAnimation)
 	{
 		try
 		{
@@ -449,14 +485,17 @@ public partial class FullScreenImageWindow : Window, IImageView
 						break;
 					}
 
-					await Dispatcher.UIThread.InvokeAsync(() => _displayImage.Source = anImageFrameBitmap);
+					await Dispatcher.UIThread.InvokeAsync(()
+						=> _displayImage.Source = anImageFrameBitmap);
 
 					if (ctsAnimation.IsCancellationRequested)
 					{
 						break;
 					}
 
-					await Task.Delay(aThumbnailImageFrame.DelayUntilNextFrame, ctsAnimation.Token);
+					await Task.Delay(
+						aThumbnailImageFrame.DelayUntilNextFrame,
+						ctsAnimation.Token);
 				}
 			}
 		}
@@ -497,15 +536,20 @@ public partial class FullScreenImageWindow : Window, IImageView
 	private void DragImage(double normalizedDragX, double normalizedDragY)
 	{
 		var newHorizontalScrollOffset = _imageScrollViewer.Offset.X +
-			normalizedDragX * ImageScrollFactor * _displayImage.Source!.Size.Width;
+			normalizedDragX *
+			ImageScrollFactor *
+			_displayImage.Source!.Size.Width;
 		var newVerticalScrollOffset = _imageScrollViewer.Offset.Y +
-			normalizedDragY * ImageScrollFactor * _displayImage.Source!.Size.Height;
+			normalizedDragY *
+			ImageScrollFactor *
+			_displayImage.Source!.Size.Height;
 
 		if (newHorizontalScrollOffset < 0)
 		{
 			newHorizontalScrollOffset = 0;
 		}
-		else if (newHorizontalScrollOffset > _imageScrollViewer.ScrollBarMaximum.X)
+		else if (newHorizontalScrollOffset >
+				 _imageScrollViewer.ScrollBarMaximum.X)
 		{
 			newHorizontalScrollOffset = _imageScrollViewer.ScrollBarMaximum.X;
 		}
@@ -513,30 +557,36 @@ public partial class FullScreenImageWindow : Window, IImageView
 		{
 			newVerticalScrollOffset = 0;
 		}
-		else if (newVerticalScrollOffset > _imageScrollViewer.ScrollBarMaximum.Y)
+		else if (newVerticalScrollOffset >
+				 _imageScrollViewer.ScrollBarMaximum.Y)
 		{
 			newVerticalScrollOffset = _imageScrollViewer.ScrollBarMaximum.Y;
 		}
 
-		_imageScrollViewer.Offset = new Vector(newHorizontalScrollOffset, newVerticalScrollOffset);
+		_imageScrollViewer.Offset = new Vector(
+			newHorizontalScrollOffset, newVerticalScrollOffset);
 	}
 
-	private CoordinatesToImageSizeRatio GetCoordinatesToImageSizeRatio(Point mousePositionToImage, ImageSize imageSize)
+	private CoordinatesToImageSizeRatio GetCoordinatesToImageSizeRatio(
+		Point mousePositionToImage, ImageSize imageSize)
 	{
 		CoordinatesToImageSizeRatio coordinatesToImageSizeRatio;
 
-		var mousePoint = new ImagePoint((int)mousePositionToImage.X, (int)mousePositionToImage.Y);
+		var mousePoint = new ImagePoint(
+			(int)mousePositionToImage.X, (int)mousePositionToImage.Y);
 
 		if (mousePoint.X >= 0 &&
 			mousePoint.X <= _displayImage.Source!.Size.Width &&
 			mousePoint.Y >= 0 &&
 			mousePoint.Y <= _displayImage.Source!.Size.Height)
 		{
-			coordinatesToImageSizeRatio = new CoordinatesToImageSizeRatio(mousePoint, imageSize);
+			coordinatesToImageSizeRatio = new CoordinatesToImageSizeRatio(
+				mousePoint, imageSize);
 		}
 		else
 		{
-			coordinatesToImageSizeRatio = CoordinatesToImageSizeRatio.ImageCenter;
+			coordinatesToImageSizeRatio =
+				CoordinatesToImageSizeRatio.ImageCenter;
 		}
 
 		return coordinatesToImageSizeRatio;
@@ -552,7 +602,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 		return canZoomToImageSize;
 	}
 
-	private Cursor GetScreenSizeCursor() => _canZoomToImageSize ? _zoomCursor! : _standardCursor!;
+	private Cursor GetScreenSizeCursor()
+		=> _canZoomToImageSize ? _zoomCursor! : _standardCursor!;
 
 	private void DisposePreviousImageAndResizedImage()
 	{
@@ -575,14 +626,17 @@ public partial class FullScreenImageWindow : Window, IImageView
 		DisposePreviousImageAndResizedImage();
 
 		(_image, _resizedImage) = _imageFile!.GetImageAndResizedImage(
-			_scaledScreenSize!, TabOptions!.UpsizeFullScreenImagesUpToScreenSize, TabOptions!.ApplyImageOrientation);
+			_scaledScreenSize!,
+			TabOptions!.UpsizeFullScreenImagesUpToScreenSize,
+			TabOptions!.ApplyImageOrientation);
 
 		await WaitForAnimationTaskToComplete();
 
 		if (_resizedImage.IsAnimated)
 		{
 			_ctsAnimation = new CancellationTokenSource();
-			_animationTask = Task.Run(() => AnimateImage(_resizedImage, _ctsAnimation));
+			_animationTask = Task.Run(() => AnimateImage(
+				_resizedImage, _ctsAnimation));
 		}
 		else
 		{
@@ -592,7 +646,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 		_canZoomToImageSize = CanZoomToImageSize();
 		_screenSizeCursor = GetScreenSizeCursor();
 
-		_fullScreenImageViewState = FullScreenImageViewState.ResizedToScreenSize;
+		_fullScreenImageViewState =
+			FullScreenImageViewState.ResizedToScreenSize;
 		Cursor = _screenSizeCursor!;
 	}
 
@@ -600,22 +655,26 @@ public partial class FullScreenImageWindow : Window, IImageView
 	{
 		SetDisplayImageSource(_resizedImage!);
 
-		_fullScreenImageViewState = FullScreenImageViewState.ResizedToScreenSize;
+		_fullScreenImageViewState =
+			FullScreenImageViewState.ResizedToScreenSize;
 		Cursor = _screenSizeCursor!;
 	}
 
-	private void ZoomToImageSize(CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
+	private void ZoomToImageSize(
+		CoordinatesToImageSizeRatio coordinatesToImageSizeRatio)
 	{
 		SetDisplayImageSource(_image!);
 
-		var zoomRectangle = GetZoomRectangle(coordinatesToImageSizeRatio, _image!);
+		var zoomRectangle = GetZoomRectangle(
+			coordinatesToImageSizeRatio, _image!);
 		_displayImage.BringIntoView(zoomRectangle);
 
 		_fullScreenImageViewState = FullScreenImageViewState.ZoomedToImageSize;
 		Cursor = _dragCursor!;
 	}
 
-	private static Rect GetZoomRectangle(CoordinatesToImageSizeRatio coordinatesToImageSizeRatio, IImage image)
+	private static Rect GetZoomRectangle(
+		CoordinatesToImageSizeRatio coordinatesToImageSizeRatio, IImage image)
 	{
 		var zoomToX = image.Size.Width * coordinatesToImageSizeRatio.RatioX;
 		var zoomToY = image.Size.Height * coordinatesToImageSizeRatio.RatioY;
@@ -631,7 +690,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 	private void ToggleImageInfo()
 	{
-		TabOptions!.ShowImageViewImageInfo = !TabOptions!.ShowImageViewImageInfo;
+		TabOptions!.ShowImageViewImageInfo =
+			!TabOptions!.ShowImageViewImageInfo;
 
 		_imageInfoSelectableTextBlock.IsVisible = ShouldShowImageInfo();
 	}
@@ -649,7 +709,8 @@ public partial class FullScreenImageWindow : Window, IImageView
 		DisposePreviousImageAndResizedImage();
 	}
 
-	private void SetDisplayImageSource(IImage? image) => _displayImage.Source = image?.Bitmap;
+	private void SetDisplayImageSource(IImage? image)
+		=> _displayImage.Source = image?.Bitmap;
 
 	private async Task PauseBetweenImages(TimeSpan slideshowInterval)
 	{

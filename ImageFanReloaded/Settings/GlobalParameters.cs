@@ -22,7 +22,8 @@ public class GlobalParameters : GlobalParametersBase
 		_imageResizer = imageResizer;
 
 		var invalidBitmap = GetBitmapFromResource(Resources.InvalidImage);
-		var invalidBitmapSize = new ImageSize(invalidBitmap.Size.Width, invalidBitmap.Size.Height);
+		var invalidBitmapSize = new ImageSize(
+			invalidBitmap.Size.Width, invalidBitmap.Size.Height);
 		var invalidImage = new Image(invalidBitmap, invalidBitmapSize);
 		InvalidImage = invalidImage;
 
@@ -30,17 +31,23 @@ public class GlobalParameters : GlobalParametersBase
 		_loadingImageThumbnails = BuildLoadingImageThumbnails();
 
 		PersistentImages = [
-			invalidImage, .._invalidImageThumbnails.Values.ToList(), .._loadingImageThumbnails.Values.ToList()];
+			invalidImage,
+			.._invalidImageThumbnails.Values.ToList(),
+			.._loadingImageThumbnails.Values.ToList()];
 
 		var iconSize = new ImageSize(IconSizeSquareLength);
 
-		DesktopFolderIcon = GetResizedIcon(Resources.DesktopFolderIcon, iconSize);
-		DocumentsFolderIcon = GetResizedIcon(Resources.DocumentsFolderIcon, iconSize);
-		DownloadsFolderIcon = GetResizedIcon(Resources.DownloadsFolderIcon, iconSize);
+		DesktopFolderIcon = GetResizedIcon(
+			Resources.DesktopFolderIcon, iconSize);
+		DocumentsFolderIcon = GetResizedIcon(
+			Resources.DocumentsFolderIcon, iconSize);
+		DownloadsFolderIcon = GetResizedIcon(
+			Resources.DownloadsFolderIcon, iconSize);
 		DriveIcon = GetResizedIcon(Resources.DriveIcon, iconSize);
 		FolderIcon = GetResizedIcon(Resources.FolderIcon, iconSize);
 		HomeFolderIcon = GetResizedIcon(Resources.HomeFolderIcon, iconSize);
-		PicturesFolderIcon = GetResizedIcon(Resources.PicturesFolderIcon, iconSize);
+		PicturesFolderIcon = GetResizedIcon(
+			Resources.PicturesFolderIcon, iconSize);
 	}
 
 	public override IImage InvalidImage { get; }
@@ -54,8 +61,10 @@ public class GlobalParameters : GlobalParametersBase
 	public override IImage HomeFolderIcon { get; }
 	public override IImage PicturesFolderIcon { get; }
 
-	public override IImage GetInvalidImageThumbnail(int thumbnailSize) => _invalidImageThumbnails[thumbnailSize];
-	public override IImage GetLoadingImageThumbnail(int thumbnailSize) => _loadingImageThumbnails[thumbnailSize];
+	public override IImage GetInvalidImageThumbnail(int thumbnailSize)
+		=> _invalidImageThumbnails[thumbnailSize];
+	public override IImage GetLoadingImageThumbnail(int thumbnailSize)
+		=> _loadingImageThumbnails[thumbnailSize];
 
 	private readonly IImageResizer _imageResizer;
 
@@ -77,7 +86,8 @@ public class GlobalParameters : GlobalParametersBase
 		var iconSize = new ImageSize(icon.Size.Width, icon.Size.Height);
 		var iconImage = new Image(icon, iconSize);
 
-		var resizedIcon = _imageResizer.CreateDownsizedImage(iconImage, newIconSize);
+		var resizedIcon = _imageResizer.CreateDownsizedImage(
+			iconImage, newIconSize);
 		return resizedIcon;
 	}
 
@@ -85,7 +95,8 @@ public class GlobalParameters : GlobalParametersBase
 	{
 		var invalidImageThumbnails = new Dictionary<int, IImage>();
 
-		foreach (var thumbnailSize in ThumbnailSizeExtensions.ThumbnailSizesAsIntegers)
+		foreach (var thumbnailSize in
+					 ThumbnailSizeExtensions.ThumbnailSizesAsIntegers)
 		{
 			var thumbnailImageSize = new ImageSize(thumbnailSize);
 
@@ -102,19 +113,23 @@ public class GlobalParameters : GlobalParametersBase
 	{
 		var loadingImageThumbnails = new Dictionary<int, IImage>();
 
-		using (var loadingBitmap = GetBitmapFromResource(Resources.LoadingImage))
+		using (var loadingBitmap = GetBitmapFromResource(
+			Resources.LoadingImage))
 		{
-			var loadingBitmapSize = new ImageSize(loadingBitmap.Size.Width, loadingBitmap.Size.Height);
+			var loadingBitmapSize = new ImageSize(
+				loadingBitmap.Size.Width, loadingBitmap.Size.Height);
 			var loadingImage = new Image(loadingBitmap, loadingBitmapSize);
 
-			foreach (var thumbnailSize in ThumbnailSizeExtensions.ThumbnailSizesAsIntegers)
+			foreach (var thumbnailSize in
+						 ThumbnailSizeExtensions.ThumbnailSizesAsIntegers)
 			{
 				var thumbnailImageSize = new ImageSize(thumbnailSize);
 
 				var loadingImageThumbnail = _imageResizer.CreateDownsizedImage(
 					loadingImage, thumbnailImageSize);
 
-				loadingImageThumbnails.Add(thumbnailSize, loadingImageThumbnail);
+				loadingImageThumbnails.Add(
+					thumbnailSize, loadingImageThumbnail);
 			}
 		}
 

@@ -8,7 +8,7 @@ public static class RuntimeEnvironmentTypeExtensions
 	{
 		public StringComparer GetStringComparer()
 		{
-			if (runtimeEnvironmentType is RuntimeEnvironmentType.Windows)
+			if (runtimeEnvironmentType == RuntimeEnvironmentType.Windows)
 			{
 				return StringComparer.InvariantCultureIgnoreCase;
 			}

@@ -6,7 +6,8 @@ namespace ImageFanReloaded.Core.CustomEventArgs;
 
 public class ThumbnailBoxClickedEventArgs : EventArgs
 {
-	public ThumbnailBoxClickedEventArgs(IThumbnailBox thumbnailBox, MouseClickType mouseClickType)
+	public ThumbnailBoxClickedEventArgs(
+		IThumbnailBox thumbnailBox, MouseClickType mouseClickType)
 	{
 		ThumbnailBox = thumbnailBox;
 

@@ -10,8 +10,9 @@ public class ThumbnailInfoFactory : IThumbnailInfoFactory
 		_globalParameters = globalParameters;
 	}
 
-	public IThumbnailInfo GetThumbnailInfo(ITabOptions tabOptions, IImageFile imageFile)
-		=> new ThumbnailInfo(_globalParameters, tabOptions, imageFile);
+	public IThumbnailInfo GetThumbnailInfo(
+		ITabOptions tabOptions, IImageFile imageFile)
+			=> new ThumbnailInfo(_globalParameters, tabOptions, imageFile);
 
 	private readonly IGlobalParameters _globalParameters;
 }

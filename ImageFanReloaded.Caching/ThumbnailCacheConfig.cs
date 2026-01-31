@@ -16,7 +16,7 @@ public class ThumbnailCacheConfig : IThumbnailCacheConfig
 	{
 		string thumbnailCacheFolderPath;
 
-		if (_globalParameters.RuntimeEnvironmentType is
+		if (_globalParameters.RuntimeEnvironmentType ==
 			RuntimeEnvironmentType.Linux)
 		{
 			thumbnailCacheFolderPath = Path.Combine(
@@ -24,7 +24,7 @@ public class ThumbnailCacheConfig : IThumbnailCacheConfig
 				".cache",
 				_globalParameters.ApplicationName);
 		}
-		else if (_globalParameters.RuntimeEnvironmentType is
+		else if (_globalParameters.RuntimeEnvironmentType ==
 				 RuntimeEnvironmentType.LinuxFlatpak)
 		{
 			try

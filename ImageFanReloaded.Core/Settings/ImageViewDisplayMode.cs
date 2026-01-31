@@ -22,10 +22,13 @@ public static class ImageViewDisplayModeExtensions
 				{
 					ImageViewDisplayMode.FullScreen => "Full-screen",
 					ImageViewDisplayMode.Windowed => "Windowed",
-					ImageViewDisplayMode.WindowedMaximized => "Windowed maximized",
-					ImageViewDisplayMode.WindowedMaximizedBorderless => "Windowed maximized borderless",
+					ImageViewDisplayMode.WindowedMaximized
+						=> "Windowed maximized",
+					ImageViewDisplayMode.WindowedMaximizedBorderless
+						=> "Windowed maximized borderless",
 
-					_ => throw new NotSupportedException($"Enum value {imageViewDisplayMode} not supported.")
+					_ => throw new NotSupportedException(
+						$"Enum value {imageViewDisplayMode} not supported.")
 				};
 
 				return description;

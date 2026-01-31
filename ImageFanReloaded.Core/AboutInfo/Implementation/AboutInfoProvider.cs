@@ -10,8 +10,10 @@ public class AboutInfoProvider : IAboutInfoProvider
 
 		var major = assemblyVersion.Major;
 		var minor = assemblyVersion.Minor;
-		var build = assemblyVersion.Build.ToString().PadLeft(PaddingMinimumLength, PaddingCharacter);
-		var revision = assemblyVersion.Revision.ToString().PadLeft(PaddingMinimumLength, PaddingCharacter);
+		var build = assemblyVersion.Build.ToString().PadLeft(
+			PaddingMinimumLength, PaddingCharacter);
+		var revision = assemblyVersion.Revision.ToString().PadLeft(
+			PaddingMinimumLength, PaddingCharacter);
 
 		VersionString = $"{major}.{minor}.{build}.{revision}";
 		Year = minor;

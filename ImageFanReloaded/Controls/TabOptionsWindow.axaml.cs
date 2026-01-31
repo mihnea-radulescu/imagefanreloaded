@@ -59,7 +59,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		RegisterTabOptionEvents();
 	}
 
-	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
+	public async Task ShowDialog(IMainView owner)
+		=> await ShowDialog((Window)owner);
 
 	private readonly TabOptionChanges _tabOptionChanges;
 
@@ -79,58 +80,73 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
 		TabOptionsChanged?.Invoke(
-			this, new TabOptionsChangedEventArgs(ContentTabItem!, TabOptions!, _tabOptionChanges));
+			this, new TabOptionsChangedEventArgs(
+				ContentTabItem!, TabOptions!, _tabOptionChanges));
 
 		UnregisterTabOptionEvents();
 	}
 
-	private void OnFolderOrderingSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnFolderOrderingSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
 		var folderOrderingComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
-		var folderOrdering = (FileSystemEntryInfoOrdering)folderOrderingComboBoxItem.Tag!;
+		var folderOrdering =
+			(FileSystemEntryInfoOrdering)folderOrderingComboBoxItem.Tag!;
 
 		TabOptions!.FolderOrdering = folderOrdering;
 		_tabOptionChanges.HasChangedFolderOrdering = true;
 	}
 
-	private void OnFolderOrderingDirectionSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnFolderOrderingDirectionSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
-		var folderOrderingDirectionComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
-		var folderOrderingDirection = (FileSystemEntryInfoOrderingDirection)folderOrderingDirectionComboBoxItem.Tag!;
+		var folderOrderingDirectionComboBoxItem =
+			(ComboBoxItem)e.AddedItems[0]!;
+		var folderOrderingDirection =
+			(FileSystemEntryInfoOrderingDirection)
+				folderOrderingDirectionComboBoxItem.Tag!;
 
 		TabOptions!.FolderOrderingDirection = folderOrderingDirection;
 		_tabOptionChanges.HasChangedFolderOrderingDirection = true;
 	}
 
-	private void OnImageFileOrderingSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnImageFileOrderingSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
 		var imageFileOrderingComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
-		var imageFileOrdering = (FileSystemEntryInfoOrdering)imageFileOrderingComboBoxItem.Tag!;
+		var imageFileOrdering =
+			(FileSystemEntryInfoOrdering)imageFileOrderingComboBoxItem.Tag!;
 
 		TabOptions!.ImageFileOrdering = imageFileOrdering;
 		_tabOptionChanges.HasChangedImageFileOrdering = true;
 	}
 
-	private void OnImageFileOrderingDirectionSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnImageFileOrderingDirectionSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
-		var imageFileOrderingDirectionComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
+		var imageFileOrderingDirectionComboBoxItem =
+			(ComboBoxItem)e.AddedItems[0]!;
 		var imageFileOrderingDirection =
-			(FileSystemEntryInfoOrderingDirection)imageFileOrderingDirectionComboBoxItem.Tag!;
+			(FileSystemEntryInfoOrderingDirection)
+				imageFileOrderingDirectionComboBoxItem.Tag!;
 
 		TabOptions!.ImageFileOrderingDirection = imageFileOrderingDirection;
 		_tabOptionChanges.HasChangedImageFileOrderingDirection = true;
 	}
 
-	private void OnImageViewDisplayModeSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnImageViewDisplayModeSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
 		var imageViewDisplayModeComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
-		var imageViewDisplayMode = (ImageViewDisplayMode)imageViewDisplayModeComboBoxItem.Tag!;
+		var imageViewDisplayMode =
+			(ImageViewDisplayMode)imageViewDisplayModeComboBoxItem.Tag!;
 
 		TabOptions!.ImageViewDisplayMode = imageViewDisplayMode;
 		_tabOptionChanges.HasChangedImageViewDisplayMode = true;
 	}
 
-	private void OnThumbnailSizeSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnThumbnailSizeSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
 		var thumbnailSizeComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
 		var thumbnailSize = (ThumbnailSize)thumbnailSizeComboBoxItem.Tag!;
@@ -139,32 +155,40 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_tabOptionChanges.HasChangedThumbnailSize = true;
 	}
 
-	private void OnRecursiveFolderBrowsingIsCheckedChanged(object? sender, RoutedEventArgs e)
+	private void OnRecursiveFolderBrowsingIsCheckedChanged(
+		object? sender, RoutedEventArgs e)
 	{
-		var recursiveFolderBrowsing = _recursiveFolderBrowsingCheckBox.IsChecked!.Value;
+		var recursiveFolderBrowsing =
+			_recursiveFolderBrowsingCheckBox.IsChecked!.Value;
 
 		TabOptions!.RecursiveFolderBrowsing = recursiveFolderBrowsing;
 		_tabOptionChanges.HasChangedRecursiveFolderBrowsing = true;
 	}
 
-	private void OnGlobalOrderingForRecursiveFolderBrowsingIsCheckedChanged(object? sender, RoutedEventArgs e)
+	private void OnGlobalOrderingForRecursiveFolderBrowsingIsCheckedChanged(
+		object? sender, RoutedEventArgs e)
 	{
 		var globalOrderingForRecursiveFolderBrowsing =
 			_globalOrderingForRecursiveFolderBrowsingCheckBox.IsChecked!.Value;
 
-		TabOptions!.GlobalOrderingForRecursiveFolderBrowsing = globalOrderingForRecursiveFolderBrowsing;
-		_tabOptionChanges.HasChangedGlobalOrderingForRecursiveFolderBrowsing = true;
+		TabOptions!.GlobalOrderingForRecursiveFolderBrowsing =
+			globalOrderingForRecursiveFolderBrowsing;
+		_tabOptionChanges.HasChangedGlobalOrderingForRecursiveFolderBrowsing =
+			true;
 	}
 
-	private void OnShowImageViewImageInfoIsCheckedChanged(object? sender, RoutedEventArgs e)
+	private void OnShowImageViewImageInfoIsCheckedChanged(
+		object? sender, RoutedEventArgs e)
 	{
-		var showImageViewImageInfo = _showImageViewImageInfoCheckBox.IsChecked!.Value;
+		var showImageViewImageInfo =
+			_showImageViewImageInfoCheckBox.IsChecked!.Value;
 
 		TabOptions!.ShowImageViewImageInfo = showImageViewImageInfo;
 		_tabOptionChanges.HasChangedShowImageViewImageInfo = true;
 	}
 
-	private void OnPanelsSplittingRatioChanged(object? sender, RangeBaseValueChangedEventArgs e)
+	private void OnPanelsSplittingRatioChanged(
+		object? sender, RangeBaseValueChangedEventArgs e)
 	{
 		var panelsSplittingRatio = (int)_panelsSplittingRatioSlider.Value;
 
@@ -172,52 +196,67 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_tabOptionChanges.HasChangedPanelsSplittingRatio = true;
 	}
 
-	private void OnSlideshowIntervalSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnSlideshowIntervalSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
 		var slideshowIntervalComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
-		var slideshowInterval = (SlideshowInterval)slideshowIntervalComboBoxItem.Tag!;
+		var slideshowInterval =
+			(SlideshowInterval)slideshowIntervalComboBoxItem.Tag!;
 
 		TabOptions!.SlideshowInterval = slideshowInterval;
 		_tabOptionChanges.HasChangedSlideshowInterval = true;
 	}
 
-	private void OnApplyImageOrientationIsCheckedChanged(object? sender, RoutedEventArgs e)
+	private void OnApplyImageOrientationIsCheckedChanged(
+		object? sender, RoutedEventArgs e)
 	{
-		var applyImageOrientation = _applyImageOrientationCheckBox.IsChecked!.Value;
+		var applyImageOrientation =
+			_applyImageOrientationCheckBox.IsChecked!.Value;
 
 		TabOptions!.ApplyImageOrientation = applyImageOrientation;
 		_tabOptionChanges.HasChangedApplyImageOrientation = true;
 	}
 
-	private void OnShowThumbnailImageFileNameIsCheckedChanged(object? sender, RoutedEventArgs e)
+	private void OnShowThumbnailImageFileNameIsCheckedChanged(
+		object? sender, RoutedEventArgs e)
 	{
-		var showThumbnailImageFileName = _showThumbnailImageFileNameCheckBox.IsChecked!.Value;
+		var showThumbnailImageFileName =
+			_showThumbnailImageFileNameCheckBox.IsChecked!.Value;
 
 		TabOptions!.ShowThumbnailImageFileName = showThumbnailImageFileName;
 		_tabOptionChanges.HasChangedShowThumbnailImageFileName = true;
 	}
 
-	private void OnKeyboardScrollThumbnailIncrementSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnKeyboardScrollThumbnailIncrementSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
-		var keyboardScrollThumbnailIncrementComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
+		var keyboardScrollThumbnailIncrementComboBoxItem =
+			(ComboBoxItem)e.AddedItems[0]!;
 		var keyboardScrollThumbnailIncrement =
-			(KeyboardScrollThumbnailIncrement)keyboardScrollThumbnailIncrementComboBoxItem.Tag!;
+			(KeyboardScrollThumbnailIncrement)
+				keyboardScrollThumbnailIncrementComboBoxItem.Tag!;
 
-		TabOptions!.KeyboardScrollThumbnailIncrement = keyboardScrollThumbnailIncrement;
+		TabOptions!.KeyboardScrollThumbnailIncrement =
+			keyboardScrollThumbnailIncrement;
 		_tabOptionChanges.HasChangedKeyboardScrollThumbnailIncrement = true;
 	}
 
-	private void OnUpsizeFullScreenImagesUpToScreenSizeSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnUpsizeFullScreenImagesUpToScreenSizeSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
-		var upsizeFullScreenImagesUpToScreenSizeComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
+		var upsizeFullScreenImagesUpToScreenSizeComboBoxItem =
+			(ComboBoxItem)e.AddedItems[0]!;
 		var upsizeFullScreenImagesUpToScreenSize =
-			(UpsizeFullScreenImagesUpToScreenSize)upsizeFullScreenImagesUpToScreenSizeComboBoxItem.Tag!;
+			(UpsizeFullScreenImagesUpToScreenSize)
+				upsizeFullScreenImagesUpToScreenSizeComboBoxItem.Tag!;
 
-		TabOptions!.UpsizeFullScreenImagesUpToScreenSize = upsizeFullScreenImagesUpToScreenSize;
+		TabOptions!.UpsizeFullScreenImagesUpToScreenSize =
+			upsizeFullScreenImagesUpToScreenSize;
 		_tabOptionChanges.HasChangedUpsizeFullScreenImagesUpToScreenSize = true;
 	}
 
-	private void OnSaveAsDefaultIsCheckedChanged(object? sender, RoutedEventArgs e)
+	private void OnSaveAsDefaultIsCheckedChanged(
+		object? sender, RoutedEventArgs e)
 	{
 		var saveAsDefault = _saveAsDefaultCheckBox.IsChecked!.Value;
 
@@ -225,9 +264,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	}
 
 	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EscapeKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.EscapeKey)
 		{
 			return true;
 		}
@@ -237,7 +278,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void PopulateFolderOrderings()
 	{
-		var folderOrderingValues = Enum.GetValues<FileSystemEntryInfoOrdering>();
+		var folderOrderingValues =
+			Enum.GetValues<FileSystemEntryInfoOrdering>();
 
 		foreach (var aFolderOrderingValue in folderOrderingValues)
 		{
@@ -258,9 +300,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void PopulateFolderOrderingDirections()
 	{
-		var folderOrderingDirectionValues = Enum.GetValues<FileSystemEntryInfoOrderingDirection>();
+		var folderOrderingDirectionValues =
+			Enum.GetValues<FileSystemEntryInfoOrderingDirection>();
 
-		foreach (var aFolderOrderingDirectionValue in folderOrderingDirectionValues)
+		foreach (var aFolderOrderingDirectionValue in
+					 folderOrderingDirectionValues)
 		{
 			var aFolderOrderingDirectionItem = new ComboBoxItem
 			{
@@ -268,18 +312,22 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 				Content = aFolderOrderingDirectionValue.ToString()
 			};
 
-			_folderOrderingDirectionComboBox.Items.Add(aFolderOrderingDirectionItem);
+			_folderOrderingDirectionComboBox.Items.Add(
+				aFolderOrderingDirectionItem);
 
-			if (aFolderOrderingDirectionValue == TabOptions!.FolderOrderingDirection)
+			if (aFolderOrderingDirectionValue ==
+				TabOptions!.FolderOrderingDirection)
 			{
-				_folderOrderingDirectionComboBox.SelectedItem = aFolderOrderingDirectionItem;
+				_folderOrderingDirectionComboBox.SelectedItem =
+					aFolderOrderingDirectionItem;
 			}
 		}
 	}
 
 	private void PopulateImageFileOrderings()
 	{
-		var imageFileOrderingValues = Enum.GetValues<FileSystemEntryInfoOrdering>();
+		var imageFileOrderingValues =
+			Enum.GetValues<FileSystemEntryInfoOrdering>();
 
 		foreach (var anImageFileOrderingValue in imageFileOrderingValues)
 		{
@@ -293,16 +341,19 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 			if (anImageFileOrderingValue == TabOptions!.ImageFileOrdering)
 			{
-				_imageFileOrderingComboBox.SelectedItem = anImageFileOrderingItem;
+				_imageFileOrderingComboBox.SelectedItem =
+					anImageFileOrderingItem;
 			}
 		}
 	}
 
 	private void PopulateImageFileOrderingDirections()
 	{
-		var imageFileOrderingDirectionValues = Enum.GetValues<FileSystemEntryInfoOrderingDirection>();
+		var imageFileOrderingDirectionValues =
+			Enum.GetValues<FileSystemEntryInfoOrderingDirection>();
 
-		foreach (var anImageFileOrderingDirectionValue in imageFileOrderingDirectionValues)
+		foreach (var anImageFileOrderingDirectionValue in
+					 imageFileOrderingDirectionValues)
 		{
 			var anImageFileOrderingDirectionItem = new ComboBoxItem
 			{
@@ -310,11 +361,14 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 				Content = anImageFileOrderingDirectionValue.ToString()
 			};
 
-			_imageFileOrderingDirectionComboBox.Items.Add(anImageFileOrderingDirectionItem);
+			_imageFileOrderingDirectionComboBox.Items.Add(
+				anImageFileOrderingDirectionItem);
 
-			if (anImageFileOrderingDirectionValue == TabOptions!.ImageFileOrderingDirection)
+			if (anImageFileOrderingDirectionValue ==
+				TabOptions!.ImageFileOrderingDirection)
 			{
-				_imageFileOrderingDirectionComboBox.SelectedItem = anImageFileOrderingDirectionItem;
+				_imageFileOrderingDirectionComboBox.SelectedItem =
+					anImageFileOrderingDirectionItem;
 			}
 		}
 	}
@@ -335,7 +389,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 			if (anImageViewDisplayModeValue == TabOptions!.ImageViewDisplayMode)
 			{
-				_imageViewDisplayModeComboBox.SelectedItem = anImageViewDisplayModeItem;
+				_imageViewDisplayModeComboBox.SelectedItem =
+					anImageViewDisplayModeItem;
 			}
 		}
 	}
@@ -361,7 +416,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void SetRecursiveFolderBrowsing()
 	{
-		_recursiveFolderBrowsingCheckBox.IsChecked = TabOptions!.RecursiveFolderBrowsing;
+		_recursiveFolderBrowsingCheckBox.IsChecked =
+			TabOptions!.RecursiveFolderBrowsing;
 	}
 
 	private void SetGlobalOrderingForRecursiveFolderBrowsing()
@@ -372,7 +428,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void SetShowImageViewImageInfo()
 	{
-		_showImageViewImageInfoCheckBox.IsChecked = TabOptions!.ShowImageViewImageInfo;
+		_showImageViewImageInfoCheckBox.IsChecked =
+			TabOptions!.ShowImageViewImageInfo;
 	}
 
 	private void SetPanelsSplittingRatioSlider()
@@ -382,11 +439,13 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void PopulateSlideshowIntervals()
 	{
-		foreach (var aSlideshowInterval in SlideshowIntervalExtensions.SlideshowIntervals)
+		foreach (var aSlideshowInterval in
+					 SlideshowIntervalExtensions.SlideshowIntervals)
 		{
-			var aSlideshowIntervalText = aSlideshowInterval == SlideshowInterval.OneSecond
-				? $"{aSlideshowInterval.ToInt()} second"
-				: $"{aSlideshowInterval.ToInt()} seconds";
+			var aSlideshowIntervalText =
+					aSlideshowInterval == SlideshowInterval.OneSecond
+						? $"{aSlideshowInterval.ToInt()} second"
+						: $"{aSlideshowInterval.ToInt()} seconds";
 
 			var aSlideshowIntervalItem = new ComboBoxItem
 			{
@@ -398,25 +457,29 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 			if (aSlideshowInterval == TabOptions!.SlideshowInterval)
 			{
-				_slideshowIntervalComboBox.SelectedItem = aSlideshowIntervalItem;
+				_slideshowIntervalComboBox.SelectedItem =
+					aSlideshowIntervalItem;
 			}
 		}
 	}
 
 	private void SetApplyImageOrientation()
 	{
-		_applyImageOrientationCheckBox.IsChecked = TabOptions!.ApplyImageOrientation;
+		_applyImageOrientationCheckBox.IsChecked =
+			TabOptions!.ApplyImageOrientation;
 	}
 
 	private void SetShowThumbnailImageFileName()
 	{
-		_showThumbnailImageFileNameCheckBox.IsChecked = TabOptions!.ShowThumbnailImageFileName;
+		_showThumbnailImageFileNameCheckBox.IsChecked =
+			TabOptions!.ShowThumbnailImageFileName;
 	}
 
 	private void PopulateKeyboardScrollThumbnailIncrements()
 	{
 		foreach (var aKeyboardScrollThumbnailIncrement in
-					KeyboardScrollThumbnailIncrementExtensions.KeyboardScrollThumbnailIncrements)
+					 KeyboardScrollThumbnailIncrementExtensions
+					 	.KeyboardScrollThumbnailIncrements)
 		{
 			var aKeyboardScrollThumbnailIncrementText =
 				$"{aKeyboardScrollThumbnailIncrement.ToInt()} thumbnails";
@@ -427,9 +490,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 				Content = aKeyboardScrollThumbnailIncrementText
 			};
 
-			_keyboardScrollThumbnailIncrementComboBox.Items.Add(aKeyboardScrollThumbnailIncrementItem);
+			_keyboardScrollThumbnailIncrementComboBox.Items.Add(
+				aKeyboardScrollThumbnailIncrementItem);
 
-			if (aKeyboardScrollThumbnailIncrement == TabOptions!.KeyboardScrollThumbnailIncrement)
+			if (aKeyboardScrollThumbnailIncrement ==
+				TabOptions!.KeyboardScrollThumbnailIncrement)
 			{
 				_keyboardScrollThumbnailIncrementComboBox.SelectedItem =
 					aKeyboardScrollThumbnailIncrementItem;
@@ -440,7 +505,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	private void PopulateUpsizeFullScreenImagesUpToScreenSizes()
 	{
 		foreach (var anUpsizeFullScreenImagesUpToScreenSize in
-					UpsizeFullScreenImagesUpToScreenSizeExtensions.UpsizeFullScreenImagesUpToScreenSizes)
+					 UpsizeFullScreenImagesUpToScreenSizeExtensions
+					 	.UpsizeFullScreenImagesUpToScreenSizes)
 		{
 			var anUpsizeFullScreenImagesUpToScreenSizeItem = new ComboBoxItem
 			{
@@ -448,9 +514,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 				Content = anUpsizeFullScreenImagesUpToScreenSize.Description
 			};
 
-			_upsizeFullScreenImagesUpToScreenSizeComboBox.Items.Add(anUpsizeFullScreenImagesUpToScreenSizeItem);
+			_upsizeFullScreenImagesUpToScreenSizeComboBox.Items.Add(
+				anUpsizeFullScreenImagesUpToScreenSizeItem);
 
-			if (anUpsizeFullScreenImagesUpToScreenSize == TabOptions!.UpsizeFullScreenImagesUpToScreenSize)
+			if (anUpsizeFullScreenImagesUpToScreenSize ==
+				TabOptions!.UpsizeFullScreenImagesUpToScreenSize)
 			{
 				_upsizeFullScreenImagesUpToScreenSizeComboBox.SelectedItem =
 					anUpsizeFullScreenImagesUpToScreenSizeItem;
@@ -460,59 +528,85 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void RegisterTabOptionEvents()
 	{
-		_folderOrderingComboBox.SelectionChanged += OnFolderOrderingSelectionChanged;
-		_folderOrderingDirectionComboBox.SelectionChanged += OnFolderOrderingDirectionSelectionChanged;
+		_folderOrderingComboBox.SelectionChanged +=
+			OnFolderOrderingSelectionChanged;
+		_folderOrderingDirectionComboBox.SelectionChanged +=
+			OnFolderOrderingDirectionSelectionChanged;
 
-		_imageFileOrderingComboBox.SelectionChanged += OnImageFileOrderingSelectionChanged;
-		_imageFileOrderingDirectionComboBox.SelectionChanged += OnImageFileOrderingDirectionSelectionChanged;
+		_imageFileOrderingComboBox.SelectionChanged +=
+			OnImageFileOrderingSelectionChanged;
+		_imageFileOrderingDirectionComboBox.SelectionChanged +=
+			OnImageFileOrderingDirectionSelectionChanged;
 
-		_imageViewDisplayModeComboBox.SelectionChanged += OnImageViewDisplayModeSelectionChanged;
+		_imageViewDisplayModeComboBox.SelectionChanged +=
+			OnImageViewDisplayModeSelectionChanged;
 
-		_thumbnailSizeComboBox.SelectionChanged += OnThumbnailSizeSelectionChanged;
+		_thumbnailSizeComboBox.SelectionChanged +=
+			OnThumbnailSizeSelectionChanged;
 
-		_recursiveFolderBrowsingCheckBox.IsCheckedChanged += OnRecursiveFolderBrowsingIsCheckedChanged;
+		_recursiveFolderBrowsingCheckBox.IsCheckedChanged +=
+			OnRecursiveFolderBrowsingIsCheckedChanged;
 		_globalOrderingForRecursiveFolderBrowsingCheckBox.IsCheckedChanged +=
 			OnGlobalOrderingForRecursiveFolderBrowsingIsCheckedChanged;
 
-		_showImageViewImageInfoCheckBox.IsCheckedChanged += OnShowImageViewImageInfoIsCheckedChanged;
-		_panelsSplittingRatioSlider.ValueChanged += OnPanelsSplittingRatioChanged;
-		_slideshowIntervalComboBox.SelectionChanged += OnSlideshowIntervalSelectionChanged;
-		_applyImageOrientationCheckBox.IsCheckedChanged += OnApplyImageOrientationIsCheckedChanged;
-		_showThumbnailImageFileNameCheckBox.IsCheckedChanged += OnShowThumbnailImageFileNameIsCheckedChanged;
+		_showImageViewImageInfoCheckBox.IsCheckedChanged +=
+			OnShowImageViewImageInfoIsCheckedChanged;
+		_panelsSplittingRatioSlider.ValueChanged +=
+			OnPanelsSplittingRatioChanged;
+		_slideshowIntervalComboBox.SelectionChanged +=
+			OnSlideshowIntervalSelectionChanged;
+		_applyImageOrientationCheckBox.IsCheckedChanged +=
+			OnApplyImageOrientationIsCheckedChanged;
+		_showThumbnailImageFileNameCheckBox.IsCheckedChanged +=
+			OnShowThumbnailImageFileNameIsCheckedChanged;
 		_keyboardScrollThumbnailIncrementComboBox.SelectionChanged +=
 			OnKeyboardScrollThumbnailIncrementSelectionChanged;
 		_upsizeFullScreenImagesUpToScreenSizeComboBox.SelectionChanged +=
 			OnUpsizeFullScreenImagesUpToScreenSizeSelectionChanged;
 
-		_saveAsDefaultCheckBox.IsCheckedChanged += OnSaveAsDefaultIsCheckedChanged;
+		_saveAsDefaultCheckBox.IsCheckedChanged +=
+			OnSaveAsDefaultIsCheckedChanged;
 	}
 
 	private void UnregisterTabOptionEvents()
 	{
-		_folderOrderingComboBox.SelectionChanged -= OnFolderOrderingSelectionChanged;
-		_folderOrderingDirectionComboBox.SelectionChanged -= OnFolderOrderingDirectionSelectionChanged;
+		_folderOrderingComboBox.SelectionChanged -=
+			OnFolderOrderingSelectionChanged;
+		_folderOrderingDirectionComboBox.SelectionChanged -=
+			OnFolderOrderingDirectionSelectionChanged;
 
-		_imageFileOrderingComboBox.SelectionChanged -= OnImageFileOrderingSelectionChanged;
-		_imageFileOrderingDirectionComboBox.SelectionChanged -= OnImageFileOrderingDirectionSelectionChanged;
+		_imageFileOrderingComboBox.SelectionChanged -=
+			OnImageFileOrderingSelectionChanged;
+		_imageFileOrderingDirectionComboBox.SelectionChanged -=
+			OnImageFileOrderingDirectionSelectionChanged;
 
-		_imageViewDisplayModeComboBox.SelectionChanged -= OnImageViewDisplayModeSelectionChanged;
+		_imageViewDisplayModeComboBox.SelectionChanged -=
+			OnImageViewDisplayModeSelectionChanged;
 
-		_thumbnailSizeComboBox.SelectionChanged -= OnThumbnailSizeSelectionChanged;
+		_thumbnailSizeComboBox.SelectionChanged -=
+			OnThumbnailSizeSelectionChanged;
 
-		_recursiveFolderBrowsingCheckBox.IsCheckedChanged -= OnRecursiveFolderBrowsingIsCheckedChanged;
+		_recursiveFolderBrowsingCheckBox.IsCheckedChanged -=
+			OnRecursiveFolderBrowsingIsCheckedChanged;
 		_globalOrderingForRecursiveFolderBrowsingCheckBox.IsCheckedChanged -=
 			OnGlobalOrderingForRecursiveFolderBrowsingIsCheckedChanged;
 
-		_showImageViewImageInfoCheckBox.IsCheckedChanged -= OnShowImageViewImageInfoIsCheckedChanged;
-		_panelsSplittingRatioSlider.ValueChanged -= OnPanelsSplittingRatioChanged;
-		_slideshowIntervalComboBox.SelectionChanged -= OnSlideshowIntervalSelectionChanged;
-		_applyImageOrientationCheckBox.IsCheckedChanged -= OnApplyImageOrientationIsCheckedChanged;
-		_showThumbnailImageFileNameCheckBox.IsCheckedChanged -= OnShowThumbnailImageFileNameIsCheckedChanged;
+		_showImageViewImageInfoCheckBox.IsCheckedChanged -=
+			OnShowImageViewImageInfoIsCheckedChanged;
+		_panelsSplittingRatioSlider.ValueChanged -=
+			OnPanelsSplittingRatioChanged;
+		_slideshowIntervalComboBox.SelectionChanged -=
+			OnSlideshowIntervalSelectionChanged;
+		_applyImageOrientationCheckBox.IsCheckedChanged -=
+			OnApplyImageOrientationIsCheckedChanged;
+		_showThumbnailImageFileNameCheckBox.IsCheckedChanged -=
+			OnShowThumbnailImageFileNameIsCheckedChanged;
 		_keyboardScrollThumbnailIncrementComboBox.SelectionChanged -=
 			OnKeyboardScrollThumbnailIncrementSelectionChanged;
 		_upsizeFullScreenImagesUpToScreenSizeComboBox.SelectionChanged -=
 			OnUpsizeFullScreenImagesUpToScreenSizeSelectionChanged;
 
-		_saveAsDefaultCheckBox.IsCheckedChanged -= OnSaveAsDefaultIsCheckedChanged;
+		_saveAsDefaultCheckBox.IsCheckedChanged -=
+			OnSaveAsDefaultIsCheckedChanged;
 	}
 }

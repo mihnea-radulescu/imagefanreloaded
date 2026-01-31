@@ -20,10 +20,13 @@ public static class FileSystemEntryInfoOrderingExtensions
 				var description = fileSystemEntryInfoOrdering switch
 				{
 					FileSystemEntryInfoOrdering.Name => "Name",
-					FileSystemEntryInfoOrdering.LastModificationTime => "Last modification time",
-					FileSystemEntryInfoOrdering.RandomShuffle => "Random shuffle",
+					FileSystemEntryInfoOrdering.LastModificationTime
+						=> "Last modification time",
+					FileSystemEntryInfoOrdering.RandomShuffle
+						=> "Random shuffle",
 
-					_ => throw new NotSupportedException($"Enum value {fileSystemEntryInfoOrdering} not supported.")
+					_ => throw new NotSupportedException(
+						$"Enum value {fileSystemEntryInfoOrdering} not supported.")
 				};
 
 				return description;

@@ -35,7 +35,8 @@ public interface IEditableImage : IDisposable
 	void Emboss();
 
 	Task SaveImageWithSameFormat(string imageFilePath);
-	Task SaveImageWithFormat(string imageFilePath, ISaveFileImageFormat saveFileImageFormat);
+	Task SaveImageWithFormat(
+		string imageFilePath, ISaveFileImageFormat saveFileImageFormat);
 
 	void Crop(int topLeftPointX, int topLeftPointY, int width, int height);
 

@@ -5,7 +5,8 @@ namespace ImageFanReloaded.Core.CustomEventArgs;
 
 public class FolderChangedEventArgs : EventArgs
 {
-	public FolderChangedEventArgs(IContentTabItem contentTabItem, string name, string path)
+	public FolderChangedEventArgs(
+		IContentTabItem contentTabItem, string name, string path)
 	{
 		ContentTabItem = contentTabItem;
 

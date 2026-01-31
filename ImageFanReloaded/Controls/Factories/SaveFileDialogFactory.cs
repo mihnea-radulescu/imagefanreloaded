@@ -19,7 +19,7 @@ public class SaveFileDialogFactory : ISaveFileDialogFactory
 
 	public ISaveFileDialog GetSaveFileDialog()
 	{
-		if (_globalParameters.RuntimeEnvironmentType is
+		if (_globalParameters.RuntimeEnvironmentType ==
 			RuntimeEnvironmentType.LinuxFlatpak)
 		{
 			return new FlatpakSaveFileDialog(_storageProvider);

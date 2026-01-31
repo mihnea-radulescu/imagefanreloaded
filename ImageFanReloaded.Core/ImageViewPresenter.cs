@@ -31,12 +31,18 @@ public class ImageViewPresenter
 
 	public async Task SetUpAccessToImages()
 	{
-		_imageFiles = await _discQueryEngine.GetImageFilesDefault(_inputPathHandler.FolderPath!);
+		_imageFiles = await _discQueryEngine.GetImageFilesDefault(
+			_inputPathHandler.FolderPath!);
 
 		(_currentImageFile, _currentImageFileIndex) = _imageFiles
 			.Select((anImageFile, index) => (anImageFile, index))
-			.Single(anImageFileWithIndex => anImageFileWithIndex.anImageFile.ImageFileData.ImageFilePath.Equals(
-				_inputPathHandler.FilePath, _nameComparison));
+			.Single(anImageFileWithIndex =>
+						anImageFileWithIndex
+							.anImageFile
+							.ImageFileData
+							.ImageFilePath
+							.Equals(
+								_inputPathHandler.FilePath, _nameComparison));
 
 		await LoadCurrentImage();
 	}
@@ -52,13 +58,15 @@ public class ImageViewPresenter
 	private IImageFile? _currentImageFile;
 	private int _currentImageFileIndex;
 
-	private async Task LoadCurrentImage() => await _imageView.SetImage(_currentImageFile!);
+	private async Task LoadCurrentImage()
+		=> await _imageView.SetImage(_currentImageFile!);
 
 	private async void OnImageChanged(object? sender, ImageChangedEventArgs e)
 	{
 		var newImageFileIndex = _currentImageFileIndex + e.Increment;
 
-		var canAdvanceToDesignatedImage = _imageFiles!.IsIndexWithinBounds(newImageFileIndex);
+		var canAdvanceToDesignatedImage =
+			_imageFiles!.IsIndexWithinBounds(newImageFileIndex);
 		_imageView.CanAdvanceToDesignatedImage = canAdvanceToDesignatedImage;
 
 		if (canAdvanceToDesignatedImage)

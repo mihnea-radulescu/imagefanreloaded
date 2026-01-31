@@ -7,14 +7,13 @@ namespace ImageFanReloaded.Controls.Dialogs;
 
 public abstract class SaveFileDialogBase : ISaveFileDialog
 {
-	static SaveFileDialogBase()
+	public async Task<string?> ShowDialog(
+		string imageFileName,
+		string imageFolderPath,
+		string saveFileDialogTitle)
 	{
-		SupportedFileTypes = GetSupportedFileTypes();
-	}
-
-	public async Task<string?> ShowDialog(string imageFileName, string imageFolderPath, string saveFileDialogTitle)
-	{
-		var imageStorageFolder = await GetStorageFolderFromPath(imageFolderPath);
+		var imageStorageFolder = await GetStorageFolderFromPath(
+			imageFolderPath);
 
 		var imageFileSaveOptions = new FilePickerSaveOptions
 		{
@@ -25,7 +24,8 @@ public abstract class SaveFileDialogBase : ISaveFileDialog
 			Title = saveFileDialogTitle
 		};
 
-		var imageToSaveStorageFile = await _storageProvider.SaveFilePickerAsync(imageFileSaveOptions);
+		var imageToSaveStorageFile = await _storageProvider.SaveFilePickerAsync(
+			imageFileSaveOptions);
 
 		var imageToSaveFilePath = imageToSaveStorageFile?.Path.LocalPath;
 		return imageToSaveFilePath;
@@ -38,23 +38,18 @@ public abstract class SaveFileDialogBase : ISaveFileDialog
 		_storageProvider = storageProvider;
 	}
 
-	private static readonly IReadOnlyList<FilePickerFileType> SupportedFileTypes;
-
-	private readonly IStorageProvider _storageProvider;
-
-	private async Task<IStorageFolder?> GetStorageFolderFromPath(string folderPath)
-		=> await _storageProvider.TryGetFolderFromPathAsync(folderPath);
-
-	private static IReadOnlyList<FilePickerFileType> GetSupportedFileTypes()
-	{
-		var supportedFileTypes = new List<FilePickerFileType>
-		{
+	private static readonly IReadOnlyList<FilePickerFileType>
+		SupportedFileTypes =
+		[
 			new("All files")
 			{
 				Patterns = ["*.*"]
 			}
-		};
+		];
 
-		return supportedFileTypes;
-	}
+	private readonly IStorageProvider _storageProvider;
+
+	private async Task<IStorageFolder?> GetStorageFolderFromPath(
+		string folderPath)
+			=> await _storageProvider.TryGetFolderFromPathAsync(folderPath);
 }

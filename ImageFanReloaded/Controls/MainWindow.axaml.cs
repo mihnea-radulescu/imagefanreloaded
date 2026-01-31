@@ -51,10 +51,12 @@ public partial class MainWindow : Window, IMainView
 		var contentTabItemCount = GetContentTabItemCount();
 		_tabControl.Items.Insert(contentTabItemCount, tabItem);
 
-		ContentTabItemAdded?.Invoke(this, new ContentTabItemEventArgs(contentTabItem));
+		ContentTabItemAdded?.Invoke(
+			this, new ContentTabItemEventArgs(contentTabItem));
 
 		var shouldAllowTabClose = ShouldAllowTabClose();
-		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(shouldAllowTabClose));
+		TabCountChanged?.Invoke(
+			this, new TabCountChangedEventArgs(shouldAllowTabClose));
 	}
 
 	public void RegisterTabControlEvents()
@@ -71,7 +73,9 @@ public partial class MainWindow : Window, IMainView
 	{
 		var contentTabItemCollection = GetContentTabItemCollection();
 
-		WindowClosing?.Invoke(this, new ContentTabItemCollectionEventArgs(contentTabItemCollection));
+		WindowClosing?.Invoke(
+			this, new ContentTabItemCollectionEventArgs(
+					contentTabItemCollection));
 	}
 
 	private void OnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
@@ -113,12 +117,14 @@ public partial class MainWindow : Window, IMainView
 			NavigateToNextTab();
 			e.Handled = true;
 		}
-		else if (contentTabItem.ShouldHandleControlKeyFunctions(keyModifiers, keyPressing))
+		else if (contentTabItem.ShouldHandleControlKeyFunctions(
+			keyModifiers, keyPressing))
 		{
 			contentTabItem.HandleControlKeyFunctions(keyModifiers, keyPressing);
 			e.Handled = true;
 		}
-		else if (!ShouldAllowKeyPressingEventPropagation(keyModifiers, keyPressing))
+		else if (!ShouldAllowKeyPressingEventPropagation(
+			keyModifiers, keyPressing))
 		{
 			e.Handled = true;
 		}
@@ -160,7 +166,8 @@ public partial class MainWindow : Window, IMainView
 
 		if (contentTabItem is not null)
 		{
-			CloseContentTabItem(this, new ContentTabItemEventArgs(contentTabItem));
+			CloseContentTabItem(
+				this, new ContentTabItemEventArgs(contentTabItem));
 		}
 	}
 
@@ -225,11 +232,13 @@ public partial class MainWindow : Window, IMainView
 	private void CloseContentTabItem(object? sender, ContentTabItemEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		ContentTabItemClosed?.Invoke(this, new ContentTabItemEventArgs(contentTabItem));
+		ContentTabItemClosed?.Invoke(
+			this, new ContentTabItemEventArgs(contentTabItem));
 
 		var tabItem = contentTabItem.WrapperTabItem;
 		_tabControl.Items.Remove(tabItem);
-		TabCountChanged?.Invoke(this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
+		TabCountChanged?.Invoke(
+			this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
 
 		contentTabItem.ContentTabItemHeader!.TabClosed -= CloseContentTabItem;
 		contentTabItem.UnregisterMainViewEvents();
@@ -243,9 +252,11 @@ public partial class MainWindow : Window, IMainView
 		selectedContentTabItem.SetFocusOnSelectedFolderTreeViewItem();
 	}
 
-	private bool ShouldHandleEscapeAction(KeyModifiers keyModifiers, Key keyPressing)
+	private bool ShouldHandleEscapeAction(
+		KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EscapeKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.EscapeKey)
 		{
 			return true;
 		}
@@ -255,7 +266,8 @@ public partial class MainWindow : Window, IMainView
 
 	private bool ShouldCloseWindow(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.AltKeyModifier && keyPressing == GlobalParameters!.F4Key)
+		if (keyModifiers == GlobalParameters!.AltKeyModifier &&
+			keyPressing == GlobalParameters!.F4Key)
 		{
 			return true;
 		}
@@ -265,7 +277,8 @@ public partial class MainWindow : Window, IMainView
 
 	private bool ShouldAddNewTab(KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.PlusKey)
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
+			keyPressing == GlobalParameters!.PlusKey)
 		{
 			return true;
 		}
@@ -273,9 +286,11 @@ public partial class MainWindow : Window, IMainView
 		return false;
 	}
 
-	private bool ShouldCloseSelectedTab(KeyModifiers keyModifiers, Key keyPressing)
+	private bool ShouldCloseSelectedTab(
+		KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.CtrlKeyModifier && keyPressing == GlobalParameters!.MinusKey)
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
+			keyPressing == GlobalParameters!.MinusKey)
 		{
 			return HasAtLeastOneContentTabItem();
 		}
@@ -283,9 +298,11 @@ public partial class MainWindow : Window, IMainView
 		return false;
 	}
 
-	private bool ShouldNavigateToNextTab(KeyModifiers keyModifiers, Key keyPressing)
+	private bool ShouldNavigateToNextTab(
+		KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.ShiftKeyModifier && keyPressing == GlobalParameters!.TabKey)
+		if (keyModifiers == GlobalParameters!.ShiftKeyModifier &&
+			keyPressing == GlobalParameters!.TabKey)
 		{
 			return HasAtLeastOneContentTabItem();
 		}
@@ -293,9 +310,11 @@ public partial class MainWindow : Window, IMainView
 		return false;
 	}
 
-	private bool ShouldAllowKeyPressingEventPropagation(KeyModifiers keyModifiers, Key keyPressing)
+	private bool ShouldAllowKeyPressingEventPropagation(
+		KeyModifiers keyModifiers, Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && GlobalParameters!.IsNavigationKey(keyPressing))
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			GlobalParameters!.IsNavigationKey(keyPressing))
 		{
 			return true;
 		}
@@ -318,7 +337,8 @@ public partial class MainWindow : Window, IMainView
 		var contentTabItemCount = GetContentTabItemCount();
 
 		var selectedTabItemIndex = _tabControl.SelectedIndex;
-		var nextSelectedTabItemIndex = (selectedTabItemIndex + 1) % contentTabItemCount;
+		var nextSelectedTabItemIndex =
+			(selectedTabItemIndex + 1) % contentTabItemCount;
 		_tabControl.SelectedIndex = nextSelectedTabItemIndex;
 	}
 }

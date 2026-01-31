@@ -19,7 +19,7 @@ public class MouseCursorFactory : IMouseCursorFactory
 		ZoomCursor = new MouseCursor(new Cursor(StandardCursorType.Hand));
 		SelectCursor = new MouseCursor(new Cursor(StandardCursorType.Cross));
 
-		if (globalParameters.RuntimeEnvironmentType is
+		if (globalParameters.RuntimeEnvironmentType ==
 			RuntimeEnvironmentType.LinuxFlatpak)
 		{
 			DragCursor = new MouseCursor(

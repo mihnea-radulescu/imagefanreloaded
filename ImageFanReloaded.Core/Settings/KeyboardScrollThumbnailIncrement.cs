@@ -30,8 +30,9 @@ public enum KeyboardScrollThumbnailIncrement
 
 public static class KeyboardScrollThumbnailIncrementExtensions
 {
-	public static IReadOnlyList<KeyboardScrollThumbnailIncrement> KeyboardScrollThumbnailIncrements
-		=> Enum.GetValues<KeyboardScrollThumbnailIncrement>();
+	public static IReadOnlyList<KeyboardScrollThumbnailIncrement>
+		KeyboardScrollThumbnailIncrements
+			=> Enum.GetValues<KeyboardScrollThumbnailIncrement>();
 
 	extension(KeyboardScrollThumbnailIncrement keyboardScrollThumbnailIncrement)
 	{

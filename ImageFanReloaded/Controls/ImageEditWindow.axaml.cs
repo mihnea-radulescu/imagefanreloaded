@@ -55,7 +55,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_snapCropEdgesToolTip.Text =
 			$"If the crop area is within {SnapCropEdgesThresholdInPixels} pixels of an image edge, it will automatically snap to the edge.";
 
-		_downsizeComboBoxValueToComboBoxItemMapping = new Dictionary<string, ComboBoxItem>();
+		_downsizeComboBoxValueToComboBoxItemMapping =
+			new Dictionary<string, ComboBoxItem>();
 
 		AddHandler(KeyDownEvent, OnKeyPressing, RoutingStrategies.Tunnel);
 	}
@@ -67,7 +68,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			_globalParameters = value;
 
-			_fileSystemStringComparison = _globalParameters!.NameComparer.ToStringComparison();
+			_fileSystemStringComparison =
+				_globalParameters!.NameComparer.ToStringComparison();
 		}
 	}
 
@@ -94,14 +96,16 @@ public partial class ImageEditWindow : Window, IImageEditView
 	public event EventHandler<ContentTabItemEventArgs>? ImageFileOverwritten;
 	public event EventHandler<ContentTabItemEventArgs>? FolderContentChanged;
 
-	public async Task ShowDialog(IMainView owner) => await ShowDialog((Window)owner);
+	public async Task ShowDialog(IMainView owner)
+		=> await ShowDialog((Window)owner);
 
 	private const int SnapCropEdgesThresholdInPixels = 5;
 
 	private static readonly string TransformImageErrorMessage;
 	private static readonly string SaveImageErrorMessage;
 
-	private readonly IDictionary<string, ComboBoxItem> _downsizeComboBoxValueToComboBoxItemMapping;
+	private readonly IDictionary<string, ComboBoxItem>
+		_downsizeComboBoxValueToComboBoxItemMapping;
 
 	private IGlobalParameters? _globalParameters;
 	private StringComparison? _fileSystemStringComparison;
@@ -125,7 +129,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private double DisplayImageWidth => _displayImage.Bounds.Width;
 	private double DisplayImageHeight => _displayImage.Bounds.Height;
 
-	private async void OnWindowLoaded(object? sender, RoutedEventArgs e) => await LoadImage();
+	private async void OnWindowLoaded(object? sender, RoutedEventArgs e)
+		=> await LoadImage();
 
 	private async void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -246,9 +251,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 				null,
 				WindowStartupLocation.CenterOwner);
 
-			var closeWindowButtonResult = await closeWindowMessageBox.ShowWindowDialogAsync(this);
+			var closeWindowButtonResult =
+				await closeWindowMessageBox.ShowWindowDialogAsync(this);
 
-			if (closeWindowButtonResult != MsBox.Avalonia.Enums.ButtonResult.Yes)
+			if (closeWindowButtonResult !=
+				MsBox.Avalonia.Enums.ButtonResult.Yes)
 			{
 				return;
 			}
@@ -267,50 +274,84 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
-	private async void OnUndo(object? sender, RoutedEventArgs e) => await Undo();
-	private async void OnRedo(object? sender, RoutedEventArgs e) => await Redo();
+	private async void OnUndo(object? sender, RoutedEventArgs e)
+		=> await Undo();
+	private async void OnRedo(object? sender, RoutedEventArgs e)
+		=> await Redo();
 
-	private async void OnRotateLeft(object? sender, RoutedEventArgs e) => await RotateLeft();
-	private async void OnRotateRight(object? sender, RoutedEventArgs e) => await RotateRight();
+	private async void OnRotateLeft(object? sender, RoutedEventArgs e)
+		=> await RotateLeft();
+	private async void OnRotateRight(object? sender, RoutedEventArgs e)
+		=> await RotateRight();
 
-	private async void OnFlipHorizontally(object? sender, RoutedEventArgs e) => await FlipHorizontally();
-	private async void OnFlipVertically(object? sender, RoutedEventArgs e) => await FlipVertically();
+	private async void OnFlipHorizontally(object? sender, RoutedEventArgs e)
+		=> await FlipHorizontally();
+	private async void OnFlipVertically(object? sender, RoutedEventArgs e)
+		=> await FlipVertically();
 
-	private async void OnContrast(object? sender, RoutedEventArgs e) => await Contrast();
-	private async void OnGamma(object? sender, RoutedEventArgs e) => await Gamma();
-	private async void OnEnhance(object? sender, RoutedEventArgs e) => await Enhance();
-	private async void OnWhiteBalance(object? sender, RoutedEventArgs e) => await WhiteBalance();
-	private async void OnReduceNoise(object? sender, RoutedEventArgs e) => await ReduceNoise();
-	private async void OnSharpen(object? sender, RoutedEventArgs e) => await Sharpen();
-	private async void OnBlur(object? sender, RoutedEventArgs e) => await Blur();
+	private async void OnContrast(object? sender, RoutedEventArgs e)
+		=> await Contrast();
+	private async void OnGamma(object? sender, RoutedEventArgs e)
+		=> await Gamma();
+	private async void OnEnhance(object? sender, RoutedEventArgs e)
+		=> await Enhance();
+	private async void OnWhiteBalance(object? sender, RoutedEventArgs e)
+		=> await WhiteBalance();
+	private async void OnReduceNoise(object? sender, RoutedEventArgs e)
+		=> await ReduceNoise();
+	private async void OnSharpen(object? sender, RoutedEventArgs e)
+		=> await Sharpen();
+	private async void OnBlur(object? sender, RoutedEventArgs e)
+		=> await Blur();
 
-	private async void OnGrayscale(object? sender, RoutedEventArgs e) => await Grayscale();
-	private async void OnSepia(object? sender, RoutedEventArgs e) => await Sepia();
-	private async void OnNegative(object? sender, RoutedEventArgs e) => await Negative();
-	private async void OnOilPaint(object? sender, RoutedEventArgs e) => await OilPaint();
-	private async void OnEmboss(object? sender, RoutedEventArgs e) => await Emboss();
+	private async void OnGrayscale(object? sender, RoutedEventArgs e)
+		=> await Grayscale();
+	private async void OnSepia(object? sender, RoutedEventArgs e)
+		=> await Sepia();
+	private async void OnNegative(object? sender, RoutedEventArgs e)
+		=> await Negative();
+	private async void OnOilPaint(object? sender, RoutedEventArgs e)
+		=> await OilPaint();
+	private async void OnEmboss(object? sender, RoutedEventArgs e)
+		=> await Emboss();
 
-	private async void OnSaveImageAsWithSameFormat(object? sender, RoutedEventArgs e)
-		=> await SaveImageWithFormat(default);
+	private async void OnSaveImageAsWithSameFormat(
+		object? sender, RoutedEventArgs e)
+			=> await SaveImageWithFormat(default);
 
-	private async void OnSaveImageAsWithFormatJpeg(object? sender, RoutedEventArgs e)
-		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.JpegSaveFileImageFormat);
-	private async void OnSaveImageAsWithFormatGif(object? sender, RoutedEventArgs e)
-		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.GifSaveFileImageFormat);
-	private async void OnSaveImageAsWithFormatPng(object? sender, RoutedEventArgs e)
-		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.PngSaveFileImageFormat);
-	private async void OnSaveImageAsWithFormatWebp(object? sender, RoutedEventArgs e)
-		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.WebpSaveFileImageFormat);
-	private async void OnSaveImageAsWithFormatTiff(object? sender, RoutedEventArgs e)
-		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
-	private async void OnSaveImageAsWithFormatBmp(object? sender, RoutedEventArgs e)
-		=> await SaveImageWithFormat(SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
+	private async void OnSaveImageAsWithFormatJpeg(
+		object? sender, RoutedEventArgs e)
+		=> await SaveImageWithFormat(
+			SaveFileImageFormatFactory!.JpegSaveFileImageFormat);
+	private async void OnSaveImageAsWithFormatGif(
+		object? sender, RoutedEventArgs e)
+		=> await SaveImageWithFormat(
+			SaveFileImageFormatFactory!.GifSaveFileImageFormat);
+	private async void OnSaveImageAsWithFormatPng(
+		object? sender, RoutedEventArgs e)
+		=> await SaveImageWithFormat(
+			SaveFileImageFormatFactory!.PngSaveFileImageFormat);
+	private async void OnSaveImageAsWithFormatWebp(
+		object? sender, RoutedEventArgs e)
+		=> await SaveImageWithFormat(
+			SaveFileImageFormatFactory!.WebpSaveFileImageFormat);
+	private async void OnSaveImageAsWithFormatTiff(
+		object? sender, RoutedEventArgs e)
+		=> await SaveImageWithFormat(
+			SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
+	private async void OnSaveImageAsWithFormatBmp(
+		object? sender, RoutedEventArgs e)
+		=> await SaveImageWithFormat(
+			SaveFileImageFormatFactory!.BmpSaveFileImageFormat);
 
-	private async void OnCrop(object? sender, RoutedEventArgs e) => await Crop();
+	private async void OnCrop(object? sender, RoutedEventArgs e)
+		=> await Crop();
 
-	private void OnSnapCropEdgesCheckBoxIsCheckedChanged(object? sender, RoutedEventArgs e)
+	private void OnSnapCropEdgesCheckBoxIsCheckedChanged(
+		object? sender, RoutedEventArgs e)
 	{
-		var isCheckedSnapCropEdgesCheckBox = _snapCropEdgesCheckBox.IsChecked!.Value;
+		var isCheckedSnapCropEdgesCheckBox =
+				_snapCropEdgesCheckBox.IsChecked!.Value;
 
 		if (isCheckedSnapCropEdgesCheckBox)
 		{
@@ -322,31 +363,43 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
-	private void OnDownsizeToPercentageComboxBoxSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnDownsizeToPercentageComboxBoxSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
-		var selectedDownsizePercentage = GetSelectedDownsizeValue(_downsizeToPercentageComboBox);
+		var selectedDownsizePercentage = GetSelectedDownsizeValue(
+			_downsizeToPercentageComboBox);
 
-		var computedDownsizedImageWidth = _editableImage!.ImageSize.Width * selectedDownsizePercentage / 100;
-		var computedDownsizedImageHeight = _editableImage!.ImageSize.Height * selectedDownsizePercentage / 100;
+		var computedDownsizedImageWidth =
+			_editableImage!.ImageSize.Width * selectedDownsizePercentage / 100;
+		var computedDownsizedImageHeight =
+			_editableImage!.ImageSize.Height * selectedDownsizePercentage / 100;
 
-		var canDownsize = computedDownsizedImageWidth >= 1 && computedDownsizedImageHeight >= 1;
+		var canDownsize = computedDownsizedImageWidth >= 1 &&
+						  computedDownsizedImageHeight >= 1;
 
 		_downsizeToPercentageMenuItem.IsEnabled =
-			canDownsize && selectedDownsizePercentage != GetLastDownsizeValue(_downsizeToPercentageComboBox);
+			canDownsize &&
+			selectedDownsizePercentage != GetLastDownsizeValue(
+				_downsizeToPercentageComboBox);
 
 		SetDownsizeButtonEnabledStatus();
 	}
 
-	private void OnDownsizeToDimensionsComboBoxSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	private void OnDownsizeToDimensionsComboBoxSelectionChanged(
+		object? sender, SelectionChangedEventArgs e)
 	{
-		var selectedDownsizeDimensionsWidth = GetSelectedDownsizeValue(_downsizeToDimensionsWidthComboBox);
+		var selectedDownsizeDimensionsWidth = GetSelectedDownsizeValue(
+			_downsizeToDimensionsWidthComboBox);
 		var computedDownsizeDimensionsWidth = selectedDownsizeDimensionsWidth;
 
-		var selectedDownsizeDimensionsHeight = GetSelectedDownsizeValue(_downsizeToDimensionsHeightComboBox);
+		var selectedDownsizeDimensionsHeight = GetSelectedDownsizeValue(
+			_downsizeToDimensionsHeightComboBox);
 		var computedDownsizeDimensionsHeight = selectedDownsizeDimensionsHeight;
 
-		_downsizeToDimensionsWidthComboBox.SelectionChanged -= OnDownsizeToDimensionsComboBoxSelectionChanged;
-		_downsizeToDimensionsHeightComboBox.SelectionChanged -= OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsWidthComboBox.SelectionChanged -=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsHeightComboBox.SelectionChanged -=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
 
 		var canDownsizeWidth = true;
 		var canDownsizeHeight = true;
@@ -354,46 +407,59 @@ public partial class ImageEditWindow : Window, IImageEditView
 		if (sender == _downsizeToDimensionsWidthComboBox)
 		{
 			computedDownsizeDimensionsHeight =
-				(int)(selectedDownsizeDimensionsWidth / _editableImage!.ImageSize.AspectRatio);
+				(int)(selectedDownsizeDimensionsWidth /
+				_editableImage!.ImageSize.AspectRatio);
 
 			canDownsizeHeight = computedDownsizeDimensionsHeight >= 1;
 
 			if (canDownsizeHeight)
 			{
-				SetSelectedDownsizeValue(_downsizeToDimensionsHeightComboBox, computedDownsizeDimensionsHeight);
+				SetSelectedDownsizeValue(
+					_downsizeToDimensionsHeightComboBox,
+					computedDownsizeDimensionsHeight);
 			}
 		}
 		else if (sender == _downsizeToDimensionsHeightComboBox)
 		{
 			computedDownsizeDimensionsWidth =
-				(int)(selectedDownsizeDimensionsHeight * _editableImage!.ImageSize.AspectRatio);
+				(int)(selectedDownsizeDimensionsHeight *
+				_editableImage!.ImageSize.AspectRatio);
 
 			canDownsizeWidth = computedDownsizeDimensionsWidth >= 1;
 
 			if (canDownsizeWidth)
 			{
-				SetSelectedDownsizeValue(_downsizeToDimensionsWidthComboBox, computedDownsizeDimensionsWidth);
+				SetSelectedDownsizeValue(
+					_downsizeToDimensionsWidthComboBox,
+					computedDownsizeDimensionsWidth);
 			}
 		}
 
-		_downsizeToDimensionsWidthComboBox.SelectionChanged += OnDownsizeToDimensionsComboBoxSelectionChanged;
-		_downsizeToDimensionsHeightComboBox.SelectionChanged += OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsWidthComboBox.SelectionChanged +=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsHeightComboBox.SelectionChanged +=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
 
 		var isDownsizeableDimensionWidth =
 			canDownsizeWidth &&
-			computedDownsizeDimensionsWidth != GetLastDownsizeValue(_downsizeToDimensionsWidthComboBox);
+			computedDownsizeDimensionsWidth != GetLastDownsizeValue(
+				_downsizeToDimensionsWidthComboBox);
 
 		var isDownsizeableDimensionHeight =
 			canDownsizeHeight &&
-			computedDownsizeDimensionsHeight != GetLastDownsizeValue(_downsizeToDimensionsHeightComboBox);
+			computedDownsizeDimensionsHeight != GetLastDownsizeValue(
+				_downsizeToDimensionsHeightComboBox);
 
-		_downsizeToDimensionsMenuItem.IsEnabled = isDownsizeableDimensionWidth && isDownsizeableDimensionHeight;
+		_downsizeToDimensionsMenuItem.IsEnabled =
+			isDownsizeableDimensionWidth && isDownsizeableDimensionHeight;
 
 		SetDownsizeButtonEnabledStatus();
 	}
 
-	private async void OnDownsizeToPercentage(object? sender, RoutedEventArgs e) => await DownsizeToPercentage();
-	private async void OnDownsizeToDimensions(object? sender, RoutedEventArgs e) => await DownsizeToDimensions();
+	private async void OnDownsizeToPercentage(object? sender, RoutedEventArgs e)
+		=> await DownsizeToPercentage();
+	private async void OnDownsizeToDimensions(object? sender, RoutedEventArgs e)
+		=> await DownsizeToDimensions();
 
 	private async Task LoadImage()
 	{
@@ -402,7 +468,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		SetLoadingImageTitle();
 		SetControlsEnabledStatus(false);
 
-		_editableImage = await EditableImageFactory!.CreateEditableImage(ImageFileData!.ImageFilePath);
+		_editableImage = await EditableImageFactory!.CreateEditableImage(
+			ImageFileData!.ImageFilePath);
 
 		var isImageLoaded = _editableImage is not null;
 		SetControlsEnabledStatus(isImageLoaded);
@@ -420,9 +487,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EscapeKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.EscapeKey)
 		{
 			return true;
 		}
@@ -431,9 +500,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldUndo(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.UKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.UKey)
 		{
 			return true;
 		}
@@ -442,9 +513,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldRedo(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.IKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.IKey)
 		{
 			return true;
 		}
@@ -453,9 +526,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldRotate(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.RKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.RKey)
 		{
 			return true;
 		}
@@ -464,9 +539,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldFlip(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.FKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.FKey)
 		{
 			return true;
 		}
@@ -475,9 +552,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldExecuteEffects(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.EKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.EKey)
 		{
 			return true;
 		}
@@ -486,9 +565,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldSaveImageAs(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.SKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.SKey)
 		{
 			return true;
 		}
@@ -497,9 +578,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldCrop(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.CKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.CKey)
 		{
 			return true;
 		}
@@ -508,9 +591,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool ShouldDownsizeImage(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers, ImageFanReloaded.Core.Keyboard.Key keyPressing)
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
 	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier && keyPressing == GlobalParameters!.DKey)
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.DKey)
 		{
 			return true;
 		}
@@ -724,7 +809,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		});
 	}
 
-	private async Task SaveImageWithFormat(ISaveFileImageFormat? saveFileImageFormat)
+	private async Task SaveImageWithFormat(
+		ISaveFileImageFormat? saveFileImageFormat)
 	{
 		await PerformUiUpdate(async () =>
 		{
@@ -749,41 +835,52 @@ public partial class ImageEditWindow : Window, IImageEditView
 				{
 					if (hasSameFormat)
 					{
-						await _editableImage!.SaveImageWithSameFormat(imageToSaveFilePath);
+						await _editableImage!.SaveImageWithSameFormat(
+							imageToSaveFilePath);
 					}
 					else
 					{
-						await _editableImage!.SaveImageWithFormat(imageToSaveFilePath, saveFileImageFormat!);
+						await _editableImage!.SaveImageWithFormat(
+							imageToSaveFilePath, saveFileImageFormat!);
 					}
 
 					_hasUnsavedChanges = false;
 
 					if (saveFileDialog.ShouldAlwaysRefreshSaveFolder)
 					{
-						FolderContentChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
+						FolderContentChanged?.Invoke(
+							this, new ContentTabItemEventArgs(ContentTabItem!));
 					}
-					else if (HasOverwrittenCurrentImageFile(imageToSaveFilePath, imageFilePath))
+					else if (HasOverwrittenCurrentImageFile(
+						imageToSaveFilePath, imageFilePath))
 					{
-						ImageFileOverwritten?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
+						ImageFileOverwritten?.Invoke(
+							this, new ContentTabItemEventArgs(ContentTabItem!));
 					}
-					else if (HasSavedImageFileInCurrentFolder(imageToSaveFilePath, imageFolderPath))
+					else if (HasSavedImageFileInCurrentFolder(
+						imageToSaveFilePath, imageFolderPath))
 					{
-						FolderContentChanged?.Invoke(this, new ContentTabItemEventArgs(ContentTabItem!));
+						FolderContentChanged?.Invoke(
+							this, new ContentTabItemEventArgs(ContentTabItem!));
 					}
 				}
 				catch
 				{
-					var imageToSaveFileName = GetFileNameFromPath(imageToSaveFilePath);
+					var imageToSaveFileName = GetFileNameFromPath(
+						imageToSaveFilePath);
 
-					var saveImageAsErrorMessageBox = MessageBoxManager.GetMessageBoxStandard(
-						"Image save error",
-						string.Format(SaveImageErrorMessage, imageToSaveFileName),
-						MsBox.Avalonia.Enums.ButtonEnum.Ok,
-						MsBox.Avalonia.Enums.Icon.Error,
-						null,
-						WindowStartupLocation.CenterOwner);
+					var saveImageAsErrorMessageBox = MessageBoxManager
+						.GetMessageBoxStandard(
+							"Image save error",
+							string.Format(SaveImageErrorMessage,
+								imageToSaveFileName),
+							MsBox.Avalonia.Enums.ButtonEnum.Ok,
+							MsBox.Avalonia.Enums.Icon.Error,
+							null,
+							WindowStartupLocation.CenterOwner);
 
-					await saveImageAsErrorMessageBox.ShowWindowDialogAsync(this);
+					await saveImageAsErrorMessageBox.ShowWindowDialogAsync(
+						this);
 				}
 			}
 		});
@@ -798,7 +895,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		await PerformUiUpdate(async () =>
 		{
-			var cropToEditableImageRectangle = GetCropToEditableImageRectangle();
+			var cropToEditableImageRectangle =
+				GetCropToEditableImageRectangle();
 
 			await ApplyTransform(() => _editableImage!.Crop(
 				(int)cropToEditableImageRectangle.Left,
@@ -812,9 +910,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 	{
 		await PerformUiUpdate(async () =>
 		{
-			var downsizePercentage = GetSelectedDownsizeValue(_downsizeToPercentageComboBox);
+			var downsizePercentage = GetSelectedDownsizeValue(
+				_downsizeToPercentageComboBox);
 
-			await ApplyTransform(() => _editableImage!.DownsizeToPercentage(downsizePercentage));
+			await ApplyTransform(() => _editableImage!.DownsizeToPercentage(
+				downsizePercentage));
 		});
 	}
 
@@ -822,8 +922,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 	{
 		await PerformUiUpdate(async () =>
 		{
-			var downsizeDimensionsWidth = GetSelectedDownsizeValue(_downsizeToDimensionsWidthComboBox);
-			var downsizeDimensionsHeight = GetSelectedDownsizeValue(_downsizeToDimensionsHeightComboBox);
+			var downsizeDimensionsWidth = GetSelectedDownsizeValue(
+				_downsizeToDimensionsWidthComboBox);
+			var downsizeDimensionsHeight = GetSelectedDownsizeValue(
+				_downsizeToDimensionsHeightComboBox);
 
 			await ApplyTransform(() => _editableImage!.DownsizeToDimensions(
 				downsizeDimensionsWidth, downsizeDimensionsHeight));
@@ -844,23 +946,28 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 		catch
 		{
-			var applyTransformErrorMessageBox = MessageBoxManager.GetMessageBoxStandard(
-				"Image transformation error",
-				TransformImageErrorMessage,
-				MsBox.Avalonia.Enums.ButtonEnum.Ok,
-				MsBox.Avalonia.Enums.Icon.Error,
-				null,
-				WindowStartupLocation.CenterOwner);
+			var applyTransformErrorMessageBox = MessageBoxManager
+				.GetMessageBoxStandard(
+					"Image transformation error",
+					TransformImageErrorMessage,
+					MsBox.Avalonia.Enums.ButtonEnum.Ok,
+					MsBox.Avalonia.Enums.Icon.Error,
+					null,
+					WindowStartupLocation.CenterOwner);
 
 			await applyTransformErrorMessageBox.ShowWindowDialogAsync(this);
 		}
 	}
 
-	private bool HasOverwrittenCurrentImageFile(string imageToSaveFilePath, string imageFilePath)
-		=> imageToSaveFilePath.Equals(imageFilePath, _fileSystemStringComparison!.Value);
+	private bool HasOverwrittenCurrentImageFile(
+		string imageToSaveFilePath, string imageFilePath)
+		=> imageToSaveFilePath.Equals(imageFilePath,
+			_fileSystemStringComparison!.Value);
 
-	private bool HasSavedImageFileInCurrentFolder(string imageToSaveFilePath, string imageFolderPath)
-		=> imageToSaveFilePath.StartsWith(imageFolderPath, _fileSystemStringComparison!.Value);
+	private bool HasSavedImageFileInCurrentFolder(
+		string imageToSaveFilePath, string imageFolderPath)
+		=> imageToSaveFilePath.StartsWith(imageFolderPath,
+			_fileSystemStringComparison!.Value);
 
 	private void RefreshContent()
 	{
@@ -869,8 +976,16 @@ public partial class ImageEditWindow : Window, IImageEditView
 		ClearDownsizeComboBoxValueToComboBoxItemMapping();
 
 		PopulateDownsizeComboBox(_downsizeToPercentageComboBox, 1, 100, "%");
-		PopulateDownsizeComboBox(_downsizeToDimensionsWidthComboBox, 1, _editableImage!.ImageSize.Width, "px");
-		PopulateDownsizeComboBox(_downsizeToDimensionsHeightComboBox, 1, _editableImage!.ImageSize.Height, "px");
+		PopulateDownsizeComboBox(
+			_downsizeToDimensionsWidthComboBox,
+			1,
+			_editableImage!.ImageSize.Width,
+			"px");
+		PopulateDownsizeComboBox(
+			_downsizeToDimensionsHeightComboBox,
+			1,
+			_editableImage!.ImageSize.Height,
+			"px");
 
 		UpdateControls();
 
@@ -943,30 +1058,43 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void RegisterEvents()
 	{
-		_snapCropEdgesCheckBox.IsCheckedChanged += OnSnapCropEdgesCheckBoxIsCheckedChanged;
+		_snapCropEdgesCheckBox.IsCheckedChanged +=
+			OnSnapCropEdgesCheckBoxIsCheckedChanged;
 
-		_downsizeToPercentageComboBox.SelectionChanged += OnDownsizeToPercentageComboxBoxSelectionChanged;
+		_downsizeToPercentageComboBox.SelectionChanged +=
+			OnDownsizeToPercentageComboxBoxSelectionChanged;
 
-		_downsizeToDimensionsWidthComboBox.SelectionChanged += OnDownsizeToDimensionsComboBoxSelectionChanged;
-		_downsizeToDimensionsHeightComboBox.SelectionChanged += OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsWidthComboBox.SelectionChanged +=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsHeightComboBox.SelectionChanged +=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
 	}
 
 	private void UnregisterEvents()
 	{
-		_snapCropEdgesCheckBox.IsCheckedChanged -= OnSnapCropEdgesCheckBoxIsCheckedChanged;
+		_snapCropEdgesCheckBox.IsCheckedChanged -=
+			OnSnapCropEdgesCheckBoxIsCheckedChanged;
 
-		_downsizeToPercentageComboBox.SelectionChanged -= OnDownsizeToPercentageComboxBoxSelectionChanged;
+		_downsizeToPercentageComboBox.SelectionChanged -=
+			OnDownsizeToPercentageComboxBoxSelectionChanged;
 
-		_downsizeToDimensionsWidthComboBox.SelectionChanged -= OnDownsizeToDimensionsComboBoxSelectionChanged;
-		_downsizeToDimensionsHeightComboBox.SelectionChanged -= OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsWidthComboBox.SelectionChanged -=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
+		_downsizeToDimensionsHeightComboBox.SelectionChanged -=
+			OnDownsizeToDimensionsComboBoxSelectionChanged;
 	}
 
 	private void PopulateDownsizeComboBox(
-		ComboBox downsizeComboBox, int minimumDownsizeValue, int maximumDownsizeValue, string downsizeContentSuffix)
+		ComboBox downsizeComboBox,
+		int minimumDownsizeValue,
+		int maximumDownsizeValue,
+		string downsizeContentSuffix)
 	{
 		downsizeComboBox.Items.Clear();
 
-		for (var aDownsizeValue = minimumDownsizeValue; aDownsizeValue <= maximumDownsizeValue; aDownsizeValue++)
+		for (var aDownsizeValue = minimumDownsizeValue;
+				 aDownsizeValue <= maximumDownsizeValue;
+				 aDownsizeValue++)
 		{
 			var downsizeComboBoxItem = new ComboBoxItem
 			{
@@ -976,8 +1104,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 			downsizeComboBox.Items.Add(downsizeComboBoxItem);
 
-			var downsizeComboBoxKey = GetDownsizeComboBoxKey(downsizeComboBox, aDownsizeValue);
-			_downsizeComboBoxValueToComboBoxItemMapping.Add(downsizeComboBoxKey, downsizeComboBoxItem);
+			var downsizeComboBoxKey = GetDownsizeComboBoxKey(
+				downsizeComboBox, aDownsizeValue);
+			_downsizeComboBoxValueToComboBoxItemMapping.Add(
+				downsizeComboBoxKey, downsizeComboBoxItem);
 
 			if (aDownsizeValue == maximumDownsizeValue)
 			{
@@ -988,7 +1118,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private static int GetSelectedDownsizeValue(ComboBox downsizeComboBox)
 	{
-		var selectedDownsizeComboBoxItem = (ComboBoxItem)downsizeComboBox.SelectedItem!;
+		var selectedDownsizeComboBoxItem =
+			(ComboBoxItem)downsizeComboBox.SelectedItem!;
 
 		return GetDownsizeValue(selectedDownsizeComboBoxItem);
 	}
@@ -996,17 +1127,24 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private static int GetLastDownsizeValue(ComboBox downsizeComboBox)
 	{
 		var downsizeComboBoxItemCount = downsizeComboBox.ItemCount;
-		var lastDownsizeComboBoxItem = (ComboBoxItem)downsizeComboBox.Items[downsizeComboBoxItemCount - 1]!;
+		var lastDownsizeComboBoxItem =
+			(ComboBoxItem)downsizeComboBox
+				.Items[downsizeComboBoxItemCount - 1]!;
 
 		return GetDownsizeValue(lastDownsizeComboBoxItem);
 	}
 
-	private static int GetDownsizeValue(ComboBoxItem downsizeComboBoxItem) => (int)downsizeComboBoxItem.Tag!;
+	private static int GetDownsizeValue(ComboBoxItem downsizeComboBoxItem)
+		=> (int)downsizeComboBoxItem.Tag!;
 
-	private void SetSelectedDownsizeValue(ComboBox downsizeComboBox, int selectedDownsizeValue)
+	private void SetSelectedDownsizeValue(
+		ComboBox downsizeComboBox, int selectedDownsizeValue)
 	{
-		var selectedDownsizeComboBoxKey = GetDownsizeComboBoxKey(downsizeComboBox, selectedDownsizeValue);
-		var selectedDownsizeComboBoxItem = _downsizeComboBoxValueToComboBoxItemMapping[selectedDownsizeComboBoxKey];
+		var selectedDownsizeComboBoxKey = GetDownsizeComboBoxKey(
+			downsizeComboBox, selectedDownsizeValue);
+		var selectedDownsizeComboBoxItem =
+			_downsizeComboBoxValueToComboBoxItemMapping[
+				selectedDownsizeComboBoxKey];
 
 		downsizeComboBox.SelectedItem = selectedDownsizeComboBoxItem;
 	}
@@ -1014,8 +1152,9 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private void ClearDownsizeComboBoxValueToComboBoxItemMapping()
 		=> _downsizeComboBoxValueToComboBoxItemMapping.Clear();
 
-	private static string GetDownsizeComboBoxKey(ComboBox downsizeComboBox, int downsizeValue)
-		=> $"{downsizeComboBox.Name}_{downsizeValue}";
+	private static string GetDownsizeComboBoxKey(
+		ComboBox downsizeComboBox, int downsizeValue)
+			=> $"{downsizeComboBox.Name}_{downsizeValue}";
 
 	private async Task PerformUiUpdate(Func<Task> uiUpdateFunc)
 	{
@@ -1032,13 +1171,17 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void SetDownsizeButtonEnabledStatus()
 		=> _downsizeDropDownButton.IsEnabled =
-			_downsizeToPercentageMenuItem.IsEnabled || _downsizeToDimensionsMenuItem.IsEnabled;
+			_downsizeToPercentageMenuItem.IsEnabled ||
+			_downsizeToDimensionsMenuItem.IsEnabled;
 
-	private void SetLoadingImageTitle() => Title = $"{ImageFileData!.ImageFileName} - loading image...";
+	private void SetLoadingImageTitle()
+		=> Title = $"{ImageFileData!.ImageFileName} - loading image...";
 
-	private void SetImageTitle() => Title = $"{ImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
+	private void SetImageTitle()
+		=> Title = $"{ImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
 
-	private void SetImageLoadErrorTitle() => Title = $"{ImageFileData!.ImageFileName} - image read error";
+	private void SetImageLoadErrorTitle()
+		=> Title = $"{ImageFileData!.ImageFileName} - image read error";
 
 	private static void ExpandDropDownButton(DropDownButton dropDownButton)
 	{
@@ -1090,12 +1233,14 @@ public partial class ImageEditWindow : Window, IImageEditView
 			return true;
 		}
 
-		if (DisplayImageWidth - _bottomRightPointToImage.X <= SnapCropEdgesThresholdInPixels)
+		if (DisplayImageWidth - _bottomRightPointToImage.X <=
+			SnapCropEdgesThresholdInPixels)
 		{
 			return true;
 		}
 
-		if (DisplayImageHeight - _bottomRightPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+		if (DisplayImageHeight - _bottomRightPointToImage.Y <=
+			SnapCropEdgesThresholdInPixels)
 		{
 			return true;
 		}
@@ -1103,7 +1248,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		return false;
 	}
 
-	private void LockSnapCropEdgesCheckBox() => _snapCropEdgesCheckBox.IsEnabled = false;
+	private void LockSnapCropEdgesCheckBox()
+		=> _snapCropEdgesCheckBox.IsEnabled = false;
 
 	private void NormalizePointsToImage()
 	{
@@ -1119,12 +1265,14 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		if (DisplayImageWidth - _bottomRightPointToImage.X < 0)
 		{
-			_bottomRightPointToImage = new Point(DisplayImageWidth, _bottomRightPointToImage.Y);
+			_bottomRightPointToImage = new Point(
+				DisplayImageWidth, _bottomRightPointToImage.Y);
 		}
 
 		if (DisplayImageHeight - _bottomRightPointToImage.Y < 0)
 		{
-			_bottomRightPointToImage = new Point(_bottomRightPointToImage.X, DisplayImageHeight);
+			_bottomRightPointToImage = new Point(
+				_bottomRightPointToImage.X, DisplayImageHeight);
 		}
 	}
 
@@ -1140,18 +1288,23 @@ public partial class ImageEditWindow : Window, IImageEditView
 			_topLeftPointToImage = new Point(_topLeftPointToImage.X, 0);
 		}
 
-		if (DisplayImageWidth - _bottomRightPointToImage.X <= SnapCropEdgesThresholdInPixels)
+		if (DisplayImageWidth - _bottomRightPointToImage.X <=
+			SnapCropEdgesThresholdInPixels)
 		{
-			_bottomRightPointToImage = new Point(DisplayImageWidth, _bottomRightPointToImage.Y);
+			_bottomRightPointToImage = new Point(
+				DisplayImageWidth, _bottomRightPointToImage.Y);
 		}
 
-		if (DisplayImageHeight - _bottomRightPointToImage.Y <= SnapCropEdgesThresholdInPixels)
+		if (DisplayImageHeight - _bottomRightPointToImage.Y <=
+			SnapCropEdgesThresholdInPixels)
 		{
-			_bottomRightPointToImage = new Point(_bottomRightPointToImage.X, DisplayImageHeight);
+			_bottomRightPointToImage = new Point(
+				_bottomRightPointToImage.X, DisplayImageHeight);
 		}
 	}
 
-	private Point GetPointToGrid(Point pointToImage) => _displayImage.TranslatePoint(pointToImage, _displayGrid)!.Value;
+	private Point GetPointToGrid(Point pointToImage)
+		=> _displayImage.TranslatePoint(pointToImage, _displayGrid)!.Value;
 
 	private void DrawCropToGridRectangle()
 	{
@@ -1160,7 +1313,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		var topLeftPointToGrid = GetPointToGrid(_topLeftPointToImage);
 		var bottomRightPointToGrid = GetPointToGrid(_bottomRightPointToImage);
 
-		var cropToGridRectangle = new Rect(topLeftPointToGrid, bottomRightPointToGrid);
+		var cropToGridRectangle = new Rect(
+			topLeftPointToGrid, bottomRightPointToGrid);
 
 		var drawingCropRectangle = new Rectangle
 		{
@@ -1178,12 +1332,16 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private Rect GetCropToEditableImageRectangle()
 	{
-		var editableImageToDisplayImageScale = _editableImage!.ImageSize.Width / DisplayImageWidth;
+		var editableImageToDisplayImageScale =
+			_editableImage!.ImageSize.Width / DisplayImageWidth;
 
-		var topLeftPointToEditableImage = _topLeftPointToImage * editableImageToDisplayImageScale;
-		var bottomRightPointToEditableImage = _bottomRightPointToImage * editableImageToDisplayImageScale;
+		var topLeftPointToEditableImage =
+			_topLeftPointToImage * editableImageToDisplayImageScale;
+		var bottomRightPointToEditableImage =
+			_bottomRightPointToImage * editableImageToDisplayImageScale;
 
-		var cropToEditableImageRectangle = new Rect(topLeftPointToEditableImage, bottomRightPointToEditableImage);
+		var cropToEditableImageRectangle = new Rect(
+			topLeftPointToEditableImage, bottomRightPointToEditableImage);
 		return cropToEditableImageRectangle;
 	}
 
@@ -1193,12 +1351,14 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_mouseUpToImageCoordinates.Deconstruct(out var x2, out var y2);
 
 		_topLeftPointToImage = new Point(Math.Min(x1, x2), Math.Min(y1, y2));
-		_bottomRightPointToImage = new Point(Math.Max(x1, x2), Math.Max(y1, y2));
+		_bottomRightPointToImage =
+			new Point(Math.Max(x1, x2), Math.Max(y1, y2));
 	}
 
 	private bool IsLineOrDotCropSelection()
 		=> _topLeftPointToImage.X == _bottomRightPointToImage.X ||
 		   _topLeftPointToImage.Y == _bottomRightPointToImage.Y;
 
-	private static string GetFileNameFromPath(string filePath) => System.IO.Path.GetFileName(filePath);
+	private static string GetFileNameFromPath(string filePath)
+		=> System.IO.Path.GetFileName(filePath);
 }

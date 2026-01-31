@@ -17,7 +17,7 @@ public class SettingsFactory : ISettingsFactory
 	{
 		string configFolderPath;
 
-		if (globalParameters.RuntimeEnvironmentType is
+		if (globalParameters.RuntimeEnvironmentType ==
 			RuntimeEnvironmentType.Linux)
 		{
 			configFolderPath = Path.Combine(
@@ -25,7 +25,7 @@ public class SettingsFactory : ISettingsFactory
 				".config",
 				globalParameters.ApplicationName);
 		}
-		else if (globalParameters.RuntimeEnvironmentType is
+		else if (globalParameters.RuntimeEnvironmentType ==
 				 RuntimeEnvironmentType.LinuxFlatpak)
 		{
 			configFolderPath = globalParameters.UserConfigPath;

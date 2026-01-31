@@ -45,7 +45,8 @@ public static class SaveFileImageFormatExtensions
 					return MagickFormat.Bmp;
 				}
 
-				throw new NotSupportedException("Save image format not supported.");
+				throw new NotSupportedException(
+					"Save image format not supported.");
 			}
 		}
 	}

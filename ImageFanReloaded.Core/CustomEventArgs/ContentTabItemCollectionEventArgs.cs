@@ -6,7 +6,8 @@ namespace ImageFanReloaded.Core.CustomEventArgs;
 
 public class ContentTabItemCollectionEventArgs : EventArgs
 {
-	public ContentTabItemCollectionEventArgs(IReadOnlyList<IContentTabItem> contentTabItemCollection)
+	public ContentTabItemCollectionEventArgs(
+		IReadOnlyList<IContentTabItem> contentTabItemCollection)
 	{
 		ContentTabItemCollection = contentTabItemCollection;
 	}

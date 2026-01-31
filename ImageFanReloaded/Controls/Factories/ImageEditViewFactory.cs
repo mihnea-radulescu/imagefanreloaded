@@ -24,7 +24,8 @@ public class ImageEditViewFactory : IImageEditViewFactory
 		_saveFileDialogFactory = saveFileDialogFactory;
 	}
 
-	public IImageEditView GetImageEditView(IContentTabItem contentTabItem, IImageFile imageFile)
+	public IImageEditView GetImageEditView(
+		IContentTabItem contentTabItem, IImageFile imageFile)
 	{
 		IImageEditView imageEditView = new ImageEditWindow();
 

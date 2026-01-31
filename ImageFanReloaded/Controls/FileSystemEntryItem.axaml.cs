@@ -5,7 +5,8 @@ using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.Controls;
 
-public partial class FileSystemTreeViewItem : UserControl, IFileSystemTreeViewItem
+public partial class FileSystemTreeViewItem
+	: UserControl, IFileSystemTreeViewItem
 {
 	public FileSystemTreeViewItem()
 	{
