@@ -5,14 +5,24 @@ namespace ImageFanReloaded.Core.Settings.Implementation;
 
 public class SettingsFactory : ISettingsFactory
 {
-	public ITabOptions GetTabOptions() => new TabOptions();
+	public ITabOptions GetTabOptions()
+		=> new TabOptions(_defaultTabOptions);
+
+	public IThumbnailCacheOptions GetThumbnailCacheOptions()
+		=> new ThumbnailCacheOptions(_configFolderPath);
 
 	public SettingsFactory(IGlobalParameters globalParameters)
 	{
-		SetupDefaultTabOptions(globalParameters);
+		_configFolderPath = GetConfigFolderPath(globalParameters);
+
+		_defaultTabOptions = new TabOptions(_configFolderPath);
 	}
 
-	private static void SetupDefaultTabOptions(
+	private readonly string _configFolderPath;
+
+	private readonly TabOptions _defaultTabOptions;
+
+	private static string GetConfigFolderPath(
 		IGlobalParameters globalParameters)
 	{
 		string configFolderPath;
@@ -37,6 +47,6 @@ public class SettingsFactory : ISettingsFactory
 				globalParameters.ApplicationName);
 		}
 
-		TabOptions.LoadDefaultTabOptions(configFolderPath);
+		return configFolderPath;
 	}
 }

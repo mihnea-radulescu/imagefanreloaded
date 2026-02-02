@@ -117,43 +117,34 @@ public class FolderVisualState : IFolderVisualState
 	{
 		var hasSetFirstThumbnailStatus = false;
 
-		for (var thumbnailCollection = (IEnumerable<IThumbnailInfo>)thumbnails;
-			 	 !_ctsThumbnailGeneration.IsCancellationRequested &&
-			 		thumbnailCollection.Any();
-			 	 thumbnailCollection = thumbnailCollection.Skip(
-					_globalParameters.ProcessorCount))
+		var thumbnailCollections = thumbnails
+			.Chunk(_globalParameters.ProcessorCount)
+			.ToArray();
+
+		foreach (var aThumbnailCollection in thumbnailCollections)
 		{
 			if (_ctsThumbnailGeneration.IsCancellationRequested)
 			{
 				return;
 			}
 
-			var currentThumbnails = thumbnailCollection
-				.Take(_globalParameters.ProcessorCount)
-				.ToList();
+			await ReadThumbnailInput(aThumbnailCollection);
 
 			if (_ctsThumbnailGeneration.IsCancellationRequested)
 			{
 				return;
 			}
 
-			await ReadThumbnailInput(currentThumbnails);
+			_contentTabItem.PopulateThumbnailBoxes(aThumbnailCollection);
+
+			await GetThumbnails(aThumbnailCollection);
 
 			if (_ctsThumbnailGeneration.IsCancellationRequested)
 			{
 				return;
 			}
 
-			_contentTabItem.PopulateThumbnailBoxes(currentThumbnails);
-
-			await GetThumbnails(currentThumbnails);
-
-			if (_ctsThumbnailGeneration.IsCancellationRequested)
-			{
-				return;
-			}
-
-			_contentTabItem.RefreshThumbnailBoxes(currentThumbnails);
+			_contentTabItem.RefreshThumbnailBoxes(aThumbnailCollection);
 
 			if (_ctsThumbnailGeneration.IsCancellationRequested)
 			{
@@ -175,31 +166,31 @@ public class FolderVisualState : IFolderVisualState
 	}
 
 	private async Task ReadThumbnailInput(
-		IReadOnlyList<IThumbnailInfo> currentThumbnails)
+		IReadOnlyList<IThumbnailInfo> aThumbnailCollection)
 		=> await Task.Run(() =>
 			{
 				for (var i = 0;
 					 	 !_ctsThumbnailGeneration.IsCancellationRequested &&
-					 		i < currentThumbnails.Count;
+					 		i < aThumbnailCollection.Count;
 					 	 i++)
 				{
-					currentThumbnails[i].ReadThumbnailInputFromDisc();
+					aThumbnailCollection[i].ReadThumbnailInputFromDisc();
 				}
 			});
 
 	private async Task GetThumbnails(
-		IReadOnlyList<IThumbnailInfo> currentThumbnails)
+		IReadOnlyList<IThumbnailInfo> aThumbnailCollection)
 		=> await Task.Run(() =>
 			{
 				var thumbnailGenerationTasks =
-					new Task[currentThumbnails.Count];
+					new Task[aThumbnailCollection.Count];
 
-				for (var i = 0; i < currentThumbnails.Count; i++)
+				for (var i = 0; i < aThumbnailCollection.Count; i++)
 				{
 					var currentIndex = i;
 
 					var aThumbnailGenerationTask =
-						new Task(() => currentThumbnails[currentIndex]
+						new Task(() => aThumbnailCollection[currentIndex]
 										.GetThumbnail());
 
 					thumbnailGenerationTasks[currentIndex] =

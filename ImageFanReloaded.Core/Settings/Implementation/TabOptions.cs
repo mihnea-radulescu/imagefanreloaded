@@ -9,64 +9,140 @@ namespace ImageFanReloaded.Core.Settings.Implementation;
 
 public class TabOptions : ITabOptions
 {
-	public FileSystemEntryInfoOrdering FolderOrdering { get; set; }
-	public FileSystemEntryInfoOrderingDirection FolderOrderingDirection
-		{ get; set; }
-
-	public FileSystemEntryInfoOrdering ImageFileOrdering { get; set; }
-	public FileSystemEntryInfoOrderingDirection ImageFileOrderingDirection
-		{ get; set; }
-
-	public ImageViewDisplayMode ImageViewDisplayMode { get; set; }
-
-	public ThumbnailSize ThumbnailSize { get; set; }
-
-	public bool RecursiveFolderBrowsing { get; set; }
-	public bool GlobalOrderingForRecursiveFolderBrowsing { get; set; }
-
-	public bool ShowImageViewImageInfo { get; set; }
-	public int PanelsSplittingRatio { get; set; }
-	public SlideshowInterval SlideshowInterval { get; set; }
-	public bool ApplyImageOrientation { get; set; }
-	public bool ShowThumbnailImageFileName { get; set; }
-	public KeyboardScrollThumbnailIncrement KeyboardScrollThumbnailIncrement
-		{ get; set; }
-	public UpsizeFullScreenImagesUpToScreenSize
-		UpsizeFullScreenImagesUpToScreenSize { get; set; }
-
-	public static void LoadDefaultTabOptions(string configFolderPath)
+	public TabOptions(string configFolderPath)
 	{
 		_configFolderPath = configFolderPath;
-		_configFilePath = GetConfigFilePath(_configFolderPath);
+		_tabOptionsConfigFilePath = Path.Combine(
+			configFolderPath, TabOptionsConfigFileName);
 
-		ITabOptions? tabOptions = null;
-
-		try
-		{
-			tabOptions = GetTabOptions();
-		}
-		catch
-		{
-		}
-		finally
-		{
-			_defaultTabOptions = tabOptions ?? new TabOptions();
-		}
+		_tabOptionsDto = GetTabOptionsDto();
+		_defaultTabOptions = new TabOptions(this);
 	}
 
-	public TabOptions()
+	public TabOptions(TabOptions defaultTabOptions)
 	{
-		InitializeWithDefaultValues();
+		_defaultTabOptions = defaultTabOptions;
+		_configFolderPath = defaultTabOptions._configFolderPath;
+		_tabOptionsConfigFilePath = defaultTabOptions._tabOptionsConfigFilePath;
+
+		_tabOptionsDto = new TabOptionsDto();
+		CopyFromDefaultTabOptions();
+	}
+
+	public FileSystemEntryInfoOrdering FolderOrdering
+	{
+		get => _tabOptionsDto.FolderOrdering;
+		set => _tabOptionsDto.FolderOrdering = value;
+	}
+
+	public FileSystemEntryInfoOrderingDirection FolderOrderingDirection
+	{
+		get => _tabOptionsDto.FolderOrderingDirection;
+		set => _tabOptionsDto.FolderOrderingDirection = value;
+	}
+
+	public FileSystemEntryInfoOrdering ImageFileOrdering
+	{
+		get => _tabOptionsDto.ImageFileOrdering;
+		set => _tabOptionsDto.ImageFileOrdering = value;
+	}
+
+	public FileSystemEntryInfoOrderingDirection ImageFileOrderingDirection
+	{
+		get => _tabOptionsDto.ImageFileOrderingDirection;
+		set => _tabOptionsDto.ImageFileOrderingDirection = value;
+	}
+
+	public ImageViewDisplayMode ImageViewDisplayMode
+	{
+		get => _tabOptionsDto.ImageViewDisplayMode;
+		set => _tabOptionsDto.ImageViewDisplayMode = value;
+	}
+
+	public ThumbnailSize ThumbnailSize
+	{
+		get => _tabOptionsDto.ThumbnailSize;
+		set => _tabOptionsDto.ThumbnailSize = value;
+	}
+
+	public bool RecursiveFolderBrowsing
+	{
+		get => _tabOptionsDto.RecursiveFolderBrowsing;
+		set => _tabOptionsDto.RecursiveFolderBrowsing = value;
+	}
+
+	public bool GlobalOrderingForRecursiveFolderBrowsing
+	{
+		get => _tabOptionsDto.GlobalOrderingForRecursiveFolderBrowsing;
+		set => _tabOptionsDto.GlobalOrderingForRecursiveFolderBrowsing = value;
+	}
+
+	public bool ShowImageViewImageInfo
+	{
+		get => _tabOptionsDto.ShowImageViewImageInfo;
+		set => _tabOptionsDto.ShowImageViewImageInfo = value;
+	}
+
+	public int PanelsSplittingRatio
+	{
+		get => _tabOptionsDto.PanelsSplittingRatio;
+		set => _tabOptionsDto.PanelsSplittingRatio = value;
+	}
+
+	public SlideshowInterval SlideshowInterval
+	{
+		get => _tabOptionsDto.SlideshowInterval;
+		set => _tabOptionsDto.SlideshowInterval = value;
+	}
+
+	public bool ApplyImageOrientation
+	{
+		get => _tabOptionsDto.ApplyImageOrientation;
+		set => _tabOptionsDto.ApplyImageOrientation = value;
+	}
+
+	public bool ShowThumbnailImageFileName
+	{
+		get => _tabOptionsDto.ShowThumbnailImageFileName;
+		set => _tabOptionsDto.ShowThumbnailImageFileName = value;
+	}
+
+	public KeyboardScrollThumbnailIncrement KeyboardScrollThumbnailIncrement
+	{
+		get => _tabOptionsDto.KeyboardScrollThumbnailIncrement;
+		set => _tabOptionsDto.KeyboardScrollThumbnailIncrement = value;
+	}
+
+	public UpsizeFullScreenImagesUpToScreenSize UpsizeFullScreenImagesUpToScreenSize
+	{
+		get => _tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize;
+		set => _tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize = value;
 	}
 
 	public async Task SaveDefaultTabOptions()
 	{
-		SetDefaultTabOptions();
+		CopyToDefaultTabOptions();
 
-		await PersistDefaultTabOptions();
+		try
+		{
+			var jsonContent = JsonSerializer.Serialize(
+				_defaultTabOptions._tabOptionsDto,
+				TabOptionsDtoJsonTypeInfo);
+
+			if (!Directory.Exists(_configFolderPath))
+			{
+				Directory.CreateDirectory(_configFolderPath);
+			}
+
+			await File.WriteAllTextAsync(
+				_tabOptionsConfigFilePath, jsonContent);
+		}
+		catch
+		{
+		}
 	}
 
-	private const string ConfigFileName = "DefaultTabOptions.json";
+	private const string TabOptionsConfigFileName = "DefaultTabOptions.json";
 
 	private const FileSystemEntryInfoOrdering DefaultFolderOrdering =
 		FileSystemEntryInfoOrdering.Name;
@@ -102,200 +178,204 @@ public class TabOptions : ITabOptions
 		DefaultUpsizeFullScreenImagesUpToScreenSize =
 			UpsizeFullScreenImagesUpToScreenSize.Disabled;
 
-	private static readonly string AppDataFolderPath =
-		Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+	private static readonly JsonTypeInfo<TabOptionsDto>
+		TabOptionsDtoJsonTypeInfo = TabOptionsDtoJsonContext
+			.Default
+			.TabOptionsDto;
 
-	private static readonly JsonTypeInfo<TabOptions> TabOptionsJsonTypeInfo =
-		TabOptionsJsonContext.Default.TabOptions;
+	private readonly string _configFolderPath;
+	private readonly string _tabOptionsConfigFilePath;
 
-	private static string? _configFolderPath;
-	private static string? _configFilePath;
+	private readonly TabOptions _defaultTabOptions;
 
-	private static ITabOptions? _defaultTabOptions;
+	private readonly TabOptionsDto _tabOptionsDto;
 
-	private static string GetConfigFilePath(string configFolderPath)
-		=> Path.Combine(configFolderPath, ConfigFileName);
-
-	private static ITabOptions? GetTabOptions()
+	private TabOptionsDto GetTabOptionsDto()
 	{
-		ITabOptions? tabOptions = null;
+		TabOptionsDto? tabOptionsDto;
 
-		if (!File.Exists(_configFilePath))
-		{
-			return tabOptions;
-		}
-
-		var jsonContent = File.ReadAllText(_configFilePath);
-		tabOptions = JsonSerializer.Deserialize(
-			jsonContent, TabOptionsJsonTypeInfo);
-
-		if (tabOptions is null)
-		{
-			return tabOptions;
-		}
-
-		if (!IsValidEnumValue(tabOptions.FolderOrdering))
-		{
-			tabOptions.FolderOrdering = DefaultFolderOrdering;
-		}
-
-		if (!IsValidEnumValue(tabOptions.FolderOrderingDirection))
-		{
-			tabOptions.FolderOrderingDirection = DefaultFolderOrderingDirection;
-		}
-
-		if (!IsValidEnumValue(tabOptions.ImageViewDisplayMode))
-		{
-			tabOptions.ImageViewDisplayMode = DefaultImageViewDisplayMode;
-		}
-
-		if (!IsValidEnumValue(tabOptions.ImageFileOrdering))
-		{
-			tabOptions.ImageFileOrdering = DefaultImageFileOrdering;
-		}
-
-		if (!IsValidEnumValue(tabOptions.ImageFileOrderingDirection))
-		{
-			tabOptions.ImageFileOrderingDirection =
-				DefaultImageFileOrderingDirection;
-		}
-
-		if (!IsValidEnumValue(tabOptions.ThumbnailSize))
-		{
-			tabOptions.ThumbnailSize = DefaultThumbnailSize;
-		}
-
-		if (!IsValidPanelsSplittingRatio(tabOptions.PanelsSplittingRatio))
-		{
-			tabOptions.PanelsSplittingRatio = DefaultPanelsSplittingRatio;
-		}
-
-		if (!IsValidEnumValue(tabOptions.SlideshowInterval))
-		{
-			tabOptions.SlideshowInterval = DefaultSlideshowInterval;
-		}
-
-		if (!IsValidEnumValue(tabOptions.KeyboardScrollThumbnailIncrement))
-		{
-			tabOptions.KeyboardScrollThumbnailIncrement =
-				DefaultKeyboardScrollThumbnailIncrement;
-		}
-
-		if (!IsValidEnumValue(tabOptions.UpsizeFullScreenImagesUpToScreenSize))
-		{
-			tabOptions.UpsizeFullScreenImagesUpToScreenSize =
-				DefaultUpsizeFullScreenImagesUpToScreenSize;
-		}
-
-		return tabOptions;
-	}
-
-	private void InitializeWithDefaultValues()
-	{
-		if (_defaultTabOptions is not null)
-		{
-			FolderOrdering = _defaultTabOptions.FolderOrdering;
-			FolderOrderingDirection =
-				_defaultTabOptions.FolderOrderingDirection;
-
-			ImageFileOrdering = _defaultTabOptions.ImageFileOrdering;
-			ImageFileOrderingDirection =
-				_defaultTabOptions.ImageFileOrderingDirection;
-
-			ImageViewDisplayMode = _defaultTabOptions.ImageViewDisplayMode;
-
-			ThumbnailSize = _defaultTabOptions.ThumbnailSize;
-
-			RecursiveFolderBrowsing =
-				_defaultTabOptions.RecursiveFolderBrowsing;
-			GlobalOrderingForRecursiveFolderBrowsing =
-				_defaultTabOptions.GlobalOrderingForRecursiveFolderBrowsing;
-
-			ShowImageViewImageInfo = _defaultTabOptions.ShowImageViewImageInfo;
-			PanelsSplittingRatio = _defaultTabOptions.PanelsSplittingRatio;
-			SlideshowInterval = _defaultTabOptions.SlideshowInterval;
-			ApplyImageOrientation = _defaultTabOptions.ApplyImageOrientation;
-			ShowThumbnailImageFileName =
-				_defaultTabOptions.ShowThumbnailImageFileName;
-			KeyboardScrollThumbnailIncrement =
-				_defaultTabOptions.KeyboardScrollThumbnailIncrement;
-			UpsizeFullScreenImagesUpToScreenSize =
-				_defaultTabOptions.UpsizeFullScreenImagesUpToScreenSize;
-		}
-		else
-		{
-			FolderOrdering = DefaultFolderOrdering;
-			FolderOrderingDirection = DefaultFolderOrderingDirection;
-
-			ImageFileOrdering = DefaultImageFileOrdering;
-			ImageFileOrderingDirection = DefaultImageFileOrderingDirection;
-
-			ImageViewDisplayMode = DefaultImageViewDisplayMode;
-
-			ThumbnailSize = DefaultThumbnailSize;
-
-			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing;
-			GlobalOrderingForRecursiveFolderBrowsing =
-				DefaultGlobalOrderingForRecursiveFolderBrowsing;
-
-			ShowImageViewImageInfo = DefaultShowImageViewImageInfo;
-			PanelsSplittingRatio = DefaultPanelsSplittingRatio;
-			SlideshowInterval = DefaultSlideshowInterval;
-			ApplyImageOrientation = DefaultApplyImageOrientation;
-			ShowThumbnailImageFileName = DefaultShowThumbnailImageFileName;
-			KeyboardScrollThumbnailIncrement =
-				DefaultKeyboardScrollThumbnailIncrement;
-			UpsizeFullScreenImagesUpToScreenSize =
-				DefaultUpsizeFullScreenImagesUpToScreenSize;
-		}
-	}
-
-	private void SetDefaultTabOptions()
-	{
-		_defaultTabOptions!.FolderOrdering = FolderOrdering;
-		_defaultTabOptions!.FolderOrderingDirection = FolderOrderingDirection;
-
-		_defaultTabOptions!.ImageFileOrdering = ImageFileOrdering;
-		_defaultTabOptions!.ImageFileOrderingDirection =
-			ImageFileOrderingDirection;
-
-		_defaultTabOptions!.ImageViewDisplayMode = ImageViewDisplayMode;
-
-		_defaultTabOptions!.ThumbnailSize = ThumbnailSize;
-
-		_defaultTabOptions!.RecursiveFolderBrowsing = RecursiveFolderBrowsing;
-		_defaultTabOptions!.GlobalOrderingForRecursiveFolderBrowsing =
-			GlobalOrderingForRecursiveFolderBrowsing;
-
-		_defaultTabOptions!.ShowImageViewImageInfo = ShowImageViewImageInfo;
-		_defaultTabOptions!.PanelsSplittingRatio = PanelsSplittingRatio;
-		_defaultTabOptions!.SlideshowInterval = SlideshowInterval;
-		_defaultTabOptions!.ApplyImageOrientation = ApplyImageOrientation;
-		_defaultTabOptions!.ShowThumbnailImageFileName =
-			ShowThumbnailImageFileName;
-		_defaultTabOptions!.KeyboardScrollThumbnailIncrement =
-			KeyboardScrollThumbnailIncrement;
-		_defaultTabOptions!.UpsizeFullScreenImagesUpToScreenSize =
-			UpsizeFullScreenImagesUpToScreenSize;
-	}
-
-	private static async Task PersistDefaultTabOptions()
-	{
 		try
 		{
-			var jsonContent = JsonSerializer.Serialize(
-				_defaultTabOptions!, TabOptionsJsonTypeInfo);
-
-			if (!Directory.Exists(_configFolderPath))
+			if (!File.Exists(_tabOptionsConfigFilePath))
 			{
-				Directory.CreateDirectory(_configFolderPath!);
+				return GetTabOptionsDtoWithDefaultValues();
 			}
 
-			await File.WriteAllTextAsync(_configFilePath!, jsonContent);
+			var jsonContent = File.ReadAllText(_tabOptionsConfigFilePath);
+
+			tabOptionsDto = JsonSerializer.Deserialize(
+				jsonContent, TabOptionsDtoJsonTypeInfo);
+
+			if (tabOptionsDto is null)
+			{
+				return GetTabOptionsDtoWithDefaultValues();
+			}
+
+			if (!IsValidEnumValue(tabOptionsDto.FolderOrdering))
+			{
+				tabOptionsDto.FolderOrdering = DefaultFolderOrdering;
+			}
+
+			if (!IsValidEnumValue(tabOptionsDto.FolderOrderingDirection))
+			{
+				tabOptionsDto.FolderOrderingDirection =
+					DefaultFolderOrderingDirection;
+			}
+
+			if (!IsValidEnumValue(tabOptionsDto.ImageViewDisplayMode))
+			{
+				tabOptionsDto.ImageViewDisplayMode =
+					DefaultImageViewDisplayMode;
+			}
+
+			if (!IsValidEnumValue(tabOptionsDto.ImageFileOrdering))
+			{
+				tabOptionsDto.ImageFileOrdering = DefaultImageFileOrdering;
+			}
+
+			if (!IsValidEnumValue(tabOptionsDto.ImageFileOrderingDirection))
+			{
+				tabOptionsDto.ImageFileOrderingDirection =
+					DefaultImageFileOrderingDirection;
+			}
+
+			if (!IsValidEnumValue(tabOptionsDto.ThumbnailSize))
+			{
+				tabOptionsDto.ThumbnailSize = DefaultThumbnailSize;
+			}
+
+			if (!IsValidPanelsSplittingRatio(
+					tabOptionsDto.PanelsSplittingRatio))
+			{
+				tabOptionsDto.PanelsSplittingRatio =
+					DefaultPanelsSplittingRatio;
+			}
+
+			if (!IsValidEnumValue(tabOptionsDto.SlideshowInterval))
+			{
+				tabOptionsDto.SlideshowInterval = DefaultSlideshowInterval;
+			}
+
+			if (!IsValidEnumValue(
+					tabOptionsDto.KeyboardScrollThumbnailIncrement))
+			{
+				tabOptionsDto.KeyboardScrollThumbnailIncrement =
+					DefaultKeyboardScrollThumbnailIncrement;
+			}
+
+			if (!IsValidEnumValue(
+					tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize))
+			{
+				tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize =
+					DefaultUpsizeFullScreenImagesUpToScreenSize;
+			}
+
+			return tabOptionsDto;
 		}
 		catch
 		{
+			return GetTabOptionsDtoWithDefaultValues();
 		}
+	}
+
+	private static TabOptionsDto GetTabOptionsDtoWithDefaultValues()
+	{
+		return new TabOptionsDto
+		{
+			FolderOrdering = DefaultFolderOrdering,
+			FolderOrderingDirection = DefaultFolderOrderingDirection,
+
+			ImageFileOrdering = DefaultImageFileOrdering,
+			ImageFileOrderingDirection = DefaultImageFileOrderingDirection,
+
+			ImageViewDisplayMode = DefaultImageViewDisplayMode,
+
+			ThumbnailSize = DefaultThumbnailSize,
+
+			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing,
+			GlobalOrderingForRecursiveFolderBrowsing =
+				DefaultGlobalOrderingForRecursiveFolderBrowsing,
+
+			ShowImageViewImageInfo = DefaultShowImageViewImageInfo,
+			PanelsSplittingRatio = DefaultPanelsSplittingRatio,
+			SlideshowInterval = DefaultSlideshowInterval,
+			ApplyImageOrientation = DefaultApplyImageOrientation,
+			ShowThumbnailImageFileName = DefaultShowThumbnailImageFileName,
+			KeyboardScrollThumbnailIncrement =
+				DefaultKeyboardScrollThumbnailIncrement,
+			UpsizeFullScreenImagesUpToScreenSize =
+				DefaultUpsizeFullScreenImagesUpToScreenSize
+		};
+	}
+
+	private void CopyFromDefaultTabOptions()
+	{
+		_tabOptionsDto.FolderOrdering = _defaultTabOptions.FolderOrdering;
+		_tabOptionsDto.FolderOrderingDirection =
+			_defaultTabOptions.FolderOrderingDirection;
+
+		_tabOptionsDto.ImageFileOrdering = _defaultTabOptions.ImageFileOrdering;
+		_tabOptionsDto.ImageFileOrderingDirection =
+			_defaultTabOptions.ImageFileOrderingDirection;
+
+		_tabOptionsDto.ImageViewDisplayMode =
+			_defaultTabOptions.ImageViewDisplayMode;
+
+		_tabOptionsDto.ThumbnailSize = _defaultTabOptions.ThumbnailSize;
+
+		_tabOptionsDto.RecursiveFolderBrowsing =
+			_defaultTabOptions.RecursiveFolderBrowsing;
+		_tabOptionsDto.GlobalOrderingForRecursiveFolderBrowsing =
+			_defaultTabOptions.GlobalOrderingForRecursiveFolderBrowsing;
+
+		_tabOptionsDto.ShowImageViewImageInfo =
+			_defaultTabOptions.ShowImageViewImageInfo;
+		_tabOptionsDto.PanelsSplittingRatio =
+			_defaultTabOptions.PanelsSplittingRatio;
+		_tabOptionsDto.SlideshowInterval = _defaultTabOptions.SlideshowInterval;
+		_tabOptionsDto.ApplyImageOrientation =
+			_defaultTabOptions.ApplyImageOrientation;
+		_tabOptionsDto.ShowThumbnailImageFileName =
+			_defaultTabOptions.ShowThumbnailImageFileName;
+		_tabOptionsDto.KeyboardScrollThumbnailIncrement =
+			_defaultTabOptions.KeyboardScrollThumbnailIncrement;
+		_tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize =
+			_defaultTabOptions.UpsizeFullScreenImagesUpToScreenSize;
+	}
+
+	private void CopyToDefaultTabOptions()
+	{
+		_defaultTabOptions.FolderOrdering = _tabOptionsDto.FolderOrdering;
+		_defaultTabOptions.FolderOrderingDirection =
+			_tabOptionsDto.FolderOrderingDirection;
+
+		_defaultTabOptions.ImageFileOrdering = _tabOptionsDto.ImageFileOrdering;
+		_defaultTabOptions.ImageFileOrderingDirection =
+			_tabOptionsDto.ImageFileOrderingDirection;
+
+		_defaultTabOptions.ImageViewDisplayMode =
+			_tabOptionsDto.ImageViewDisplayMode;
+
+		_defaultTabOptions.ThumbnailSize = _tabOptionsDto.ThumbnailSize;
+
+		_defaultTabOptions.RecursiveFolderBrowsing =
+			_tabOptionsDto.RecursiveFolderBrowsing;
+		_defaultTabOptions.GlobalOrderingForRecursiveFolderBrowsing =
+			_tabOptionsDto.GlobalOrderingForRecursiveFolderBrowsing;
+
+		_defaultTabOptions.ShowImageViewImageInfo =
+			_tabOptionsDto.ShowImageViewImageInfo;
+		_defaultTabOptions.PanelsSplittingRatio =
+			_tabOptionsDto.PanelsSplittingRatio;
+		_defaultTabOptions.SlideshowInterval = _tabOptionsDto.SlideshowInterval;
+		_defaultTabOptions.ApplyImageOrientation =
+			_tabOptionsDto.ApplyImageOrientation;
+		_defaultTabOptions.ShowThumbnailImageFileName =
+			_tabOptionsDto.ShowThumbnailImageFileName;
+		_defaultTabOptions.KeyboardScrollThumbnailIncrement =
+			_tabOptionsDto.KeyboardScrollThumbnailIncrement;
+		_defaultTabOptions.UpsizeFullScreenImagesUpToScreenSize =
+			_tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize;
 	}
 
 	private static bool IsValidEnumValue<TEnum>(TEnum enumValue)
@@ -306,6 +386,6 @@ public class TabOptions : ITabOptions
 		=> panelsSplittingRatio is >= 0 and <= 100;
 }
 
-[JsonSerializable(typeof(TabOptions))]
+[JsonSerializable(typeof(TabOptionsDto))]
 [JsonSourceGenerationOptions(WriteIndented = true)]
-public partial class TabOptionsJsonContext : JsonSerializerContext;
+public partial class TabOptionsDtoJsonContext : JsonSerializerContext;
