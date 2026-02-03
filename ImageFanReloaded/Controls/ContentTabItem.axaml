@@ -26,6 +26,10 @@
 					Content="Tab options"
 					Click="OnTabOptionsButtonClicked"/>
 
+			<Button Name="_thumbnailCacheOptions"
+					Content="Thumbnail cache options"
+					Click="OnThumbnailCacheOptionsButtonClicked"/>
+
 			<Button Name="_aboutButton"
 					Content="About"
 					Click="OnAboutButtonClicked"/>

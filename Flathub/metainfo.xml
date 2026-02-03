@@ -16,7 +16,7 @@
 	<project_license>GPL-3.0-or-later</project_license>
 
 	<description>
-		<p>A fast and easy-to-use image viewer with broad format support for everyday photo browsing and management</p>
+		<p>ImageFan Reloaded is a fast and easy-to-use image viewer with broad format support for everyday photo browsing and management.</p>
 		<p>Features:</p>
 		<ul>
 			<li>quick concurrent thumbnail generation, scaling to the number of processor cores present</li>
@@ -29,6 +29,7 @@
 			<li>image animation support for the formats gif, mng and webp</li>
 			<li>folder and image file ordering by name, last modification time and random shuffle, ascending and descending</li>
 			<li>configurable thumbnail size, between 100 and 1200 pixels</li>
+			<li>thumbnail caching capability for fast folder browsing</li>
 			<li>slideshow navigation across images</li>
 			<li>image info containing file, image, color, EXIF, IPTC and XMP profiles</li>
 			<li>automatic image orientation according to the EXIF orientation tag</li>

@@ -1,7 +1,9 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using ImageFanReloaded.Core.Caching;
+using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Caching;
@@ -10,32 +12,32 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 {
 	public SqliteDatabaseLogic(
 		IGlobalParameters globalParameters,
-		IThumbnailCacheConfig thumbnailCacheConfig)
+		ISettingsFactory settingsFactory,
+		IFileSizeEngine fileSizeEngine)
 	{
-		_thumbnailCacheFolderPath =
-			thumbnailCacheConfig.GetThumbnailCacheFolderPath();
-		_thumbnailCacheDbFileName =
+		_thumbnailCacheFolderPath = settingsFactory.GetCacheFolderPath();
+
+		var thumbnailCacheDbFileName =
 			$"{globalParameters.ApplicationName}.db";
 		_thumbnailCacheDbFilePath = Path.Combine(
-			_thumbnailCacheFolderPath, _thumbnailCacheDbFileName);
+			_thumbnailCacheFolderPath, thumbnailCacheDbFileName);
 
 		_connectionString = string.Format(
 			ConnectionStringPattern, _thumbnailCacheDbFilePath);
+
+		_fileSizeEngine = fileSizeEngine;
 	}
 
 	public void CreateDatabaseIfNotExisting()
 	{
 		try
 		{
-			if (!Directory.Exists(_thumbnailCacheFolderPath))
-			{
-				Directory.CreateDirectory(_thumbnailCacheFolderPath);
-			}
+			Directory.CreateDirectory(_thumbnailCacheFolderPath);
 
-			if (!File.Exists(_thumbnailCacheDbFileName))
+			if (ShouldCreateDatabase())
 			{
 				using (var dbConnection = new SqliteConnection(
-					_connectionString))
+						_connectionString))
 				{
 					dbConnection.Open();
 
@@ -54,21 +56,60 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 		}
 	}
 
-	public void DeleteDatabase()
+	public int GetThumbnailCacheSizeInMegabytes()
 	{
 		try
 		{
 			if (Directory.Exists(_thumbnailCacheFolderPath))
 			{
-				var directoryInfo = new DirectoryInfo(
-					_thumbnailCacheFolderPath);
+				var thumbnailCacheDbFileInfo = new FileInfo(
+					_thumbnailCacheDbFilePath);
 
-				var filesWithPattern = directoryInfo.GetFiles(
-					$"{_thumbnailCacheDbFileName}*");
+				var thumbnailCacheSizeInBytes = thumbnailCacheDbFileInfo.Length;
 
-				foreach (var aFileWithPattern in filesWithPattern)
+				var thumbnailCacheSizeInKilobytes = _fileSizeEngine
+					.ConvertToKilobytes(thumbnailCacheSizeInBytes);
+				var thumbnailCacheSizeInMegabytes = _fileSizeEngine
+					.ConvertToMegabytes(thumbnailCacheSizeInKilobytes);
+
+				return (int)thumbnailCacheSizeInMegabytes;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		catch
+		{
+			return 0;
+		}
+	}
+
+	public async Task ClearDatabase()
+	{
+		try
+		{
+			await using (var dbConnection = new SqliteConnection(
+				_connectionString))
+			{
+				await dbConnection.OpenAsync();
+
+				await using (var dbCommand = dbConnection.CreateCommand())
 				{
-					aFileWithPattern.Delete();
+					dbCommand.CommandText = ClearDataScript;
+					await dbCommand.ExecuteNonQueryAsync();
+				}
+
+				await using (var dbCommand = dbConnection.CreateCommand())
+				{
+					dbCommand.CommandText = ClearWriteAheadLogScript;
+					await dbCommand.ExecuteNonQueryAsync();
+				}
+
+				await using (var dbCommand = dbConnection.CreateCommand())
+				{
+					dbCommand.CommandText = TrimDatabaseScript;
+					await dbCommand.ExecuteNonQueryAsync();
 				}
 			}
 		}
@@ -168,7 +209,7 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 	private const string ConnectionStringPattern = "Data Source={0}";
 
 	private const string PragmasScript =
-		"PRAGMA auto_vacuum = INCREMENTAL; PRAGMA journal_mode = WAL;";
+		"PRAGMA auto_vacuum = FULL; PRAGMA journal_mode = WAL;";
 
 	private const string CreateTableScript = """
 		CREATE TABLE IF NOT EXISTS ThumbnailCacheEntries (
@@ -179,6 +220,11 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 			ThumbnailData BLOB NOT NULL,
 			PRIMARY KEY (ImageFilePath, ThumbnailSize, ApplyImageOrientation));
 	""";
+
+	private const string ClearDataScript = "DELETE FROM ThumbnailCacheEntries;";
+	private const string ClearWriteAheadLogScript =
+		"PRAGMA wal_checkpoint(FULL);";
+	private const string TrimDatabaseScript = "VACUUM;";
 
 	private const string GetThumbnailCacheEntryScript = """
 		SELECT ThumbnailData
@@ -210,8 +256,25 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 	""";
 
 	private readonly string _thumbnailCacheFolderPath;
-	private readonly string _thumbnailCacheDbFileName;
 	private readonly string _thumbnailCacheDbFilePath;
 
 	private readonly string _connectionString;
+
+	private readonly IFileSizeEngine _fileSizeEngine;
+
+	private bool ShouldCreateDatabase()
+	{
+		if (!File.Exists(_thumbnailCacheDbFilePath))
+		{
+			return true;
+		}
+
+		var thumbnailCacheDbFileInfo = new FileInfo(_thumbnailCacheDbFilePath);
+		if (thumbnailCacheDbFileInfo.Length == 0)
+		{
+			return true;
+		}
+
+		return false;
+	}
 }

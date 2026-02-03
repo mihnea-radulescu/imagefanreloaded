@@ -1,7 +1,7 @@
 # imagefanreloaded
 ImageFan Reloaded is a cross-platform, feature-rich, tab-based image viewer, supporting multi-core processing.
 
-It is written in C#, and targets .NET 10 on Linux and Windows. It relies on [Avalonia](https://github.com/AvaloniaUI/Avalonia), as its UI framework, and on [Magick.NET](https://github.com/dlemstra/Magick.NET), as its image manipulation library.
+It is written in C#, and targets .NET 10 on Linux and Windows. It relies on [Avalonia](https://github.com/AvaloniaUI/Avalonia), as its UI framework, on [Magick.NET](https://github.com/dlemstra/Magick.NET), as its image manipulation library, and on [SQLite](https://github.com/sqlite/sqlite), as its thumbnail cache database.
 
 Features:
 * quick concurrent thumbnail generation, scaling to the number of processor cores present
@@ -14,6 +14,7 @@ Features:
 * image animation support for the formats gif, mng and webp
 * folder and image file ordering by name, last modification time and random shuffle, ascending and descending
 * configurable thumbnail size, between 100 and 1200 pixels
+* thumbnail caching capability for fast folder browsing
 * slideshow navigation across images
 * image info containing file, image, color, EXIF, IPTC and XMP profiles
 * automatic image orientation according to the EXIF orientation tag
@@ -44,6 +45,7 @@ User interface:
 * key G to toggle global ordering for recursive folder browsing
 * key E for applying EXIF image orientation
 * key O for displaying Tab options view
+* key C for displaying Thumbnail cache options view
 * keys H and F1 for displaying About view
 * keys Up, Down, Left and Right for navigating through the folders tree
 * keys Up, Down, Left, Right, PageUp, PageDown, Backspace and Space for back and forward navigation through thumbnails and opened images

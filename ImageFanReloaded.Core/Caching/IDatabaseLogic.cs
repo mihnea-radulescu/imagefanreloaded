@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace ImageFanReloaded.Core.Caching;
 
@@ -6,7 +7,9 @@ public interface IDatabaseLogic
 {
     void CreateDatabaseIfNotExisting();
 
-    void DeleteDatabase();
+	int GetThumbnailCacheSizeInMegabytes();
+
+    Task ClearDatabase();
 
     ThumbnailCacheEntry? GetThumbnailCacheEntry(
 		string imageFilePath,

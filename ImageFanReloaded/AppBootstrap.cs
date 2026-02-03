@@ -59,6 +59,9 @@ public class AppBootstrap : IAppBootstrap
 	private ISettingsFactory _settingsFactory = null!;
 	private IMouseCursorFactory _mouseCursorFactory = null!;
 	private IFileSizeEngine _fileSizeEngine = null!;
+	private IDatabaseLogic _databaseLogic = null!;
+	private IThumbnailCacheOptions _thumbnailCacheOptions = null!;
+	private IImageFileFactory _imageFileFactory = null!;
 	private IDiscQueryEngine _discQueryEngine = null!;
 	private IImageViewFactory _imageViewFactory = null!;
 	private IInputPathHandlerFactory _inputPathHandlerFactory = null!;
@@ -84,28 +87,28 @@ public class AppBootstrap : IAppBootstrap
 		IImageDataExtractor imageDataExtractor = new ImageDataExtractor(
 			_globalParameters);
 
-		IThumbnailCacheConfig thumbnailCacheConfig = new ThumbnailCacheConfig(
-			_globalParameters);
-		IDatabaseLogic databaseLogic =
-			new SqliteDatabaseLogic(_globalParameters, thumbnailCacheConfig);
-
-		databaseLogic.CreateDatabaseIfNotExisting();
+		_databaseLogic = new SqliteDatabaseLogic(
+			_globalParameters, _settingsFactory, _fileSizeEngine);
 
 		IImageFileContentLogic imageFileContentLogic =
 			new ImageFileContentLogic();
 		IImageFileContentLogic cachedImageFileContentLogic =
 			new CachedImageFileContentLogic(
-				imageFileContentLogic, imageDataExtractor, databaseLogic);
+				imageFileContentLogic, imageDataExtractor, _databaseLogic);
 
-		IImageFileFactory imageFileFactory = new ImageFileFactory(
+		_thumbnailCacheOptions = _settingsFactory.GetThumbnailCacheOptions();
+
+		_imageFileFactory = new ImageFileFactory(
 			_globalParameters,
 			imageResizer,
 			_fileSizeEngine,
-			imageFileContentLogic); // cachedImageFileContentLogic);
+			_thumbnailCacheOptions,
+			imageFileContentLogic,
+			cachedImageFileContentLogic);
 
 		IDiscQueryEngineFactory discQueryEngineFactory =
 			new DiscQueryEngineFactory(
-				_globalParameters, imageFileFactory, _fileSizeEngine);
+				_globalParameters, _imageFileFactory, _fileSizeEngine);
 		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 
 		IScreenInfo screenInfo = new ScreenInfo();
@@ -173,6 +176,10 @@ public class AppBootstrap : IAppBootstrap
 		ITabOptionsViewFactory tabOptionsViewFactory =
 			new TabOptionsViewFactory(_globalParameters);
 
+		IThumbnailCacheOptionsViewFactory thumbnailCacheOptionsViewFactory =
+			new ThumbnailCacheOptionsViewFactory(
+				_globalParameters, _thumbnailCacheOptions, _databaseLogic);
+
 		IAboutInfoProvider aboutInfoProvider = new AboutInfoProvider();
 		IAboutViewFactory aboutViewFactory = new AboutViewFactory(
 			aboutInfoProvider, _globalParameters);
@@ -185,10 +192,13 @@ public class AppBootstrap : IAppBootstrap
 		var mainViewPresenter = new MainViewPresenter(
 			_discQueryEngine,
 			folderVisualStateFactory,
+			_databaseLogic,
+			_imageFileFactory,
 			_imageViewFactory,
 			imageInfoViewFactory,
 			imageEditViewFactory,
 			tabOptionsViewFactory,
+			thumbnailCacheOptionsViewFactory,
 			aboutViewFactory,
 			_inputPathHandlerFactory,
 			_commandLineArgsInputPathHandler,

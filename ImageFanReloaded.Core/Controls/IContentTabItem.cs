@@ -37,6 +37,7 @@ public interface IContentTabItem
 	event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
 	event EventHandler<ImageSelectedEventArgs>? ImageEditRequested;
 	event EventHandler<ContentTabItemEventArgs>? TabOptionsRequested;
+	event EventHandler<ContentTabItemEventArgs>? ThumbnailCacheOptionsRequested;
 	event EventHandler<ContentTabItemEventArgs>? AboutInfoRequested;
 
 	void EnableFolderTreeViewSelectedItemChanged();
@@ -85,8 +86,12 @@ public interface IContentTabItem
 	void UpdateSelectedImageStatus();
 	Task UpdateSelectedThumbnailAfterImageFileChange();
 
-	Task ShowImageEdit(IImageEditView imageEditView);
-	Task ShowTabOptions(ITabOptionsView tabOptionsView);
-	Task ShowAboutInfo(IAboutView aboutView);
 	Task ShowImageInfo(IImageInfoView imageInfoView);
+	Task ShowImageEdit(IImageEditView imageEditView);
+
+	Task ShowTabOptions(ITabOptionsView tabOptionsView);
+	Task ShowThumbnailCacheOptions(
+		IThumbnailCacheOptionsView thumbnailCacheOptionsView);
+
+	Task ShowAboutInfo(IAboutView aboutView);
 }

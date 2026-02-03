@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using ImageFanReloaded.Core.Caching;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core;
@@ -14,25 +16,31 @@ public class MainViewPresenter
 	public MainViewPresenter(
 		IDiscQueryEngine discQueryEngine,
 		IFolderVisualStateFactory folderVisualStateFactory,
+		IDatabaseLogic databaseLogic,
+		IImageFileFactory imageFileFactory,
 		IImageViewFactory imageViewFactory,
 		IImageInfoViewFactory imageInfoViewFactory,
 		IImageEditViewFactory imageEditViewFactory,
 		ITabOptionsViewFactory tabOptionsViewFactory,
+		IThumbnailCacheOptionsViewFactory thumbnailCacheOptionsViewFactory,
 		IAboutViewFactory aboutViewFactory,
 		IInputPathHandlerFactory inputPathHandlerFactory,
 		IInputPathHandler commandLineArgsInputPathHandler,
 		IMainView mainView)
 	{
 		_discQueryEngine = discQueryEngine;
-
 		_folderVisualStateFactory = folderVisualStateFactory;
+		_databaseLogic = databaseLogic;
+		_imageFileFactory = imageFileFactory;
+
 		_imageViewFactory = imageViewFactory;
 		_imageInfoViewFactory = imageInfoViewFactory;
 		_imageEditViewFactory = imageEditViewFactory;
 		_tabOptionsViewFactory = tabOptionsViewFactory;
+		_thumbnailCacheOptionsViewFactory = thumbnailCacheOptionsViewFactory;
 		_aboutViewFactory = aboutViewFactory;
-		_inputPathHandlerFactory = inputPathHandlerFactory;
 
+		_inputPathHandlerFactory = inputPathHandlerFactory;
 		_commandLineArgsInputPathHandler = commandLineArgsInputPathHandler;
 		_shouldProcessCommandLineArgsInputPath = true;
 
@@ -44,15 +52,19 @@ public class MainViewPresenter
 	}
 
 	private readonly IDiscQueryEngine _discQueryEngine;
-
 	private readonly IFolderVisualStateFactory _folderVisualStateFactory;
+	private readonly IDatabaseLogic _databaseLogic;
+	private readonly IImageFileFactory _imageFileFactory;
+
 	private readonly IImageViewFactory _imageViewFactory;
 	private readonly IImageInfoViewFactory _imageInfoViewFactory;
 	private readonly IImageEditViewFactory _imageEditViewFactory;
 	private readonly ITabOptionsViewFactory _tabOptionsViewFactory;
+	private readonly IThumbnailCacheOptionsViewFactory
+		_thumbnailCacheOptionsViewFactory;
 	private readonly IAboutViewFactory _aboutViewFactory;
-	private readonly IInputPathHandlerFactory _inputPathHandlerFactory;
 
+	private readonly IInputPathHandlerFactory _inputPathHandlerFactory;
 	private readonly IInputPathHandler _commandLineArgsInputPathHandler;
 	private bool _shouldProcessCommandLineArgsInputPath;
 
@@ -148,6 +160,28 @@ public class MainViewPresenter
 		tabOptionsView.TabOptionsChanged -= OnTabOptionsChanged;
 	}
 
+	private async void OnThumbnailCacheOptionsRequested(
+		object? sender, ContentTabItemEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+
+		var thumbnailCacheOptionsView = _thumbnailCacheOptionsViewFactory
+			.GetThumbnailCacheOptionsView();
+
+		thumbnailCacheOptionsView.EnableThumbnailCachingChanged +=
+			OnEnableThumbnailCachingChanged;
+		thumbnailCacheOptionsView.ClearThumbnailCacheSelected +=
+			OnClearThumbnailCacheSelected;
+
+		await contentTabItem.ShowThumbnailCacheOptions(
+			thumbnailCacheOptionsView);
+
+		thumbnailCacheOptionsView.EnableThumbnailCachingChanged -=
+			OnEnableThumbnailCachingChanged;
+		thumbnailCacheOptionsView.ClearThumbnailCacheSelected -=
+			OnClearThumbnailCacheSelected;
+	}
+
 	private async void OnAboutInfoRequested(
 		object? sender, ContentTabItemEventArgs e)
 	{
@@ -223,6 +257,34 @@ public class MainViewPresenter
 		{
 			await contentTabItem.TabOptions!.SaveDefaultTabOptions();
 		}
+	}
+
+	private async void OnEnableThumbnailCachingChanged(
+		object? sender, EnableThumbnailCachingEventArgs e)
+	{
+		var thumbnailCacheOptions = e.ThumbnailCacheOptions;
+
+		if (thumbnailCacheOptions.EnableThumbnailCaching)
+		{
+			_imageFileFactory.EnableThumbnailCaching();
+		}
+		else
+		{
+			_imageFileFactory.DisableThumbnailCaching();
+		}
+
+		await thumbnailCacheOptions.SaveThumbnailCacheOptions();
+	}
+
+	private async void OnClearThumbnailCacheSelected(
+		object? sender, ClearThumbnailCacheEventArgs e)
+	{
+		var thumbnailCacheOptionsView = e.ThumbnailCacheOptionsView;
+
+		await _databaseLogic.ClearDatabase();
+
+		thumbnailCacheOptionsView.ThumbnailCacheSizeInMegabytes =
+			_databaseLogic.GetThumbnailCacheSizeInMegabytes();
 	}
 
 	private async void OnFolderChanged(object? sender, FolderChangedEventArgs e)
@@ -315,6 +377,8 @@ public class MainViewPresenter
 		contentTabItem.ImageInfoRequested += OnImageInfoRequested;
 		contentTabItem.ImageEditRequested += OnImageEditRequested;
 		contentTabItem.TabOptionsRequested += OnTabOptionsRequested;
+		contentTabItem.ThumbnailCacheOptionsRequested +=
+			OnThumbnailCacheOptionsRequested;
 		contentTabItem.AboutInfoRequested += OnAboutInfoRequested;
 	}
 
@@ -328,6 +392,8 @@ public class MainViewPresenter
 		contentTabItem.ImageInfoRequested -= OnImageInfoRequested;
 		contentTabItem.ImageEditRequested -= OnImageEditRequested;
 		contentTabItem.TabOptionsRequested -= OnTabOptionsRequested;
+		contentTabItem.ThumbnailCacheOptionsRequested -=
+			OnThumbnailCacheOptionsRequested;
 		contentTabItem.AboutInfoRequested -= OnAboutInfoRequested;
 	}
 

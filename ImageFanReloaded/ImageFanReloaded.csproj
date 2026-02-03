@@ -71,6 +71,10 @@
 			<DependentUpon>ThumbnailBox.axaml</DependentUpon>
 			<SubType>Code</SubType>
 		</Compile>
+		<Compile Update="Controls\ThumbnailCacheOptionsWindow.axaml.cs">
+			<DependentUpon>ThumbnailCacheOptionsWindow.axaml</DependentUpon>
+			<SubType>Code</SubType>
+		</Compile>
 		<Compile Update="Controls\WindowedImageWindow.axaml.cs">
 			<DependentUpon>WindowedImageWindow.axaml</DependentUpon>
 			<SubType>Code</SubType>

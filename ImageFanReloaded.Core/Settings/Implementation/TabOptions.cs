@@ -129,10 +129,7 @@ public class TabOptions : ITabOptions
 				_defaultTabOptions._tabOptionsDto,
 				TabOptionsDtoJsonTypeInfo);
 
-			if (!Directory.Exists(_configFolderPath))
-			{
-				Directory.CreateDirectory(_configFolderPath);
-			}
+			Directory.CreateDirectory(_configFolderPath);
 
 			await File.WriteAllTextAsync(
 				_tabOptionsConfigFilePath, jsonContent);

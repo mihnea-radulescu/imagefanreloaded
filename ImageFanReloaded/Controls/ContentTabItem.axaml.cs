@@ -57,6 +57,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
 	public event EventHandler<ImageSelectedEventArgs>? ImageEditRequested;
 	public event EventHandler<ContentTabItemEventArgs>? TabOptionsRequested;
+	public event EventHandler<ContentTabItemEventArgs>?
+		ThumbnailCacheOptionsRequested;
 	public event EventHandler<ContentTabItemEventArgs>? AboutInfoRequested;
 
 	public void EnableFolderTreeViewSelectedItemChanged()
@@ -77,6 +79,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			ShouldDisplayImageInfo(keyModifiers, keyPressing) ||
 			ShouldDisplayImageEdit(keyModifiers, keyPressing) ||
 			ShouldDisplayTabOptions(keyModifiers, keyPressing) ||
+			ShouldDisplayThumbnailCacheOptions(keyModifiers, keyPressing) ||
 			ShouldDisplayAboutInfo(keyModifiers, keyPressing) ||
 			ShouldChangeFolderOrdering(keyModifiers, keyPressing) ||
 			ShouldChangeFolderOrderingDirection(keyModifiers, keyPressing) ||
@@ -116,6 +119,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldDisplayTabOptions(keyModifiers, keyPressing))
 		{
 			RaiseTabOptionsRequested();
+		}
+		else if (ShouldDisplayThumbnailCacheOptions(keyModifiers, keyPressing))
+		{
+			RaiseThumbnailCacheOptionsRequested();
 		}
 		else if (ShouldDisplayAboutInfo(keyModifiers, keyPressing))
 		{
@@ -473,14 +480,19 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public async Task ShowImageEdit(IImageEditView imageEditView)
-		=> await imageEditView.ShowDialog(MainView!);
-	public async Task ShowTabOptions(ITabOptionsView tabOptionsView)
-		=> await tabOptionsView.ShowDialog(MainView!);
-	public async Task ShowAboutInfo(IAboutView aboutView)
-		=> await aboutView.ShowDialog(MainView!);
 	public async Task ShowImageInfo(IImageInfoView imageInfoView)
 		=> await imageInfoView.ShowDialog(MainView!);
+	public async Task ShowImageEdit(IImageEditView imageEditView)
+		=> await imageEditView.ShowDialog(MainView!);
+
+	public async Task ShowTabOptions(ITabOptionsView tabOptionsView)
+		=> await tabOptionsView.ShowDialog(MainView!);
+	public async Task ShowThumbnailCacheOptions(
+		IThumbnailCacheOptionsView thumbnailCacheOptionsView)
+		=> await thumbnailCacheOptionsView.ShowDialog(MainView!);
+
+	public async Task ShowAboutInfo(IAboutView aboutView)
+		=> await aboutView.ShowDialog(MainView!);
 
 	private const string FakeTreeViewItemText = "Loading...";
 
@@ -593,6 +605,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseTabOptionsRequested();
+	private void OnThumbnailCacheOptionsButtonClicked(
+		object? sender, RoutedEventArgs e)
+			=> RaiseThumbnailCacheOptionsRequested();
+
 	private void OnAboutButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseAboutInfoRequested();
 
@@ -804,6 +820,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.OKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldDisplayThumbnailCacheOptions(
+		KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+			keyPressing == GlobalParameters!.CKey)
 		{
 			return true;
 		}
@@ -1076,6 +1104,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void RaiseTabOptionsRequested()
 	{
 		TabOptionsRequested?.Invoke(this, new ContentTabItemEventArgs(this));
+	}
+
+	private void RaiseThumbnailCacheOptionsRequested()
+	{
+		ThumbnailCacheOptionsRequested?.Invoke(
+			this, new ContentTabItemEventArgs(this));
 	}
 
 	private void RaiseAboutInfoRequested()

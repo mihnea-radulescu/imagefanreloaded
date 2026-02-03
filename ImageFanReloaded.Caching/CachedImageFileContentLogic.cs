@@ -17,6 +17,7 @@ public class CachedImageFileContentLogic : IImageFileContentLogic
 		_imageDataExtractor = imageDataExtractor;
 
 		_databaseLogic = databaseLogic;
+		_databaseLogic.CreateDatabaseIfNotExisting();
 	}
 
 	public ImageData GetImageData(

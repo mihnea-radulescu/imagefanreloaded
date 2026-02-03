@@ -68,6 +68,7 @@ User interface:
 • key G to toggle global ordering for recursive folder browsing
 • key E for applying EXIF image orientation
 • key O for displaying Tab options view
+• key C for displaying Thumbnail cache options view
 • keys H and F1 for displaying About view
 • keys Up, Down, Left and Right for navigating through the folders tree
 • keys Up, Down, Left, Right, PageUp, PageDown, Backspace and Space for back and forward navigation

@@ -23,12 +23,6 @@ public class ThumbnailCacheOptions : IThumbnailCacheOptions
 		set => _thumbnailCacheOptionsDto.EnableThumbnailCaching = value;
 	}
 
-	public bool ShouldClearThumbnailCache
-	{
-		get => _thumbnailCacheOptionsDto.ShouldClearThumbnailCache;
-		set => _thumbnailCacheOptionsDto.ShouldClearThumbnailCache = value;
-	}
-
 	public async Task SaveThumbnailCacheOptions()
 	{
 		try
@@ -37,10 +31,7 @@ public class ThumbnailCacheOptions : IThumbnailCacheOptions
 				_thumbnailCacheOptionsDto,
 				ThumbnailCacheOptionsDtoJsonTypeInfo);
 
-			if (!Directory.Exists(_configFolderPath))
-			{
-				Directory.CreateDirectory(_configFolderPath);
-			}
+			Directory.CreateDirectory(_configFolderPath);
 
 			await File.WriteAllTextAsync(
 				_thumbnailCacheOptionsConfigFilePath, jsonContent);
@@ -52,6 +43,8 @@ public class ThumbnailCacheOptions : IThumbnailCacheOptions
 
 	private const string ThumbnailCacheOptionsConfigFileName =
 		"ThumbnailCacheOptions.json";
+
+	private const bool DefaultEnableThumbnailCaching = false;
 
 	private static readonly JsonTypeInfo<ThumbnailCacheOptionsDto>
 		ThumbnailCacheOptionsDtoJsonTypeInfo =
@@ -99,8 +92,7 @@ public class ThumbnailCacheOptions : IThumbnailCacheOptions
 	{
 		return new ThumbnailCacheOptionsDto
 		{
-			EnableThumbnailCaching = false,
-			ShouldClearThumbnailCache = false
+			EnableThumbnailCaching = DefaultEnableThumbnailCaching
 		};
 	}
 }
