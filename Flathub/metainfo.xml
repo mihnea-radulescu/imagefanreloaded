@@ -68,6 +68,14 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.02.03" date="2026-02-03">
+			<description>
+				<ul>
+					<li>Added thumbnail caching support</li>
+					<li>Updated application framework and libraries</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.01.04" date="2026-01-04">
 			<description>
 				<p>Added image info text to the windowed maximized borderless view</p>
