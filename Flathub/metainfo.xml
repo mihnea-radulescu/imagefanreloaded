@@ -68,6 +68,15 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.02.11" date="2026-02-11">
+			<description>
+				<ul>
+					<li>Optimized recursive folder browsing refresh</li>
+					<li>Improved async calls performance</li>
+					<li>Updated application framework</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.02.03" date="2026-02-03">
 			<description>
 				<ul>
