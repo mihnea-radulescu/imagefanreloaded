@@ -69,6 +69,8 @@ public interface IContentTabItem
 	void RefreshThumbnailBoxes(
 		IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
 
+	FileSystemEntryInfo? GetActiveFileSystemEntryInfo();
+
 	void SetFolderInfoText(string folderInfoText);
 	void SetImageInfoText(string imageInfoText);
 

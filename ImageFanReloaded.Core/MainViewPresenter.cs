@@ -211,6 +211,7 @@ public class MainViewPresenter
 		object? sender, TabOptionsChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
+		var fileSystemEntryInfo = e.FileSystemEntryInfo;
 		var tabOptions = e.TabOptions;
 		var tabOptionChanges = e.TabOptionChanges;
 
@@ -226,8 +227,10 @@ public class MainViewPresenter
 				FileSystemEntryInfoOrdering.RandomShuffle &&
 			 tabOptionChanges.HasChangedImageFileOrderingDirection) ||
 			tabOptionChanges.HasChangedThumbnailSize ||
-			tabOptionChanges.HasChangedRecursiveFolderBrowsing ||
+			(tabOptionChanges.HasChangedRecursiveFolderBrowsing &&
+			 fileSystemEntryInfo?.HasSubFolders == true) ||
 			(tabOptions.RecursiveFolderBrowsing &&
+			 fileSystemEntryInfo?.HasSubFolders == true &&
 			 tabOptionChanges
 			 	.HasChangedGlobalOrderingForRecursiveFolderBrowsing) ||
 			tabOptionChanges.HasChangedApplyImageOrientation ||
@@ -290,12 +293,16 @@ public class MainViewPresenter
 	private async void OnFolderChanged(object? sender, FolderChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
+		var fileSystemEntryInfo = e.FileSystemEntryInfo;
 
 		var previousFolderVisualState = contentTabItem.FolderVisualState;
 		previousFolderVisualState?.NotifyStopThumbnailGeneration();
 
 		contentTabItem.FolderVisualState = _folderVisualStateFactory
-			.GetFolderVisualState(contentTabItem, e.Name, e.Path);
+			.GetFolderVisualState(
+				contentTabItem,
+				fileSystemEntryInfo.Name,
+				fileSystemEntryInfo.Path);
 
 		await contentTabItem.FolderVisualState.UpdateVisualState(
 			contentTabItem.TabOptions!);
@@ -307,6 +314,7 @@ public class MainViewPresenter
 		object? sender, FolderOrderingChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
+		var fileSystemEntryInfo = e.FileSystemEntryInfo;
 
 		var isExpandedFolderTreeViewSelectedItem = contentTabItem
 				.GetFolderTreeViewSelectedItemExpandedState() ?? false;
@@ -316,7 +324,7 @@ public class MainViewPresenter
 		var rootFolders = await PopulateRootFolders(contentTabItem);
 
 		var folderChangedInputPathHandler = _inputPathHandlerFactory
-			.GetInputPathHandler(e.Path);
+			.GetInputPathHandler(fileSystemEntryInfo.Path);
 		await BuildInputFolderTreeView(
 			contentTabItem, rootFolders, folderChangedInputPathHandler);
 

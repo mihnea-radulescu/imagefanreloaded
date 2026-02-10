@@ -1,21 +1,18 @@
 using System;
 using ImageFanReloaded.Core.Controls;
+using ImageFanReloaded.Core.DiscAccess;
 
 namespace ImageFanReloaded.Core.CustomEventArgs;
 
 public class FolderChangedEventArgs : EventArgs
 {
 	public FolderChangedEventArgs(
-		IContentTabItem contentTabItem, string name, string path)
+		IContentTabItem contentTabItem, FileSystemEntryInfo fileSystemEntryInfo)
 	{
 		ContentTabItem = contentTabItem;
-
-		Name = name;
-		Path = path;
+		FileSystemEntryInfo = fileSystemEntryInfo;
 	}
 
 	public IContentTabItem ContentTabItem { get; }
-
-	public string Name { get; }
-	public string Path { get; }
+	public FileSystemEntryInfo FileSystemEntryInfo { get; }
 }

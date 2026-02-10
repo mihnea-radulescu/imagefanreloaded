@@ -355,6 +355,19 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
+	public FileSystemEntryInfo? GetActiveFileSystemEntryInfo()
+	{
+		FileSystemEntryInfo? fileSystemEntryInfo = null;
+
+		if (_activeFolderTreeViewItem?.Header is
+			IFileSystemTreeViewItem fileSystemEntryItem)
+		{
+			fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo;
+		}
+
+		return fileSystemEntryInfo;
+	}
+
 	public void SetFolderInfoText(string folderInfoText)
 		=> _folderInfoSelectableTextBlock.Text = folderInfoText;
 
@@ -402,14 +415,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void RaiseFolderOrderingChangedEvent()
 	{
-		if (_activeFolderTreeViewItem?.Header is
-			IFileSystemTreeViewItem fileSystemEntryItem)
-		{
-			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-			var selectedFolderPath = fileSystemEntryInfo.Path;
+		var activeFileSystemEntryInfo = GetActiveFileSystemEntryInfo();
 
+		if (activeFileSystemEntryInfo is not null)
+		{
 			var folderOrderingChangedEventArgs =
-				new FolderOrderingChangedEventArgs(this, selectedFolderPath);
+				new FolderOrderingChangedEventArgs(
+					this, activeFileSystemEntryInfo);
 
 			FolderOrderingChanged?.Invoke(this, folderOrderingChangedEventArgs);
 		}
@@ -421,11 +433,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			IFileSystemTreeViewItem fileSystemEntryItem)
 		{
 			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-			var selectedFolderName = fileSystemEntryInfo.Name;
-			var selectedFolderPath = fileSystemEntryInfo.Path;
 
-			var folderChangedEventArgs = new FolderChangedEventArgs(
-				this, selectedFolderName, selectedFolderPath);
+			var folderChangedEventArgs =
+				new FolderChangedEventArgs(this, fileSystemEntryInfo);
 
 			FolderChanged?.Invoke(this, folderChangedEventArgs);
 		}
@@ -1307,7 +1317,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		TabOptions!.RecursiveFolderBrowsing =
 			!TabOptions!.RecursiveFolderBrowsing;
 
-		RaiseFolderChangedEvent();
+		var activeFileSystemEntryInfo = GetActiveFileSystemEntryInfo();
+
+		if (activeFileSystemEntryInfo?.HasSubFolders == true)
+		{
+			RaiseFolderChangedEvent();
+		}
 	}
 
 	private void ToggleGlobalOrderingForRecursiveFolderAccess()
@@ -1315,7 +1330,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		TabOptions!.GlobalOrderingForRecursiveFolderBrowsing =
 			!TabOptions!.GlobalOrderingForRecursiveFolderBrowsing;
 
-		if (TabOptions!.RecursiveFolderBrowsing)
+		var activeFileSystemEntryInfo = GetActiveFileSystemEntryInfo();
+
+		if (TabOptions!.RecursiveFolderBrowsing &&
+			activeFileSystemEntryInfo?.HasSubFolders == true)
 		{
 			RaiseFolderChangedEvent();
 		}

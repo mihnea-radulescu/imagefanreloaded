@@ -81,7 +81,10 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	{
 		TabOptionsChanged?.Invoke(
 			this, new TabOptionsChangedEventArgs(
-				ContentTabItem!, TabOptions!, _tabOptionChanges));
+				ContentTabItem!,
+				ContentTabItem!.GetActiveFileSystemEntryInfo(),
+				TabOptions!,
+				_tabOptionChanges));
 
 		UnregisterTabOptionEvents();
 	}
