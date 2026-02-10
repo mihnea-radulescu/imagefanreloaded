@@ -33,8 +33,7 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 		_isLoading = true;
 		SetLoadingImageInfoTitle();
 
-		var imageInfo = await Task.Run(()
-			=> ImageInfoBuilder!.BuildImageInfo(ImageFile!));
+		var imageInfo = await ImageInfoBuilder!.BuildImageInfo(ImageFile!);
 		_imageInfoSelectableTextBlock.Text = imageInfo;
 
 		_imageInfoScrollViewer.Focus();

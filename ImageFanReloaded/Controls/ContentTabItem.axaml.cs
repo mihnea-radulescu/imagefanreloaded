@@ -717,7 +717,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			{
 				do
 				{
-					await Task.Delay(StartSlideshowDelay);
+					await Task.Delay(StartSlideshowDelay).ConfigureAwait(false);
 				} while (!await imageView
 									.CanStartSlideshowFromContentTabItem());
 

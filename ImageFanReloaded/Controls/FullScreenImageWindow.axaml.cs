@@ -493,9 +493,11 @@ public partial class FullScreenImageWindow : Window, IImageView
 						break;
 					}
 
-					await Task.Delay(
-						aThumbnailImageFrame.DelayUntilNextFrame,
-						ctsAnimation.Token);
+					await Task
+						.Delay(
+							aThumbnailImageFrame.DelayUntilNextFrame,
+							ctsAnimation.Token)
+						.ConfigureAwait(false);
 				}
 			}
 		}

@@ -196,9 +196,11 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 						return;
 					}
 
-					await Task.Delay(
-						aThumbnailImageFrame.DelayUntilNextFrame,
-						ctsAnimation.Token);
+					await Task
+						.Delay(
+							aThumbnailImageFrame.DelayUntilNextFrame,
+							ctsAnimation.Token)
+						.ConfigureAwait(false);
 				}
 			}
 		}

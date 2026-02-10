@@ -429,9 +429,11 @@ public partial class WindowedImageWindow : Window, IImageView
 						break;
 					}
 
-					await Task.Delay(
-						aThumbnailImageFrame.DelayUntilNextFrame,
-						ctsAnimation.Token);
+					await Task
+						.Delay(
+							aThumbnailImageFrame.DelayUntilNextFrame,
+							ctsAnimation.Token)
+						.ConfigureAwait(false);
 				}
 			}
 		}
