@@ -6,8 +6,10 @@ namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 public class ImageFileContentLogic : IImageFileContentLogic
 {
 	public ImageData GetImageData(
-		string imageFilePath, bool applyImageOrientation)
+		ImageFileData imageFileData, bool applyImageOrientation)
 	{
+		var imageFilePath = imageFileData.FilePath;
+
 		if (!File.Exists(imageFilePath))
 		{
 			return new ImageData(null);
@@ -29,11 +31,13 @@ public class ImageFileContentLogic : IImageFileContentLogic
 	}
 
 	public ImageData GetImageData(
-		string imageFilePath, int thumbnailSize, bool applyImageOrientation)
-			=> GetImageData(imageFilePath, applyImageOrientation);
+		ImageFileData imageFileData,
+		int thumbnailSize,
+		bool applyImageOrientation)
+			=> GetImageData(imageFileData, applyImageOrientation);
 
 	public void UpdateThumbnail(
-		string imageFilePath,
+		ImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation,
 		IImage thumbnail)

@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using ImageFanReloaded.Core.Caching;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
@@ -21,24 +20,22 @@ public class CachedImageFileContentLogic : IImageFileContentLogic
 	}
 
 	public ImageData GetImageData(
-		string imageFilePath, bool applyImageOrientation)
+		ImageFileData imageFileData, bool applyImageOrientation)
 			=> _imageFileContentLogic.GetImageData(
-					imageFilePath, applyImageOrientation);
+					imageFileData, applyImageOrientation);
 
 	public ImageData GetImageData(
-		string imageFilePath, int thumbnailSize, bool applyImageOrientation)
+		ImageFileData imageFileData,
+		int thumbnailSize,
+		bool applyImageOrientation)
 	{
 		try
 		{
-			var lastModificationTime = GetImageFileLastModificationTime(
-				imageFilePath);
-
 			var thumbnailCacheEntry = _databaseLogic
 				.GetThumbnailCacheEntry(
-					imageFilePath,
+					imageFileData,
 					thumbnailSize,
-					applyImageOrientation,
-					lastModificationTime);
+					applyImageOrientation);
 
 			if (thumbnailCacheEntry is not null)
 			{
@@ -49,17 +46,17 @@ public class CachedImageFileContentLogic : IImageFileContentLogic
 			}
 
 			return _imageFileContentLogic.GetImageData(
-				imageFilePath, applyImageOrientation);
+				imageFileData, applyImageOrientation);
 		}
 		catch
 		{
 			return _imageFileContentLogic.GetImageData(
-				imageFilePath, applyImageOrientation);
+				imageFileData, applyImageOrientation);
 		}
 	}
 
 	public void UpdateThumbnail(
-		string imageFilePath,
+		ImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation,
 		IImage thumbnail)
@@ -68,15 +65,16 @@ public class CachedImageFileContentLogic : IImageFileContentLogic
 		{
 			var thumbnailData = _imageDataExtractor.GetImageData(thumbnail);
 
-			var lastModificationTime = GetImageFileLastModificationTime(
-				imageFilePath);
-
 			var thumbnailCacheEntry = new ThumbnailCacheEntry
 			{
-				ImageFilePath = imageFilePath,
+				FilePath = imageFileData.FilePath,
+				FileSizeInBytes = imageFileData.FileSizeInBytes,
+				FileLastModificationTime =
+					imageFileData.FileLastModificationTime,
+
 				ThumbnailSize = thumbnailSize,
 				ApplyImageOrientation = applyImageOrientation,
-				LastModificationTime = lastModificationTime,
+
 				ThumbnailData = thumbnailData
 			};
 
@@ -91,10 +89,6 @@ public class CachedImageFileContentLogic : IImageFileContentLogic
 	private readonly IImageDataExtractor _imageDataExtractor;
 
 	private readonly IDatabaseLogic _databaseLogic;
-
-	private static DateTime GetImageFileLastModificationTime(
-		string imageFilePath)
-			=> File.GetLastWriteTimeUtc(imageFilePath);
 
 	private Stream GetCachedImageDataStream(byte[] cachedImageData)
 	{

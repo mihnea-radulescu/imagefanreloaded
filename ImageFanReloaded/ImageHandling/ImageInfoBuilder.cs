@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using ImageMagick;
+using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.Settings;
@@ -14,15 +15,18 @@ namespace ImageFanReloaded.ImageHandling;
 
 public class ImageInfoBuilder : IImageInfoBuilder
 {
-	public ImageInfoBuilder(IGlobalParameters globalParameters)
+	public ImageInfoBuilder(
+		IGlobalParameters globalParameters, IFileSizeEngine fileSizeEngine)
 	{
 		_globalParameters = globalParameters;
+		_fileSizeEngine = fileSizeEngine;
 	}
 
 	public async Task<string> BuildImageInfo(IImageFile imageFile)
 		=> await Task.Run(() => BuildImageInfoInternal(imageFile));
 
 	private readonly IGlobalParameters _globalParameters;
+	private readonly IFileSizeEngine _fileSizeEngine;
 
 	private string BuildImageInfoInternal(IImageFile imageFile)
 	{
@@ -58,7 +62,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		BuildFileProfile(imageFile, imageInfoBuilder);
 
 		using (IMagickImage image = new MagickImage(
-			imageFile.ImageFileData.ImageFilePath))
+			imageFile.ImageFileData.FilePath))
 		{
 			BuildImageProfile(
 				image,
@@ -86,21 +90,23 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		var imageFileData = imageFile.ImageFileData;
 
 		imageInfoBuilder.AppendLine(
-			$"\tFile name:\t{imageFileData.ImageFileName}");
+			$"\tFile name:\t{imageFileData.FileName}");
 		imageInfoBuilder.AppendLine(
-			$"\tFile path:\t{imageFileData.ImageFilePath}");
+			$"\tFile path:\t{imageFileData.FilePath}");
 
-		var sizeOnDiscInKilobytes = imageFileData.SizeOnDiscInKilobytes;
-		var sizeOnDiscInKilobytesForDisplay = decimal.Round(
-			sizeOnDiscInKilobytes,
-			_globalParameters.DecimalDigitCountForDisplay);
+		var fileSizeInKilobytes =
+			_fileSizeEngine.ConvertToKilobytes(imageFileData.FileSizeInBytes);
+		var fileSizeInKilobytesForDisplay = decimal.Round(
+			fileSizeInKilobytes, _globalParameters.DecimalDigitCountForDisplay);
 		imageInfoBuilder.AppendLine(
-			$"\tFile size:\t{sizeOnDiscInKilobytesForDisplay} KB");
+			$"\tFile size:\t{fileSizeInKilobytesForDisplay} KB");
 
-		var lastModificationTime = imageFileData.LastModificationTime;
-		var lastModificationTimeText = lastModificationTime.ToString();
+		var fileLastModificationLocalTime =
+			imageFileData.FileLastModificationTime.ToLocalTime();
+		var fileLastModificationLocalTimeText =
+			fileLastModificationLocalTime.ToString();
 		imageInfoBuilder.AppendLine(
-			$"\tFile last modification time:\t{lastModificationTimeText}");
+			$"\tFile last modification time:\t{fileLastModificationLocalTimeText}");
 	}
 
 	private static void BuildImageProfile(

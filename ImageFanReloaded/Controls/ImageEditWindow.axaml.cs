@@ -469,7 +469,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		SetControlsEnabledStatus(false);
 
 		_editableImage = await EditableImageFactory!.CreateEditableImage(
-			ImageFileData!.ImageFilePath);
+			ImageFileData!.FilePath);
 
 		var isImageLoaded = _editableImage is not null;
 		SetControlsEnabledStatus(isImageLoaded);
@@ -817,10 +817,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 			var hasSameFormat = saveFileImageFormat is null;
 
 			var imageFileName = hasSameFormat
-				? ImageFileData!.ImageFileName
-				: $"{ImageFileData!.ImageFileNameWithoutExtension}{saveFileImageFormat!.Extension}";
-			var imageFilePath = ImageFileData!.ImageFilePath;
-			var imageFolderPath = ImageFileData!.ImageFolderPath;
+				? ImageFileData!.FileName
+				: $"{ImageFileData!.FileNameWithoutExtension}{saveFileImageFormat!.Extension}";
+			var imageFilePath = ImageFileData!.FilePath;
+			var imageFolderPath = ImageFileData!.FolderPath;
 
 			var saveFileDialog = SaveFileDialogFactory!.GetSaveFileDialog();
 			var saveFileDialogTitle = hasSameFormat
@@ -1175,13 +1175,13 @@ public partial class ImageEditWindow : Window, IImageEditView
 			_downsizeToDimensionsMenuItem.IsEnabled;
 
 	private void SetLoadingImageTitle()
-		=> Title = $"{ImageFileData!.ImageFileName} - loading image...";
+		=> Title = $"{ImageFileData!.FileName} - loading image...";
 
 	private void SetImageTitle()
-		=> Title = $"{ImageFileData!.ImageFileName} - {_editableImage!.ImageSize}";
+		=> Title = $"{ImageFileData!.FileName} - {_editableImage!.ImageSize}";
 
 	private void SetImageLoadErrorTitle()
-		=> Title = $"{ImageFileData!.ImageFileName} - image read error";
+		=> Title = $"{ImageFileData!.FileName} - image read error";
 
 	private static void ExpandDropDownButton(DropDownButton dropDownButton)
 	{

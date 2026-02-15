@@ -58,8 +58,8 @@ public class FolderVisualState : IFolderVisualState
 				_folderPath, tabOptions);
 
 			_imageFilesCount = imageFiles.Count;
-			_imageFilesTotalSizeOnDiscInKilobytes =
-				GetImageFilesTotalSizeOnDiscInKilobytes(imageFiles);
+			_imageFilesTotalSizeInBytes =
+				GetImageFilesTotalSizeInBytes(imageFiles);
 
 			SetFolderInfoText(tabOptions);
 			_contentTabItem.SetImageInfoText(string.Empty);
@@ -76,12 +76,11 @@ public class FolderVisualState : IFolderVisualState
 
 	public void UpdateFolderInfoText(
 		ITabOptions tabOptions,
-		decimal previousSelectedImageSizeOnDiscInKilobytes,
-		decimal currentSelectedImageSizeOnDiscInKilobytes)
+		int previousSelectedImageFileSizeInBytes,
+		int currentSelectedImageFileSizeInBytes)
 	{
-		_imageFilesTotalSizeOnDiscInKilobytes +=
-			currentSelectedImageSizeOnDiscInKilobytes -
-			previousSelectedImageSizeOnDiscInKilobytes;
+		_imageFilesTotalSizeInBytes -= previousSelectedImageFileSizeInBytes;
+		_imageFilesTotalSizeInBytes += currentSelectedImageFileSizeInBytes;
 
 		SetFolderInfoText(tabOptions);
 	}
@@ -103,7 +102,7 @@ public class FolderVisualState : IFolderVisualState
 	private readonly CancellationTokenSource _ctsThumbnailGeneration;
 
 	private int _imageFilesCount;
-	private decimal _imageFilesTotalSizeOnDiscInKilobytes;
+	private long _imageFilesTotalSizeInBytes;
 
 	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(
 		ITabOptions tabOptions, IReadOnlyList<IImageFile> imageFiles)
@@ -217,25 +216,26 @@ public class FolderVisualState : IFolderVisualState
 				}
 			});
 
-	private static decimal GetImageFilesTotalSizeOnDiscInKilobytes(
+	private static long GetImageFilesTotalSizeInBytes(
 		IReadOnlyList<IImageFile> imageFiles)
 	{
-		var imageFilesTotalSizeOnDiscInKilobytes = imageFiles
+		var imageFilesTotalSizeInBytes = imageFiles
 			.Sum(anImageFile
-					=> anImageFile.ImageFileData.SizeOnDiscInKilobytes);
+					=> (long)anImageFile.ImageFileData.FileSizeInBytes);
 
-		return imageFilesTotalSizeOnDiscInKilobytes;
+		return imageFilesTotalSizeInBytes;
 	}
 
 	private void SetFolderInfoText(ITabOptions tabOptions)
 	{
-		var imageFilesTotalSizeOnDiscInMegabytes =
-			_fileSizeEngine.ConvertToMegabytes(
-				_imageFilesTotalSizeOnDiscInKilobytes);
+		var imageFilesTotalSizeInKilobytes =
+			_fileSizeEngine.ConvertToKilobytes(_imageFilesTotalSizeInBytes);
+		var imageFilesTotalSizeInMegabytes =
+			_fileSizeEngine.ConvertToMegabytes(imageFilesTotalSizeInKilobytes);
 
 		var folderStatusBarText = GetFolderStatusBarText(
 			_imageFilesCount,
-			imageFilesTotalSizeOnDiscInMegabytes,
+			imageFilesTotalSizeInMegabytes,
 			tabOptions.RecursiveFolderBrowsing);
 
 		_contentTabItem.SetFolderInfoText(folderStatusBarText);
@@ -243,18 +243,18 @@ public class FolderVisualState : IFolderVisualState
 
 	private string GetFolderStatusBarText(
 		int imageFilesCount,
-		decimal imageFilesTotalSizeOnDiscInMegabytes,
+		decimal imageFilesTotalSizeInMegabytes,
 		bool recursiveFolderAccess)
 	{
-		var imageFilesTotalSizeOnDiscInMegabytesForDisplay = decimal.Round(
-			imageFilesTotalSizeOnDiscInMegabytes,
+		var imageFilesTotalSizeInMegabytesForDisplay = decimal.Round(
+			imageFilesTotalSizeInMegabytes,
 			_globalParameters.DecimalDigitCountForDisplay);
 
 		var imageFilesCountAndTotalSizeText = imageFilesCount switch
 		{
 			0 => "no images",
-			1 => $"1 image - {imageFilesTotalSizeOnDiscInMegabytesForDisplay} MB",
-			_ => $"{imageFilesCount} images - {imageFilesTotalSizeOnDiscInMegabytesForDisplay} MB"
+			1 => $"1 image - {imageFilesTotalSizeInMegabytesForDisplay} MB",
+			_ => $"{imageFilesCount} images - {imageFilesTotalSizeInMegabytesForDisplay} MB"
 		};
 
 		var recursiveFolderAccessInfo = recursiveFolderAccess

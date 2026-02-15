@@ -1,9 +1,9 @@
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using ImageFanReloaded.Core.Caching;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Caching;
@@ -18,7 +18,7 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 		_thumbnailCacheFolderPath = settingsFactory.GetCacheFolderPath();
 
 		var thumbnailCacheDbFileName =
-			$"{globalParameters.ApplicationName}.db";
+			$"{globalParameters.ApplicationName}.cache.db";
 		_thumbnailCacheDbFilePath = Path.Combine(
 			_thumbnailCacheFolderPath, thumbnailCacheDbFileName);
 
@@ -119,10 +119,9 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 	}
 
 	public ThumbnailCacheEntry? GetThumbnailCacheEntry(
-		string imageFilePath,
+		ImageFileData imageFileData,
 		int thumbnailSize,
-		bool applyImageOrientation,
-		DateTime lastModificationTime)
+		bool applyImageOrientation)
 	{
 		try
 		{
@@ -135,13 +134,17 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 					dbCommand.CommandText = GetThumbnailCacheEntryScript;
 
 					dbCommand.Parameters.AddWithValue(
-						"@imageFilePath", imageFilePath);
+						"@filePath", imageFileData.FilePath);
+					dbCommand.Parameters.AddWithValue(
+						"@fileSizeInBytes", imageFileData.FileSizeInBytes);
+					dbCommand.Parameters.AddWithValue(
+						"@fileLastModificationTime",
+						imageFileData.FileLastModificationTime);
+
 					dbCommand.Parameters.AddWithValue(
 						"@thumbnailSize", thumbnailSize);
 					dbCommand.Parameters.AddWithValue(
 						"@applyImageOrientation", applyImageOrientation);
-					dbCommand.Parameters.AddWithValue(
-						"@lastModificationTime", lastModificationTime);
 
 					using (var dataReader = dbCommand.ExecuteReader())
 					{
@@ -152,10 +155,14 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 
 							return new ThumbnailCacheEntry
 							{
-								ImageFilePath = imageFilePath,
+								FilePath = imageFileData.FilePath,
+								FileSizeInBytes = imageFileData.FileSizeInBytes,
+								FileLastModificationTime =
+									imageFileData.FileLastModificationTime,
+
 								ThumbnailSize = thumbnailSize,
 								ApplyImageOrientation = applyImageOrientation,
-								LastModificationTime = lastModificationTime,
+
 								ThumbnailData = thumbnailData
 							};
 						}
@@ -185,15 +192,20 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 					dbCommand.CommandText = UpsertThumbnailCacheEntryScript;
 
 					dbCommand.Parameters.AddWithValue(
-						"@imageFilePath", thumbnailCacheEntry.ImageFilePath);
+						"@filePath", thumbnailCacheEntry.FilePath);
+					dbCommand.Parameters.AddWithValue(
+						"@fileSizeInBytes",
+						thumbnailCacheEntry.FileSizeInBytes);
+					dbCommand.Parameters.AddWithValue(
+						"@fileLastModificationTime",
+						thumbnailCacheEntry.FileLastModificationTime);
+
 					dbCommand.Parameters.AddWithValue(
 						"@thumbnailSize", thumbnailCacheEntry.ThumbnailSize);
 					dbCommand.Parameters.AddWithValue(
 						"@applyImageOrientation",
 						thumbnailCacheEntry.ApplyImageOrientation);
-					dbCommand.Parameters.AddWithValue(
-						"@lastModificationTime",
-						thumbnailCacheEntry.LastModificationTime);
+
 					dbCommand.Parameters.AddWithValue(
 						"@thumbnailData", thumbnailCacheEntry.ThumbnailData);
 
@@ -213,12 +225,13 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 
 	private const string CreateTableScript = """
 		CREATE TABLE IF NOT EXISTS ThumbnailCacheEntries (
-			ImageFilePath TEXT NOT NULL,
+			FilePath TEXT NOT NULL,
+			FileSizeInBytes INTEGER NOT NULL,
+			FileLastModificationTime DATETIME NOT NULL,
 			ThumbnailSize INTEGER NOT NULL,
 			ApplyImageOrientation BOOLEAN NOT NULL,
-			LastModificationTime DATETIME NOT NULL,
 			ThumbnailData BLOB NOT NULL,
-			PRIMARY KEY (ImageFilePath, ThumbnailSize, ApplyImageOrientation));
+			PRIMARY KEY (FilePath, ThumbnailSize, ApplyImageOrientation));
 	""";
 
 	private const string ClearDataScript = "DELETE FROM ThumbnailCacheEntries;";
@@ -229,29 +242,33 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 	private const string GetThumbnailCacheEntryScript = """
 		SELECT ThumbnailData
 		FROM ThumbnailCacheEntries
-		WHERE ImageFilePath = @imageFilePath
+		WHERE FilePath = @filePath
+			AND FileSizeInBytes = @fileSizeInBytes
+			AND FileLastModificationTime = @fileLastModificationTime
 			AND ThumbnailSize = @thumbnailSize
 			AND ApplyImageOrientation = @applyImageOrientation
-			AND LastModificationTime = @lastModificationTime
 	""";
 
 	private const string UpsertThumbnailCacheEntryScript = """
 		INSERT INTO ThumbnailCacheEntries (
-			ImageFilePath,
+			FilePath,
+			FileSizeInBytes,
+			FileLastModificationTime,
 			ThumbnailSize,
 			ApplyImageOrientation,
-			LastModificationTime,
 			ThumbnailData)
 		VALUES (
-			@imageFilePath,
+			@filePath,
+			@fileSizeInBytes,
+			@fileLastModificationTime,
 			@thumbnailSize,
 			@applyImageOrientation,
-			@lastModificationTime,
 			@thumbnailData)
-		ON CONFLICT (ImageFilePath, ThumbnailSize, ApplyImageOrientation)
+		ON CONFLICT (FilePath, ThumbnailSize, ApplyImageOrientation)
 		DO
 		UPDATE
-		SET LastModificationTime = excluded.LastModificationTime,
+		SET FileSizeInBytes = excluded.FileSizeInBytes,
+			FileLastModificationTime = excluded.FileLastModificationTime,
 			ThumbnailData = excluded.ThumbnailData;
 	""";
 

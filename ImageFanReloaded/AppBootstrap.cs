@@ -101,14 +101,13 @@ public class AppBootstrap : IAppBootstrap
 		_imageFileFactory = new ImageFileFactory(
 			_globalParameters,
 			imageResizer,
-			_fileSizeEngine,
 			_thumbnailCacheOptions,
+			_fileSizeEngine,
 			imageFileContentLogic,
 			cachedImageFileContentLogic);
 
 		IDiscQueryEngineFactory discQueryEngineFactory =
-			new DiscQueryEngineFactory(
-				_globalParameters, _imageFileFactory, _fileSizeEngine);
+			new DiscQueryEngineFactory(_globalParameters, _imageFileFactory);
 		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
 
 		IScreenInfo screenInfo = new ScreenInfo();
@@ -185,7 +184,7 @@ public class AppBootstrap : IAppBootstrap
 			aboutInfoProvider, _globalParameters);
 
 		IImageInfoBuilder imageInfoBuilder = new ImageInfoBuilder(
-			_globalParameters);
+			_globalParameters, _fileSizeEngine);
 		IImageInfoViewFactory imageInfoViewFactory = new ImageInfoViewFactory(
 			_globalParameters, imageInfoBuilder);
 

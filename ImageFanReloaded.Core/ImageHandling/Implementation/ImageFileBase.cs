@@ -37,7 +37,7 @@ public abstract class ImageFileBase : IImageFile
 	public IImage GetImage(bool applyImageOrientation)
 	{
 		using var imageData = _imageFileContentLogic.GetImageData(
-			ImageFileData.ImageFilePath, applyImageOrientation);
+			ImageFileData, applyImageOrientation);
 
 		if (imageData.ImageDataStream is null)
 		{
@@ -141,7 +141,7 @@ public abstract class ImageFileBase : IImageFile
 	public void ReadImageFile(int thumbnailSize, bool applyImageOrientation)
 	{
 		var imageData = _imageFileContentLogic.GetImageData(
-			ImageFileData.ImageFilePath, thumbnailSize, applyImageOrientation);
+			ImageFileData, thumbnailSize, applyImageOrientation);
 
 		if (imageData.ImageDataStream is null)
 		{
@@ -203,7 +203,7 @@ public abstract class ImageFileBase : IImageFile
 				if (ShouldUpdateThumbnail(thumbnail))
 				{
 					_imageFileContentLogic.UpdateThumbnail(
-						ImageFileData.ImageFilePath,
+						ImageFileData,
 						thumbnailSize,
 						applyImageOrientation,
 						thumbnail!);
@@ -225,7 +225,7 @@ public abstract class ImageFileBase : IImageFile
 	{
 		try
 		{
-			var imageFileInfo = new FileInfo(ImageFileData.ImageFilePath);
+			var imageFileInfo = new FileInfo(ImageFileData.FilePath);
 
 			if (!imageFileInfo.Exists)
 			{
@@ -233,12 +233,9 @@ public abstract class ImageFileBase : IImageFile
 			}
 			else
 			{
-				var sizeOnDiscInKilobytes = _fileSizeEngine.ConvertToKilobytes(
-					imageFileInfo.Length);
-				var lastModificationTime = imageFileInfo.LastWriteTime;
-
-				ImageFileData.SizeOnDiscInKilobytes = sizeOnDiscInKilobytes;
-				ImageFileData.LastModificationTime = lastModificationTime;
+				ImageFileData.FileSizeInBytes = (int)imageFileInfo.Length;
+				ImageFileData.FileLastModificationTime =
+					imageFileInfo.LastWriteTimeUtc;
 			}
 		}
 		catch
@@ -250,17 +247,17 @@ public abstract class ImageFileBase : IImageFile
 	public string GetBasicImageInfo(bool longFormat)
 	{
 		var imageFileInfo = longFormat
-			? ImageFileData.ImageFilePath
-			: ImageFileData.ImageFileName;
+			? ImageFileData.FilePath
+			: ImageFileData.FileName;
 
-		var sizeOnDiscInKilobytes = ImageFileData.SizeOnDiscInKilobytes;
-		var sizeOnDiscInKilobytesForDisplay = decimal.Round(
-			sizeOnDiscInKilobytes,
-			GlobalParameters.DecimalDigitCountForDisplay);
+		var fileSizeInKilobytes =
+			_fileSizeEngine.ConvertToKilobytes(ImageFileData.FileSizeInBytes);
+		var fileSizeInKilobytesForDisplay = decimal.Round(
+			fileSizeInKilobytes, GlobalParameters.DecimalDigitCountForDisplay);
 
 		var imageInfo = HasImageReadError
-			? $"{imageFileInfo} - image read error - {sizeOnDiscInKilobytesForDisplay} KB"
-			: $"{imageFileInfo} - {ImageSize} - {sizeOnDiscInKilobytesForDisplay} KB";
+			? $"{imageFileInfo} - image read error - {fileSizeInKilobytesForDisplay} KB"
+			: $"{imageFileInfo} - {ImageSize} - {fileSizeInKilobytesForDisplay} KB";
 
 		return imageInfo;
 	}
@@ -281,11 +278,11 @@ public abstract class ImageFileBase : IImageFile
 
 	protected bool IsDirectlySupportedImageFileExtension
 		=> GlobalParameters.DirectlySupportedImageFileExtensions.Contains(
-			ImageFileData.ImageFileExtension);
+			ImageFileData.FileExtension);
 
 	protected bool IsAnimationEnabledImageFileExtension
 		=> GlobalParameters.AnimationEnabledImageFileExtensions.Contains(
-			ImageFileData.ImageFileExtension);
+			ImageFileData.FileExtension);
 
 	private readonly IImageResizer _imageResizer;
 	private readonly IFileSizeEngine _fileSizeEngine;

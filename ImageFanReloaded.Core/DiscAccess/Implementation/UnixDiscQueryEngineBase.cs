@@ -10,10 +10,8 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 public abstract class UnixDiscQueryEngineBase : DiscQueryEngineBase
 {
 	protected UnixDiscQueryEngineBase(
-		IGlobalParameters globalParameters,
-		IImageFileFactory imageFileFactory,
-		IFileSizeEngine fileSizeEngine)
-		: base(globalParameters, imageFileFactory, fileSizeEngine)
+		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory)
+			: base(globalParameters, imageFileFactory)
 	{
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
 	}

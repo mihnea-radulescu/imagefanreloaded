@@ -68,6 +68,14 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.02.15" date="2026-02-15">
+			<description>
+				<ul>
+					<li>Improved thumbnail cache file change identification</li>
+					<li>Updated application libraries</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.02.11" date="2026-02-11">
 			<description>
 				<ul>

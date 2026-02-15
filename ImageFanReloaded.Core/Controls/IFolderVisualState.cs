@@ -12,8 +12,8 @@ public interface IFolderVisualState
 
 	void UpdateFolderInfoText(
 		ITabOptions tabOptions,
-		decimal previousSelectedImageSizeOnDiscInKilobytes,
-		decimal currentSelectedImageSizeOnDiscInKilobytes);
+		int previousSelectedImageFileSizeInBytes,
+		int currentSelectedImageFileSizeInBytes);
 
 	void DisposeCancellationTokenSource();
 }

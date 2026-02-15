@@ -58,7 +58,7 @@ public partial class WindowedImageWindow : Window, IImageView
 	public async Task SetImage(IImageFile imageFile)
 	{
 		_imageFile = imageFile;
-		Title = _imageFile.ImageFileData.ImageFileName;
+		Title = _imageFile.ImageFileData.FileName;
 
 		switch (TabOptions!.ImageViewDisplayMode)
 		{

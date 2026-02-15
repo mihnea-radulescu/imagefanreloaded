@@ -24,7 +24,7 @@ public class ThumbnailInfo : IThumbnailInfo
 	public IImage? ThumbnailImage { get; private set; }
 
 	public IImageFile ImageFile { get; }
-	public string ThumbnailText => ImageFile.ImageFileData.ImageFileName;
+	public string ThumbnailText => ImageFile.ImageFileData.FileName;
 
 	public void ReadThumbnailInputFromDisc() => ImageFile.ReadImageFile(
 		_thumbnailSize, _applyImageOrientation);

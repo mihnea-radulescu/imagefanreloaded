@@ -77,8 +77,8 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 	}
 
 	private void SetLoadingImageInfoTitle()
-		=> Title = $"{ImageFile!.ImageFileData.ImageFileName} - loading image info...";
+		=> Title = $"{ImageFile!.ImageFileData.FileName} - loading image info...";
 
 	private void SetImageInfoTitle()
-		=> Title = ImageFile!.ImageFileData.ImageFileName;
+		=> Title = ImageFile!.ImageFileData.FileName;
 }

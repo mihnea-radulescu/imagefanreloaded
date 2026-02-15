@@ -5,30 +5,32 @@ namespace ImageFanReloaded.Core.ImageHandling;
 public record ImageFileData
 {
 	public ImageFileData(
-		string imageFileName,
-		string imageFilePath,
-		string imageFileExtension,
-		string imageFileNameWithoutExtension,
-		string imageFolderPath,
-		decimal sizeOnDiscInKilobytes,
-		DateTime lastModificationTime)
+		string fileName,
+		string filePath,
+		string fileExtension,
+		string fileNameWithoutExtension,
+		int fileSizeInBytes,
+		DateTime fileLastModificationTime,
+		string folderPath)
 	{
-		ImageFileName = imageFileName;
-		ImageFilePath = imageFilePath;
-		ImageFileExtension = imageFileExtension;
-		ImageFileNameWithoutExtension = imageFileNameWithoutExtension;
-		ImageFolderPath = imageFolderPath;
+		FileName = fileName;
+		FilePath = filePath;
+		FileExtension = fileExtension;
+		FileNameWithoutExtension = fileNameWithoutExtension;
 
-		SizeOnDiscInKilobytes = sizeOnDiscInKilobytes;
-		LastModificationTime = lastModificationTime;
+		FileSizeInBytes = fileSizeInBytes;
+		FileLastModificationTime = fileLastModificationTime;
+
+		FolderPath = folderPath;
 	}
 
-	public string ImageFileName { get; }
-	public string ImageFilePath { get; }
-	public string ImageFileExtension { get; }
-	public string ImageFileNameWithoutExtension { get; }
-	public string ImageFolderPath { get; }
+	public string FileName { get; }
+	public string FilePath { get; }
+	public string FileExtension { get; }
+	public string FileNameWithoutExtension { get; }
 
-	public decimal SizeOnDiscInKilobytes { get; set; }
-	public DateTime LastModificationTime { get; set; }
+	public int FileSizeInBytes { get; set; }
+	public DateTime FileLastModificationTime { get; set; }
+
+	public string FolderPath { get; }
 }

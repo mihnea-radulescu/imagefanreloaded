@@ -23,13 +23,10 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 	}
 
 	protected DiscQueryEngineBase(
-		IGlobalParameters globalParameters,
-		IImageFileFactory imageFileFactory,
-		IFileSizeEngine fileSizeEngine)
+		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory)
 	{
 		_globalParameters = globalParameters;
 		_imageFileFactory = imageFileFactory;
-		_fileSizeEngine = fileSizeEngine;
 
 		_specialFolderToIconMapping = new Dictionary<string, IImage>
 		{
@@ -86,7 +83,6 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 	private readonly IGlobalParameters _globalParameters;
 	private readonly IImageFileFactory _imageFileFactory;
-	private readonly IFileSizeEngine _fileSizeEngine;
 
 	private readonly IReadOnlyDictionary<string, IImage>
 		_specialFolderToIconMapping;
@@ -254,9 +250,9 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						aFileInfo.FullName,
 						aFileInfo.Extension,
 						Path.GetFileNameWithoutExtension(aFileInfo.Name),
-						Path.GetDirectoryName(aFileInfo.FullName)!,
-						_fileSizeEngine.ConvertToKilobytes(aFileInfo.Length),
-						aFileInfo.LastWriteTime)))
+						(int)aFileInfo.Length,
+						aFileInfo.LastWriteTimeUtc,
+						Path.GetDirectoryName(aFileInfo.FullName)!)))
 				.ToList();
 
 			return imageFiles;

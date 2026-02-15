@@ -10,16 +10,16 @@ public class ImageFileFactory : IImageFileFactory
 	public ImageFileFactory(
 		IGlobalParameters globalParameters,
 		IImageResizer imageResizer,
-		IFileSizeEngine fileSizeEngine,
 		IThumbnailCacheOptions thumbnailCacheOptions,
+		IFileSizeEngine fileSizeEngine,
 		IImageFileContentLogic imageFileContentLogic,
 		IImageFileContentLogic cachedImageFileContentLogic)
 	{
 		_globalParameters = globalParameters;
 
 		_imageResizer = imageResizer;
-		_fileSizeEngine = fileSizeEngine;
 		_thumbnailCacheOptions = thumbnailCacheOptions;
+		_fileSizeEngine = fileSizeEngine;
 
 		_imageFileContentLogic = imageFileContentLogic;
 		_cachedImageFileContentLogic = cachedImageFileContentLogic;
@@ -55,8 +55,8 @@ public class ImageFileFactory : IImageFileFactory
 	private readonly IGlobalParameters _globalParameters;
 
 	private readonly IImageResizer _imageResizer;
-	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IThumbnailCacheOptions _thumbnailCacheOptions;
+	private readonly IFileSizeEngine _fileSizeEngine;
 
 	private readonly IImageFileContentLogic _imageFileContentLogic;
 	private readonly IImageFileContentLogic _cachedImageFileContentLogic;

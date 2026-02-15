@@ -466,22 +466,22 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		try
 		{
-			var previousSelectedImageSizeOnDiscInKilobytes =
-				GetSelectedImageSizeOnDiscInKilobytes();
-
-			await _selectedThumbnailBox!.UpdateThumbnailAfterImageFileChange();
+			var previousSelectedImageFileSizeInBytes =
+				GetSelectedImageFileSizeInBytes();
 
 			var selectedImageFile = GetSelectedImageFile();
 			await Task.Run(() => selectedImageFile.RefreshImageFileData());
+
+			await _selectedThumbnailBox!.UpdateThumbnailAfterImageFileChange();
 			UpdateSelectedImageStatus();
 
-			var currentSelectedImageSizeOnDiscInKilobytes =
-				GetSelectedImageSizeOnDiscInKilobytes();
+			var currentSelectedImageFileSizeInBytes =
+				GetSelectedImageFileSizeInBytes();
 
 			FolderVisualState!.UpdateFolderInfoText(
 				TabOptions!,
-				previousSelectedImageSizeOnDiscInKilobytes,
-				currentSelectedImageSizeOnDiscInKilobytes);
+				previousSelectedImageFileSizeInBytes,
+				currentSelectedImageFileSizeInBytes);
 
 			BringThumbnailIntoView();
 		}
@@ -1422,12 +1422,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	private decimal GetSelectedImageSizeOnDiscInKilobytes()
+	private int GetSelectedImageFileSizeInBytes()
 	{
 		var selectedImageFile = GetSelectedImageFile();
-		var selectedImageSizeOnDiscInKilobytes =
-				selectedImageFile.ImageFileData.SizeOnDiscInKilobytes;
+		var selectedImageFileSizeInBytes =
+			selectedImageFile.ImageFileData.FileSizeInBytes;
 
-		return selectedImageSizeOnDiscInKilobytes;
+		return selectedImageFileSizeInBytes;
 	}
 }

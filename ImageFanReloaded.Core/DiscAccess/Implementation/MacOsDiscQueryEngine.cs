@@ -7,10 +7,8 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 public class MacOsDiscQueryEngine : UnixDiscQueryEngineBase
 {
 	public MacOsDiscQueryEngine(
-		IGlobalParameters globalParameters,
-		IImageFileFactory imageFileFactory,
-		IFileSizeEngine fileSizeEngine)
-		: base(globalParameters, imageFileFactory, fileSizeEngine)
+		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory)
+			: base(globalParameters, imageFileFactory)
 	{
 		_supportedDrivePrefixes = ["/Volumes/"];
 	}

@@ -40,7 +40,7 @@ public class ImageViewPresenter
 						anImageFileWithIndex
 							.anImageFile
 							.ImageFileData
-							.ImageFilePath
+							.FilePath
 							.Equals(
 								_inputPathHandler.FilePath, _nameComparison));
 
