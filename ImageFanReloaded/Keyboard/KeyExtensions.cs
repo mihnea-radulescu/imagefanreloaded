@@ -57,7 +57,7 @@ public static class KeyExtensions
 				Avalonia.Input.Key.PageUp => Core.Keyboard.Key.PageUp,
 				Avalonia.Input.Key.PageDown => Core.Keyboard.Key.PageDown,
 
-				_ => Core.Keyboard.Key.None
+				_ => Core.Keyboard.Key.Other
 			};
 	}
 }

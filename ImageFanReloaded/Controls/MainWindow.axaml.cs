@@ -28,55 +28,46 @@ public partial class MainWindow : Window, IMainView
 	public ISettingsFactory? SettingsFactory { get; set; }
 	public IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 
-	public event EventHandler<ContentTabItemCollectionEventArgs>? WindowClosing;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
 	public event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
 
 	public void AddFakeTabItem()
 	{
-		var fakeTabItem = new TabItem
+		ChangeTabItems(() =>
 		{
-			Header = FakeTabItemTitle,
-			FontSize = _windowFontSize
-		};
+			var fakeTabItem = new TabItem
+			{
+				Header = FakeTabItemTitle,
+				FontSize = _windowFontSize
+			};
 
-		_tabControl.Items.Add(fakeTabItem);
+			_tabControl.Items.Add(fakeTabItem);
+		});
 	}
 
 	public void AddContentTabItem()
 	{
-		var (contentTabItem, tabItem) = BuildTabItemData();
+		ChangeTabItems(() =>
+		{
+			var (contentTabItem, tabItem) = BuildTabItemData();
 
-		var contentTabItemCount = GetContentTabItemCount();
-		_tabControl.Items.Insert(contentTabItemCount, tabItem);
+			var contentTabItemCount = GetContentTabItemCount();
+			_tabControl.Items.Insert(contentTabItemCount, tabItem);
 
-		ContentTabItemAdded?.Invoke(
-			this, new ContentTabItemEventArgs(contentTabItem));
+			ContentTabItemAdded?.Invoke(
+				this, new ContentTabItemEventArgs(contentTabItem));
 
-		var shouldAllowTabClose = ShouldAllowTabClose();
-		TabCountChanged?.Invoke(
-			this, new TabCountChangedEventArgs(shouldAllowTabClose));
-	}
-
-	public void RegisterTabControlEvents()
-	{
-		_tabControl.SelectionChanged += OnTabChanged;
+			var shouldAllowTabClose = ShouldAllowTabClose();
+			TabCountChanged?.Invoke(
+				this, new TabCountChangedEventArgs(shouldAllowTabClose));
+		});
 	}
 
 	private const string DefaultTabItemTitle = "New tab";
 	private const string FakeTabItemTitle = "➕";
 
 	private readonly double _windowFontSize;
-
-	private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
-	{
-		var contentTabItemCollection = GetContentTabItemCollection();
-
-		WindowClosing?.Invoke(
-			this, new ContentTabItemCollectionEventArgs(
-					contentTabItemCollection));
-	}
 
 	private void OnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
 	{
@@ -231,17 +222,20 @@ public partial class MainWindow : Window, IMainView
 
 	private void CloseContentTabItem(object? sender, ContentTabItemEventArgs e)
 	{
-		var contentTabItem = e.ContentTabItem;
-		ContentTabItemClosed?.Invoke(
-			this, new ContentTabItemEventArgs(contentTabItem));
+		ChangeTabItems(() =>
+		{
+			var contentTabItem = e.ContentTabItem;
+			ContentTabItemClosed?.Invoke(
+				this, new ContentTabItemEventArgs(contentTabItem));
 
-		var tabItem = contentTabItem.WrapperTabItem;
-		_tabControl.Items.Remove(tabItem);
-		TabCountChanged?.Invoke(
-			this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
+			var tabItem = contentTabItem.WrapperTabItem;
+			_tabControl.Items.Remove(tabItem);
+			TabCountChanged?.Invoke(
+				this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
 
-		contentTabItem.ContentTabItemHeader!.TabClosed -= CloseContentTabItem;
-		contentTabItem.UnregisterMainViewEvents();
+			contentTabItem.ContentTabItemHeader!.TabClosed -= CloseContentTabItem;
+			contentTabItem.UnregisterMainViewEvents();
+		});
 
 		SelectLastTabItem();
 	}
@@ -340,5 +334,14 @@ public partial class MainWindow : Window, IMainView
 		var nextSelectedTabItemIndex =
 			(selectedTabItemIndex + 1) % contentTabItemCount;
 		_tabControl.SelectedIndex = nextSelectedTabItemIndex;
+	}
+
+	private void ChangeTabItems(Action changeTabItemsAction)
+	{
+		_tabControl.SelectionChanged -= OnTabChanged;
+
+		changeTabItemsAction();
+
+		_tabControl.SelectionChanged += OnTabChanged;
 	}
 }

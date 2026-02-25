@@ -205,7 +205,6 @@ public class AppBootstrap : IAppBootstrap
 
 		mainView.AddFakeTabItem();
 		mainView.AddContentTabItem();
-		mainView.RegisterTabControlEvents();
 
 		mainView.Show();
 	}

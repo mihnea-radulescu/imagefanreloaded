@@ -7,6 +7,9 @@ public static class KeyModifiersExtensions
 		public ImageFanReloaded.Core.Keyboard.KeyModifiers ToCoreKeyModifiers()
 			=> keyModifiers switch
 			{
+				Avalonia.Input.KeyModifiers.None
+					=> Core.Keyboard.KeyModifiers.None,
+
 				Avalonia.Input.KeyModifiers.Control
 					=> Core.Keyboard.KeyModifiers.Ctrl,
 				Avalonia.Input.KeyModifiers.Alt
@@ -14,7 +17,7 @@ public static class KeyModifiersExtensions
 				Avalonia.Input.KeyModifiers.Shift
 					=> Core.Keyboard.KeyModifiers.Shift,
 
-				_ => Core.Keyboard.KeyModifiers.None
+				_ => Core.Keyboard.KeyModifiers.Other
 			};
 	}
 }

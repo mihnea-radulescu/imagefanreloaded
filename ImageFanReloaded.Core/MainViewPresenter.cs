@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.Caching;
 using ImageFanReloaded.Core.Controls;
@@ -46,7 +45,6 @@ public class MainViewPresenter
 
 		_mainView = mainView;
 
-		_mainView.WindowClosing += OnWindowClosing;
 		_mainView.ContentTabItemAdded += OnContentTabItemAdded;
 		_mainView.ContentTabItemClosed += OnContentTabItemClosed;
 	}
@@ -69,13 +67,6 @@ public class MainViewPresenter
 	private bool _shouldProcessCommandLineArgsInputPath;
 
 	private readonly IMainView _mainView;
-
-	private void OnWindowClosing(
-		object? sender, ContentTabItemCollectionEventArgs e)
-	{
-		var runningProcess = Process.GetCurrentProcess();
-		runningProcess.Kill();
-	}
 
 	private async void OnContentTabItemAdded(
 		object? sender, ContentTabItemEventArgs e)

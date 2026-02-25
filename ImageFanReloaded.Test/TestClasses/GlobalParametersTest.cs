@@ -45,59 +45,58 @@ public class GlobalParametersTest : TestBase
 
 		Assert.Equal(6, _globalParameters.MaxRecursionDepth);
 
-		Assert.Equal(KeyModifiers.None, _globalParameters.NoneKeyModifier);
+		Assert.NotEqual(KeyModifiers.Other, _globalParameters.NoneKeyModifier);
+		Assert.NotEqual(KeyModifiers.Other, _globalParameters.CtrlKeyModifier);
+		Assert.NotEqual(KeyModifiers.Other, _globalParameters.AltKeyModifier);
+		Assert.NotEqual(KeyModifiers.Other, _globalParameters.ShiftKeyModifier);
 
-		Assert.NotEqual(KeyModifiers.None, _globalParameters.CtrlKeyModifier);
-		Assert.NotEqual(KeyModifiers.None, _globalParameters.AltKeyModifier);
-		Assert.NotEqual(KeyModifiers.None, _globalParameters.ShiftKeyModifier);
+		Assert.NotEqual(Key.Other, _globalParameters.TabKey);
+		Assert.NotEqual(Key.Other, _globalParameters.EscapeKey);
+		Assert.NotEqual(Key.Other, _globalParameters.EnterKey);
 
-		Assert.NotEqual(Key.None, _globalParameters.TabKey);
-		Assert.NotEqual(Key.None, _globalParameters.EscapeKey);
-		Assert.NotEqual(Key.None, _globalParameters.EnterKey);
+		Assert.NotEqual(Key.Other, _globalParameters.SKey);
+		Assert.NotEqual(Key.Other, _globalParameters.OKey);
 
-		Assert.NotEqual(Key.None, _globalParameters.SKey);
-		Assert.NotEqual(Key.None, _globalParameters.OKey);
+		Assert.NotEqual(Key.Other, _globalParameters.HKey);
+		Assert.NotEqual(Key.Other, _globalParameters.F1Key);
 
-		Assert.NotEqual(Key.None, _globalParameters.HKey);
-		Assert.NotEqual(Key.None, _globalParameters.F1Key);
+		Assert.NotEqual(Key.Other, _globalParameters.FKey);
 
-		Assert.NotEqual(Key.None, _globalParameters.FKey);
+		Assert.NotEqual(Key.Other, _globalParameters.F4Key);
 
-		Assert.NotEqual(Key.None, _globalParameters.F4Key);
+		Assert.NotEqual(Key.Other, _globalParameters.NKey);
+		Assert.NotEqual(Key.Other, _globalParameters.MKey);
+		Assert.NotEqual(Key.Other, _globalParameters.BKey);
 
-		Assert.NotEqual(Key.None, _globalParameters.NKey);
-		Assert.NotEqual(Key.None, _globalParameters.MKey);
-		Assert.NotEqual(Key.None, _globalParameters.BKey);
+		Assert.NotEqual(Key.Other, _globalParameters.AKey);
+		Assert.NotEqual(Key.Other, _globalParameters.DKey);
 
-		Assert.NotEqual(Key.None, _globalParameters.AKey);
-		Assert.NotEqual(Key.None, _globalParameters.DKey);
+		Assert.NotEqual(Key.Other, _globalParameters.RKey);
+		Assert.NotEqual(Key.Other, _globalParameters.GKey);
+		Assert.NotEqual(Key.Other, _globalParameters.EKey);
 
-		Assert.NotEqual(Key.None, _globalParameters.RKey);
-		Assert.NotEqual(Key.None, _globalParameters.GKey);
-		Assert.NotEqual(Key.None, _globalParameters.EKey);
+		Assert.NotEqual(Key.Other, _globalParameters.TKey);
+		Assert.NotEqual(Key.Other, _globalParameters.IKey);
+		Assert.NotEqual(Key.Other, _globalParameters.UKey);
+		Assert.NotEqual(Key.Other, _globalParameters.CKey);
 
-		Assert.NotEqual(Key.None, _globalParameters.TKey);
-		Assert.NotEqual(Key.None, _globalParameters.IKey);
-		Assert.NotEqual(Key.None, _globalParameters.UKey);
-		Assert.NotEqual(Key.None, _globalParameters.CKey);
+		Assert.NotEqual(Key.Other, _globalParameters.Digit1Key);
+		Assert.NotEqual(Key.Other, _globalParameters.Digit2Key);
+		Assert.NotEqual(Key.Other, _globalParameters.Digit3Key);
+		Assert.NotEqual(Key.Other, _globalParameters.Digit4Key);
 
-		Assert.NotEqual(Key.None, _globalParameters.Digit1Key);
-		Assert.NotEqual(Key.None, _globalParameters.Digit2Key);
-		Assert.NotEqual(Key.None, _globalParameters.Digit3Key);
-		Assert.NotEqual(Key.None, _globalParameters.Digit4Key);
+		Assert.NotEqual(Key.Other, _globalParameters.UpKey);
+		Assert.NotEqual(Key.Other, _globalParameters.DownKey);
+		Assert.NotEqual(Key.Other, _globalParameters.LeftKey);
+		Assert.NotEqual(Key.Other, _globalParameters.RightKey);
+		Assert.NotEqual(Key.Other, _globalParameters.BackspaceKey);
+		Assert.NotEqual(Key.Other, _globalParameters.SpaceKey);
 
-		Assert.NotEqual(Key.None, _globalParameters.UpKey);
-		Assert.NotEqual(Key.None, _globalParameters.DownKey);
-		Assert.NotEqual(Key.None, _globalParameters.LeftKey);
-		Assert.NotEqual(Key.None, _globalParameters.RightKey);
-		Assert.NotEqual(Key.None, _globalParameters.BackspaceKey);
-		Assert.NotEqual(Key.None, _globalParameters.SpaceKey);
+		Assert.NotEqual(Key.Other, _globalParameters.PlusKey);
+		Assert.NotEqual(Key.Other, _globalParameters.MinusKey);
 
-		Assert.NotEqual(Key.None, _globalParameters.PlusKey);
-		Assert.NotEqual(Key.None, _globalParameters.MinusKey);
-
-		Assert.NotEqual(Key.None, _globalParameters.PageUpKey);
-		Assert.NotEqual(Key.None, _globalParameters.PageDownKey);
+		Assert.NotEqual(Key.Other, _globalParameters.PageUpKey);
+		Assert.NotEqual(Key.Other, _globalParameters.PageDownKey);
 
 		Assert.NotNull(_globalParameters.NameComparer);
 

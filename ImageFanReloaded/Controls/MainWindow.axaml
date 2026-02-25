@@ -9,7 +9,6 @@
 		Width="800"
 		Height="600"
 		WindowStartupLocation="CenterScreen"
-		WindowState="Maximized"
-		Closing="OnWindowClosing">
+		WindowState="Maximized">
 	<TabControl Name="_tabControl"/>
 </Window>

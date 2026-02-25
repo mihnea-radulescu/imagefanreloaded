@@ -2,7 +2,7 @@ namespace ImageFanReloaded.Core.Keyboard;
 
 public enum Key
 {
-	None = 0,
+	Other = 0,
 
 	Tab,
 	Escape,
