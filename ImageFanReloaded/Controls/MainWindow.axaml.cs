@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
@@ -132,23 +131,6 @@ public partial class MainWindow : Window, IMainView
 		}
 
 		FocusSelectedContentTabItem();
-	}
-
-	private IReadOnlyList<IContentTabItem> GetContentTabItemCollection()
-	{
-		var contentTabItems = new List<IContentTabItem>();
-
-		foreach (var aTabControlItem in _tabControl.Items)
-		{
-			var aTabItem = (TabItem)aTabControlItem!;
-
-			if (aTabItem.Content is IContentTabItem aContentTabItem)
-			{
-				contentTabItems.Add(aContentTabItem);
-			}
-		}
-
-		return contentTabItems;
 	}
 
 	private void CloseContentTabItem()
