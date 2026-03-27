@@ -433,7 +433,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 	private async Task StartSlideshow()
 	{
 		var slideshowInterval = TimeSpan.FromSeconds(
-			TabOptions!.SlideshowInterval.ToInt());
+			(double)TabOptions!.SlideshowInterval);
 
 		try
 		{

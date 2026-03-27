@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -89,7 +90,7 @@ public class TabOptions : ITabOptions
 		set => _tabOptionsDto.PanelsSplittingRatio = value;
 	}
 
-	public SlideshowInterval SlideshowInterval
+	public decimal SlideshowInterval
 	{
 		get => _tabOptionsDto.SlideshowInterval;
 		set => _tabOptionsDto.SlideshowInterval = value;
@@ -164,8 +165,8 @@ public class TabOptions : ITabOptions
 
 	private const bool DefaultShowImageViewImageInfo = false;
 	private const int DefaultPanelsSplittingRatio = 15;
-	private const SlideshowInterval DefaultSlideshowInterval =
-		SlideshowInterval.OneSecond;
+	private static readonly decimal DefaultSlideshowInterval =
+		SlideshowIntervalValues.OneSecond;
 	private const bool DefaultApplyImageOrientation = false;
 	private const bool DefaultShowThumbnailImageFileName = true;
 	private const KeyboardScrollThumbnailIncrement
@@ -248,7 +249,7 @@ public class TabOptions : ITabOptions
 					DefaultPanelsSplittingRatio;
 			}
 
-			if (!IsValidEnumValue(tabOptionsDto.SlideshowInterval))
+			if (!IsValidSlideshowInterval(tabOptionsDto.SlideshowInterval))
 			{
 				tabOptionsDto.SlideshowInterval = DefaultSlideshowInterval;
 			}
@@ -381,6 +382,9 @@ public class TabOptions : ITabOptions
 
 	private static bool IsValidPanelsSplittingRatio(int panelsSplittingRatio)
 		=> panelsSplittingRatio is >= 0 and <= 100;
+
+	private static bool IsValidSlideshowInterval(decimal slideshowInterval)
+		=> SlideshowIntervalValues.ValuesInSeconds.Contains(slideshowInterval);
 }
 
 [JsonSerializable(typeof(TabOptionsDto))]

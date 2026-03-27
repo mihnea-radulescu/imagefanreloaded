@@ -19,7 +19,7 @@ public record TabOptionsDto
 
 	public bool ShowImageViewImageInfo { get; set; }
 	public int PanelsSplittingRatio { get; set; }
-	public SlideshowInterval SlideshowInterval { get; set; }
+	public decimal SlideshowInterval { get; set; }
 	public bool ApplyImageOrientation { get; set; }
 	public bool ShowThumbnailImageFileName { get; set; }
 	public KeyboardScrollThumbnailIncrement KeyboardScrollThumbnailIncrement

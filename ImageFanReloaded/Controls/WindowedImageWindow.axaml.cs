@@ -369,7 +369,7 @@ public partial class WindowedImageWindow : Window, IImageView
 	private async Task StartSlideshow()
 	{
 		var slideshowInterval = TimeSpan.FromSeconds(
-			TabOptions!.SlideshowInterval.ToInt());
+			(double)TabOptions!.SlideshowInterval);
 
 		try
 		{

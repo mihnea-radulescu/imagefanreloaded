@@ -203,8 +203,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		object? sender, SelectionChangedEventArgs e)
 	{
 		var slideshowIntervalComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
-		var slideshowInterval =
-			(SlideshowInterval)slideshowIntervalComboBoxItem.Tag!;
+		var slideshowInterval = (decimal)slideshowIntervalComboBoxItem.Tag!;
 
 		TabOptions!.SlideshowInterval = slideshowInterval;
 		_tabOptionChanges.HasChangedSlideshowInterval = true;
@@ -443,12 +442,12 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	private void PopulateSlideshowIntervals()
 	{
 		foreach (var aSlideshowInterval in
-					 SlideshowIntervalExtensions.SlideshowIntervals)
+					 SlideshowIntervalValues.ValuesInSeconds)
 		{
 			var aSlideshowIntervalText =
-					aSlideshowInterval == SlideshowInterval.OneSecond
-						? $"{aSlideshowInterval.ToInt()} second"
-						: $"{aSlideshowInterval.ToInt()} seconds";
+					aSlideshowInterval == SlideshowIntervalValues.OneSecond
+						? $"{aSlideshowInterval} second"
+						: $"{aSlideshowInterval} seconds";
 
 			var aSlideshowIntervalItem = new ComboBoxItem
 			{
