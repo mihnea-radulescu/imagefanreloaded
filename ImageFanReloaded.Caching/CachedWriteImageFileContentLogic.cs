@@ -1,13 +1,11 @@
-using System.IO;
 using ImageFanReloaded.Core.Caching;
-using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.Caching;
 
-public class CachedImageFileContentLogic : IImageFileContentLogic
+public class CachedWriteImageFileContentLogic : IImageFileContentLogic
 {
-	public CachedImageFileContentLogic(
+	public CachedWriteImageFileContentLogic(
 		IImageFileContentLogic imageFileContentLogic,
 		IImageDataExtractor imageDataExtractor,
 		IDatabaseLogic databaseLogic)
@@ -28,32 +26,8 @@ public class CachedImageFileContentLogic : IImageFileContentLogic
 		ImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation)
-	{
-		try
-		{
-			var thumbnailCacheEntry = _databaseLogic
-				.GetThumbnailCacheEntry(
-					imageFileData,
-					thumbnailSize,
-					applyImageOrientation);
-
-			if (thumbnailCacheEntry is not null)
-			{
-				var cachedImageDataStream = GetCachedImageDataStream(
-					thumbnailCacheEntry.ThumbnailData);
-
-				return new ImageData(cachedImageDataStream, false);
-			}
-
-			return _imageFileContentLogic.GetImageData(
-				imageFileData, applyImageOrientation);
-		}
-		catch
-		{
-			return _imageFileContentLogic.GetImageData(
-				imageFileData, applyImageOrientation);
-		}
-	}
+		=> _imageFileContentLogic.GetImageData(
+				imageFileData, thumbnailSize, applyImageOrientation);
 
 	public void UpdateThumbnail(
 		ImageFileData imageFileData,
@@ -89,14 +63,4 @@ public class CachedImageFileContentLogic : IImageFileContentLogic
 	private readonly IImageDataExtractor _imageDataExtractor;
 
 	private readonly IDatabaseLogic _databaseLogic;
-
-	private Stream GetCachedImageDataStream(byte[] cachedImageData)
-	{
-		var cachedImageDataStream = new MemoryStream();
-
-		cachedImageDataStream.Write(cachedImageData, 0, cachedImageData.Length);
-		cachedImageDataStream.Reset();
-
-		return cachedImageDataStream;
-	}
 }

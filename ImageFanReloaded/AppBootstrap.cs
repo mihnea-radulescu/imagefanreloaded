@@ -92,9 +92,14 @@ public class AppBootstrap : IAppBootstrap
 
 		IImageFileContentLogic imageFileContentLogic =
 			new ImageFileContentLogic();
-		IImageFileContentLogic cachedImageFileContentLogic =
-			new CachedImageFileContentLogic(
-				imageFileContentLogic, imageDataExtractor, _databaseLogic);
+		IImageFileContentLogic cachedReadImageFileContentLogic =
+			new CachedReadImageFileContentLogic(
+				imageFileContentLogic, _databaseLogic);
+		IImageFileContentLogic cachedWriteImageFileContentLogic =
+			new CachedWriteImageFileContentLogic(
+				cachedReadImageFileContentLogic,
+				imageDataExtractor,
+				_databaseLogic);
 
 		_thumbnailCacheOptions = _settingsFactory.GetThumbnailCacheOptions();
 
@@ -103,8 +108,8 @@ public class AppBootstrap : IAppBootstrap
 			imageResizer,
 			_thumbnailCacheOptions,
 			_fileSizeEngine,
-			imageFileContentLogic,
-			cachedImageFileContentLogic);
+			cachedReadImageFileContentLogic,
+			cachedWriteImageFileContentLogic);
 
 		IDiscQueryEngineFactory discQueryEngineFactory =
 			new DiscQueryEngineFactory(_globalParameters, _imageFileFactory);
