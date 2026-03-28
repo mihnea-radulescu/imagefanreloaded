@@ -1,4 +1,3 @@
-using System;
 using Xunit;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -116,8 +115,7 @@ public class GlobalParametersTest : TestBase
 
 		Assert.NotNull(_globalParameters.InvalidImage.Bitmap);
 
-		var expectedPersistentImagesCount =
-			1 + 2 * Enum.GetValues<ThumbnailSize>().Length;
+		var expectedPersistentImagesCount = 1 + 2 * ThumbnailSizes.Values.Count;
 		Assert.Equal(
 			expectedPersistentImagesCount,
 			_globalParameters.PersistentImages.Count);

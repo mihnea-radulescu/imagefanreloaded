@@ -12,7 +12,7 @@ public record TabOptionsDto
 
 	public ImageViewDisplayMode ImageViewDisplayMode { get; set; }
 
-	public ThumbnailSize ThumbnailSize { get; set; }
+	public int ThumbnailSize { get; set; }
 
 	public bool RecursiveFolderBrowsing { get; set; }
 	public bool GlobalOrderingForRecursiveFolderBrowsing { get; set; }
@@ -22,8 +22,7 @@ public record TabOptionsDto
 	public decimal SlideshowInterval { get; set; }
 	public bool ApplyImageOrientation { get; set; }
 	public bool ShowThumbnailImageFileName { get; set; }
-	public KeyboardScrollThumbnailIncrement KeyboardScrollThumbnailIncrement
-		{ get; set; }
+	public int KeyboardScrollThumbnailIncrement { get; set; }
 	public UpsizeFullScreenImagesUpToScreenSize
 		UpsizeFullScreenImagesUpToScreenSize { get; set; }
 }

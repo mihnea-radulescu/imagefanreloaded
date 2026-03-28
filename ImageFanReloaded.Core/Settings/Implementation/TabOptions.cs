@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -60,7 +59,7 @@ public class TabOptions : ITabOptions
 		set => _tabOptionsDto.ImageViewDisplayMode = value;
 	}
 
-	public ThumbnailSize ThumbnailSize
+	public int ThumbnailSize
 	{
 		get => _tabOptionsDto.ThumbnailSize;
 		set => _tabOptionsDto.ThumbnailSize = value;
@@ -108,7 +107,7 @@ public class TabOptions : ITabOptions
 		set => _tabOptionsDto.ShowThumbnailImageFileName = value;
 	}
 
-	public KeyboardScrollThumbnailIncrement KeyboardScrollThumbnailIncrement
+	public int KeyboardScrollThumbnailIncrement
 	{
 		get => _tabOptionsDto.KeyboardScrollThumbnailIncrement;
 		set => _tabOptionsDto.KeyboardScrollThumbnailIncrement = value;
@@ -157,21 +156,19 @@ public class TabOptions : ITabOptions
 	private const ImageViewDisplayMode DefaultImageViewDisplayMode =
 		ImageViewDisplayMode.FullScreen;
 
-	private const ThumbnailSize DefaultThumbnailSize =
-		ThumbnailSize.TwoHundredFiftyPixels;
+	private const int DefaultThumbnailSize = ThumbnailSizes.DefaultValue;
 
 	private const bool DefaultRecursiveFolderBrowsing = false;
 	private const bool DefaultGlobalOrderingForRecursiveFolderBrowsing = false;
 
 	private const bool DefaultShowImageViewImageInfo = false;
 	private const int DefaultPanelsSplittingRatio = 15;
-	private static readonly decimal DefaultSlideshowInterval =
-		SlideshowIntervalValues.OneSecond;
+	private const decimal DefaultSlideshowInterval =
+		SlideshowIntervalsInSeconds.DefaultValue;
 	private const bool DefaultApplyImageOrientation = false;
 	private const bool DefaultShowThumbnailImageFileName = true;
-	private const KeyboardScrollThumbnailIncrement
-		DefaultKeyboardScrollThumbnailIncrement =
-			KeyboardScrollThumbnailIncrement.Twelve;
+	private const int DefaultKeyboardScrollThumbnailIncrement =
+			KeyboardScrollThumbnailIncrements.DefaultValue;
 	private const UpsizeFullScreenImagesUpToScreenSize
 		DefaultUpsizeFullScreenImagesUpToScreenSize =
 			UpsizeFullScreenImagesUpToScreenSize.Disabled;
@@ -190,8 +187,6 @@ public class TabOptions : ITabOptions
 
 	private TabOptionsDto GetTabOptionsDto()
 	{
-		TabOptionsDto? tabOptionsDto;
-
 		try
 		{
 			if (!File.Exists(_tabOptionsConfigFilePath))
@@ -201,7 +196,7 @@ public class TabOptions : ITabOptions
 
 			var jsonContent = File.ReadAllText(_tabOptionsConfigFilePath);
 
-			tabOptionsDto = JsonSerializer.Deserialize(
+			var tabOptionsDto = JsonSerializer.Deserialize(
 				jsonContent, TabOptionsDtoJsonTypeInfo);
 
 			if (tabOptionsDto is null)
@@ -237,24 +232,25 @@ public class TabOptions : ITabOptions
 					DefaultImageFileOrderingDirection;
 			}
 
-			if (!IsValidEnumValue(tabOptionsDto.ThumbnailSize))
+			if (!ThumbnailSizes.IsValid(tabOptionsDto.ThumbnailSize))
 			{
 				tabOptionsDto.ThumbnailSize = DefaultThumbnailSize;
 			}
 
 			if (!IsValidPanelsSplittingRatio(
-					tabOptionsDto.PanelsSplittingRatio))
+				    tabOptionsDto.PanelsSplittingRatio))
 			{
 				tabOptionsDto.PanelsSplittingRatio =
 					DefaultPanelsSplittingRatio;
 			}
 
-			if (!IsValidSlideshowInterval(tabOptionsDto.SlideshowInterval))
+			if (!SlideshowIntervalsInSeconds.IsValid(
+				    tabOptionsDto.SlideshowInterval))
 			{
 				tabOptionsDto.SlideshowInterval = DefaultSlideshowInterval;
 			}
 
-			if (!IsValidEnumValue(
+			if (!KeyboardScrollThumbnailIncrements.IsValid(
 					tabOptionsDto.KeyboardScrollThumbnailIncrement))
 			{
 				tabOptionsDto.KeyboardScrollThumbnailIncrement =
@@ -382,9 +378,6 @@ public class TabOptions : ITabOptions
 
 	private static bool IsValidPanelsSplittingRatio(int panelsSplittingRatio)
 		=> panelsSplittingRatio is >= 0 and <= 100;
-
-	private static bool IsValidSlideshowInterval(decimal slideshowInterval)
-		=> SlideshowIntervalValues.ValuesInSeconds.Contains(slideshowInterval);
 }
 
 [JsonSerializable(typeof(TabOptionsDto))]

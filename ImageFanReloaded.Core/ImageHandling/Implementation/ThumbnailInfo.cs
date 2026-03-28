@@ -12,7 +12,7 @@ public class ThumbnailInfo : IThumbnailInfo
 	{
 		_globalParameters = globalParameters;
 
-		_thumbnailSize = tabOptions.ThumbnailSize.ToInt();
+		_thumbnailSize = tabOptions.ThumbnailSize;
 		_applyImageOrientation = tabOptions.ApplyImageOrientation;
 
 		ImageFile = imageFile;

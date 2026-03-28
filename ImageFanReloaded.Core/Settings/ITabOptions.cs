@@ -13,7 +13,7 @@ public interface ITabOptions
 
 	ImageViewDisplayMode ImageViewDisplayMode { get; set; }
 
-	ThumbnailSize ThumbnailSize { get; set; }
+	int ThumbnailSize { get; set; }
 
 	bool RecursiveFolderBrowsing { get; set; }
 	bool GlobalOrderingForRecursiveFolderBrowsing { get; set; }
@@ -23,8 +23,7 @@ public interface ITabOptions
 	decimal SlideshowInterval { get; set; }
 	bool ApplyImageOrientation { get; set; }
 	bool ShowThumbnailImageFileName { get; set; }
-	KeyboardScrollThumbnailIncrement KeyboardScrollThumbnailIncrement
-		{ get; set; }
+	int KeyboardScrollThumbnailIncrement { get; set; }
 	UpsizeFullScreenImagesUpToScreenSize UpsizeFullScreenImagesUpToScreenSize
 		{ get; set; }
 

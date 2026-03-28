@@ -95,8 +95,7 @@ public class GlobalParameters : GlobalParametersBase
 	{
 		var invalidImageThumbnails = new Dictionary<int, IImage>();
 
-		foreach (var thumbnailSize in
-					 ThumbnailSizeExtensions.ThumbnailSizesAsIntegers)
+		foreach (var thumbnailSize in ThumbnailSizes.Values)
 		{
 			var thumbnailImageSize = new ImageSize(thumbnailSize);
 
@@ -120,8 +119,7 @@ public class GlobalParameters : GlobalParametersBase
 				loadingBitmap.Size.Width, loadingBitmap.Size.Height);
 			var loadingImage = new Image(loadingBitmap, loadingBitmapSize);
 
-			foreach (var thumbnailSize in
-						 ThumbnailSizeExtensions.ThumbnailSizesAsIntegers)
+			foreach (var thumbnailSize in ThumbnailSizes.Values)
 			{
 				var thumbnailImageSize = new ImageSize(thumbnailSize);
 

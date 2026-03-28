@@ -152,7 +152,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		object? sender, SelectionChangedEventArgs e)
 	{
 		var thumbnailSizeComboBoxItem = (ComboBoxItem)e.AddedItems[0]!;
-		var thumbnailSize = (ThumbnailSize)thumbnailSizeComboBoxItem.Tag!;
+		var thumbnailSize = (int)thumbnailSizeComboBoxItem.Tag!;
 
 		TabOptions!.ThumbnailSize = thumbnailSize;
 		_tabOptionChanges.HasChangedThumbnailSize = true;
@@ -235,8 +235,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		var keyboardScrollThumbnailIncrementComboBoxItem =
 			(ComboBoxItem)e.AddedItems[0]!;
 		var keyboardScrollThumbnailIncrement =
-			(KeyboardScrollThumbnailIncrement)
-				keyboardScrollThumbnailIncrementComboBoxItem.Tag!;
+			(int)keyboardScrollThumbnailIncrementComboBoxItem.Tag!;
 
 		TabOptions!.KeyboardScrollThumbnailIncrement =
 			keyboardScrollThumbnailIncrement;
@@ -399,12 +398,12 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void PopulateThumbnailSizes()
 	{
-		foreach (var aThumbnailSize in ThumbnailSizeExtensions.ThumbnailSizes)
+		foreach (var aThumbnailSize in ThumbnailSizes.Values)
 		{
 			var aThumbnailSizeItem = new ComboBoxItem
 			{
 				Tag = aThumbnailSize,
-				Content = $"{aThumbnailSize.ToInt()}px"
+				Content = $"{aThumbnailSize}px"
 			};
 
 			_thumbnailSizeComboBox.Items.Add(aThumbnailSizeItem);
@@ -441,13 +440,12 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void PopulateSlideshowIntervals()
 	{
-		foreach (var aSlideshowInterval in
-					 SlideshowIntervalValues.ValuesInSeconds)
+		foreach (var aSlideshowInterval in SlideshowIntervalsInSeconds.Values)
 		{
 			var aSlideshowIntervalText =
-					aSlideshowInterval == SlideshowIntervalValues.OneSecond
-						? $"{aSlideshowInterval} second"
-						: $"{aSlideshowInterval} seconds";
+				aSlideshowInterval == SlideshowIntervalsInSeconds.DefaultValue
+					? $"{aSlideshowInterval} second"
+					: $"{aSlideshowInterval} seconds";
 
 			var aSlideshowIntervalItem = new ComboBoxItem
 			{
@@ -480,11 +478,10 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	private void PopulateKeyboardScrollThumbnailIncrements()
 	{
 		foreach (var aKeyboardScrollThumbnailIncrement in
-					 KeyboardScrollThumbnailIncrementExtensions
-					 	.KeyboardScrollThumbnailIncrements)
+					 KeyboardScrollThumbnailIncrements.Values)
 		{
 			var aKeyboardScrollThumbnailIncrementText =
-				$"{aKeyboardScrollThumbnailIncrement.ToInt()} thumbnails";
+				$"{aKeyboardScrollThumbnailIncrement} thumbnails";
 
 			var aKeyboardScrollThumbnailIncrementItem = new ComboBoxItem
 			{

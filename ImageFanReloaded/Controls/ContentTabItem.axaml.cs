@@ -289,7 +289,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
 
 			aThumbnailBox.SetControlProperties(
-				TabOptions!.ThumbnailSize.ToInt(), GlobalParameters!);
+				TabOptions!.ThumbnailSize, GlobalParameters!);
 
 			thumbnailInfo.ThumbnailBox = aThumbnailBox;
 			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
@@ -1271,14 +1271,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void ChangeThumbnailSize(Key keyPressing)
 	{
 		var increment = keyPressing == GlobalParameters!.PlusKey
-			? ThumbnailSizeExtensions.ThumbnailSizeIncrement
-			: -ThumbnailSizeExtensions.ThumbnailSizeIncrement;
+			? ThumbnailSizes.Increment
+			: -ThumbnailSizes.Increment;
 
-		var newThumbnailSize = TabOptions!.ThumbnailSize.ToInt() + increment;
+		var newThumbnailSize = TabOptions!.ThumbnailSize + increment;
 
-		if (newThumbnailSize.IsValidThumbnailSize)
+		if (ThumbnailSizes.IsValid(newThumbnailSize))
 		{
-			TabOptions!.ThumbnailSize = newThumbnailSize.ToThumbnailSize();
+			TabOptions!.ThumbnailSize = newThumbnailSize;
 
 			RaiseFolderChangedEvent();
 		}
@@ -1361,12 +1361,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			if (keyPressing == GlobalParameters!.PageUpKey)
 			{
 				AdvanceFromSelectedThumbnail(
-					-TabOptions!.KeyboardScrollThumbnailIncrement.ToInt());
+					-TabOptions!.KeyboardScrollThumbnailIncrement);
 			}
 			else if (keyPressing == GlobalParameters!.PageDownKey)
 			{
 				AdvanceFromSelectedThumbnail(
-					TabOptions!.KeyboardScrollThumbnailIncrement.ToInt());
+					TabOptions!.KeyboardScrollThumbnailIncrement);
 			}
 			else if (keyPressing == GlobalParameters!.BackspaceKey)
 			{
