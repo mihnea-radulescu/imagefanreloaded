@@ -1,11 +1,12 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
+using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Keyboard;
 
@@ -41,6 +42,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		PopulateThumbnailSizes();
 
+		PopulateEnabledImageFileExtensions();
+
 		SetRecursiveFolderBrowsing();
 		SetGlobalOrderingForRecursiveFolderBrowsing();
 
@@ -64,7 +67,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private readonly TabOptionChanges _tabOptionChanges;
 
-	private void OnKeyPressing(object? sender, KeyEventArgs e)
+	private void OnKeyPressing(object? sender, Avalonia.Input.KeyEventArgs e)
 	{
 		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
 		var keyPressing = e.Key.ToCoreKey();
@@ -79,6 +82,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
 	{
+		if (_tabOptionChanges.HasChangedEnabledImageFileExtensions)
+		{
+			UpdateEnabledImageFileExtensions();
+		}
+
 		TabOptionsChanged?.Invoke(
 			this, new TabOptionsChangedEventArgs(
 				ContentTabItem!,
@@ -156,6 +164,28 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		TabOptions!.ThumbnailSize = thumbnailSize;
 		_tabOptionChanges.HasChangedThumbnailSize = true;
+	}
+
+	private void OnEnabledImageFileExtensionsListBoxKeyPressing(
+		object? sender, Avalonia.Input.KeyEventArgs e)
+	{
+		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
+		var keyPressing = e.Key.ToCoreKey();
+
+		var selectedItem = _enabledImageFileExtensionsListBox.SelectedItem;
+
+		if (ShouldChangeCheckBoxIsChecked(keyModifiers, keyPressing) &&
+		    selectedItem is not null)
+		{
+			var selectedCheckBox = (CheckBox)selectedItem;
+			selectedCheckBox.IsChecked = !selectedCheckBox.IsChecked;
+		}
+	}
+
+	private void OnEnabledImageFileExtensionsListBoxCheckBoxIsCheckedChanged(
+		object? sender, RoutedEventArgs e)
+	{
+		_tabOptionChanges.HasChangedEnabledImageFileExtensions = true;
 	}
 
 	private void OnRecursiveFolderBrowsingIsCheckedChanged(
@@ -264,12 +294,23 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_tabOptionChanges.ShouldSaveAsDefault = saveAsDefault;
 	}
 
-	private bool ShouldCloseWindow(
-		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
-		ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	private bool ShouldCloseWindow(KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.EscapeKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldChangeCheckBoxIsChecked(
+		KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+		    (keyPressing == GlobalParameters!.EnterKey ||
+		     keyPressing == GlobalParameters!.SpaceKey))
 		{
 			return true;
 		}
@@ -415,6 +456,28 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		}
 	}
 
+	private void PopulateEnabledImageFileExtensions()
+	{
+		foreach (var anImageFileExtension in
+		         GlobalParameters!.ImageFileExtensions)
+		{
+			var anImageFileExtensionItem = new CheckBox
+			{
+				Tag = anImageFileExtension,
+				Content = anImageFileExtension
+			};
+
+			_enabledImageFileExtensionsListBox.Items.Add(
+				anImageFileExtensionItem);
+
+			if (TabOptions!.EnabledImageFileExtensions.Contains(
+				    anImageFileExtension))
+			{
+				anImageFileExtensionItem.IsChecked = true;
+			}
+		}
+	}
+
 	private void SetRecursiveFolderBrowsing()
 	{
 		_recursiveFolderBrowsingCheckBox.IsChecked =
@@ -525,6 +588,18 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		}
 	}
 
+	private void UpdateEnabledImageFileExtensions()
+	{
+		var enabledImageFileExtensions = _enabledImageFileExtensionsListBox
+			.Items
+			.Cast<CheckBox>()
+			.Where(aCheckBox => aCheckBox.IsChecked == true)
+			.Select(aCheckBox => (string)aCheckBox.Tag!)
+			.ToHashSet(GlobalParameters!.ImageFileExtensionsComparer);
+
+		TabOptions!.EnabledImageFileExtensions = enabledImageFileExtensions;
+	}
+
 	private void RegisterTabOptionEvents()
 	{
 		_folderOrderingComboBox.SelectionChanged +=
@@ -542,6 +617,16 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		_thumbnailSizeComboBox.SelectionChanged +=
 			OnThumbnailSizeSelectionChanged;
+
+		_enabledImageFileExtensionsListBox.KeyDown +=
+			OnEnabledImageFileExtensionsListBoxKeyPressing;
+
+		foreach (CheckBox? aCheckBox in
+		         _enabledImageFileExtensionsListBox.Items)
+		{
+			aCheckBox!.IsCheckedChanged +=
+				OnEnabledImageFileExtensionsListBoxCheckBoxIsCheckedChanged;
+		}
 
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged +=
 			OnRecursiveFolderBrowsingIsCheckedChanged;
@@ -584,6 +669,16 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		_thumbnailSizeComboBox.SelectionChanged -=
 			OnThumbnailSizeSelectionChanged;
+
+		_enabledImageFileExtensionsListBox.KeyDown -=
+			OnEnabledImageFileExtensionsListBoxKeyPressing;
+
+		foreach (CheckBox? aCheckBox in
+		         _enabledImageFileExtensionsListBox.Items)
+		{
+			aCheckBox!.IsCheckedChanged -=
+				OnEnabledImageFileExtensionsListBoxCheckBoxIsCheckedChanged;
+		}
 
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged -=
 			OnRecursiveFolderBrowsingIsCheckedChanged;

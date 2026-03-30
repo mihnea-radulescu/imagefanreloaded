@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ImageFanReloaded.Core.Settings;
 
 public record TabOptionsDto
@@ -13,6 +15,8 @@ public record TabOptionsDto
 	public ImageViewDisplayMode ImageViewDisplayMode { get; set; }
 
 	public int ThumbnailSize { get; set; }
+
+	public HashSet<string>? EnabledImageFileExtensions { get; set; }
 
 	public bool RecursiveFolderBrowsing { get; set; }
 	public bool GlobalOrderingForRecursiveFolderBrowsing { get; set; }

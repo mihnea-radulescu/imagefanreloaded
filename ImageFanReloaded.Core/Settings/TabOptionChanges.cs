@@ -12,6 +12,8 @@ public record TabOptionChanges
 
 	public bool HasChangedThumbnailSize { get; set; }
 
+	public bool HasChangedEnabledImageFileExtensions { get; set; }
+
 	public bool HasChangedRecursiveFolderBrowsing { get; set; }
 	public bool HasChangedGlobalOrderingForRecursiveFolderBrowsing { get; set; }
 

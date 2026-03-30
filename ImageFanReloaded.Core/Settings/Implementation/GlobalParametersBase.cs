@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.RuntimeEnvironment;
@@ -86,6 +87,9 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public HashSet<string> IndirectlySupportedImageFileExtensions { get; }
 	public HashSet<string> AnimationEnabledImageFileExtensions { get; }
 	public HashSet<string> ImageFileExtensions { get; }
+
+	public StringComparer ImageFileExtensionsComparer
+		=> StringComparer.InvariantCultureIgnoreCase;
 
 	public uint ImageQualityLevel { get; }
 	public int DecimalDigitCountForDisplay { get; }
@@ -192,7 +196,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".raf",
 			".rw2",
 			".wbmp"
-		], ExtensionComparer);
+		], ImageFileExtensionsComparer);
 
 		IndirectlySupportedImageFileExtensions = new HashSet<string>(
 		[
@@ -222,21 +226,26 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".tif", ".tiff",
 			".xbm",
 			".xpm"
-		], ExtensionComparer);
+		], ImageFileExtensionsComparer);
 
 		AnimationEnabledImageFileExtensions = new HashSet<string>(
 		[
 			".gif",
 			".mng",
 			".webp"
-		], ExtensionComparer);
+		], ImageFileExtensionsComparer);
 
-		ImageFileExtensions = new HashSet<string>(
+		IReadOnlyList<string> imageFileExtensionCollection =
 		[
 			..DirectlySupportedImageFileExtensions,
 			..IndirectlySupportedImageFileExtensions,
 			..AnimationEnabledImageFileExtensions
-		], ExtensionComparer);
+		];
+		var orderedImageFileExtensionCollection = imageFileExtensionCollection
+			.OrderBy(anImageFileExtension => anImageFileExtension)
+			.ToList();
+		ImageFileExtensions = new HashSet<string>(
+			orderedImageFileExtensionCollection, ImageFileExtensionsComparer);
 
 		ImageQualityLevel = 80;
 		DecimalDigitCountForDisplay = 2;
@@ -260,9 +269,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	}
 
 	protected const int IconSizeSquareLength = 36;
-
-	private static readonly StringComparer ExtensionComparer =
-		StringComparer.InvariantCultureIgnoreCase;
 
 	private readonly HashSet<Key> _backwardNavigationKeys;
 	private readonly HashSet<Key> _forwardNavigationKeys;

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -9,8 +11,11 @@ namespace ImageFanReloaded.Core.Settings.Implementation;
 
 public class TabOptions : ITabOptions
 {
-	public TabOptions(string configFolderPath)
+	public TabOptions(
+		IGlobalParameters globalParameters, string configFolderPath)
 	{
+		_globalParameters = globalParameters;
+
 		_configFolderPath = configFolderPath;
 		_tabOptionsConfigFilePath = Path.Combine(
 			configFolderPath, TabOptionsConfigFileName);
@@ -22,6 +27,8 @@ public class TabOptions : ITabOptions
 	public TabOptions(TabOptions defaultTabOptions)
 	{
 		_defaultTabOptions = defaultTabOptions;
+
+		_globalParameters = defaultTabOptions._globalParameters;
 		_configFolderPath = defaultTabOptions._configFolderPath;
 		_tabOptionsConfigFilePath = defaultTabOptions._tabOptionsConfigFilePath;
 
@@ -63,6 +70,12 @@ public class TabOptions : ITabOptions
 	{
 		get => _tabOptionsDto.ThumbnailSize;
 		set => _tabOptionsDto.ThumbnailSize = value;
+	}
+
+	public HashSet<string> EnabledImageFileExtensions
+	{
+		get => _tabOptionsDto.EnabledImageFileExtensions!;
+		set => _tabOptionsDto.EnabledImageFileExtensions = value;
 	}
 
 	public bool RecursiveFolderBrowsing
@@ -178,6 +191,8 @@ public class TabOptions : ITabOptions
 			.Default
 			.TabOptionsDto;
 
+	private readonly IGlobalParameters _globalParameters;
+
 	private readonly string _configFolderPath;
 	private readonly string _tabOptionsConfigFilePath;
 
@@ -185,13 +200,20 @@ public class TabOptions : ITabOptions
 
 	private readonly TabOptionsDto _tabOptionsDto;
 
+	private static HashSet<string> GetDefaultEnabledImageFileExtensions(
+		IGlobalParameters globalParameters)
+			=> new(
+				[
+					..globalParameters.ImageFileExtensions
+				], globalParameters.ImageFileExtensionsComparer);
+
 	private TabOptionsDto GetTabOptionsDto()
 	{
 		try
 		{
 			if (!File.Exists(_tabOptionsConfigFilePath))
 			{
-				return GetTabOptionsDtoWithDefaultValues();
+				return GetTabOptionsDtoWithDefaultValues(_globalParameters);
 			}
 
 			var jsonContent = File.ReadAllText(_tabOptionsConfigFilePath);
@@ -201,7 +223,7 @@ public class TabOptions : ITabOptions
 
 			if (tabOptionsDto is null)
 			{
-				return GetTabOptionsDtoWithDefaultValues();
+				return GetTabOptionsDtoWithDefaultValues(_globalParameters);
 			}
 
 			if (!IsValidEnumValue(tabOptionsDto.FolderOrdering))
@@ -237,6 +259,21 @@ public class TabOptions : ITabOptions
 				tabOptionsDto.ThumbnailSize = DefaultThumbnailSize;
 			}
 
+			if (tabOptionsDto.EnabledImageFileExtensions is null)
+			{
+				tabOptionsDto.EnabledImageFileExtensions =
+					GetDefaultEnabledImageFileExtensions(_globalParameters);
+			}
+			else
+			{
+				tabOptionsDto.EnabledImageFileExtensions = new HashSet<string>(
+				[
+					..tabOptionsDto.EnabledImageFileExtensions.Intersect(
+						_globalParameters.ImageFileExtensions,
+						_globalParameters.ImageFileExtensionsComparer)
+				], _globalParameters.ImageFileExtensionsComparer);
+			}
+
 			if (!IsValidPanelsSplittingRatio(
 				    tabOptionsDto.PanelsSplittingRatio))
 			{
@@ -268,11 +305,12 @@ public class TabOptions : ITabOptions
 		}
 		catch
 		{
-			return GetTabOptionsDtoWithDefaultValues();
+			return GetTabOptionsDtoWithDefaultValues(_globalParameters);
 		}
 	}
 
-	private static TabOptionsDto GetTabOptionsDtoWithDefaultValues()
+	private static TabOptionsDto GetTabOptionsDtoWithDefaultValues(
+		IGlobalParameters globalParameters)
 	{
 		return new TabOptionsDto
 		{
@@ -285,6 +323,9 @@ public class TabOptions : ITabOptions
 			ImageViewDisplayMode = DefaultImageViewDisplayMode,
 
 			ThumbnailSize = DefaultThumbnailSize,
+
+			EnabledImageFileExtensions =
+				GetDefaultEnabledImageFileExtensions(globalParameters),
 
 			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing,
 			GlobalOrderingForRecursiveFolderBrowsing =
@@ -316,6 +357,11 @@ public class TabOptions : ITabOptions
 			_defaultTabOptions.ImageViewDisplayMode;
 
 		_tabOptionsDto.ThumbnailSize = _defaultTabOptions.ThumbnailSize;
+
+		_tabOptionsDto.EnabledImageFileExtensions = new HashSet<string>(
+		[
+			.._defaultTabOptions.EnabledImageFileExtensions
+		], _globalParameters.ImageFileExtensionsComparer);
 
 		_tabOptionsDto.RecursiveFolderBrowsing =
 			_defaultTabOptions.RecursiveFolderBrowsing;
@@ -351,6 +397,11 @@ public class TabOptions : ITabOptions
 			_tabOptionsDto.ImageViewDisplayMode;
 
 		_defaultTabOptions.ThumbnailSize = _tabOptionsDto.ThumbnailSize;
+
+		_defaultTabOptions.EnabledImageFileExtensions = new HashSet<string>(
+		[
+			.._tabOptionsDto.EnabledImageFileExtensions!
+		], _globalParameters.ImageFileExtensionsComparer);
 
 		_defaultTabOptions.RecursiveFolderBrowsing =
 			_tabOptionsDto.RecursiveFolderBrowsing;

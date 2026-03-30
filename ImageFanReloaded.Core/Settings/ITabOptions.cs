@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ImageFanReloaded.Core.Settings;
@@ -14,6 +15,8 @@ public interface ITabOptions
 	ImageViewDisplayMode ImageViewDisplayMode { get; set; }
 
 	int ThumbnailSize { get; set; }
+
+	HashSet<string> EnabledImageFileExtensions { get; set; }
 
 	bool RecursiveFolderBrowsing { get; set; }
 	bool GlobalOrderingForRecursiveFolderBrowsing { get; set; }

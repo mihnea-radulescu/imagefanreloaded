@@ -218,6 +218,7 @@ public class MainViewPresenter
 				FileSystemEntryInfoOrdering.RandomShuffle &&
 			 tabOptionChanges.HasChangedImageFileOrderingDirection) ||
 			tabOptionChanges.HasChangedThumbnailSize ||
+			tabOptionChanges.HasChangedEnabledImageFileExtensions ||
 			(tabOptionChanges.HasChangedRecursiveFolderBrowsing &&
 			 fileSystemEntryInfo?.HasSubFolders == true) ||
 			(tabOptions.RecursiveFolderBrowsing &&
@@ -228,7 +229,7 @@ public class MainViewPresenter
 			tabOptionChanges.HasChangedShowThumbnailImageFileName;
 
 		var shouldRaisePanelsSplittingRatioChangedEvent =
-				tabOptionChanges.HasChangedPanelsSplittingRatio;
+			tabOptionChanges.HasChangedPanelsSplittingRatio;
 
 		var shouldSaveAsDefault = tabOptionChanges.ShouldSaveAsDefault;
 

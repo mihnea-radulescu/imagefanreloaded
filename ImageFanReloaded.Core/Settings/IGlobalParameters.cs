@@ -82,6 +82,8 @@ public interface IGlobalParameters
 	HashSet<string> AnimationEnabledImageFileExtensions { get; }
 	HashSet<string> ImageFileExtensions { get; }
 
+	StringComparer ImageFileExtensionsComparer { get; }
+
 	uint ImageQualityLevel { get; }
 	int DecimalDigitCountForDisplay { get; }
 

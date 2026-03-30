@@ -18,7 +18,8 @@ public class SettingsFactory : ISettingsFactory
 		_configFolderPath = GetConfigFolderPath(globalParameters);
 		_cacheFolderPath = GetCacheFolderPath(globalParameters);
 
-		_defaultTabOptions = new TabOptions(_configFolderPath);
+		_defaultTabOptions = new TabOptions(
+			globalParameters, _configFolderPath);
 	}
 
 	private readonly string _configFolderPath;

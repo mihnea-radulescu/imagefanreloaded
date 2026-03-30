@@ -60,6 +60,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 				folderPath,
 				tabOptions.ImageFileOrdering,
 				tabOptions.ImageFileOrderingDirection,
+				tabOptions.EnabledImageFileExtensions,
 				tabOptions.RecursiveFolderBrowsing,
 				tabOptions.GlobalOrderingForRecursiveFolderBrowsing));
 
@@ -69,6 +70,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 				folderPath,
 				FileSystemEntryInfoOrdering.Name,
 				FileSystemEntryInfoOrderingDirection.Ascending,
+				_globalParameters.ImageFileExtensions,
 				false,
 				false));
 
@@ -231,6 +233,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		string folderPath,
 		FileSystemEntryInfoOrdering imageFileOrdering,
 		FileSystemEntryInfoOrderingDirection imageFileOrderingDirection,
+		HashSet<string> enabledImageFileExtensions,
 		bool recursiveFolderBrowsing,
 		bool globalOrderingForRecursiveFolderBrowsing)
 	{
@@ -240,6 +243,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 				folderPath,
 				imageFileOrdering,
 				imageFileOrderingDirection,
+				enabledImageFileExtensions,
 				recursiveFolderBrowsing,
 				globalOrderingForRecursiveFolderBrowsing);
 
@@ -267,6 +271,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		string folderPath,
 		FileSystemEntryInfoOrdering imageFileOrdering,
 		FileSystemEntryInfoOrderingDirection imageFileOrderingDirection,
+		HashSet<string> enabledImageFileExtensions,
 		bool recursiveFolderBrowsing,
 		bool globalOrderingForRecursiveFolderBrowsing,
 		int currentDepth = 0)
@@ -291,8 +296,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 
 			var imageFileInfoList = folderInfo
 				.GetFiles("*", SearchOption.TopDirectoryOnly)
-				.Where(aFileInfo => _globalParameters
-						.ImageFileExtensions
+				.Where(aFileInfo => enabledImageFileExtensions
 						.Contains(aFileInfo.Extension))
 				.ToList();
 
@@ -318,6 +322,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 						aSubFolderPath,
 						imageFileOrdering,
 						imageFileOrderingDirection,
+						enabledImageFileExtensions,
 						recursiveFolderBrowsing,
 						globalOrderingForRecursiveFolderBrowsing,
 						currentDepth + 1);
