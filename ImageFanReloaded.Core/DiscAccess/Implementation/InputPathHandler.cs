@@ -10,11 +10,6 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
 public class InputPathHandler : IInputPathHandler
 {
-	static InputPathHandler()
-	{
-		DirectorySeparator = Path.DirectorySeparatorChar.ToString();
-	}
-
 	public InputPathHandler(
 		IGlobalParameters globalParameters, string? inputPath)
 	{
@@ -79,7 +74,8 @@ public class InputPathHandler : IInputPathHandler
 					return matchingFileSystemEntryInfo;
 				});
 
-	private static readonly string DirectorySeparator;
+	private static readonly string DirectorySeparator =
+		Path.DirectorySeparatorChar.ToString();
 
 	private readonly StringComparison _nameComparison;
 }

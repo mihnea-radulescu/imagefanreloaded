@@ -4,12 +4,8 @@ namespace ImageFanReloaded.Core.Controls;
 
 public record CoordinatesToImageSizeRatio
 {
-	static CoordinatesToImageSizeRatio()
-	{
-		ImageCenter = new CoordinatesToImageSizeRatio(0.5, 0.5);
-	}
-
-	public static CoordinatesToImageSizeRatio ImageCenter { get; }
+	public static readonly CoordinatesToImageSizeRatio ImageCenter =
+		new(0.5, 0.5);
 
 	public CoordinatesToImageSizeRatio(
 		ImagePoint coordinates, ImageSize imageSize)

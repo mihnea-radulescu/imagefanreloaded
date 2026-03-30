@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.Settings;
 
@@ -23,7 +24,7 @@ public abstract class ImageFileBase : IImageFile
 		ImageFileData = imageFileData;
 		ImageSize = GlobalParameters.InvalidImage.Size;
 
-		_thumbnailGenerationLockObject = new object();
+		_thumbnailGenerationLock = new Lock();
 	}
 
 	public ImageFileData ImageFileData { get; }
@@ -150,7 +151,7 @@ public abstract class ImageFileBase : IImageFile
 
 		if (!HasImageReadError)
 		{
-			lock (_thumbnailGenerationLockObject)
+			lock (_thumbnailGenerationLock)
 			{
 				_imageData = imageData;
 			}
@@ -171,7 +172,7 @@ public abstract class ImageFileBase : IImageFile
 		{
 			try
 			{
-				lock (_thumbnailGenerationLockObject)
+				lock (_thumbnailGenerationLock)
 				{
 					image = GetImageFromStream(
 						_imageData!.ImageDataStream!, applyImageOrientation);
@@ -264,7 +265,7 @@ public abstract class ImageFileBase : IImageFile
 
 	public void DisposeImageData()
 	{
-		lock (_thumbnailGenerationLockObject)
+		lock (_thumbnailGenerationLock)
 		{
 			_imageData?.Dispose();
 			_imageData = null;
@@ -288,7 +289,7 @@ public abstract class ImageFileBase : IImageFile
 	private readonly IFileSizeEngine _fileSizeEngine;
 	private readonly IImageFileContentLogic _imageFileContentLogic;
 
-	private readonly object _thumbnailGenerationLockObject;
+	private readonly Lock _thumbnailGenerationLock;
 
 	private ImageData? _imageData;
 

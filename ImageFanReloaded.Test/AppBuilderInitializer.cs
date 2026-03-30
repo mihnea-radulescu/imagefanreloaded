@@ -1,3 +1,4 @@
+using System.Threading;
 using Avalonia;
 
 namespace ImageFanReloaded.Test;
@@ -8,23 +9,16 @@ public class AppBuilderInitializer
 	{
 		get
 		{
-			lock (Locker)
+			lock (InstanceCreationLock)
 			{
-				_instance ??= new AppBuilderInitializer();
+				field ??= new AppBuilderInitializer();
 			}
 
-			return _instance;
+			return field;
 		}
 	}
 
-	static AppBuilderInitializer()
-	{
-		Locker = new object();
-	}
-
-	private static readonly object Locker;
-
-	private static AppBuilderInitializer? _instance;
+	private static readonly Lock InstanceCreationLock = new();
 
 	private AppBuilderInitializer()
 	{

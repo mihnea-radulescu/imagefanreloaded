@@ -19,11 +19,6 @@ namespace ImageFanReloaded.Controls;
 
 public partial class ContentTabItem : UserControl, IContentTabItem
 {
-	static ContentTabItem()
-	{
-		StartSlideshowDelay = TimeSpan.FromMilliseconds(50);
-	}
-
 	public ContentTabItem()
 	{
 		InitializeComponent();
@@ -509,7 +504,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private const int OneImageForward = 1;
 	private const int OneImageBackward = -1;
 
-	private static readonly TimeSpan StartSlideshowDelay;
+	private static readonly TimeSpan StartSlideshowDelay =
+		TimeSpan.FromMilliseconds(50);
 
 	private ColumnDefinition? _folderTreeViewColumn;
 	private ColumnDefinition? _gridSplitterColumn;

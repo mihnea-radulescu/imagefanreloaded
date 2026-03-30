@@ -175,9 +175,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			.GetStringComparer();
 		NameComparer = new NaturalSortingComparer(stringComparer);
 
-		DirectlySupportedImageFileExtensions =
-			new HashSet<string>(ExtensionsStringComparer)
-		{
+		DirectlySupportedImageFileExtensions = new HashSet<string>(
+		[
 			".bmp",
 			".cr2",
 			".cur",
@@ -193,11 +192,10 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".raf",
 			".rw2",
 			".wbmp"
-		};
+		], ExtensionComparer);
 
 		IndirectlySupportedImageFileExtensions = new HashSet<string>(
-			ExtensionsStringComparer)
-		{
+		[
 			".dds",
 			".exr",
 			".fts",
@@ -224,21 +222,21 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".tif", ".tiff",
 			".xbm",
 			".xpm"
-		};
+		], ExtensionComparer);
 
 		AnimationEnabledImageFileExtensions = new HashSet<string>(
-			ExtensionsStringComparer)
-		{
+		[
 			".gif",
 			".mng",
 			".webp"
-		};
+		], ExtensionComparer);
 
 		ImageFileExtensions = new HashSet<string>(
-			[..DirectlySupportedImageFileExtensions, 
-			 ..IndirectlySupportedImageFileExtensions,
-			 ..AnimationEnabledImageFileExtensions],
-			ExtensionsStringComparer);
+		[
+			..DirectlySupportedImageFileExtensions,
+			..IndirectlySupportedImageFileExtensions,
+			..AnimationEnabledImageFileExtensions
+		], ExtensionComparer);
 
 		ImageQualityLevel = 80;
 		DecimalDigitCountForDisplay = 2;
@@ -257,15 +255,13 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		];
 
 		_backwardNavigationKeys = [Key.Up, Key.Left, Key.Backspace];
-
 		_forwardNavigationKeys = [Key.Down, Key.Right, Key.Space];
-
 		_navigationKeys = [.._backwardNavigationKeys, .._forwardNavigationKeys];
 	}
 
 	protected const int IconSizeSquareLength = 36;
 
-	private static readonly StringComparer ExtensionsStringComparer =
+	private static readonly StringComparer ExtensionComparer =
 		StringComparer.InvariantCultureIgnoreCase;
 
 	private readonly HashSet<Key> _backwardNavigationKeys;
