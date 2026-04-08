@@ -6,17 +6,13 @@
 		WindowState="FullScreen"
 		Background="Black"
 		Closing="OnWindowClosing">
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
-
+	<Grid RowDefinitions="*">
 		<ScrollViewer Name="_imageScrollViewer"
-					  Grid.Row="0"
-					  HorizontalScrollBarVisibility="Hidden"
-					  VerticalScrollBarVisibility="Hidden"
-					  PointerPressed="OnMouseDown"
-					  PointerReleased="OnMouseUp">
+		              Grid.Row="0"
+		              HorizontalScrollBarVisibility="Hidden"
+		              VerticalScrollBarVisibility="Hidden"
+		              PointerPressed="OnMouseDown"
+		              PointerReleased="OnMouseUp">
 			<Image Name="_displayImage"
 				   Stretch="None"/>
 		</ScrollViewer>

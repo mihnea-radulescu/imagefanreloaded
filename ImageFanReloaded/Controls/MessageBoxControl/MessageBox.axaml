@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ImageFanReloaded.Controls.MessageBoxControl.MessageBox"
+        Title="Message"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterOwner"
+        CanMinimize="False"
+        CanResize="False">
+    <Grid Margin="20" RowDefinitions="*,Auto">
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    Spacing="20"
+                    VerticalAlignment="Center">
+            <Path Name="IconPath"
+                  Width="36"
+                  Height="36"
+                  Stretch="Uniform"
+                  VerticalAlignment="Top"/>
+            <TextBlock Name="MessageTextBlock"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Name="ButtonsStackPanel"
+                    Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10"
+                    Margin="0,20,0,0">
+        </StackPanel>
+    </Grid>
+</Window>

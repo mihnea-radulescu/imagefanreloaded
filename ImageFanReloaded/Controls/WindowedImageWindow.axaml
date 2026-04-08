@@ -9,11 +9,7 @@
 		PointerPressed="OnMouseDown"
 		PointerReleased="OnMouseUp"
 		Closing="OnWindowClosing">
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
-
+	<Grid RowDefinitions="*">
 		<Image Name="_displayImage"
 		       Grid.Row="0"
 		       Stretch="Uniform"/>

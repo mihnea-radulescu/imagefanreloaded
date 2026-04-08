@@ -10,17 +10,10 @@
 		WindowState="Maximized"
 		Loaded="OnWindowLoaded"
 		Closing="OnWindowClosing">
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
-
+	<Grid RowDefinitions="Auto,Auto,Auto,*">
 		<StackPanel Grid.Row="0"
-					Classes="HorizontalStackPanel"
-					HorizontalAlignment="Center">
+		            Classes="HorizontalStackPanel"
+		            HorizontalAlignment="Center">
 			<Button Name="_undoButton"
 					Content="Undo"
 					Click="OnUndo"/>

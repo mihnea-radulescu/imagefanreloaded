@@ -78,7 +78,7 @@ public partial class WindowedImageWindow : Window, IImageView
 				break;
 			case ImageViewDisplayMode.WindowedMaximizedBorderless:
 				WindowState = WindowState.Maximized;
-				WindowDecorations = WindowDecorations.None;
+				SystemDecorations = SystemDecorations.None;
 				break;
 		}
 

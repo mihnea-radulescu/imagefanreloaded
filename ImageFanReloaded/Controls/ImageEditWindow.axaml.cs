@@ -8,7 +8,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using MsBox.Avalonia;
+using ImageFanReloaded.Controls.MessageBoxControl;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
@@ -31,7 +31,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 			"Could not perform image transformation.",
 			Environment.NewLine,
 			Environment.NewLine,
-			"The selected image format does only support image reading.",
+			"The selected image format only supports image reading.",
 			Environment.NewLine,
 			Environment.NewLine,
 			"Consider saving the image in a different format, editing the saved image, and then retrying the image transformation."
@@ -41,7 +41,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 			@"Could not save image file ""{0}"".",
 			Environment.NewLine,
 			Environment.NewLine,
-			"The selected file is not writable, or the selected image format does only support image reading.",
+			"The selected file is not writable, or the selected image format only supports image reading.",
 			Environment.NewLine,
 			Environment.NewLine,
 			"Consider saving the image as a different file, or in a different format."
@@ -243,23 +243,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			e.Cancel = true;
 
-			var closeWindowMessageBox = MessageBoxManager.GetMessageBoxStandard(
-				"Unsaved image changes",
-				"You have unsaved image changes. Are you sure you want to close the window?",
-				MsBox.Avalonia.Enums.ButtonEnum.YesNoCancel,
-				MsBox.Avalonia.Enums.Icon.Question,
-				null,
-				WindowStartupLocation.CenterOwner);
+			var closeWindowMessageBoxResult =
+				await ShowUnsavedImageChangesWarningMessageBox();
 
-			var closeWindowButtonResult =
-				await closeWindowMessageBox.ShowWindowDialogAsync(this);
-
-			if (closeWindowButtonResult !=
-				MsBox.Avalonia.Enums.ButtonResult.Yes)
-			{
-				return;
-			}
-			else
+			if (closeWindowMessageBoxResult == MessageBoxResult.Continue)
 			{
 				_hasUnsavedChanges = false;
 
@@ -869,18 +856,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 					var imageToSaveFileName = GetFileNameFromPath(
 						imageToSaveFilePath);
 
-					var saveImageAsErrorMessageBox = MessageBoxManager
-						.GetMessageBoxStandard(
-							"Image save error",
-							string.Format(SaveImageErrorMessage,
-								imageToSaveFileName),
-							MsBox.Avalonia.Enums.ButtonEnum.Ok,
-							MsBox.Avalonia.Enums.Icon.Error,
-							null,
-							WindowStartupLocation.CenterOwner);
-
-					await saveImageAsErrorMessageBox.ShowWindowDialogAsync(
-						this);
+					await ShowImageSaveErrorMessageBox(imageToSaveFileName);
 				}
 			}
 		});
@@ -946,16 +922,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 		catch
 		{
-			var applyTransformErrorMessageBox = MessageBoxManager
-				.GetMessageBoxStandard(
-					"Image transformation error",
-					TransformImageErrorMessage,
-					MsBox.Avalonia.Enums.ButtonEnum.Ok,
-					MsBox.Avalonia.Enums.Icon.Error,
-					null,
-					WindowStartupLocation.CenterOwner);
-
-			await applyTransformErrorMessageBox.ShowWindowDialogAsync(this);
+			await ShowImageTransformationErrorMessageBox();
 		}
 	}
 
@@ -1356,8 +1323,37 @@ public partial class ImageEditWindow : Window, IImageEditView
 	}
 
 	private bool IsLineOrDotCropSelection()
-		=> _topLeftPointToImage.X == _bottomRightPointToImage.X ||
-		   _topLeftPointToImage.Y == _bottomRightPointToImage.Y;
+		=> (int)_topLeftPointToImage.X == (int)_bottomRightPointToImage.X ||
+		   (int)_topLeftPointToImage.Y == (int)_bottomRightPointToImage.Y;
+
+	private async Task<MessageBoxResult>
+		ShowUnsavedImageChangesWarningMessageBox()
+	{
+		return await MessageBoxManager.ShowAsync(
+			"Unsaved image changes",
+			"You have unsaved image changes. Are you sure you want to close the window?",
+			MessageBoxType.Warning,
+			this);
+	}
+
+	private async Task ShowImageSaveErrorMessageBox(string imageToSaveFileName)
+	{
+		await MessageBoxManager.ShowAsync(
+			"Image save error",
+			string.Format(
+				SaveImageErrorMessage, imageToSaveFileName),
+			MessageBoxType.Error,
+			this);
+	}
+
+	private async Task ShowImageTransformationErrorMessageBox()
+	{
+		await MessageBoxManager.ShowAsync(
+			"Image transformation error",
+			TransformImageErrorMessage,
+			MessageBoxType.Error,
+			this);
+	}
 
 	private static string GetFileNameFromPath(string filePath)
 		=> System.IO.Path.GetFileName(filePath);
