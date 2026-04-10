@@ -68,6 +68,14 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.04.10" date="2026-04-10">
+			<description>
+				<ul>
+					<li>Changed message boxes implementation</li>
+					<li>Updated application libraries</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.03.31" date="2026-03-31">
 			<description>
 				<p>Added tab option: select enabled image file extensions</p>
