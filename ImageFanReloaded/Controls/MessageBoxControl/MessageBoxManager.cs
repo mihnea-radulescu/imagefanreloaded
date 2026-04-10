@@ -7,7 +7,7 @@ namespace ImageFanReloaded.Controls.MessageBoxControl;
 
 public static class MessageBoxManager
 {
-	public static async Task<MessageBoxResult> ShowAsync(
+	public static async Task<MessageBoxResult> ShowDialogAsync(
 		string title,
 		string text,
 		MessageBoxType messageBoxType,
@@ -24,30 +24,39 @@ public static class MessageBoxManager
 
 		switch (messageBoxType)
 		{
-			case MessageBoxType.Error:
-				messageBox.IconPath.Data = StreamGeometry.Parse(
-					ErrorIconPathData);
-				messageBox.IconPath.Fill = Brushes.Red;
-
-				messageBox.AddButton("OK", MessageBoxResult.Continue);
-				break;
-
-			case MessageBoxType.Warning:
-				messageBox.IconPath.Data = StreamGeometry.Parse(
-					WarningIconPathData);
-				messageBox.IconPath.Fill = Brushes.Orange;
-
-				messageBox.AddButton("Yes", MessageBoxResult.Continue);
-				messageBox.AddButton("No", MessageBoxResult.Cancel);
-				messageBox.AddButton("Cancel", MessageBoxResult.Cancel);
-				break;
-
 			case MessageBoxType.Info:
 				messageBox.IconPath.Data = StreamGeometry.Parse(
 					InfoIconPathData);
 				messageBox.IconPath.Fill = Brushes.DodgerBlue;
 
-				messageBox.AddButton("OK", MessageBoxResult.Continue);
+				messageBox.AddButton("OK", MessageBoxResult.Ok);
+				break;
+
+			case MessageBoxType.WarningYesNo:
+				messageBox.IconPath.Data = StreamGeometry.Parse(
+					WarningIconPathData);
+				messageBox.IconPath.Fill = Brushes.Orange;
+
+				messageBox.AddButton("Yes", MessageBoxResult.Yes);
+				messageBox.AddButton("No", MessageBoxResult.No);
+				break;
+
+			case MessageBoxType.WarningYesNoCancel:
+				messageBox.IconPath.Data = StreamGeometry.Parse(
+					WarningIconPathData);
+				messageBox.IconPath.Fill = Brushes.Orange;
+
+				messageBox.AddButton("Yes", MessageBoxResult.Yes);
+				messageBox.AddButton("No", MessageBoxResult.No);
+				messageBox.AddButton("Cancel", MessageBoxResult.Cancel);
+				break;
+
+			case MessageBoxType.Error:
+				messageBox.IconPath.Data = StreamGeometry.Parse(
+					ErrorIconPathData);
+				messageBox.IconPath.Fill = Brushes.Red;
+
+				messageBox.AddButton("OK", MessageBoxResult.Ok);
 				break;
 
 			default:

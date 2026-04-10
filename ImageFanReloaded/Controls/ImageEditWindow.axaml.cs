@@ -246,7 +246,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 			var closeWindowMessageBoxResult =
 				await ShowUnsavedImageChangesWarningMessageBox();
 
-			if (closeWindowMessageBoxResult == MessageBoxResult.Continue)
+			if (closeWindowMessageBoxResult == MessageBoxResult.Yes)
 			{
 				_hasUnsavedChanges = false;
 
@@ -1329,16 +1329,16 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private async Task<MessageBoxResult>
 		ShowUnsavedImageChangesWarningMessageBox()
 	{
-		return await MessageBoxManager.ShowAsync(
+		return await MessageBoxManager.ShowDialogAsync(
 			"Unsaved image changes",
 			"You have unsaved image changes. Are you sure you want to close the window?",
-			MessageBoxType.Warning,
+			MessageBoxType.WarningYesNoCancel,
 			this);
 	}
 
 	private async Task ShowImageSaveErrorMessageBox(string imageToSaveFileName)
 	{
-		await MessageBoxManager.ShowAsync(
+		await MessageBoxManager.ShowDialogAsync(
 			"Image save error",
 			string.Format(
 				SaveImageErrorMessage, imageToSaveFileName),
@@ -1348,7 +1348,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private async Task ShowImageTransformationErrorMessageBox()
 	{
-		await MessageBoxManager.ShowAsync(
+		await MessageBoxManager.ShowDialogAsync(
 			"Image transformation error",
 			TransformImageErrorMessage,
 			MessageBoxType.Error,

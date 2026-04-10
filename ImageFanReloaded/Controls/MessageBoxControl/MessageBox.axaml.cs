@@ -19,8 +19,10 @@ public partial class MessageBox : Window
             Content = buttonText,
             MinWidth = ButtonMinWidth,
             HorizontalContentAlignment = HorizontalAlignment.Center,
-            IsDefault = buttonClickResult == MessageBoxResult.Continue,
-            IsCancel = buttonClickResult == MessageBoxResult.Cancel
+            IsDefault = buttonClickResult is
+                MessageBoxResult.Ok or MessageBoxResult.Yes,
+            IsCancel = buttonClickResult is
+                MessageBoxResult.Ok or MessageBoxResult.Cancel
         };
 
         button.Click += (_, _) =>
