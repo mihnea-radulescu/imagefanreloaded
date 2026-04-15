@@ -200,6 +200,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 
 		IndirectlySupportedImageFileExtensions = new HashSet<string>(
 		[
+			".avif",
 			".dds",
 			".exr",
 			".fts",
