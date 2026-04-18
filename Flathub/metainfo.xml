@@ -68,6 +68,11 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.04.19" date="2026-04-19">
+			<description>
+				<p>Added animation support for the AVIF image format</p>
+			</description>
+		</release>
 		<release version="1.2026.04.17" date="2026-04-17">
 			<description>
 				<ul>

@@ -76,8 +76,13 @@ public class ImageFile : ImageFileBase
 		foreach (var image in imageCollection)
 		{
 			var animationDelayInMilliseconds = image.AnimationDelay * 10;
+			var animationDelayScalingFactor =
+				image.AnimationTicksPerSecond / 100;
+			var animationDelayInMillisecondsAfterScaling =
+				animationDelayInMilliseconds / animationDelayScalingFactor;
+
 			var delayUntilNextFrame = TimeSpan.FromMilliseconds(
-				animationDelayInMilliseconds);
+				animationDelayInMillisecondsAfterScaling);
 
 			using var imageStream = new MemoryStream();
 			WriteImageToStream(image, imageStream, false);
