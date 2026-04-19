@@ -24,9 +24,9 @@
 			<li>keyboard and mouse user interaction</li>
 			<li>dark and light modes, based on system settings</li>
 			<li>45 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm</li>
+			<li>image animation support for the formats: avif, gif, mng, webp</li>
 			<li>fast and seamless full-screen and windowed navigation across images</li>
 			<li>image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize</li>
-			<li>image animation support for the formats gif, mng and webp</li>
 			<li>folder and image file ordering by name, last modification time and random shuffle, ascending and descending</li>
 			<li>configurable thumbnail size, between 100 and 1200 pixels</li>
 			<li>thumbnail caching capability for fast folder browsing</li>
@@ -68,9 +68,9 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
-		<release version="1.2026.04.19" date="2026-04-19">
+		<release version="1.2026.04.20" date="2026-04-20">
 			<description>
-				<p>Added animation support for the AVIF image format</p>
+				<p>Added AVIF image format animation support</p>
 			</description>
 		</release>
 		<release version="1.2026.04.17" date="2026-04-17">
