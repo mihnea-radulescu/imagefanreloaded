@@ -10,7 +10,7 @@ public class LinuxDiscQueryEngine : UnixDiscQueryEngineBase
 		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory)
 			: base(globalParameters, imageFileFactory)
 	{
-		_supportedDrivePrefixes = ["/media/", "/mnt/"];
+		_supportedDrivePrefixes = ["/media/", "/mnt/", "/run/media/"];
 	}
 
 	protected override IReadOnlyList<string> SupportedDrivePrefixes
