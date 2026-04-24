@@ -68,6 +68,14 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.04.25" date="2026-04-25">
+			<description>
+				<ul>
+					<li>Added support for Ubuntu 26.04 volume mounts</li>
+					<li>Updated application framework and libraries</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.04.20" date="2026-04-20">
 			<description>
 				<p>Added AVIF image format animation support</p>
