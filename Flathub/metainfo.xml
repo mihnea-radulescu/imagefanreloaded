@@ -68,6 +68,14 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.04.28" date="2026-04-28">
+			<description>
+				<ul>
+					<li>Added read-only permission to /run/media to support Ubuntu 26.04</li>
+					<li>Updated application libraries</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.04.25" date="2026-04-25">
 			<description>
 				<ul>
