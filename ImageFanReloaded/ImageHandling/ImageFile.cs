@@ -77,7 +77,7 @@ public class ImageFile : ImageFileBase
 		{
 			var animationDelayInMilliseconds = image.AnimationDelay * 10;
 			var animationDelayScalingFactor =
-				image.AnimationTicksPerSecond / 100;
+				(double)image.AnimationTicksPerSecond / 100;
 			var animationDelayInMillisecondsAfterScaling =
 				animationDelayInMilliseconds / animationDelayScalingFactor;
 
