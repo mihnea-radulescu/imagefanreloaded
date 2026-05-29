@@ -957,6 +957,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		UpdateControls();
 
 		RegisterEvents();
+
+		FocusWindow();
 	}
 
 	private void SetControlsEnabledStatus(bool areControlsEnabled)
@@ -1050,6 +1052,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_downsizeToDimensionsHeightComboBox.SelectionChanged -=
 			OnDownsizeToDimensionsComboBoxSelectionChanged;
 	}
+
+	private void FocusWindow() => Focus();
 
 	private void PopulateDownsizeComboBox(
 		ComboBox downsizeComboBox,

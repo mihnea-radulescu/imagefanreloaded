@@ -5,10 +5,6 @@
 	<Application.Styles>
 		<FluentTheme/>
 
-		<Style Selector="Window">
-			<Setter Property="Focusable" Value="True"/>
-		</Style>
-
 		<Style Selector="ScrollViewer">
 			<Setter Property="Focusable" Value="True"/>
 		</Style>
