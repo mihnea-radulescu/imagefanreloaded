@@ -87,6 +87,7 @@ public partial class WindowedImageWindow : Window, IImageView
 		_displayImage.MaxWidth = _imageFile.ImageSize.Width;
 		_displayImage.MaxHeight = _imageFile.ImageSize.Height;
 
+		_imageInfoSelectableTextBlock.ClearSelection();
 		_imageInfoSelectableTextBlock.Text = _imageFile.GetBasicImageInfo(
 			TabOptions!.RecursiveFolderBrowsing);
 		_imageInfoSelectableTextBlock.IsVisible = ShouldShowImageInfo();
@@ -323,7 +324,7 @@ public partial class WindowedImageWindow : Window, IImageView
 
 		if (isSelectedImageInfoText)
 		{
-			Focus();
+			_imageInfoSelectableTextBlock.ClearSelection();
 		}
 		else
 		{

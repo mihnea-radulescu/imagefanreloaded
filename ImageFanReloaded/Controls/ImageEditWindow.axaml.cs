@@ -55,6 +55,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_snapCropEdgesToolTip.Text =
 			$"If the crop area is within {SnapCropEdgesThresholdInPixels} pixels of an image edge, it will automatically snap to the edge.";
 
+		_lastFocusableControl = _downsizeToDimensionsHeightComboBox;
+
 		_downsizeComboBoxValueToComboBoxItemMapping =
 			new Dictionary<string, ComboBoxItem>();
 
@@ -103,6 +105,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private static readonly string TransformImageErrorMessage;
 	private static readonly string SaveImageErrorMessage;
+
+	private readonly Control _lastFocusableControl;
 
 	private readonly IDictionary<string, ComboBoxItem>
 		_downsizeComboBoxValueToComboBoxItemMapping;
@@ -957,8 +961,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		UpdateControls();
 
 		RegisterEvents();
-
-		FocusWindow();
 	}
 
 	private void SetControlsEnabledStatus(bool areControlsEnabled)
@@ -996,6 +998,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		SetDownsizeButtonEnabledStatus();
 
 		SetImageTitle();
+
+		FocusLastFocusableControl();
 	}
 
 	private void UpdateControlsEnabledStatus()
@@ -1052,8 +1056,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_downsizeToDimensionsHeightComboBox.SelectionChanged -=
 			OnDownsizeToDimensionsComboBoxSelectionChanged;
 	}
-
-	private void FocusWindow() => Focus();
 
 	private void PopulateDownsizeComboBox(
 		ComboBox downsizeComboBox,
@@ -1150,6 +1152,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void SetImageTitle()
 		=> Title = $"{ImageFileData!.FileName} - {_editableImage!.ImageSize}";
+
+	private void FocusLastFocusableControl() => _lastFocusableControl.Focus();
 
 	private void SetImageLoadErrorTitle()
 		=> Title = $"{ImageFileData!.FileName} - image read error";

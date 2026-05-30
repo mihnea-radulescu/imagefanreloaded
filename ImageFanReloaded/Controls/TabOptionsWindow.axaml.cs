@@ -166,22 +166,6 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_tabOptionChanges.HasChangedThumbnailSize = true;
 	}
 
-	private void OnEnabledImageFileExtensionsListBoxKeyPressing(
-		object? sender, Avalonia.Input.KeyEventArgs e)
-	{
-		var keyModifiers = e.KeyModifiers.ToCoreKeyModifiers();
-		var keyPressing = e.Key.ToCoreKey();
-
-		var selectedItem = _enabledImageFileExtensionsListBox.SelectedItem;
-
-		if (ShouldChangeCheckBoxIsChecked(keyModifiers, keyPressing) &&
-		    selectedItem is not null)
-		{
-			var selectedCheckBox = (CheckBox)selectedItem;
-			selectedCheckBox.IsChecked = !selectedCheckBox.IsChecked;
-		}
-	}
-
 	private void OnEnabledImageFileExtensionsListBoxCheckBoxIsCheckedChanged(
 		object? sender, RoutedEventArgs e)
 	{
@@ -298,19 +282,6 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 	{
 		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
 			keyPressing == GlobalParameters!.EscapeKey)
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	private bool ShouldChangeCheckBoxIsChecked(
-		KeyModifiers keyModifiers, Key keyPressing)
-	{
-		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
-		    (keyPressing == GlobalParameters!.EnterKey ||
-		     keyPressing == GlobalParameters!.SpaceKey))
 		{
 			return true;
 		}
@@ -464,17 +435,13 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			var anImageFileExtensionItem = new CheckBox
 			{
 				Tag = anImageFileExtension,
-				Content = anImageFileExtension
+				Content = anImageFileExtension,
+				IsChecked = TabOptions!.EnabledImageFileExtensions.Contains(
+					anImageFileExtension)
 			};
 
 			_enabledImageFileExtensionsListBox.Items.Add(
 				anImageFileExtensionItem);
-
-			if (TabOptions!.EnabledImageFileExtensions.Contains(
-				    anImageFileExtension))
-			{
-				anImageFileExtensionItem.IsChecked = true;
-			}
 		}
 	}
 
@@ -590,14 +557,16 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 	private void UpdateEnabledImageFileExtensions()
 	{
-		var enabledImageFileExtensions = _enabledImageFileExtensionsListBox
-			.Items
-			.Cast<CheckBox>()
-			.Where(aCheckBox => aCheckBox.IsChecked == true)
-			.Select(aCheckBox => (string)aCheckBox.Tag!)
-			.ToHashSet(GlobalParameters!.ImageFileExtensionsComparer);
+		var checkedEnabledImageFileExtensions =
+			_enabledImageFileExtensionsListBox
+				.Items
+				.Cast<CheckBox>()
+				.Where(aCheckBox => aCheckBox.IsChecked == true)
+				.Select(aCheckBox => (string)aCheckBox.Tag!)
+				.ToHashSet(GlobalParameters!.ImageFileExtensionsComparer);
 
-		TabOptions!.EnabledImageFileExtensions = enabledImageFileExtensions;
+		TabOptions!.EnabledImageFileExtensions =
+			checkedEnabledImageFileExtensions;
 	}
 
 	private void RegisterTabOptionEvents()
@@ -618,11 +587,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_thumbnailSizeComboBox.SelectionChanged +=
 			OnThumbnailSizeSelectionChanged;
 
-		_enabledImageFileExtensionsListBox.KeyDown +=
-			OnEnabledImageFileExtensionsListBoxKeyPressing;
-
-		foreach (CheckBox? aCheckBox in
-		         _enabledImageFileExtensionsListBox.Items)
+		foreach (CheckBox aCheckBox in
+		         _enabledImageFileExtensionsListBox.Items!)
 		{
 			aCheckBox!.IsCheckedChanged +=
 				OnEnabledImageFileExtensionsListBoxCheckBoxIsCheckedChanged;
@@ -670,11 +636,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_thumbnailSizeComboBox.SelectionChanged -=
 			OnThumbnailSizeSelectionChanged;
 
-		_enabledImageFileExtensionsListBox.KeyDown -=
-			OnEnabledImageFileExtensionsListBoxKeyPressing;
-
-		foreach (CheckBox? aCheckBox in
-		         _enabledImageFileExtensionsListBox.Items)
+		foreach (CheckBox aCheckBox in
+		         _enabledImageFileExtensionsListBox.Items!)
 		{
 			aCheckBox!.IsCheckedChanged -=
 				OnEnabledImageFileExtensionsListBoxCheckBoxIsCheckedChanged;

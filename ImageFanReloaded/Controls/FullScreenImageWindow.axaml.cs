@@ -82,6 +82,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 		_negligibleImageDragY =
 			imageFile.ImageSize.Height * NegligibleImageDragFactor;
 
+		_imageInfoSelectableTextBlock.ClearSelection();
 		_imageInfoSelectableTextBlock.Text = _imageFile.GetBasicImageInfo(
 			TabOptions!.RecursiveFolderBrowsing);
 		_imageInfoSelectableTextBlock.IsVisible = ShouldShowImageInfo();
@@ -410,7 +411,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 		if (isSelectedImageInfoText)
 		{
-			Focus();
+			_imageInfoSelectableTextBlock.ClearSelection();
 		}
 		else
 		{

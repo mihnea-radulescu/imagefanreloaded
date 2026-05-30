@@ -68,6 +68,11 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.05.31" date="2026-05-31">
+			<description>
+				<p>Fixed control focus issue when editing an image</p>
+			</description>
+		</release>
 		<release version="1.2026.05.30" date="2026-05-30">
 			<description>
 				<p>Updated application libraries</p>
