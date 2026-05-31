@@ -29,6 +29,7 @@ User interface:
 * key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
 * key combo Shift+Tab for cycling through tabs
 * key Tab for cycling through controls in the active tab
+* key combo Ctrl+C for copying the selected folder info or image info
 * key combos Ctrl+N, Ctrl+M and Ctrl+B for changing folder ordering between name, last modification time and random shuffle
 * key combos Ctrl+A and Ctrl+D for changing folder ordering direction between ascending and descending
 * keys N, M and B for changing image file ordering between name, last modification time and random shuffle

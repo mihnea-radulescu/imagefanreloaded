@@ -82,9 +82,9 @@ public partial class FullScreenImageWindow : Window, IImageView
 		_negligibleImageDragY =
 			imageFile.ImageSize.Height * NegligibleImageDragFactor;
 
-		_imageInfoSelectableTextBlock.ClearSelection();
-		_imageInfoSelectableTextBlock.Text = _imageFile.GetBasicImageInfo(
+		var basicImageInfo = _imageFile.GetBasicImageInfo(
 			TabOptions!.RecursiveFolderBrowsing);
+		_imageInfoSelectableTextBlock.SetText(basicImageInfo);
 		_imageInfoSelectableTextBlock.IsVisible = ShouldShowImageInfo();
 	}
 
@@ -196,6 +196,10 @@ public partial class FullScreenImageWindow : Window, IImageView
 		else if (ShouldToggleImageInfo(keyModifiers, keyPressing))
 		{
 			ToggleImageInfo();
+		}
+		else if (ShouldCopyImageInfoToClipboard(keyModifiers, keyPressing))
+		{
+			CopyImageInfoToClipboard();
 		}
 		else if (ShouldHandleEscapeAction(keyModifiers, keyPressing))
 		{
@@ -377,6 +381,19 @@ public partial class FullScreenImageWindow : Window, IImageView
 		return false;
 	}
 
+	private bool ShouldCopyImageInfoToClipboard(
+		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
+		ImageFanReloaded.Core.Keyboard.Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
+		    keyPressing == GlobalParameters!.CKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool ShouldHandleEscapeAction(
 		ImageFanReloaded.Core.Keyboard.KeyModifiers keyModifiers,
 		ImageFanReloaded.Core.Keyboard.Key keyPressing)
@@ -406,10 +423,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 	private async Task HandleEscapeAction()
 	{
-		var isSelectedImageInfoText =
-			_imageInfoSelectableTextBlock.SelectedText != string.Empty;
-
-		if (isSelectedImageInfoText)
+		if (_imageInfoSelectableTextBlock.HasSelectedText)
 		{
 			_imageInfoSelectableTextBlock.ClearSelection();
 		}
@@ -697,6 +711,14 @@ public partial class FullScreenImageWindow : Window, IImageView
 			!TabOptions!.ShowImageViewImageInfo;
 
 		_imageInfoSelectableTextBlock.IsVisible = ShouldShowImageInfo();
+	}
+
+	private void CopyImageInfoToClipboard()
+	{
+		if (_imageInfoSelectableTextBlock.HasSelectedText)
+		{
+			_imageInfoSelectableTextBlock.Copy();
+		}
 	}
 
 	private async Task CloseWindow()

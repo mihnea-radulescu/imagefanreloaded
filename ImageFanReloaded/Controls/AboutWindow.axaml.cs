@@ -20,7 +20,7 @@ public partial class AboutWindow : Window, IAboutView
 	public IGlobalParameters? GlobalParameters { get; set; }
 
 	public void SetAboutText(string text)
-		=> _aboutSelectableTextBlock.Text = text;
+		=> _aboutSelectableTextBlock.SetText(text);
 
 	public async Task ShowDialog(IMainView owner)
 		=> await ShowDialog((Window)owner);

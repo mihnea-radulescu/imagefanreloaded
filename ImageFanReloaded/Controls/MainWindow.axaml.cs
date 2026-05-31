@@ -82,7 +82,7 @@ public partial class MainWindow : Window, IMainView
 		}
 		else if (ShouldHandleEscapeAction(keyModifiers, keyPressing))
 		{
-			if (contentTabItem.AreSelectedFolderInfoTextOrImageInfoText())
+			if (contentTabItem.AreSelectedFolderInfoTextOrImageInfoText)
 			{
 				contentTabItem.FocusThumbnailScrollViewer();
 			}
@@ -107,10 +107,11 @@ public partial class MainWindow : Window, IMainView
 			NavigateToNextTab();
 			e.Handled = true;
 		}
-		else if (contentTabItem.ShouldHandleControlKeyFunctions(
+		else if (contentTabItem.ShouldHandleContentTabItemKeyFunctions(
 			keyModifiers, keyPressing))
 		{
-			contentTabItem.HandleControlKeyFunctions(keyModifiers, keyPressing);
+			contentTabItem.HandleContentTabItemKeyFunctions(
+				keyModifiers, keyPressing);
 			e.Handled = true;
 		}
 		else if (!ShouldAllowKeyPressingEventPropagation(

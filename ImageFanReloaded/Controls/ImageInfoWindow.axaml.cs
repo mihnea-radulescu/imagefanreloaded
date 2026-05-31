@@ -34,12 +34,12 @@ public partial class ImageInfoWindow : Window, IImageInfoView
 		SetLoadingImageInfoTitle();
 
 		var imageInfo = await ImageInfoBuilder!.BuildImageInfo(ImageFile!);
-		_imageInfoSelectableTextBlock.Text = imageInfo;
-
-		_imageInfoScrollViewer.Focus();
+		_imageInfoSelectableTextBlock.SetText(imageInfo);
 
 		SetImageInfoTitle();
 		_isLoading = false;
+
+		_imageInfoScrollViewer.Focus();
 	}
 
 	private void OnKeyPressing(object? sender, KeyEventArgs e)

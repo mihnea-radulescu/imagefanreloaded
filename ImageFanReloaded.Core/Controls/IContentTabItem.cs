@@ -43,9 +43,10 @@ public interface IContentTabItem
 	void EnableFolderTreeViewSelectedItemChanged();
 	void DisableFolderTreeViewSelectedItemChanged();
 
-	bool ShouldHandleControlKeyFunctions(
+	bool ShouldHandleContentTabItemKeyFunctions(
 		KeyModifiers keyModifiers, Key keyPressing);
-	void HandleControlKeyFunctions(KeyModifiers keyModifiers, Key keyPressing);
+	void HandleContentTabItemKeyFunctions(
+		KeyModifiers keyModifiers, Key keyPressing);
 
 	void SetFocusOnSelectedFolderTreeViewItem();
 
@@ -78,7 +79,8 @@ public interface IContentTabItem
 		FileSystemEntryInfo selectedFileSystemEntryInfo,
 		bool startAtRootFolders);
 
-	bool AreSelectedFolderInfoTextOrImageInfoText();
+	bool AreSelectedFolderInfoTextOrImageInfoText { get; }
+
 	void FocusThumbnailScrollViewer();
 
 	void RaiseFolderOrderingChangedEvent();

@@ -66,7 +66,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_folderTreeView.SelectionChanged -= OnFolderTreeViewSelectedItemChanged;
 	}
 
-	public bool ShouldHandleControlKeyFunctions(
+	public bool ShouldHandleContentTabItemKeyFunctions(
 		KeyModifiers keyModifiers, Key keyPressing)
 	{
 		var shouldHandleKeyPressing =
@@ -76,6 +76,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			ShouldDisplayTabOptions(keyModifiers, keyPressing) ||
 			ShouldDisplayThumbnailCacheOptions(keyModifiers, keyPressing) ||
 			ShouldDisplayAboutInfo(keyModifiers, keyPressing) ||
+			ShouldCopyFolderInfoOrImageInfoToClipboard(
+				keyModifiers, keyPressing) ||
 			ShouldChangeFolderOrdering(keyModifiers, keyPressing) ||
 			ShouldChangeFolderOrderingDirection(keyModifiers, keyPressing) ||
 			ShouldChangeImageFileOrdering(keyModifiers, keyPressing) ||
@@ -96,7 +98,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return shouldHandleKeyPressing;
 	}
 
-	public void HandleControlKeyFunctions(
+	public void HandleContentTabItemKeyFunctions(
 		KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (ShouldStartSlideshow(keyModifiers, keyPressing))
@@ -122,6 +124,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldDisplayAboutInfo(keyModifiers, keyPressing))
 		{
 			RaiseAboutInfoRequested();
+		}
+		else if (ShouldCopyFolderInfoOrImageInfoToClipboard(
+			         keyModifiers, keyPressing))
+		{
+			CopyFolderInfoOrImageInfoToClipboard();
 		}
 		else if (ShouldChangeFolderOrdering(keyModifiers, keyPressing))
 		{
@@ -364,10 +371,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	}
 
 	public void SetFolderInfoText(string folderInfoText)
-		=> _folderInfoSelectableTextBlock.Text = folderInfoText;
+		=> _folderInfoSelectableTextBlock.SetText(folderInfoText);
 
 	public void SetImageInfoText(string imageInfoText)
-		=> _imageInfoSelectableTextBlock.Text = imageInfoText;
+	{
+		_folderInfoSelectableTextBlock.ClearSelection();
+		_imageInfoSelectableTextBlock.SetText(imageInfoText);
+	}
 
 	public void SaveMatchingTreeViewItem(
 		FileSystemEntryInfo selectedFileSystemEntryInfo,
@@ -394,17 +404,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public bool AreSelectedFolderInfoTextOrImageInfoText()
-	{
-		var isSelectedFolderInfoText =
-			_folderInfoSelectableTextBlock.SelectedText != string.Empty;
-		var isSelectedImageInfoText =
-			_imageInfoSelectableTextBlock.SelectedText != string.Empty;
-
-		var areSelectedFolderInfoTextOrImageInfoText =
-			isSelectedFolderInfoText || isSelectedImageInfoText;
-		return areSelectedFolderInfoTextOrImageInfoText;
-	}
+	public bool AreSelectedFolderInfoTextOrImageInfoText
+		=> _folderInfoSelectableTextBlock.HasSelectedText ||
+		   _imageInfoSelectableTextBlock.HasSelectedText;
 
 	public void FocusThumbnailScrollViewer() => _thumbnailScrollViewer.Focus();
 
@@ -858,6 +860,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
+	private bool ShouldCopyFolderInfoOrImageInfoToClipboard(
+		KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
+		    keyPressing == GlobalParameters!.CKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool ShouldChangeFolderOrdering(
 		KeyModifiers keyModifiers, Key keyPressing)
 	{
@@ -1121,6 +1135,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void RaiseAboutInfoRequested()
 	{
 		AboutInfoRequested?.Invoke(this, new ContentTabItemEventArgs(this));
+	}
+
+	private void CopyFolderInfoOrImageInfoToClipboard()
+	{
+		if (_folderInfoSelectableTextBlock.HasSelectedText)
+		{
+			_folderInfoSelectableTextBlock.Copy();
+		}
+		else if (_imageInfoSelectableTextBlock.HasSelectedText)
+		{
+			_imageInfoSelectableTextBlock.Copy();
+		}
 	}
 
 	private void ChangeFolderOrdering(Key keyPressing)
