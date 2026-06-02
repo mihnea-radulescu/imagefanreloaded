@@ -8,8 +8,8 @@ Features:
 * support for multiple folder tabs
 * keyboard and mouse user interaction
 * dark and light modes, based on system settings
-* 45 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm
-* image animation support for the formats: avif, gif, mng, webp
+* 46 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, jxl, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm
+* image animation support for the formats: avif, gif, jxl, mng, webp
 * fast and seamless full-screen and windowed navigation across images
 * image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize
 * folder and image file ordering by name, last modification time and random shuffle, ascending and descending

@@ -232,6 +232,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		[
 			".avif",
 			".gif",
+			".jxl",
 			".mng",
 			".webp"
 		], ImageFileExtensionsComparer);

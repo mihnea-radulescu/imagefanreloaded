@@ -23,8 +23,8 @@
 			<li>support for multiple folder tabs</li>
 			<li>keyboard and mouse user interaction</li>
 			<li>dark and light modes, based on system settings</li>
-			<li>45 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm</li>
-			<li>image animation support for the formats: avif, gif, mng, webp</li>
+			<li>46 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, jxl, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm</li>
+			<li>image animation support for the formats: avif, gif, jxl, mng, webp</li>
 			<li>fast and seamless full-screen and windowed navigation across images</li>
 			<li>image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize</li>
 			<li>folder and image file ordering by name, last modification time and random shuffle, ascending and descending</li>
@@ -68,6 +68,11 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.06.02" date="2026-06-02">
+			<description>
+				<p>Added support for the JPEG XL image format</p>
+			</description>
+		</release>
 		<release version="1.2026.06.01" date="2026-06-01">
 			<description>
 				<p>Improved copying and clearing of the selected folder info or image info</p>
