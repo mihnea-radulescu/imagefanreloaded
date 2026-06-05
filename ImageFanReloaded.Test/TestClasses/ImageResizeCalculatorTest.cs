@@ -1,5 +1,5 @@
 using Xunit;
-using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 
 namespace ImageFanReloaded.Test.TestClasses;

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -38,7 +39,7 @@ public abstract class ImageFileBase : IImageFile
 	public IImage GetImage(bool applyImageOrientation)
 	{
 		using var imageData = _imageFileContentLogic.GetImageData(
-			ImageFileData, applyImageOrientation);
+			ImageFileData);
 
 		if (imageData.ImageDataStream is null)
 		{
@@ -56,7 +57,9 @@ public abstract class ImageFileBase : IImageFile
 			try
 			{
 				image = GetImageFromStream(
-					imageData.ImageDataStream!, applyImageOrientation);
+					imageData.ImageDataStream!,
+					imageData.IsKnownImage,
+					applyImageOrientation);
 
 				SetImageProperties(image);
 			}
@@ -175,7 +178,9 @@ public abstract class ImageFileBase : IImageFile
 				lock (_thumbnailGenerationLock)
 				{
 					image = GetImageFromStream(
-						_imageData!.ImageDataStream!, applyImageOrientation);
+						_imageData!.ImageDataStream!,
+						_imageData.IsKnownImage,
+						applyImageOrientation);
 				}
 
 				SetImageProperties(image);
@@ -275,7 +280,9 @@ public abstract class ImageFileBase : IImageFile
 	protected readonly IGlobalParameters GlobalParameters;
 
 	protected abstract IImage GetImageFromStream(
-		Stream imageFileContentStream, bool applyImageOrientation);
+		Stream imageFileContentStream,
+		bool isKnownImage,
+		bool applyImageOrientation);
 
 	protected bool IsDirectlySupportedImageFileExtension
 		=> GlobalParameters.DirectlySupportedImageFileExtensions.Contains(

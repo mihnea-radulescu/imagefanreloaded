@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.RuntimeEnvironment;
 
@@ -84,7 +84,7 @@ public interface IGlobalParameters
 
 	StringComparer ImageFileExtensionsComparer { get; }
 
-	uint ImageQualityLevel { get; }
+	int ImageQualityLevel { get; }
 	int DecimalDigitCountForDisplay { get; }
 
 	string UserHomePath { get; }

@@ -1,11 +1,14 @@
 using System;
 using ImageFanReloaded.Core.BaseTypes;
 
-namespace ImageFanReloaded.Core.ImageHandling.Implementation;
+namespace ImageFanReloaded.Core.ImageCore.Implementation;
 
 public class ImageFrame : DisposableBase, IImageFrame
 {
-	public ImageFrame(IDisposable imageFrameImplementationInstance, ImageSize imageSize, TimeSpan delayUntilNextFrame)
+	public ImageFrame(
+		IDisposable imageFrameImplementationInstance,
+		ImageSize imageSize,
+		TimeSpan delayUntilNextFrame)
 	{
 		_imageFrameImplementationInstance = imageFrameImplementationInstance;
 		_imageSize = imageSize;
@@ -34,12 +37,12 @@ public class ImageFrame : DisposableBase, IImageFrame
 		}
 	}
 
-	public TImageImplementation GetInstance<TImageImplementation>()
-		where TImageImplementation : class, IDisposable
+	public TImageImpl GetInstance<TImageImpl>()
+		where TImageImpl : class, IDisposable
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		return (TImageImplementation)_imageFrameImplementationInstance;
+		return (TImageImpl)_imageFrameImplementationInstance;
 	}
 
 	protected override void DisposeSpecific()
@@ -47,7 +50,8 @@ public class ImageFrame : DisposableBase, IImageFrame
 		_imageFrameImplementationInstance.Dispose();
 	}
 
-	private static TimeSpan MinimumDelayUntilNextFrame => TimeSpan.FromMilliseconds(50);
+	private static TimeSpan MinimumDelayUntilNextFrame
+		=> TimeSpan.FromMilliseconds(50);
 
 	private readonly IDisposable _imageFrameImplementationInstance;
 	private readonly ImageSize _imageSize;

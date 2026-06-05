@@ -1,6 +1,7 @@
 using System.IO;
 using ImageFanReloaded.Core.Caching;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.Caching;
@@ -17,10 +18,8 @@ public class CachedReadImageFileContentLogic : IImageFileContentLogic
 		_databaseLogic.CreateDatabaseIfNotExisting();
 	}
 
-	public ImageData GetImageData(
-		ImageFileData imageFileData, bool applyImageOrientation)
-			=> _imageFileContentLogic.GetImageData(
-					imageFileData, applyImageOrientation);
+	public ImageData GetImageData(ImageFileData imageFileData)
+		=> _imageFileContentLogic.GetImageData(imageFileData);
 
 	public ImageData GetImageData(
 		ImageFileData imageFileData,
@@ -43,13 +42,11 @@ public class CachedReadImageFileContentLogic : IImageFileContentLogic
 				return new ImageData(cachedImageDataStream, false);
 			}
 
-			return _imageFileContentLogic.GetImageData(
-				imageFileData, applyImageOrientation);
+			return _imageFileContentLogic.GetImageData(imageFileData);
 		}
 		catch
 		{
-			return _imageFileContentLogic.GetImageData(
-				imageFileData, applyImageOrientation);
+			return _imageFileContentLogic.GetImageData(imageFileData);
 		}
 	}
 

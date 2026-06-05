@@ -1,4 +1,4 @@
-using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageCore;
 
 namespace ImageFanReloaded.Core.DiscAccess;
 

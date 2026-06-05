@@ -1,9 +1,11 @@
+using ImageFanReloaded.Core.ImageCore;
+
 namespace ImageFanReloaded.Core.ImageHandling;
 
 public interface IImageFileContentLogic
 {
-	ImageData GetImageData(
-		ImageFileData imageFileData, bool applyImageOrientation);
+	ImageData GetImageData(ImageFileData imageFileData);
+
 	ImageData GetImageData(
 		ImageFileData imageFileData,
 		int thumbnailSize,

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.RuntimeEnvironment;
 using ImageFanReloaded.Core.RuntimeEnvironment.Implementation.Extensions;
@@ -91,7 +91,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public StringComparer ImageFileExtensionsComparer
 		=> StringComparer.InvariantCultureIgnoreCase;
 
-	public uint ImageQualityLevel { get; }
+	public int ImageQualityLevel { get; }
 	public int DecimalDigitCountForDisplay { get; }
 
 	public string UserHomePath { get; }

@@ -5,6 +5,8 @@ using Avalonia.Media.Imaging;
 using ImageMagick;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.ImageCore;
+using ImageFanReloaded.Core.ImageCore.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Settings;
@@ -29,27 +31,35 @@ public class ImageFile : ImageFileBase
 	}
 
 	protected override IImage GetImageFromStream(
-		Stream imageFileContentStream, bool applyImageOrientation)
+		Stream imageFileContentStream,
+		bool isKnownImage,
+		bool applyImageOrientation)
 	{
-		if (IsAnimationEnabledImageFileExtension)
-		{
-			return BuildAnimatedImageFromStream(imageFileContentStream);
-		}
-		else if (applyImageOrientation)
-		{
-			return BuildIndirectlySupportedImageFromStream(
-				imageFileContentStream);
-		}
-		else if (IsDirectlySupportedImageFileExtension)
+		if (isKnownImage)
 		{
 			return BuildDirectlySupportedImageFromStream(
 				imageFileContentStream);
 		}
-		else
+
+		if (IsAnimationEnabledImageFileExtension)
+		{
+			return BuildAnimatedImageFromStream(imageFileContentStream);
+		}
+
+		if (applyImageOrientation)
 		{
 			return BuildIndirectlySupportedImageFromStream(
 				imageFileContentStream);
 		}
+
+		if (IsDirectlySupportedImageFileExtension)
+		{
+			return BuildDirectlySupportedImageFromStream(
+				imageFileContentStream);
+		}
+
+		return BuildIndirectlySupportedImageFromStream(
+			imageFileContentStream);
 	}
 
 	private IImage BuildAnimatedImageFromStream(Stream imageFileContentStream)
@@ -114,7 +124,7 @@ public class ImageFile : ImageFileBase
 	private void WriteImageToStream(
 		IMagickImage image, Stream imageStream, bool autoOrientImage)
 	{
-		image.Quality = GlobalParameters.ImageQualityLevel;
+		image.Quality = (uint)GlobalParameters.ImageQualityLevel;
 
 		if (autoOrientImage)
 		{

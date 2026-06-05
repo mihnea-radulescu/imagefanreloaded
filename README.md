@@ -1,7 +1,7 @@
 # imagefanreloaded
 ImageFan Reloaded is a cross-platform, feature-rich, tab-based image viewer, supporting multi-core processing.
 
-It is written in C#, and targets .NET 10 on Linux and Windows. It relies on [Avalonia](https://github.com/AvaloniaUI/Avalonia), as its UI framework, on [Magick.NET](https://github.com/dlemstra/Magick.NET), as its image manipulation library, and on [SQLite](https://github.com/sqlite/sqlite), as its thumbnail cache database.
+It is written in C#, and targets .NET 10 on Linux and Windows. It relies on [Avalonia](https://github.com/AvaloniaUI/Avalonia), as its UI framework, on [Magick.NET](https://github.com/dlemstra/Magick.NET), as its image processing library, and on [SQLite](https://github.com/sqlite/sqlite), as its thumbnail cache database.
 
 Features:
 * quick concurrent thumbnail generation, scaling to the number of processor cores present

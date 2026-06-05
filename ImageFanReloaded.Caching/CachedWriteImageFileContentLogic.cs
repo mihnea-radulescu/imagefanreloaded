@@ -1,4 +1,5 @@
 using ImageFanReloaded.Core.Caching;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.Caching;
@@ -17,17 +18,15 @@ public class CachedWriteImageFileContentLogic : IImageFileContentLogic
 		_databaseLogic.CreateDatabaseIfNotExisting();
 	}
 
-	public ImageData GetImageData(
-		ImageFileData imageFileData, bool applyImageOrientation)
-			=> _imageFileContentLogic.GetImageData(
-					imageFileData, applyImageOrientation);
+	public ImageData GetImageData(ImageFileData imageFileData)
+		=> _imageFileContentLogic.GetImageData(imageFileData);
 
 	public ImageData GetImageData(
 		ImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation)
-		=> _imageFileContentLogic.GetImageData(
-				imageFileData, thumbnailSize, applyImageOrientation);
+			=> _imageFileContentLogic.GetImageData(
+					imageFileData, thumbnailSize, applyImageOrientation);
 
 	public void UpdateThumbnail(
 		ImageFileData imageFileData,

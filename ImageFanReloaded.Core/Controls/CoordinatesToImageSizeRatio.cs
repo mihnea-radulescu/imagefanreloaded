@@ -1,3 +1,4 @@
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
 
 namespace ImageFanReloaded.Core.Controls;

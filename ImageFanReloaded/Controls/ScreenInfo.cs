@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using ImageFanReloaded.Core.Controls;
-using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageCore;
 
 namespace ImageFanReloaded.Controls;
 

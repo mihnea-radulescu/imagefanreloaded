@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ImageFanReloaded.Core.ImageHandling;
+namespace ImageFanReloaded.Core.ImageCore;
 
 public interface IImage : IImageFrame
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ImageFanReloaded.Core.BaseTypes;
 
-namespace ImageFanReloaded.Core.ImageHandling.Implementation;
+namespace ImageFanReloaded.Core.ImageCore.Implementation;
 
 public class Image : DisposableBase, IImage
 {
@@ -23,7 +23,9 @@ public class Image : DisposableBase, IImage
 		_imageFrames = imageFrames;
 
 		_isAnimated = _imageFrames.Count > 1;
-		_totalImageFramesDelay = GetTotalImageFramesDelay();
+		_totalImageFramesDelay = _isAnimated
+			? GetTotalImageFramesDelay()
+			: TimeSpan.Zero;
 	}
 
 	public ImageSize Size
@@ -46,12 +48,12 @@ public class Image : DisposableBase, IImage
 		}
 	}
 
-	public TImageImplementation GetInstance<TImageImplementation>()
-		where TImageImplementation : class, IDisposable
+	public TImageImpl GetInstance<TImageImpl>()
+		where TImageImpl : class, IDisposable
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		return _imageFrames[0].GetInstance<TImageImplementation>();
+		return _imageFrames[0].GetInstance<TImageImpl>();
 	}
 
 	public bool IsAnimated

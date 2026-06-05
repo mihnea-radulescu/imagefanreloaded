@@ -1,3 +1,5 @@
+using ImageFanReloaded.Core.ImageCore;
+
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
 public class ImageResizeCalculator : IImageResizeCalculator

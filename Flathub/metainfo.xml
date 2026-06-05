@@ -68,6 +68,11 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.06.06" date="2026-06-06">
+			<description>
+				<p>Optimized thumbnail cache usage</p>
+			</description>
+		</release>
 		<release version="1.2026.06.02" date="2026-06-02">
 			<description>
 				<p>Added support for the JPEG XL image format</p>

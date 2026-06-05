@@ -1,4 +1,6 @@
 using System.Linq;
+using ImageFanReloaded.Core.ImageCore;
+using ImageFanReloaded.Core.ImageCore.Implementation;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 

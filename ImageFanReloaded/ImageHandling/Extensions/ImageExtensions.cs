@@ -1,5 +1,5 @@
 using Avalonia.Media.Imaging;
-using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageCore;
 
 namespace ImageFanReloaded.ImageHandling.Extensions;
 

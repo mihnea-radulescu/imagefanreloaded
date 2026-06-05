@@ -1,6 +1,6 @@
 using ImageMagick;
 using ImageFanReloaded.Core.BaseTypes;
-using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageCore;
 
 namespace ImageFanReloaded.ImageHandling;
 

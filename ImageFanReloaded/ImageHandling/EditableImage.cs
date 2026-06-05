@@ -7,16 +7,19 @@ using Avalonia.Media.Imaging;
 using ImageMagick;
 using ImageFanReloaded.Core.BaseTypes;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.ImageCore;
+using ImageFanReloaded.Core.ImageCore.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
-using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.ImageHandling;
 
 public class EditableImage : DisposableBase, IEditableImage
 {
-	public EditableImage(string imageFilePath, uint imageQualityLevel)
+	public EditableImage(string imageFilePath, int imageQualityLevel)
 	{
+		_imageQualityLevel = imageQualityLevel;
+
 		MagickImageCollection? imageFramesToEdit = null;
 		Bitmap? bitmapToDisplay = null;
 
@@ -35,7 +38,7 @@ public class EditableImage : DisposableBase, IEditableImage
 
 			foreach (var anImageFrameToEdit in imageFramesToEdit)
 			{
-				anImageFrameToEdit.Quality = imageQualityLevel;
+				anImageFrameToEdit.Quality = (uint)_imageQualityLevel;
 			}
 
 			using var imageToDisplayStream = new MemoryStream();
@@ -321,7 +324,7 @@ public class EditableImage : DisposableBase, IEditableImage
 		}
 	}
 
-	private const int ImageSaveQuality = 80;
+	private readonly int _imageQualityLevel;
 
 	private EditableImageData _editableImageData;
 
@@ -386,11 +389,11 @@ public class EditableImage : DisposableBase, IEditableImage
 		return destinationImageFrames;
 	}
 
-	private static void ApplyImageCompression(MagickImageCollection image)
+	private void ApplyImageCompression(MagickImageCollection image)
 	{
 		foreach (var anImageFrame in image)
 		{
-			anImageFrame.Quality = ImageSaveQuality;
+			anImageFrame.Quality = (uint)_imageQualityLevel;
 		}
 	}
 }

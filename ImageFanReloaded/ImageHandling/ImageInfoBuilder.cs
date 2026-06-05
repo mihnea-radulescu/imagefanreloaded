@@ -9,6 +9,7 @@ using ImageMagick;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.ImageHandling;

@@ -1,6 +1,6 @@
 using System;
 
-namespace ImageFanReloaded.Core.ImageHandling;
+namespace ImageFanReloaded.Core.ImageCore;
 
 public interface IImageFrame : IDisposable
 {
