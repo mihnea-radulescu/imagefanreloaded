@@ -64,9 +64,7 @@ public class CachedReadImageFileContentLogic : IImageFileContentLogic
 
 	private static Stream GetCachedImageDataStream(byte[] cachedImageData)
 	{
-		var cachedImageDataStream = new MemoryStream();
-
-		cachedImageDataStream.Write(cachedImageData, 0, cachedImageData.Length);
+		var cachedImageDataStream = new MemoryStream(cachedImageData);
 		cachedImageDataStream.Reset();
 
 		return cachedImageDataStream;
