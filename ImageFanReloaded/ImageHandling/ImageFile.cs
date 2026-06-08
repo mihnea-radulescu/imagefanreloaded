@@ -31,6 +31,7 @@ public class ImageFile : ImageFileBase
 	}
 
 	protected override IImage GetImageFromStream(
+		ImageFileData imageFileData,
 		Stream imageFileContentStream,
 		bool isKnownImage,
 		bool applyImageOrientation)
@@ -46,10 +47,10 @@ public class ImageFile : ImageFileBase
 			return BuildAnimatedImageFromStream(imageFileContentStream);
 		}
 
-		if (applyImageOrientation)
+		if (applyImageOrientation && IsExifEnabledImageFileExtension)
 		{
 			return BuildIndirectlySupportedImageFromStream(
-				imageFileContentStream);
+				imageFileData, imageFileContentStream);
 		}
 
 		if (IsDirectlySupportedImageFileExtension)
@@ -59,7 +60,7 @@ public class ImageFile : ImageFileBase
 		}
 
 		return BuildIndirectlySupportedImageFromStream(
-			imageFileContentStream);
+			imageFileData, imageFileContentStream);
 	}
 
 	private IImage BuildAnimatedImageFromStream(Stream imageFileContentStream)
@@ -106,9 +107,12 @@ public class ImageFile : ImageFileBase
 	}
 
 	private IImage BuildIndirectlySupportedImageFromStream(
+		ImageFileData imageFileData,
 		Stream imageFileContentStream)
 	{
-		using IMagickImage image = new MagickImage(imageFileContentStream);
+		var magickFormat = GetMagickFormat(imageFileData);
+		using IMagickImage image = new MagickImage(
+			imageFileContentStream, magickFormat);
 
 		return BuildIndirectlySupportedImage(image);
 	}
@@ -172,5 +176,18 @@ public class ImageFile : ImageFileBase
 		var bitmapSize = new ImageSize(bitmap.Size.Width, bitmap.Size.Height);
 
 		return new Image(bitmap, bitmapSize);
+	}
+
+	private static MagickFormat GetMagickFormat(ImageFileData imageFileData)
+	{
+		var normalizedFileExtension =
+			imageFileData.FileExtension.ToLowerInvariant();
+
+		return normalizedFileExtension switch
+		{
+			".pict" => MagickFormat.Pict,
+			".tga" => MagickFormat.Tga,
+			_ => MagickFormat.Unknown
+		};
 	}
 }

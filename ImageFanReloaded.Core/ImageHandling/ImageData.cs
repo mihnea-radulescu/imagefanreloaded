@@ -5,10 +5,10 @@ namespace ImageFanReloaded.Core.ImageHandling;
 
 public class ImageData : DisposableBase
 {
-	public ImageData(Stream? imageDataStream, bool shouldUpdateThumbnail = true)
+	public ImageData(Stream? imageDataStream, bool isKnownImage = false)
 	{
 		ImageDataStream = imageDataStream;
-		ShouldUpdateThumbnail = shouldUpdateThumbnail;
+		IsKnownImage = isKnownImage;
 	}
 
 	public Stream? ImageDataStream
@@ -23,23 +23,13 @@ public class ImageData : DisposableBase
 		private set;
 	}
 
-	public bool ShouldUpdateThumbnail
-	{
-		get
-		{
-			ThrowObjectDisposedExceptionIfNecessary();
-
-			return field;
-		}
-	}
-
 	public bool IsKnownImage
 	{
 		get
 		{
 			ThrowObjectDisposedExceptionIfNecessary();
 
-			return !ShouldUpdateThumbnail;
+			return field;
 		}
 	}
 

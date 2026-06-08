@@ -1,12 +1,19 @@
 using System.IO;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageCore;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
 
-public class ImageFileContentLogic : IImageFileContentLogic
+public class ImageFileContentLogic
+	: ImageFileContentLogicBase, IImageFileContentLogic
 {
-	public ImageData GetImageData(ImageFileData imageFileData)
+	public ImageFileContentLogic(IGlobalParameters globalParameters)
+		: base(globalParameters)
+	{
+	}
+
+	public override ImageData GetImageData(ImageFileData imageFileData)
 	{
 		var imageFilePath = imageFileData.FilePath;
 
@@ -30,13 +37,13 @@ public class ImageFileContentLogic : IImageFileContentLogic
 		}
 	}
 
-	public ImageData GetImageData(
+	public override ImageData GetImageData(
 		ImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation)
 			=> GetImageData(imageFileData);
 
-	public void UpdateThumbnail(
+	public override void UpdateThumbnail(
 		ImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation,

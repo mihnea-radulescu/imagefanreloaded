@@ -86,6 +86,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public HashSet<string> DirectlySupportedImageFileExtensions { get; }
 	public HashSet<string> IndirectlySupportedImageFileExtensions { get; }
 	public HashSet<string> AnimationEnabledImageFileExtensions { get; }
+	public HashSet<string> ExifEnabledImageFileExtensions { get; }
 	public HashSet<string> ImageFileExtensions { get; }
 
 	public StringComparer ImageFileExtensionsComparer
@@ -234,6 +235,17 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".gif",
 			".jxl",
 			".mng",
+			".webp"
+		], ImageFileExtensionsComparer);
+
+		ExifEnabledImageFileExtensions = new HashSet<string>(
+		[
+			".jfif",
+			".jpe", ".jpeg", ".jpg",
+			".jps",
+			".jxl",
+			".png",
+			".tif", ".tiff",
 			".webp"
 		], ImageFileExtensionsComparer);
 

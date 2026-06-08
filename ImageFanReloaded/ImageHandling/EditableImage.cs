@@ -380,12 +380,14 @@ public class EditableImage : DisposableBase, IEditableImage
 	private static MagickImageCollection CopyImage(
 		MagickImageCollection sourceImageFrames)
 	{
+		var magickFormat = sourceImageFrames[0].Format;
+
 		using var copyImageFramesStream = new MemoryStream();
 		sourceImageFrames.Write(copyImageFramesStream);
 		copyImageFramesStream.Reset();
 
 		var destinationImageFrames = new MagickImageCollection(
-			copyImageFramesStream);
+			copyImageFramesStream, magickFormat);
 		return destinationImageFrames;
 	}
 

@@ -57,6 +57,7 @@ public abstract class ImageFileBase : IImageFile
 			try
 			{
 				image = GetImageFromStream(
+					ImageFileData,
 					imageData.ImageDataStream!,
 					imageData.IsKnownImage,
 					applyImageOrientation);
@@ -178,6 +179,7 @@ public abstract class ImageFileBase : IImageFile
 				lock (_thumbnailGenerationLock)
 				{
 					image = GetImageFromStream(
+						ImageFileData,
 						_imageData!.ImageDataStream!,
 						_imageData.IsKnownImage,
 						applyImageOrientation);
@@ -280,6 +282,7 @@ public abstract class ImageFileBase : IImageFile
 	protected readonly IGlobalParameters GlobalParameters;
 
 	protected abstract IImage GetImageFromStream(
+		ImageFileData imageFileData,
 		Stream imageFileContentStream,
 		bool isKnownImage,
 		bool applyImageOrientation);
@@ -290,6 +293,10 @@ public abstract class ImageFileBase : IImageFile
 
 	protected bool IsAnimationEnabledImageFileExtension
 		=> GlobalParameters.AnimationEnabledImageFileExtensions.Contains(
+			ImageFileData.FileExtension);
+
+	protected bool IsExifEnabledImageFileExtension
+		=> GlobalParameters.ExifEnabledImageFileExtensions.Contains(
 			ImageFileData.FileExtension);
 
 	private readonly IImageResizer _imageResizer;
@@ -308,7 +315,7 @@ public abstract class ImageFileBase : IImageFile
 	}
 
 	private bool ShouldUpdateThumbnail(IImage? thumbnail)
-		=> _imageData?.ShouldUpdateThumbnail == true && !thumbnail!.IsAnimated;
+		=> _imageData?.IsKnownImage == false && !thumbnail!.IsAnimated;
 
 	private void DisposeImage(IImage? image)
 	{

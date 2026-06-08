@@ -80,6 +80,7 @@ public interface IGlobalParameters
 	HashSet<string> DirectlySupportedImageFileExtensions { get; }
 	HashSet<string> IndirectlySupportedImageFileExtensions { get; }
 	HashSet<string> AnimationEnabledImageFileExtensions { get; }
+	HashSet<string> ExifEnabledImageFileExtensions { get; }
 	HashSet<string> ImageFileExtensions { get; }
 
 	StringComparer ImageFileExtensionsComparer { get; }

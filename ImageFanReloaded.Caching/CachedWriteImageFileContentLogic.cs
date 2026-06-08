@@ -1,15 +1,20 @@
 using ImageFanReloaded.Core.Caching;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.Implementation;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Caching;
 
-public class CachedWriteImageFileContentLogic : IImageFileContentLogic
+public class CachedWriteImageFileContentLogic
+	: ImageFileContentLogicBase, IImageFileContentLogic
 {
 	public CachedWriteImageFileContentLogic(
+		IGlobalParameters globalParameters,
 		IImageFileContentLogic imageFileContentLogic,
 		IImageDataExtractor imageDataExtractor,
 		IDatabaseLogic databaseLogic)
+			: base(globalParameters)
 	{
 		_imageFileContentLogic = imageFileContentLogic;
 		_imageDataExtractor = imageDataExtractor;
@@ -18,17 +23,17 @@ public class CachedWriteImageFileContentLogic : IImageFileContentLogic
 		_databaseLogic.CreateDatabaseIfNotExisting();
 	}
 
-	public ImageData GetImageData(ImageFileData imageFileData)
+	public override ImageData GetImageData(ImageFileData imageFileData)
 		=> _imageFileContentLogic.GetImageData(imageFileData);
 
-	public ImageData GetImageData(
+	public override ImageData GetImageData(
 		ImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation)
 			=> _imageFileContentLogic.GetImageData(
 					imageFileData, thumbnailSize, applyImageOrientation);
 
-	public void UpdateThumbnail(
+	public override void UpdateThumbnail(
 		ImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation,
@@ -36,6 +41,10 @@ public class CachedWriteImageFileContentLogic : IImageFileContentLogic
 	{
 		try
 		{
+			var normalizedApplyImageOrientation =
+				GetNormalizedApplyImageOrientation(
+					imageFileData, applyImageOrientation);
+
 			var thumbnailData = _imageDataExtractor.GetImageData(thumbnail);
 
 			var thumbnailCacheEntry = new ThumbnailCacheEntry
@@ -46,7 +55,7 @@ public class CachedWriteImageFileContentLogic : IImageFileContentLogic
 					imageFileData.FileLastModificationTime,
 
 				ThumbnailSize = thumbnailSize,
-				ApplyImageOrientation = applyImageOrientation,
+				ApplyImageOrientation = normalizedApplyImageOrientation,
 
 				ThumbnailData = thumbnailData
 			};

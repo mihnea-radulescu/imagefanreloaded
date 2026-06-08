@@ -91,12 +91,13 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters, _settingsFactory, _fileSizeEngine);
 
 		IImageFileContentLogic imageFileContentLogic =
-			new ImageFileContentLogic();
+			new ImageFileContentLogic(_globalParameters);
 		IImageFileContentLogic cachedReadImageFileContentLogic =
 			new CachedReadImageFileContentLogic(
-				imageFileContentLogic, _databaseLogic);
+				_globalParameters, imageFileContentLogic, _databaseLogic);
 		IImageFileContentLogic cachedWriteImageFileContentLogic =
 			new CachedWriteImageFileContentLogic(
+				_globalParameters,
 				cachedReadImageFileContentLogic,
 				imageDataExtractor,
 				_databaseLogic);

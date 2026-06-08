@@ -3,14 +3,19 @@ using ImageFanReloaded.Core.Caching;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.Implementation;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Caching;
 
-public class CachedReadImageFileContentLogic : IImageFileContentLogic
+public class CachedReadImageFileContentLogic
+	: ImageFileContentLogicBase, IImageFileContentLogic
 {
 	public CachedReadImageFileContentLogic(
+		IGlobalParameters globalParameters,
 		IImageFileContentLogic imageFileContentLogic,
 		IDatabaseLogic databaseLogic)
+			: base(globalParameters)
 	{
 		_imageFileContentLogic = imageFileContentLogic;
 
@@ -18,28 +23,32 @@ public class CachedReadImageFileContentLogic : IImageFileContentLogic
 		_databaseLogic.CreateDatabaseIfNotExisting();
 	}
 
-	public ImageData GetImageData(ImageFileData imageFileData)
+	public override ImageData GetImageData(ImageFileData imageFileData)
 		=> _imageFileContentLogic.GetImageData(imageFileData);
 
-	public ImageData GetImageData(
+	public override ImageData GetImageData(
 		ImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation)
 	{
 		try
 		{
+			var normalizedApplyImageOrientation =
+				GetNormalizedApplyImageOrientation(
+					imageFileData, applyImageOrientation);
+
 			var thumbnailCacheEntry = _databaseLogic
 				.GetThumbnailCacheEntry(
 					imageFileData,
 					thumbnailSize,
-					applyImageOrientation);
+					normalizedApplyImageOrientation);
 
 			if (thumbnailCacheEntry is not null)
 			{
 				var cachedImageDataStream = GetCachedImageDataStream(
 					thumbnailCacheEntry.ThumbnailData);
 
-				return new ImageData(cachedImageDataStream, false);
+				return new ImageData(cachedImageDataStream, true);
 			}
 
 			return _imageFileContentLogic.GetImageData(imageFileData);
@@ -50,7 +59,7 @@ public class CachedReadImageFileContentLogic : IImageFileContentLogic
 		}
 	}
 
-	public void UpdateThumbnail(
+	public override void UpdateThumbnail(
 		ImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation,
