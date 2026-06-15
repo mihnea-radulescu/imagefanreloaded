@@ -77,70 +77,50 @@ public abstract class ImageFileBase : IImageFile
 
 	public (IImage, IImage) GetImageAndResizedImage(
 		ImageSize viewPortSize,
-		UpsizeFullScreenImagesUpToScreenSize
-			upsizeFullScreenImagesUpToScreenSize,
+		UpsizeFullScreenImageScalingFactor upsizeFullScreenImageScalingFactor,
 		bool applyImageOrientation)
 	{
 		var image = GetImage(applyImageOrientation);
 
-		IImage resizedImage;
-
 		if (HasImageReadError)
 		{
-			resizedImage = GlobalParameters.InvalidImage;
+			return (GlobalParameters.InvalidImage,
+					GlobalParameters.InvalidImage);
 		}
-		else
+
+		try
 		{
-			var doesFitWithinViewPort = image.DoesFitWithinViewPort(
+			var shouldUpsizeImage = !IsAnimatedImage &&
+				upsizeFullScreenImageScalingFactor !=
+					UpsizeFullScreenImageScalingFactor.Disabled;
+
+			if (shouldUpsizeImage)
+			{
+				var upsizedImage = _imageResizer.CreateUpsizedImage(
+					image, upsizeFullScreenImageScalingFactor.Value);
+
+				image.Dispose();
+				image = upsizedImage;
+			}
+
+			var doesImageFitWithinViewPort = image.DoesFitWithinViewPort(
 				viewPortSize);
-			if (doesFitWithinViewPort)
+
+			if (doesImageFitWithinViewPort)
 			{
-				if (upsizeFullScreenImagesUpToScreenSize ==
-					UpsizeFullScreenImagesUpToScreenSize.Disabled)
-				{
-					resizedImage = image;
-				}
-				else
-				{
-					var maxUpscalingFactorToViewPort = image
-						.GetMaxUpscalingFactorToViewPort(viewPortSize);
-					var upscalingFactor = Math.Min(
-						maxUpscalingFactorToViewPort,
-						upsizeFullScreenImagesUpToScreenSize.Value);
-
-					try
-					{
-						resizedImage = _imageResizer.CreateUpsizedImage(
-							image, upscalingFactor);
-
-						image.Dispose();
-						image = resizedImage;
-					}
-					catch
-					{
-						resizedImage = GlobalParameters.InvalidImage;
-
-						HasImageReadError = true;
-					}
-				}
+				return (image, image);
 			}
-			else
-			{
-				try
-				{
-					resizedImage = _imageResizer.CreateDownsizedImage(
-						image, viewPortSize);
-				}
-				catch
-				{
-					resizedImage = GlobalParameters.InvalidImage;
 
-					HasImageReadError = true;
-				}
-			}
+			var resizedImage = _imageResizer.CreateDownsizedImage(
+				image, viewPortSize);
+
+			return (image, resizedImage);
 		}
-
-		return (image, resizedImage);
+		catch
+		{
+			return (GlobalParameters.InvalidImage,
+					GlobalParameters.InvalidImage);
+		}
 	}
 
 	public void ReadImageFile(int thumbnailSize, bool applyImageOrientation)

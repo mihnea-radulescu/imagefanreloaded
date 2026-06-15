@@ -36,10 +36,7 @@ public class EditableImage : DisposableBase, IEditableImage
 				imageFramesToEdit[0].AutoOrient();
 			}
 
-			foreach (var anImageFrameToEdit in imageFramesToEdit)
-			{
-				anImageFrameToEdit.Quality = (uint)_imageQualityLevel;
-			}
+			SetImageQualityLevel(imageFramesToEdit);
 
 			using var imageToDisplayStream = new MemoryStream();
 			imageFramesToEdit[0].Write(imageToDisplayStream, MagickFormat.Jpg);
@@ -248,7 +245,8 @@ public class EditableImage : DisposableBase, IEditableImage
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		ApplyImageCompression(CurrentImage);
+		SetImageQualityLevel(CurrentImage);
+
 		await CurrentImage.WriteAsync(imageFilePath);
 	}
 
@@ -257,9 +255,9 @@ public class EditableImage : DisposableBase, IEditableImage
 	{
 		ThrowObjectDisposedExceptionIfNecessary();
 
-		ApplyImageCompression(CurrentImage);
-		await CurrentImage.WriteAsync(
-			imageFilePath, saveFileImageFormat.MagickFormat);
+		SetImageQualityLevel(CurrentImage);
+
+		await saveFileImageFormat.SaveImage(CurrentImage, imageFilePath);
 	}
 
 	public void Crop(
@@ -374,6 +372,7 @@ public class EditableImage : DisposableBase, IEditableImage
 
 		_previousOperationsStack.Push(_editableImageData);
 		_revertedOperationsStack.Clear();
+
 		_editableImageData = transformedEditableImageData;
 	}
 
@@ -388,14 +387,17 @@ public class EditableImage : DisposableBase, IEditableImage
 
 		var destinationImageFrames = new MagickImageCollection(
 			copyImageFramesStream, magickFormat);
+
 		return destinationImageFrames;
 	}
 
-	private void ApplyImageCompression(MagickImageCollection image)
+	private void SetImageQualityLevel(MagickImageCollection image)
 	{
+		var imageFrameQualityLevel = (uint)_imageQualityLevel;
+
 		foreach (var anImageFrame in image)
 		{
-			anImageFrame.Quality = (uint)_imageQualityLevel;
+			anImageFrame.Quality = imageFrameQualityLevel;
 		}
 	}
 }

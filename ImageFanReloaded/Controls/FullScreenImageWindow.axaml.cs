@@ -613,9 +613,9 @@ public partial class FullScreenImageWindow : Window, IImageView
 	private bool CanZoomToImageSize()
 	{
 		var canZoomToImageSize =
-			!_imageFile!.IsAnimatedImage &&
-			(_imageFile!.ImageSize.Width > _scaledScreenSize!.Width ||
-			 _imageFile!.ImageSize.Height > _scaledScreenSize!.Height);
+			!_image!.IsAnimated &&
+			(_image!.Size.Width > _scaledScreenSize!.Width ||
+			 _image!.Size.Height > _scaledScreenSize!.Height);
 
 		return canZoomToImageSize;
 	}
@@ -645,7 +645,7 @@ public partial class FullScreenImageWindow : Window, IImageView
 
 		(_image, _resizedImage) = _imageFile!.GetImageAndResizedImage(
 			_scaledScreenSize!,
-			TabOptions!.UpsizeFullScreenImagesUpToScreenSize,
+			TabOptions!.UpsizeFullScreenImageScalingFactor,
 			TabOptions!.ApplyImageOrientation);
 
 		await WaitForAnimationTaskToComplete();

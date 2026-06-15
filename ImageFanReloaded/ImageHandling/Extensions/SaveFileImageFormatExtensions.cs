@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using ImageMagick;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormats;
@@ -9,7 +10,24 @@ public static class SaveFileImageFormatExtensions
 {
 	extension(ISaveFileImageFormat saveFileImageFormat)
 	{
-		public MagickFormat MagickFormat
+		public async Task SaveImage(
+			MagickImageCollection image, string imageFilePath)
+		{
+			if (saveFileImageFormat.DoesSupportAnimation)
+			{
+				await image.WriteAsync(
+					imageFilePath, saveFileImageFormat.MagickFormat);
+			}
+			else
+			{
+				var singleFrameImage = image[0];
+
+				await singleFrameImage.WriteAsync(
+					imageFilePath, saveFileImageFormat.MagickFormat);
+			}
+		}
+
+		private MagickFormat MagickFormat
 		{
 			get
 			{

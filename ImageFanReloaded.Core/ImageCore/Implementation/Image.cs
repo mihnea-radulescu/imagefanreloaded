@@ -90,10 +90,6 @@ public class Image : DisposableBase, IImage
 		=> Size.Width <= viewPortSize.Width &&
 		   Size.Height <= viewPortSize.Height;
 
-	public double GetMaxUpscalingFactorToViewPort(ImageSize viewPortSize)
-		=> Math.Min(viewPortSize.Width / (double)Size.Width,
-					viewPortSize.Height / (double)Size.Height);
-
 	protected override void DisposeSpecific()
 	{
 		foreach (var anImageFrame in _imageFrames)

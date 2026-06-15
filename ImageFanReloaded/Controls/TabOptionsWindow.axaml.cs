@@ -57,7 +57,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		SetShowThumbnailImageFileName();
 
 		PopulateKeyboardScrollThumbnailIncrements();
-		PopulateUpsizeFullScreenImagesUpToScreenSizes();
+		PopulateUpsizeFullScreenImageScalingFactors();
 
 		RegisterTabOptionEvents();
 	}
@@ -256,18 +256,18 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_tabOptionChanges.HasChangedKeyboardScrollThumbnailIncrement = true;
 	}
 
-	private void OnUpsizeFullScreenImagesUpToScreenSizeSelectionChanged(
+	private void OnUpsizeFullScreenImageScalingFactorSelectionChanged(
 		object? sender, SelectionChangedEventArgs e)
 	{
-		var upsizeFullScreenImagesUpToScreenSizeComboBoxItem =
+		var upsizeFullScreenImageScalingFactorComboBoxItem =
 			(ComboBoxItem)e.AddedItems[0]!;
-		var upsizeFullScreenImagesUpToScreenSize =
-			(UpsizeFullScreenImagesUpToScreenSize)
-				upsizeFullScreenImagesUpToScreenSizeComboBoxItem.Tag!;
+		var upsizeFullScreenImageScalingFactor =
+			(UpsizeFullScreenImageScalingFactor)
+				upsizeFullScreenImageScalingFactorComboBoxItem.Tag!;
 
-		TabOptions!.UpsizeFullScreenImagesUpToScreenSize =
-			upsizeFullScreenImagesUpToScreenSize;
-		_tabOptionChanges.HasChangedUpsizeFullScreenImagesUpToScreenSize = true;
+		TabOptions!.UpsizeFullScreenImageScalingFactor =
+			upsizeFullScreenImageScalingFactor;
+		_tabOptionChanges.HasChangedUpsizeFullScreenImageScalingFactor = true;
 	}
 
 	private void OnSaveAsDefaultIsCheckedChanged(
@@ -531,26 +531,25 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		}
 	}
 
-	private void PopulateUpsizeFullScreenImagesUpToScreenSizes()
+	private void PopulateUpsizeFullScreenImageScalingFactors()
 	{
-		foreach (var anUpsizeFullScreenImagesUpToScreenSize in
-					 UpsizeFullScreenImagesUpToScreenSizeExtensions
-					 	.UpsizeFullScreenImagesUpToScreenSizes)
+		foreach (var anUpsizeFullScreenImageScalingFactor in
+					UpsizeFullScreenImageScalingFactorExtensions.Values)
 		{
-			var anUpsizeFullScreenImagesUpToScreenSizeItem = new ComboBoxItem
+			var anUpsizeFullScreenImageScalingFactorItem = new ComboBoxItem
 			{
-				Tag = anUpsizeFullScreenImagesUpToScreenSize,
-				Content = anUpsizeFullScreenImagesUpToScreenSize.Description
+				Tag = anUpsizeFullScreenImageScalingFactor,
+				Content = anUpsizeFullScreenImageScalingFactor.Description
 			};
 
-			_upsizeFullScreenImagesUpToScreenSizeComboBox.Items.Add(
-				anUpsizeFullScreenImagesUpToScreenSizeItem);
+			_upsizeFullScreenImageScalingFactorComboBox.Items.Add(
+				anUpsizeFullScreenImageScalingFactorItem);
 
-			if (anUpsizeFullScreenImagesUpToScreenSize ==
-				TabOptions!.UpsizeFullScreenImagesUpToScreenSize)
+			if (anUpsizeFullScreenImageScalingFactor ==
+			    TabOptions!.UpsizeFullScreenImageScalingFactor)
 			{
-				_upsizeFullScreenImagesUpToScreenSizeComboBox.SelectedItem =
-					anUpsizeFullScreenImagesUpToScreenSizeItem;
+				_upsizeFullScreenImageScalingFactorComboBox.SelectedItem =
+					anUpsizeFullScreenImageScalingFactorItem;
 			}
 		}
 	}
@@ -611,8 +610,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			OnShowThumbnailImageFileNameIsCheckedChanged;
 		_keyboardScrollThumbnailIncrementComboBox.SelectionChanged +=
 			OnKeyboardScrollThumbnailIncrementSelectionChanged;
-		_upsizeFullScreenImagesUpToScreenSizeComboBox.SelectionChanged +=
-			OnUpsizeFullScreenImagesUpToScreenSizeSelectionChanged;
+		_upsizeFullScreenImageScalingFactorComboBox.SelectionChanged +=
+			OnUpsizeFullScreenImageScalingFactorSelectionChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged +=
 			OnSaveAsDefaultIsCheckedChanged;
@@ -660,8 +659,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			OnShowThumbnailImageFileNameIsCheckedChanged;
 		_keyboardScrollThumbnailIncrementComboBox.SelectionChanged -=
 			OnKeyboardScrollThumbnailIncrementSelectionChanged;
-		_upsizeFullScreenImagesUpToScreenSizeComboBox.SelectionChanged -=
-			OnUpsizeFullScreenImagesUpToScreenSizeSelectionChanged;
+		_upsizeFullScreenImageScalingFactorComboBox.SelectionChanged -=
+			OnUpsizeFullScreenImageScalingFactorSelectionChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged -=
 			OnSaveAsDefaultIsCheckedChanged;

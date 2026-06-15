@@ -26,6 +26,7 @@
 			<li>46 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, jxl, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm</li>
 			<li>image animation support for the formats: avif, gif, jxl, mng, webp</li>
 			<li>fast and seamless full-screen and windowed navigation across images</li>
+			<li>full-screen image upsizing options</li>
 			<li>image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize</li>
 			<li>folder and image file ordering by name, last modification time and random shuffle, ascending and descending</li>
 			<li>configurable thumbnail size, between 100 and 1200 pixels</li>
@@ -68,6 +69,14 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.06.16" date="2026-06-16">
+			<description>
+				<ul>
+					<li>Added tab option: full-screen image upsizing</li>
+					<li>Updated application framework and libraries</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.06.09" date="2026-06-09">
 			<description>
 				<ul>

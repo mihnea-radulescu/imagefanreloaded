@@ -126,10 +126,11 @@ public class TabOptions : ITabOptions
 		set => _tabOptionsDto.KeyboardScrollThumbnailIncrement = value;
 	}
 
-	public UpsizeFullScreenImagesUpToScreenSize UpsizeFullScreenImagesUpToScreenSize
+	public UpsizeFullScreenImageScalingFactor
+			UpsizeFullScreenImageScalingFactor
 	{
-		get => _tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize;
-		set => _tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize = value;
+		get => _tabOptionsDto.UpsizeFullScreenImageScalingFactor;
+		set => _tabOptionsDto.UpsizeFullScreenImageScalingFactor = value;
 	}
 
 	public async Task SaveDefaultTabOptions()
@@ -182,9 +183,9 @@ public class TabOptions : ITabOptions
 	private const bool DefaultShowThumbnailImageFileName = true;
 	private const int DefaultKeyboardScrollThumbnailIncrement =
 			KeyboardScrollThumbnailIncrements.DefaultValue;
-	private const UpsizeFullScreenImagesUpToScreenSize
-		DefaultUpsizeFullScreenImagesUpToScreenSize =
-			UpsizeFullScreenImagesUpToScreenSize.Disabled;
+	private const UpsizeFullScreenImageScalingFactor
+		DefaultUpsizeFullScreenImageScalingFactor =
+			UpsizeFullScreenImageScalingFactor.Disabled;
 
 	private static readonly JsonTypeInfo<TabOptionsDto>
 		TabOptionsDtoJsonTypeInfo = TabOptionsDtoJsonContext
@@ -295,10 +296,10 @@ public class TabOptions : ITabOptions
 			}
 
 			if (!IsValidEnumValue(
-					tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize))
+				    tabOptionsDto.UpsizeFullScreenImageScalingFactor))
 			{
-				tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize =
-					DefaultUpsizeFullScreenImagesUpToScreenSize;
+				tabOptionsDto.UpsizeFullScreenImageScalingFactor =
+					DefaultUpsizeFullScreenImageScalingFactor;
 			}
 
 			return tabOptionsDto;
@@ -338,8 +339,8 @@ public class TabOptions : ITabOptions
 			ShowThumbnailImageFileName = DefaultShowThumbnailImageFileName,
 			KeyboardScrollThumbnailIncrement =
 				DefaultKeyboardScrollThumbnailIncrement,
-			UpsizeFullScreenImagesUpToScreenSize =
-				DefaultUpsizeFullScreenImagesUpToScreenSize
+			UpsizeFullScreenImageScalingFactor =
+				DefaultUpsizeFullScreenImageScalingFactor
 		};
 	}
 
@@ -379,8 +380,8 @@ public class TabOptions : ITabOptions
 			_defaultTabOptions.ShowThumbnailImageFileName;
 		_tabOptionsDto.KeyboardScrollThumbnailIncrement =
 			_defaultTabOptions.KeyboardScrollThumbnailIncrement;
-		_tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize =
-			_defaultTabOptions.UpsizeFullScreenImagesUpToScreenSize;
+		_tabOptionsDto.UpsizeFullScreenImageScalingFactor =
+			_defaultTabOptions.UpsizeFullScreenImageScalingFactor;
 	}
 
 	private void CopyToDefaultTabOptions()
@@ -419,8 +420,8 @@ public class TabOptions : ITabOptions
 			_tabOptionsDto.ShowThumbnailImageFileName;
 		_defaultTabOptions.KeyboardScrollThumbnailIncrement =
 			_tabOptionsDto.KeyboardScrollThumbnailIncrement;
-		_defaultTabOptions.UpsizeFullScreenImagesUpToScreenSize =
-			_tabOptionsDto.UpsizeFullScreenImagesUpToScreenSize;
+		_defaultTabOptions.UpsizeFullScreenImageScalingFactor =
+			_tabOptionsDto.UpsizeFullScreenImageScalingFactor;
 	}
 
 	private static bool IsValidEnumValue<TEnum>(TEnum enumValue)

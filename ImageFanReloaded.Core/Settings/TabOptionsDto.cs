@@ -27,6 +27,6 @@ public record TabOptionsDto
 	public bool ApplyImageOrientation { get; set; }
 	public bool ShowThumbnailImageFileName { get; set; }
 	public int KeyboardScrollThumbnailIncrement { get; set; }
-	public UpsizeFullScreenImagesUpToScreenSize
-		UpsizeFullScreenImagesUpToScreenSize { get; set; }
+	public UpsizeFullScreenImageScalingFactor
+		UpsizeFullScreenImageScalingFactor { get; set; }
 }

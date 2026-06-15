@@ -27,7 +27,7 @@ public interface ITabOptions
 	bool ApplyImageOrientation { get; set; }
 	bool ShowThumbnailImageFileName { get; set; }
 	int KeyboardScrollThumbnailIncrement { get; set; }
-	UpsizeFullScreenImagesUpToScreenSize UpsizeFullScreenImagesUpToScreenSize
+	UpsizeFullScreenImageScalingFactor UpsizeFullScreenImageScalingFactor
 		{ get; set; }
 
 	Task SaveDefaultTabOptions();
