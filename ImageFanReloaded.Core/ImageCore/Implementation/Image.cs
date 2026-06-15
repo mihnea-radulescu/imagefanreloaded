@@ -90,6 +90,14 @@ public class Image : DisposableBase, IImage
 		=> Size.Width <= viewPortSize.Width &&
 		   Size.Height <= viewPortSize.Height;
 
+	public bool DoesFitExactlyWithinViewPort(ImageSize viewPortSize)
+		=> Size.Width == viewPortSize.Width &&
+		   Size.Height == viewPortSize.Height;
+
+	public bool DoesExceedViewPort(ImageSize viewPortSize)
+		=> Size.Width > viewPortSize.Width ||
+		   Size.Height > viewPortSize.Height;
+
 	protected override void DisposeSpecific()
 	{
 		foreach (var anImageFrame in _imageFrames)

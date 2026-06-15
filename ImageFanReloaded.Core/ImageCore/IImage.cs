@@ -11,4 +11,6 @@ public interface IImage : IImageFrame
 	IReadOnlyList<IImageFrame> ImageFrames { get; }
 
 	bool DoesFitWithinViewPort(ImageSize viewPortSize);
+	bool DoesFitExactlyWithinViewPort(ImageSize viewPortSize);
+	bool DoesExceedViewPort(ImageSize viewPortSize);
 }

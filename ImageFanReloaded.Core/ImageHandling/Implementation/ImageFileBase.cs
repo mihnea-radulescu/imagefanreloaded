@@ -99,25 +99,51 @@ public abstract class ImageFileBase : IImageFile
 				var upsizedImage = _imageResizer.CreateUpsizedImage(
 					image, upsizeFullScreenImageScalingFactor.Value);
 
-				image.Dispose();
-				image = upsizedImage;
+				IImage resizedImage;
+
+				if (image.DoesExceedViewPort(viewPortSize))
+				{
+					resizedImage = _imageResizer.CreateDownsizedImage(
+						image, viewPortSize);
+				}
+				else if (image.DoesFitExactlyWithinViewPort(viewPortSize))
+				{
+					resizedImage = image;
+				}
+				else if (upsizedImage.DoesFitWithinViewPort(viewPortSize))
+				{
+					resizedImage = upsizedImage;
+				}
+				else
+				{
+					resizedImage = _imageResizer.CreateDownsizedImage(
+						upsizedImage, viewPortSize);
+				}
+
+				if (resizedImage != image)
+				{
+					image.Dispose();
+				}
+
+				return (upsizedImage, resizedImage);
 			}
-
-			var doesImageFitWithinViewPort = image.DoesFitWithinViewPort(
-				viewPortSize);
-
-			if (doesImageFitWithinViewPort)
+			else
 			{
-				return (image, image);
+				if (image.DoesFitWithinViewPort(viewPortSize))
+				{
+					return (image, image);
+				}
+
+				var resizedImage = _imageResizer.CreateDownsizedImage(
+					image, viewPortSize);
+
+				return (image, resizedImage);
 			}
-
-			var resizedImage = _imageResizer.CreateDownsizedImage(
-				image, viewPortSize);
-
-			return (image, resizedImage);
 		}
 		catch
 		{
+			image.Dispose();
+
 			return (GlobalParameters.InvalidImage,
 					GlobalParameters.InvalidImage);
 		}
