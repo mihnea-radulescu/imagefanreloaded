@@ -147,4 +147,94 @@ public class PathExtensionsTest
 		// Assert
 		Assert.True(startsWithPath);
 	}
+
+	[Theory]
+	[InlineData(@"/media.jpg", @"/media")]
+	[InlineData(@"/home/mihnea.jpg", @"/home/mihnea")]
+	[InlineData(@"/home/mihnea/mihnea.jpg", @"/home")]
+	[InlineData(@"/usr/lib/ImageFanReloaded.jpg", @"/usr")]
+	[InlineData(@"/usr/lib/ImageFanReloaded.jpg", @"/usr/lib/ImageFanReloaded")]
+	[InlineData(@"/usr/lib/ImageFanReloaded_image001.jpg", @"/usr/lib/ImageFanReloaded")]
+	public void IsFileInFolder_UnixOs_FileIsNotInFolder_ReturnsFalse(
+		string filePath, string folderPath)
+	{
+		// Arrange
+		const char directorySeparatorChar = '/';
+		const StringComparison pathComparison =
+			StringComparison.InvariantCulture;
+
+		// Act
+		var isFileInFolder = PathExtensions.IsFileInFolder(
+			filePath, folderPath, directorySeparatorChar, pathComparison);
+
+		// Assert
+		Assert.False(isFileInFolder);
+	}
+
+	[Theory]
+	[InlineData(@"/media.jpg", @"/")]
+	[InlineData(@"/home/mihnea.jpg", @"/home")]
+	[InlineData(@"/home/mihnea/mihnea.jpg", @"/home/mihnea")]
+	[InlineData(@"/usr/lib/ImageFanReloaded.jpg", @"/usr/lib")]
+	[InlineData(@"/usr/lib/ImageFanReloaded_image001.jpg", @"/usr/lib")]
+	[InlineData(@"/usr/lib/ImageFanReloaded/ImageFanReloaded_image001.jpg", @"/usr/lib/ImageFanReloaded")]
+	public void IsFileInFolder_UnixOs_FileIsInFolder_ReturnsTrue(
+		string filePath, string folderPath)
+	{
+		// Arrange
+		const char directorySeparatorChar = '/';
+		const StringComparison pathComparison =
+			StringComparison.InvariantCulture;
+
+		// Act
+		var isFileInFolder = PathExtensions.IsFileInFolder(
+			filePath, folderPath, directorySeparatorChar, pathComparison);
+
+		// Assert
+		Assert.True(isFileInFolder);
+	}
+
+	[Theory]
+	[InlineData(@"C:\media.jpg", @"C:\media")]
+	[InlineData(@"C:\Users\mihnea.jpg", @"C:\Users\mihnea")]
+	[InlineData(@"C:\Users\mihnea.jpg", @"C:\")]
+	[InlineData(@"C:\Users\mihnea\Pictures\mihnea.jpg", @"C:\Users\mihnea")]
+	[InlineData(@"C:\Users\mihnea\Pictures\mihnea_image001.jpg", @"C:\Users\mihnea\Pictures\mihnea")]
+	public void IsFileInFolder_WindowsOs_FileIsNotInFolder_ReturnsFalse(
+		string filePath, string folderPath)
+	{
+		// Arrange
+		const char directorySeparatorChar = '\\';
+		const StringComparison pathComparison =
+			StringComparison.InvariantCultureIgnoreCase;
+
+		// Act
+		var isFileInFolder = PathExtensions.IsFileInFolder(
+			filePath, folderPath, directorySeparatorChar, pathComparison);
+
+		// Assert
+		Assert.False(isFileInFolder);
+	}
+
+	[Theory]
+	[InlineData(@"C:\media.jpg", @"C:\")]
+	[InlineData(@"C:\Users\mihnea.jpg", @"C:\Users")]
+	[InlineData(@"C:\Users\mihnea\mihnea.jpg", @"C:\Users\mihnea")]
+	[InlineData(@"C:\Users\mihnea\Pictures\mihnea.jpg", @"C:\Users\mihnea\Pictures")]
+	[InlineData(@"C:\Users\mihnea\Pictures\mihnea_image001.jpg", @"C:\Users\mihnea\Pictures")]
+	public void IsFileInFolder_WindowsOs_FileIsInFolder_ReturnsTrue(
+		string filePath, string folderPath)
+	{
+		// Arrange
+		const char directorySeparatorChar = '\\';
+		const StringComparison pathComparison =
+			StringComparison.InvariantCultureIgnoreCase;
+
+		// Act
+		var isFileInFolder = PathExtensions.IsFileInFolder(
+			filePath, folderPath, directorySeparatorChar, pathComparison);
+
+		// Assert
+		Assert.True(isFileInFolder);
+	}
 }

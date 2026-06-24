@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -12,6 +12,7 @@ using ImageFanReloaded.Controls.MessageBoxControl;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
+using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Mouse;
@@ -857,7 +858,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 				}
 				catch
 				{
-					var imageToSaveFileName = GetFileNameFromPath(
+					var imageToSaveFileName = Path.GetFileName(
 						imageToSaveFilePath);
 
 					await ShowImageSaveErrorMessageBox(imageToSaveFileName);
@@ -937,8 +938,11 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private bool HasSavedImageFileInCurrentFolder(
 		string imageToSaveFilePath, string imageFolderPath)
-		=> imageToSaveFilePath.StartsWith(imageFolderPath,
-			_fileSystemStringComparison!.Value);
+			=> PathExtensions.IsFileInFolder(
+				imageToSaveFilePath,
+				imageFolderPath,
+				Path.DirectorySeparatorChar,
+				_fileSystemStringComparison!.Value);
 
 	private void RefreshContent()
 	{
@@ -1180,7 +1184,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 		_snapCropEdgesCheckBox.IsEnabled = false;
 	}
 
-	private void DrawRectangle(Rectangle drawingCropRectangle)
+	private void DrawRectangle(
+		Avalonia.Controls.Shapes.Rectangle drawingCropRectangle)
 	{
 		_cropOverlayCanvas.Children.Clear();
 		_cropOverlayCanvas.Children.Add(drawingCropRectangle);
@@ -1291,7 +1296,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		var cropToGridRectangle = new Rect(
 			topLeftPointToGrid, bottomRightPointToGrid);
 
-		var drawingCropRectangle = new Rectangle
+		var drawingCropRectangle = new Avalonia.Controls.Shapes.Rectangle
 		{
 			Stroke = Brushes.DodgerBlue,
 			StrokeThickness = 2,
@@ -1362,7 +1367,4 @@ public partial class ImageEditWindow : Window, IImageEditView
 			MessageBoxType.Error,
 			this);
 	}
-
-	private static string GetFileNameFromPath(string filePath)
-		=> System.IO.Path.GetFileName(filePath);
 }

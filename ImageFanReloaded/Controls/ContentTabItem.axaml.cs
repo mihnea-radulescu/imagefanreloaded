@@ -255,6 +255,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 			ClearItemCollection(itemCollection);
 			AddSubFoldersToTreeView(itemCollection, subFolders);
+
+			selectedItem.BringIntoView();
 		}
 	}
 
