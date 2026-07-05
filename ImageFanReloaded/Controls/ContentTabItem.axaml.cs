@@ -206,6 +206,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		if (_folderTreeView.SelectedItem is not null)
 		{
 			var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem()!;
+
+			folderTreeViewSelectedItem.BringIntoView();
 			folderTreeViewSelectedItem.Focus();
 		}
 	}

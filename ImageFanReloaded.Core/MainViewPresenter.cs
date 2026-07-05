@@ -309,7 +309,7 @@ public class MainViewPresenter
 		var fileSystemEntryInfo = e.FileSystemEntryInfo;
 
 		var isExpandedFolderTreeViewSelectedItem = contentTabItem
-				.GetFolderTreeViewSelectedItemExpandedState() ?? false;
+			.GetFolderTreeViewSelectedItemExpandedState() ?? false;
 
 		DisableContentTabEventHandling(contentTabItem);
 

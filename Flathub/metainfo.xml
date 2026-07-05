@@ -69,6 +69,11 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.07.05" date="2026-07-05">
+			<description>
+				<p>Fixed minor folder ordering issue</p>
+			</description>
+		</release>
 		<release version="1.2026.06.25" date="2026-06-25">
 			<description>
 				<ul>
