@@ -38,6 +38,21 @@ public static class SaveFileImageFormatExtensions
 					return MagickFormat.Jpg;
 				}
 
+				if (saveFileImageFormatType == typeof(WebpSaveFileImageFormat))
+				{
+					return MagickFormat.WebP;
+				}
+
+				if (saveFileImageFormatType == typeof(AvifSaveFileImageFormat))
+				{
+					return MagickFormat.Avif;
+				}
+
+				if (saveFileImageFormatType == typeof(JxlSaveFileImageFormat))
+				{
+					return MagickFormat.Jxl;
+				}
+
 				if (saveFileImageFormatType == typeof(GifSaveFileImageFormat))
 				{
 					return MagickFormat.Gif;
@@ -46,11 +61,6 @@ public static class SaveFileImageFormatExtensions
 				if (saveFileImageFormatType == typeof(PngSaveFileImageFormat))
 				{
 					return MagickFormat.Png;
-				}
-
-				if (saveFileImageFormatType == typeof(WebpSaveFileImageFormat))
-				{
-					return MagickFormat.WebP;
 				}
 
 				if (saveFileImageFormatType == typeof(TiffSaveFileImageFormat))

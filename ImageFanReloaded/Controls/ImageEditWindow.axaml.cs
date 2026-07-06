@@ -315,22 +315,37 @@ public partial class ImageEditWindow : Window, IImageEditView
 		object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(
 			SaveFileImageFormatFactory!.JpegSaveFileImageFormat);
-	private async void OnSaveImageAsWithFormatGif(
-		object? sender, RoutedEventArgs e)
-		=> await SaveImageWithFormat(
-			SaveFileImageFormatFactory!.GifSaveFileImageFormat);
-	private async void OnSaveImageAsWithFormatPng(
-		object? sender, RoutedEventArgs e)
-		=> await SaveImageWithFormat(
-			SaveFileImageFormatFactory!.PngSaveFileImageFormat);
+
 	private async void OnSaveImageAsWithFormatWebp(
 		object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(
 			SaveFileImageFormatFactory!.WebpSaveFileImageFormat);
+
+	private async void OnSaveImageAsWithFormatAvif(
+		object? sender, RoutedEventArgs e)
+		=> await SaveImageWithFormat(
+			SaveFileImageFormatFactory!.AvifSaveFileImageFormat);
+
+	private async void OnSaveImageAsWithFormatJxl(
+		object? sender, RoutedEventArgs e)
+		=> await SaveImageWithFormat(
+			SaveFileImageFormatFactory!.JxlSaveFileImageFormat);
+
+	private async void OnSaveImageAsWithFormatGif(
+		object? sender, RoutedEventArgs e)
+		=> await SaveImageWithFormat(
+			SaveFileImageFormatFactory!.GifSaveFileImageFormat);
+
+	private async void OnSaveImageAsWithFormatPng(
+		object? sender, RoutedEventArgs e)
+		=> await SaveImageWithFormat(
+			SaveFileImageFormatFactory!.PngSaveFileImageFormat);
+
 	private async void OnSaveImageAsWithFormatTiff(
 		object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(
 			SaveFileImageFormatFactory!.TiffSaveFileImageFormat);
+
 	private async void OnSaveImageAsWithFormatBmp(
 		object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(

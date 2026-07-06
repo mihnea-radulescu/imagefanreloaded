@@ -185,8 +185,14 @@ public class ImageFile : ImageFileBase
 
 		return normalizedFileExtension switch
 		{
+			".cur" => MagickFormat.Cur,
+			".dng" => MagickFormat.Dng,
+			".ico" => MagickFormat.Ico,
+			".nrw" => MagickFormat.Nrw,
+			".pef" => MagickFormat.Pef,
 			".pict" => MagickFormat.Pict,
 			".tga" => MagickFormat.Tga,
+			".wbmp" => MagickFormat.Wbmp,
 			_ => MagickFormat.Unknown
 		};
 	}
