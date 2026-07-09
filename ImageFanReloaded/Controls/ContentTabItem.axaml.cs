@@ -51,9 +51,13 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
 	public event EventHandler<ImageSelectedEventArgs>? ImageEditRequested;
+
+	public event EventHandler<ContentTabItemAddedEventArgs>? CloneTabRequested;
+
 	public event EventHandler<ContentTabItemEventArgs>? TabOptionsRequested;
 	public event EventHandler<ContentTabItemEventArgs>?
 		ThumbnailCacheOptionsRequested;
+
 	public event EventHandler<ContentTabItemEventArgs>? AboutInfoRequested;
 
 	public void EnableFolderTreeViewSelectedItemChanged()
@@ -212,15 +216,15 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public bool? GetFolderTreeViewSelectedItemExpandedState()
+	public bool GetIsExpandedFolderTreeViewSelectedItem()
 	{
 		var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem();
-		var isExpanded = folderTreeViewSelectedItem?.IsExpanded;
+		var isExpanded = folderTreeViewSelectedItem?.IsExpanded ?? false;
 
 		return isExpanded;
 	}
 
-	public void SetFolderTreeViewSelectedItemExpandedState(bool isExpanded)
+	public void SetIsExpandedFolderTreeViewSelectedItem(bool isExpanded)
 	{
 		var folderTreeViewSelectedItem = GetFolderTreeViewSelectedItem();
 
@@ -274,6 +278,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 			_activeFolderTreeViewItem.IsExpanded = true;
 			_activeFolderTreeViewItem.IsSelected = true;
+
 			_folderTreeView.SelectedItem = _activeFolderTreeViewItem;
 		}
 	}
@@ -614,6 +619,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		=> RaiseImageInfoRequested();
 	private void OnImageEditButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseImageEditRequested();
+
+	private void OnCloneTabButtonClicked(object? sender, RoutedEventArgs e)
+		=> RaiseCloneTabRequested();
 
 	private void OnTabOptionsButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseTabOptionsRequested();
@@ -1123,6 +1131,20 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		var selectedImageFile = GetSelectedImageFile();
 		ImageEditRequested?.Invoke(this, new ImageSelectedEventArgs(
 			this, selectedImageFile));
+	}
+
+	private void RaiseCloneTabRequested()
+	{
+		var activeFileSystemEntryInfo = GetActiveFileSystemEntryInfo();
+		var isExpandedFolderTreeViewSelectedItem =
+			GetIsExpandedFolderTreeViewSelectedItem();
+
+		CloneTabRequested?.Invoke(
+			this,
+			new ContentTabItemAddedEventArgs(
+				this,
+				activeFileSystemEntryInfo!.Path,
+				isExpandedFolderTreeViewSelectedItem));
 	}
 
 	private void RaiseTabOptionsRequested()

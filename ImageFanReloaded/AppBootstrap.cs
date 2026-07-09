@@ -210,7 +210,8 @@ public class AppBootstrap : IAppBootstrap
 			mainView);
 
 		mainView.AddFakeTabItem();
-		mainView.AddContentTabItem();
+
+		mainView.AddContentTabItem(null, null, false);
 
 		mainView.Show();
 	}

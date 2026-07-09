@@ -5,7 +5,7 @@ It is written in C#, and targets .NET 10 on Linux and Windows. It relies on [Ava
 
 Features:
 * quick concurrent thumbnail generation, scaling to the number of processor cores present
-* support for multiple folder tabs
+* support for multiple folder tabs, including tab adding, closing and cloning
 * keyboard and mouse user interaction
 * dark and light modes, based on system settings
 * 46 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, jxl, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm
@@ -25,9 +25,9 @@ Features:
 
 User interface:
 * left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and dragging images
-* right mouse button for displaying image info, and for returning from the opened image to the main view
+* right mouse button for cloning the active tab, displaying image info, and for returning from the opened image view to the main view
 * mouse wheel for scrolling through folders and thumbnails, and for navigating back and forward through opened images
-* key combos Ctrl+Plus for adding a new tab, and Ctrl+Minus for closing an existing tab
+* key combos Ctrl+Plus for adding a new tab, Alt+Plus for cloning the active tab, and Ctrl+Minus for closing the active tab
 * key combo Shift+Tab for cycling through tabs
 * key Tab for cycling through controls in the active tab
 * key combo Ctrl+C for copying the selected folder info or image info

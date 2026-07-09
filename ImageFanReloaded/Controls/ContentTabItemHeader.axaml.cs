@@ -16,6 +16,7 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 
 	public IContentTabItem? ContentTabItem { get; set; }
 
+	public event EventHandler<ContentTabItemAddedEventArgs>? TabCloned;
 	public event EventHandler<ContentTabItemEventArgs>? TabClosed;
 
 	public void SetTabHeader(string tabTitle, string tabTooltip)
@@ -30,7 +31,30 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 	private void OnControlLoaded(object? sender, RoutedEventArgs e)
 		=> _tabToolTipTextBlock.FontSize = _tabTitleTextBlock.FontSize;
 
+	private void OnTabClone(object? sender, PointerReleasedEventArgs e)
+	{
+		if (e.InitialPressMouseButton == MouseButton.Right)
+		{
+			var activeFileSystemEntryInfo =
+				ContentTabItem!.GetActiveFileSystemEntryInfo();
+			var isExpandedFolderTreeViewSelectedItem =
+				ContentTabItem!.GetIsExpandedFolderTreeViewSelectedItem();
+
+			TabCloned?.Invoke(
+				this,
+				new ContentTabItemAddedEventArgs(
+					ContentTabItem!,
+					activeFileSystemEntryInfo!.Path,
+					isExpandedFolderTreeViewSelectedItem));
+		}
+	}
+
 	private void OnTabClose(object? sender, PointerReleasedEventArgs e)
-		=> TabClosed?.Invoke(
+	{
+		if (e.InitialPressMouseButton == MouseButton.Left)
+		{
+			TabClosed?.Invoke(
 				this, new ContentTabItemEventArgs(ContentTabItem!));
+		}
+	}
 }

@@ -1,9 +1,9 @@
 namespace
 	ImageFanReloaded.Core.ImageHandling.Implementation.SaveFileImageFormats;
 
-public class JxlSaveFileImageFormat : ISaveFileImageFormat
+public class JpegXlSaveFileImageFormat : ISaveFileImageFormat
 {
-	public string Name => "JXL";
+	public string Name => "JPEG XL";
 	public string Extension => ".jxl";
 
 	public bool DoesSupportAnimation => true;

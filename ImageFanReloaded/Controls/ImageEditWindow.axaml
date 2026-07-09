@@ -94,8 +94,8 @@
 						          Click="OnSaveImageAsWithFormatWebp"/>
 						<MenuItem Header="AVIF"
 						          Click="OnSaveImageAsWithFormatAvif"/>
-						<MenuItem Header="JXL"
-						          Click="OnSaveImageAsWithFormatJxl"/>
+						<MenuItem Header="JPEG XL"
+						          Click="OnSaveImageAsWithFormatJpegXl"/>
 						<MenuItem Header="GIF"
 								  Click="OnSaveImageAsWithFormatGif"/>
 						<MenuItem Header="PNG"

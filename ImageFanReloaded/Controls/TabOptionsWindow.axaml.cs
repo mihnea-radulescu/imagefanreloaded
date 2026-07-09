@@ -87,10 +87,13 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			UpdateEnabledImageFileExtensions();
 		}
 
+		var contentTabItemActiveFileSystemEntryInfo =
+			ContentTabItem!.GetActiveFileSystemEntryInfo();
+
 		TabOptionsChanged?.Invoke(
 			this, new TabOptionsChangedEventArgs(
 				ContentTabItem!,
-				ContentTabItem!.GetActiveFileSystemEntryInfo(),
+				contentTabItemActiveFileSystemEntryInfo,
 				TabOptions!,
 				_tabOptionChanges));
 

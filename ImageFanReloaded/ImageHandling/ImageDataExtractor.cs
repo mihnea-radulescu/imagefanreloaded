@@ -10,7 +10,10 @@ public class ImageDataExtractor : IImageDataExtractor
 {
 	public ImageDataExtractor(IGlobalParameters globalParameters)
 	{
-		_imageQualityLevel = globalParameters.ImageQualityLevel;
+		_bitmapEncoderOptions = new JpegBitmapEncoderOptions
+		{
+			Quality = globalParameters.ImageQualityLevel
+		};
 	}
 
 	public byte[] GetImageData(IImage image)
@@ -19,12 +22,12 @@ public class ImageDataExtractor : IImageDataExtractor
 
 		using (var imageDataStream = new MemoryStream())
 		{
-			bitmap.Save(imageDataStream, _imageQualityLevel);
+			bitmap.Save(imageDataStream, _bitmapEncoderOptions);
 
 			var imageData = imageDataStream.ToArray();
 			return imageData;
 		}
 	}
 
-	private readonly int _imageQualityLevel;
+	private readonly BitmapEncoderOptions _bitmapEncoderOptions;
 }

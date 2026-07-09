@@ -5,8 +5,7 @@ namespace ImageFanReloaded.Core.Settings.Implementation;
 
 public class SettingsFactory : ISettingsFactory
 {
-	public ITabOptions GetTabOptions()
-		=> new TabOptions(_defaultTabOptions);
+	public ITabOptions GetTabOptions() => new TabOptions(_defaultTabOptions);
 
 	public IThumbnailCacheOptions GetThumbnailCacheOptions()
 		=> new ThumbnailCacheOptions(_configFolderPath);

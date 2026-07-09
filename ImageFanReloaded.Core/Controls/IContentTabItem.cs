@@ -36,8 +36,12 @@ public interface IContentTabItem
 
 	event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
 	event EventHandler<ImageSelectedEventArgs>? ImageEditRequested;
+
+	event EventHandler<ContentTabItemAddedEventArgs>? CloneTabRequested;
+
 	event EventHandler<ContentTabItemEventArgs>? TabOptionsRequested;
 	event EventHandler<ContentTabItemEventArgs>? ThumbnailCacheOptionsRequested;
+
 	event EventHandler<ContentTabItemEventArgs>? AboutInfoRequested;
 
 	void EnableFolderTreeViewSelectedItemChanged();
@@ -50,8 +54,8 @@ public interface IContentTabItem
 
 	void SetFocusOnSelectedFolderTreeViewItem();
 
-	bool? GetFolderTreeViewSelectedItemExpandedState();
-	void SetFolderTreeViewSelectedItemExpandedState(bool isExpanded);
+	bool GetIsExpandedFolderTreeViewSelectedItem();
+	void SetIsExpandedFolderTreeViewSelectedItem(bool isExpanded);
 
 	void SetTabInfo(string folderName, string folderPath);
 

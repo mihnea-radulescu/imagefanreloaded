@@ -326,10 +326,10 @@ public partial class ImageEditWindow : Window, IImageEditView
 		=> await SaveImageWithFormat(
 			SaveFileImageFormatFactory!.AvifSaveFileImageFormat);
 
-	private async void OnSaveImageAsWithFormatJxl(
+	private async void OnSaveImageAsWithFormatJpegXl(
 		object? sender, RoutedEventArgs e)
 		=> await SaveImageWithFormat(
-			SaveFileImageFormatFactory!.JxlSaveFileImageFormat);
+			SaveFileImageFormatFactory!.JpegXlSaveFileImageFormat);
 
 	private async void OnSaveImageAsWithFormatGif(
 		object? sender, RoutedEventArgs e)

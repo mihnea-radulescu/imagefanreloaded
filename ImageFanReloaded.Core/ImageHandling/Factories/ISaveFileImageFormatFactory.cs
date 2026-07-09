@@ -5,7 +5,7 @@ public interface ISaveFileImageFormatFactory
 	ISaveFileImageFormat JpegSaveFileImageFormat { get; }
 	ISaveFileImageFormat WebpSaveFileImageFormat { get; }
 	ISaveFileImageFormat AvifSaveFileImageFormat { get; }
-	ISaveFileImageFormat JxlSaveFileImageFormat { get; }
+	ISaveFileImageFormat JpegXlSaveFileImageFormat { get; }
 	ISaveFileImageFormat GifSaveFileImageFormat { get; }
 	ISaveFileImageFormat PngSaveFileImageFormat { get; }
 	ISaveFileImageFormat TiffSaveFileImageFormat { get; }

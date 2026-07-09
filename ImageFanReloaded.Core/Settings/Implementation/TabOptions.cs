@@ -33,7 +33,7 @@ public class TabOptions : ITabOptions
 		_tabOptionsConfigFilePath = defaultTabOptions._tabOptionsConfigFilePath;
 
 		_tabOptionsDto = new TabOptionsDto();
-		CopyFromDefaultTabOptions();
+		CopyPropertyValuesFromSourceTabOptions(_defaultTabOptions);
 	}
 
 	public FileSystemEntryInfoOrdering FolderOrdering
@@ -131,6 +131,47 @@ public class TabOptions : ITabOptions
 	{
 		get => _tabOptionsDto.UpsizeFullScreenImageScalingFactor;
 		set => _tabOptionsDto.UpsizeFullScreenImageScalingFactor = value;
+	}
+
+	public void CopyPropertyValuesFromSourceTabOptions(
+		ITabOptions sourceTabOptions)
+	{
+		_tabOptionsDto.FolderOrdering = sourceTabOptions.FolderOrdering;
+		_tabOptionsDto.FolderOrderingDirection =
+			sourceTabOptions.FolderOrderingDirection;
+
+		_tabOptionsDto.ImageFileOrdering = sourceTabOptions.ImageFileOrdering;
+		_tabOptionsDto.ImageFileOrderingDirection =
+			sourceTabOptions.ImageFileOrderingDirection;
+
+		_tabOptionsDto.ImageViewDisplayMode =
+			sourceTabOptions.ImageViewDisplayMode;
+
+		_tabOptionsDto.ThumbnailSize = sourceTabOptions.ThumbnailSize;
+
+		_tabOptionsDto.EnabledImageFileExtensions = new HashSet<string>(
+		[
+			..sourceTabOptions.EnabledImageFileExtensions
+		], _globalParameters.ImageFileExtensionsComparer);
+
+		_tabOptionsDto.RecursiveFolderBrowsing =
+			sourceTabOptions.RecursiveFolderBrowsing;
+		_tabOptionsDto.GlobalOrderingForRecursiveFolderBrowsing =
+			sourceTabOptions.GlobalOrderingForRecursiveFolderBrowsing;
+
+		_tabOptionsDto.ShowImageViewImageInfo =
+			sourceTabOptions.ShowImageViewImageInfo;
+		_tabOptionsDto.PanelsSplittingRatio =
+			sourceTabOptions.PanelsSplittingRatio;
+		_tabOptionsDto.SlideshowInterval = sourceTabOptions.SlideshowInterval;
+		_tabOptionsDto.ApplyImageOrientation =
+			sourceTabOptions.ApplyImageOrientation;
+		_tabOptionsDto.ShowThumbnailImageFileName =
+			sourceTabOptions.ShowThumbnailImageFileName;
+		_tabOptionsDto.KeyboardScrollThumbnailIncrement =
+			sourceTabOptions.KeyboardScrollThumbnailIncrement;
+		_tabOptionsDto.UpsizeFullScreenImageScalingFactor =
+			sourceTabOptions.UpsizeFullScreenImageScalingFactor;
 	}
 
 	public async Task SaveDefaultTabOptions()
@@ -342,46 +383,6 @@ public class TabOptions : ITabOptions
 			UpsizeFullScreenImageScalingFactor =
 				DefaultUpsizeFullScreenImageScalingFactor
 		};
-	}
-
-	private void CopyFromDefaultTabOptions()
-	{
-		_tabOptionsDto.FolderOrdering = _defaultTabOptions.FolderOrdering;
-		_tabOptionsDto.FolderOrderingDirection =
-			_defaultTabOptions.FolderOrderingDirection;
-
-		_tabOptionsDto.ImageFileOrdering = _defaultTabOptions.ImageFileOrdering;
-		_tabOptionsDto.ImageFileOrderingDirection =
-			_defaultTabOptions.ImageFileOrderingDirection;
-
-		_tabOptionsDto.ImageViewDisplayMode =
-			_defaultTabOptions.ImageViewDisplayMode;
-
-		_tabOptionsDto.ThumbnailSize = _defaultTabOptions.ThumbnailSize;
-
-		_tabOptionsDto.EnabledImageFileExtensions = new HashSet<string>(
-		[
-			.._defaultTabOptions.EnabledImageFileExtensions
-		], _globalParameters.ImageFileExtensionsComparer);
-
-		_tabOptionsDto.RecursiveFolderBrowsing =
-			_defaultTabOptions.RecursiveFolderBrowsing;
-		_tabOptionsDto.GlobalOrderingForRecursiveFolderBrowsing =
-			_defaultTabOptions.GlobalOrderingForRecursiveFolderBrowsing;
-
-		_tabOptionsDto.ShowImageViewImageInfo =
-			_defaultTabOptions.ShowImageViewImageInfo;
-		_tabOptionsDto.PanelsSplittingRatio =
-			_defaultTabOptions.PanelsSplittingRatio;
-		_tabOptionsDto.SlideshowInterval = _defaultTabOptions.SlideshowInterval;
-		_tabOptionsDto.ApplyImageOrientation =
-			_defaultTabOptions.ApplyImageOrientation;
-		_tabOptionsDto.ShowThumbnailImageFileName =
-			_defaultTabOptions.ShowThumbnailImageFileName;
-		_tabOptionsDto.KeyboardScrollThumbnailIncrement =
-			_defaultTabOptions.KeyboardScrollThumbnailIncrement;
-		_tabOptionsDto.UpsizeFullScreenImageScalingFactor =
-			_defaultTabOptions.UpsizeFullScreenImageScalingFactor;
 	}
 
 	private void CopyToDefaultTabOptions()

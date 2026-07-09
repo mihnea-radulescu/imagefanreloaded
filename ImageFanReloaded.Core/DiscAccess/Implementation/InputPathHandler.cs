@@ -52,7 +52,7 @@ public class InputPathHandler : IInputPathHandler
 	public string? FolderPath { get; }
 	public string? FilePath { get; }
 
-	public bool CanProcessInputPath() => InputPathType != InputPathType.NotSet;
+	public bool CanHandleInputPath() => InputPathType != InputPathType.NotSet;
 
 	public async Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(
 		IReadOnlyList<FileSystemEntryInfo> folders)

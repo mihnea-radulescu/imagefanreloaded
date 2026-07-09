@@ -10,7 +10,7 @@ public interface IInputPathHandler
 	string? FolderPath { get; }
 	string? FilePath { get; }
 
-	bool CanProcessInputPath();
+	bool CanHandleInputPath();
 
 	Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(
 		IReadOnlyList<FileSystemEntryInfo> folders);

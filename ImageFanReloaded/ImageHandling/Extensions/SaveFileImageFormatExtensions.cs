@@ -48,7 +48,7 @@ public static class SaveFileImageFormatExtensions
 					return MagickFormat.Avif;
 				}
 
-				if (saveFileImageFormatType == typeof(JxlSaveFileImageFormat))
+				if (saveFileImageFormatType == typeof(JpegXlSaveFileImageFormat))
 				{
 					return MagickFormat.Jxl;
 				}

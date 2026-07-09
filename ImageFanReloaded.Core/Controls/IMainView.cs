@@ -13,12 +13,21 @@ public interface IMainView
 	ISettingsFactory? SettingsFactory { get; set; }
 	IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 
-	event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
+	event EventHandler<ContentTabItemAddedEventArgs>? ContentTabItemAdded;
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
 	event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
 
 	void AddFakeTabItem();
-	void AddContentTabItem();
+
+	void AddContentTabItem(
+		ITabOptions? tabOptions,
+		string? inputPathToClone,
+		bool isExpandedFolderTreeViewSelectedItem);
+
+	void CloneContentTabItem(
+		ITabOptions? tabOptions,
+		string? inputPathToClone,
+		bool isExpandedFolderTreeViewSelectedItem);
 
 	void Show();
 }

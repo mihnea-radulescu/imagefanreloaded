@@ -27,7 +27,8 @@ public partial class MainWindow : Window, IMainView
 	public ISettingsFactory? SettingsFactory { get; set; }
 	public IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 
-	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemAdded;
+	public event EventHandler<ContentTabItemAddedEventArgs>?
+		ContentTabItemAdded;
 	public event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;
 	public event EventHandler<TabCountChangedEventArgs>? TabCountChanged;
 
@@ -45,22 +46,42 @@ public partial class MainWindow : Window, IMainView
 		});
 	}
 
-	public void AddContentTabItem()
+	public void AddContentTabItem(
+		ITabOptions? tabOptions,
+		string? inputPathToClone,
+		bool isExpandedFolderTreeViewSelectedItem)
 	{
 		ChangeTabItems(() =>
 		{
-			var (contentTabItem, tabItem) = BuildTabItemData();
+			var (contentTabItem, tabItem) = BuildTabItemData(tabOptions);
 
 			var contentTabItemCount = GetContentTabItemCount();
 			_tabControl.Items.Insert(contentTabItemCount, tabItem);
 
 			ContentTabItemAdded?.Invoke(
-				this, new ContentTabItemEventArgs(contentTabItem));
+				this,
+				new ContentTabItemAddedEventArgs(
+					contentTabItem,
+					inputPathToClone,
+					isExpandedFolderTreeViewSelectedItem));
 
 			var shouldAllowTabClose = ShouldAllowTabClose();
 			TabCountChanged?.Invoke(
 				this, new TabCountChangedEventArgs(shouldAllowTabClose));
 		});
+	}
+
+	public void CloneContentTabItem(
+		ITabOptions? tabOptions,
+		string? inputPathToClone,
+		bool isExpandedFolderTreeViewSelectedItem)
+	{
+		AddContentTabItem(
+			tabOptions,
+			inputPathToClone,
+			isExpandedFolderTreeViewSelectedItem);
+
+		SelectLastTabItem();
 	}
 
 	private const string DefaultTabItemTitle = "New tab";
@@ -94,12 +115,17 @@ public partial class MainWindow : Window, IMainView
 		}
 		else if (ShouldAddNewTab(keyModifiers, keyPressing))
 		{
-			AddContentTabItem();
+			AddContentTabItem(null, null, false);
+			e.Handled = true;
+		}
+		else if (ShouldCloneSelectedTab(keyModifiers, keyPressing))
+		{
+			CloneSelectedTab();
 			e.Handled = true;
 		}
 		else if (ShouldCloseSelectedTab(keyModifiers, keyPressing))
 		{
-			CloseContentTabItem();
+			CloseSelectedTab();
 			e.Handled = true;
 		}
 		else if (ShouldNavigateToNextTab(keyModifiers, keyPressing))
@@ -128,24 +154,45 @@ public partial class MainWindow : Window, IMainView
 
 		if (isFakeTabItem)
 		{
-			AddContentTabItem();
+			AddContentTabItem(null, null, false);
 		}
 
 		FocusSelectedContentTabItem();
 	}
 
-	private void CloseContentTabItem()
+	private void CloneSelectedTab()
 	{
 		var contentTabItem = GetActiveContentTabItem();
 
 		if (contentTabItem is not null)
 		{
-			CloseContentTabItem(
+			var activeFileSystemEntryInfo = contentTabItem
+				.GetActiveFileSystemEntryInfo();
+			var isExpandedFolderTreeViewSelectedItem =
+				contentTabItem.GetIsExpandedFolderTreeViewSelectedItem();
+
+			CloneTab(
+				this,
+				new ContentTabItemAddedEventArgs(
+					contentTabItem,
+					activeFileSystemEntryInfo!.Path,
+					isExpandedFolderTreeViewSelectedItem));
+		}
+	}
+
+	private void CloseSelectedTab()
+	{
+		var contentTabItem = GetActiveContentTabItem();
+
+		if (contentTabItem is not null)
+		{
+			CloseTab(
 				this, new ContentTabItemEventArgs(contentTabItem));
 		}
 	}
 
-	private (IContentTabItem contentTabItem, object tabItem) BuildTabItemData()
+	private (IContentTabItem contentTabItem, object tabItem) BuildTabItemData(
+		ITabOptions? tabOptions)
 	{
 		var contentTabItem = new ContentTabItem
 		{
@@ -156,13 +203,21 @@ public partial class MainWindow : Window, IMainView
 			FolderChangedMutex = AsyncMutexFactory!.GetAsyncMutex()
 		};
 
+		if (tabOptions is not null)
+		{
+			contentTabItem.TabOptions.CopyPropertyValuesFromSourceTabOptions(
+				tabOptions);
+		}
+
 		var contentTabItemHeader = new ContentTabItemHeader
 		{
 			ContentTabItem = contentTabItem
 		};
 
 		contentTabItem.ContentTabItemHeader = contentTabItemHeader;
-		contentTabItem.ContentTabItemHeader.TabClosed += CloseContentTabItem;
+		contentTabItem.ContentTabItemHeader.TabCloned += CloneTab;
+		contentTabItem.ContentTabItemHeader.TabClosed += CloseTab;
+
 		contentTabItem.RegisterMainViewEvents();
 		contentTabItem.SetTabInfo(DefaultTabItemTitle, string.Empty);
 
@@ -203,7 +258,20 @@ public partial class MainWindow : Window, IMainView
 		FocusSelectedContentTabItem();
 	}
 
-	private void CloseContentTabItem(object? sender, ContentTabItemEventArgs e)
+	private void CloneTab(object? sender, ContentTabItemAddedEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+		var inputPathToClone = e.InputPathToClone;
+		var isExpandedFolderTreeViewSelectedItem =
+			e.IsExpandedFolderTreeViewSelectedItem;
+
+		CloneContentTabItem(
+			contentTabItem.TabOptions,
+			inputPathToClone,
+			isExpandedFolderTreeViewSelectedItem);
+	}
+
+	private void CloseTab(object? sender, ContentTabItemEventArgs e)
 	{
 		ChangeTabItems(() =>
 		{
@@ -216,7 +284,11 @@ public partial class MainWindow : Window, IMainView
 			TabCountChanged?.Invoke(
 				this, new TabCountChangedEventArgs(ShouldAllowTabClose()));
 
-			contentTabItem.ContentTabItemHeader!.TabClosed -= CloseContentTabItem;
+			contentTabItem.ContentTabItemHeader!.TabCloned -=
+				CloneTab;
+			contentTabItem.ContentTabItemHeader!.TabClosed -=
+				CloseTab;
+
 			contentTabItem.UnregisterMainViewEvents();
 		});
 
@@ -256,6 +328,18 @@ public partial class MainWindow : Window, IMainView
 	{
 		if (keyModifiers == GlobalParameters!.CtrlKeyModifier &&
 			keyPressing == GlobalParameters!.PlusKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldCloneSelectedTab(
+		KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.AltKeyModifier &&
+		    keyPressing == GlobalParameters!.PlusKey)
 		{
 			return true;
 		}

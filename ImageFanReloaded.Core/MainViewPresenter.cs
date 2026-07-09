@@ -69,22 +69,32 @@ public class MainViewPresenter
 	private readonly IMainView _mainView;
 
 	private async void OnContentTabItemAdded(
-		object? sender, ContentTabItemEventArgs e)
+		object? sender, ContentTabItemAddedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		contentTabItem.ImageViewFactory = _imageViewFactory;
+		var inputPathToClone = e.InputPathToClone;
+		var shouldCloneInputPath = e.ShouldCloneInputPath;
+		var isExpandedFolderTreeViewSelectedItem =
+			e.IsExpandedFolderTreeViewSelectedItem;
 
+		contentTabItem.ImageViewFactory = _imageViewFactory;
 		var rootFolders = await PopulateRootFolders(contentTabItem);
 
-		var shouldProcessInputPath = _shouldProcessCommandLineArgsInputPath &&
-									 _commandLineArgsInputPathHandler
-									 	.CanProcessInputPath();
-		if (shouldProcessInputPath)
-		{
-			_shouldProcessCommandLineArgsInputPath = false;
+		var inputPathHandler = _shouldProcessCommandLineArgsInputPath
+			? _commandLineArgsInputPathHandler
+			: _inputPathHandlerFactory.GetInputPathHandler(inputPathToClone);
 
+		var canHandleInputPath =
+			(_shouldProcessCommandLineArgsInputPath || shouldCloneInputPath) &&
+			inputPathHandler.CanHandleInputPath();
+
+		if (canHandleInputPath)
+		{
 			await BuildInputFolderTreeView(
-				contentTabItem, rootFolders, _commandLineArgsInputPathHandler);
+				contentTabItem,
+				rootFolders,
+				inputPathHandler,
+				isExpandedFolderTreeViewSelectedItem);
 
 			EnableContentTabEventHandling(contentTabItem);
 
@@ -95,6 +105,11 @@ public class MainViewPresenter
 			EnableContentTabEventHandling(contentTabItem);
 
 			contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
+		}
+
+		if (_shouldProcessCommandLineArgsInputPath)
+		{
+			_shouldProcessCommandLineArgsInputPath = false;
 		}
 	}
 
@@ -136,6 +151,20 @@ public class MainViewPresenter
 			OnImageEditViewImageFileOverwritten;
 		imageEditView.FolderContentChanged -=
 			OnImageEditViewFolderContentChanged;
+	}
+
+	private void OnCloneTabRequested(
+		object? sender, ContentTabItemAddedEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+		var inputPathToClone = e.InputPathToClone;
+		var isExpandedFolderTreeViewSelectedItem =
+			e.IsExpandedFolderTreeViewSelectedItem;
+
+		_mainView.CloneContentTabItem(
+			contentTabItem.TabOptions,
+			inputPathToClone,
+			isExpandedFolderTreeViewSelectedItem);
 	}
 
 	private async void OnTabOptionsRequested(
@@ -309,7 +338,7 @@ public class MainViewPresenter
 		var fileSystemEntryInfo = e.FileSystemEntryInfo;
 
 		var isExpandedFolderTreeViewSelectedItem = contentTabItem
-			.GetFolderTreeViewSelectedItemExpandedState() ?? false;
+			.GetIsExpandedFolderTreeViewSelectedItem();
 
 		DisableContentTabEventHandling(contentTabItem);
 
@@ -317,14 +346,16 @@ public class MainViewPresenter
 
 		var folderChangedInputPathHandler = _inputPathHandlerFactory
 			.GetInputPathHandler(fileSystemEntryInfo.Path);
+
 		await BuildInputFolderTreeView(
-			contentTabItem, rootFolders, folderChangedInputPathHandler);
+			contentTabItem,
+			rootFolders,
+			folderChangedInputPathHandler,
+			isExpandedFolderTreeViewSelectedItem);
 
 		EnableContentTabEventHandling(contentTabItem);
 
 		contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
-		contentTabItem.SetFolderTreeViewSelectedItemExpandedState(
-			isExpandedFolderTreeViewSelectedItem);
 	}
 
 	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(
@@ -341,7 +372,8 @@ public class MainViewPresenter
 	private async Task BuildInputFolderTreeView(
 		IContentTabItem contentTabItem,
 		IReadOnlyList<FileSystemEntryInfo> rootFolders,
-		IInputPathHandler inputPathHandler)
+		IInputPathHandler inputPathHandler,
+		bool isExpandedFolderTreeViewSelectedItem)
 	{
 		FileSystemEntryInfo? matchingFileSystemEntryInfo;
 		var subFolders = rootFolders;
@@ -365,6 +397,9 @@ public class MainViewPresenter
 					subFolders);
 			}
 		} while (matchingFileSystemEntryInfo is not null);
+
+		contentTabItem.SetIsExpandedFolderTreeViewSelectedItem(
+			isExpandedFolderTreeViewSelectedItem);
 	}
 
 	private void EnableContentTabEventHandling(IContentTabItem contentTabItem)
@@ -376,9 +411,13 @@ public class MainViewPresenter
 
 		contentTabItem.ImageInfoRequested += OnImageInfoRequested;
 		contentTabItem.ImageEditRequested += OnImageEditRequested;
+
+		contentTabItem.CloneTabRequested += OnCloneTabRequested;
+
 		contentTabItem.TabOptionsRequested += OnTabOptionsRequested;
 		contentTabItem.ThumbnailCacheOptionsRequested +=
 			OnThumbnailCacheOptionsRequested;
+
 		contentTabItem.AboutInfoRequested += OnAboutInfoRequested;
 	}
 
@@ -391,9 +430,13 @@ public class MainViewPresenter
 
 		contentTabItem.ImageInfoRequested -= OnImageInfoRequested;
 		contentTabItem.ImageEditRequested -= OnImageEditRequested;
+
+		contentTabItem.CloneTabRequested -= OnCloneTabRequested;
+
 		contentTabItem.TabOptionsRequested -= OnTabOptionsRequested;
 		contentTabItem.ThumbnailCacheOptionsRequested -=
 			OnThumbnailCacheOptionsRequested;
+
 		contentTabItem.AboutInfoRequested -= OnAboutInfoRequested;
 	}
 

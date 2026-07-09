@@ -17,7 +17,11 @@
 					Content="Image edit"
 					Click="OnImageEditButtonClicked"/>
 
-			<Button Name="_optionsButton"
+			<Button Name="_cloneTabButton"
+			        Content="Clone tab"
+			        Click="OnCloneTabButtonClicked"/>
+
+			<Button Name="_tabOptionsButton"
 					Content="Tab options"
 					Click="OnTabOptionsButtonClicked"/>
 

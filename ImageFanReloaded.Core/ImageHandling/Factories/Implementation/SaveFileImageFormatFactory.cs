@@ -9,7 +9,7 @@ public class SaveFileImageFormatFactory : ISaveFileImageFormatFactory
 		JpegSaveFileImageFormat = new JpegSaveFileImageFormat();
 		WebpSaveFileImageFormat = new WebpSaveFileImageFormat();
 		AvifSaveFileImageFormat = new AvifSaveFileImageFormat();
-		JxlSaveFileImageFormat = new JxlSaveFileImageFormat();
+		JpegXlSaveFileImageFormat = new JpegXlSaveFileImageFormat();
 		GifSaveFileImageFormat = new GifSaveFileImageFormat();
 		PngSaveFileImageFormat = new PngSaveFileImageFormat();
 		TiffSaveFileImageFormat = new TiffSaveFileImageFormat();
@@ -19,7 +19,7 @@ public class SaveFileImageFormatFactory : ISaveFileImageFormatFactory
 	public ISaveFileImageFormat JpegSaveFileImageFormat { get; }
 	public ISaveFileImageFormat WebpSaveFileImageFormat { get; }
 	public ISaveFileImageFormat AvifSaveFileImageFormat { get; }
-	public ISaveFileImageFormat JxlSaveFileImageFormat { get; }
+	public ISaveFileImageFormat JpegXlSaveFileImageFormat { get; }
 	public ISaveFileImageFormat GifSaveFileImageFormat { get; }
 	public ISaveFileImageFormat PngSaveFileImageFormat { get; }
 	public ISaveFileImageFormat TiffSaveFileImageFormat { get; }
