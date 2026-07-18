@@ -20,7 +20,7 @@
 		<p>Features:</p>
 		<ul>
 			<li>quick concurrent thumbnail generation, scaling to the number of processor cores present</li>
-			<li>support for multiple folder tabs, including tab adding, closing and cloning</li>
+			<li>support for multiple folder tabs, including tab adding, cloning and closing</li>
 			<li>keyboard and mouse user interaction</li>
 			<li>dark and light modes, based on system settings</li>
 			<li>46 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, jxl, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm</li>
@@ -69,6 +69,11 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.07.19" date="2026-07-19">
+			<description>
+				<p>Updated application framework and libraries</p>
+			</description>
+		</release>
 		<release version="1.2026.07.10" date="2026-07-10">
 			<description>
 				<ul>

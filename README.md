@@ -5,7 +5,7 @@ It is written in C#, and targets .NET 10 on Linux and Windows. It relies on [Ava
 
 Features:
 * quick concurrent thumbnail generation, scaling to the number of processor cores present
-* support for multiple folder tabs, including tab adding, closing and cloning
+* support for multiple folder tabs, including tab adding, cloning and closing
 * keyboard and mouse user interaction
 * dark and light modes, based on system settings
 * 46 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, jxl, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm
