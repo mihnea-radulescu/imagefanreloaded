@@ -419,6 +419,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public void FocusThumbnailScrollViewer() => _thumbnailScrollViewer.Focus();
 
+	public void BringThumbnailIntoView()
+		=> _selectedThumbnailBox?.BringThumbnailIntoView();
+
 	public void RaiseFolderOrderingChangedEvent()
 	{
 		var activeFileSystemEntryInfo = GetActiveFileSystemEntryInfo();
@@ -703,8 +706,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return canAdvanceToNewSelectedThumbnailIndex;
 	}
 
-	private void BringThumbnailIntoView()
-		=> _selectedThumbnailBox?.BringThumbnailIntoView();
 	private void SelectThumbnail()
 		=> _selectedThumbnailBox?.SelectThumbnail();
 	private void UnselectThumbnail()

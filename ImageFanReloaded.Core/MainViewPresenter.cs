@@ -151,6 +151,8 @@ public class MainViewPresenter
 			OnImageEditViewImageFileOverwritten;
 		imageEditView.FolderContentChanged -=
 			OnImageEditViewFolderContentChanged;
+
+		contentTabItem.BringThumbnailIntoView();
 	}
 
 	private void OnCloneTabRequested(

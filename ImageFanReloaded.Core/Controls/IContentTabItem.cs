@@ -86,6 +86,7 @@ public interface IContentTabItem
 	bool AreSelectedFolderInfoTextOrImageInfoText { get; }
 
 	void FocusThumbnailScrollViewer();
+	void BringThumbnailIntoView();
 
 	void RaiseFolderOrderingChangedEvent();
 	void RaiseFolderChangedEvent();
