@@ -379,7 +379,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
-	private void OnDownsizeToPercentageComboxBoxSelectionChanged(
+	private void OnDownsizeToPercentageComboBoxSelectionChanged(
 		object? sender, SelectionChangedEventArgs e)
 	{
 		var selectedDownsizePercentage = GetSelectedDownsizeValue(
@@ -1063,7 +1063,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 			OnSnapCropEdgesCheckBoxIsCheckedChanged;
 
 		_downsizeToPercentageComboBox.SelectionChanged +=
-			OnDownsizeToPercentageComboxBoxSelectionChanged;
+			OnDownsizeToPercentageComboBoxSelectionChanged;
 
 		_downsizeToDimensionsWidthComboBox.SelectionChanged +=
 			OnDownsizeToDimensionsComboBoxSelectionChanged;
@@ -1077,7 +1077,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 			OnSnapCropEdgesCheckBoxIsCheckedChanged;
 
 		_downsizeToPercentageComboBox.SelectionChanged -=
-			OnDownsizeToPercentageComboxBoxSelectionChanged;
+			OnDownsizeToPercentageComboBoxSelectionChanged;
 
 		_downsizeToDimensionsWidthComboBox.SelectionChanged -=
 			OnDownsizeToDimensionsComboBoxSelectionChanged;
