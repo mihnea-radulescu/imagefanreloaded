@@ -106,12 +106,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return shouldHandleKeyPressing;
 	}
 
-	public void HandleContentTabItemKeyFunctions(
+	public async void HandleContentTabItemKeyFunctions(
 		KeyModifiers keyModifiers, Key keyPressing)
 	{
 		if (ShouldStartSlideshow(keyModifiers, keyPressing))
 		{
-			RaiseSlideshowRequested();
+			await RaiseSlideshowRequested();
 		}
 		else if (ShouldDisplayImageInfo(keyModifiers, keyPressing))
 		{
@@ -195,7 +195,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			FocusThumbnailScrollViewer();
 			BringThumbnailIntoView();
 
-			DisplayImage(false);
+			await DisplayImage(false);
 		}
 		else if (ShouldHandleThumbnailScrolling(keyModifiers, keyPressing))
 		{
@@ -554,7 +554,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		object? sender, ThumbnailBoxSelectedEventArgs e)
 			=> UpdateSelectedImageStatus();
 
-	private void OnThumbnailBoxClicked(
+	private async void OnThumbnailBoxClicked(
 		object? sender, ThumbnailBoxClickedEventArgs e)
 	{
 		var thumbnailBox = e.ThumbnailBox;
@@ -563,7 +563,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			if (thumbnailBox.IsSelected)
 			{
-				DisplayImage(false);
+				await DisplayImage(false);
 			}
 			else
 			{
@@ -633,8 +633,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		object? sender, ImageViewClosingEventArgs e)
 			=> UpdateSelectedImageStatus();
 
-	private void OnSlideshowButtonClicked(object? sender, RoutedEventArgs e)
-		=> RaiseSlideshowRequested();
+	private async void OnSlideshowButtonClicked(
+		object? sender, RoutedEventArgs e)
+			=> await RaiseSlideshowRequested();
 	private void OnImageInfoButtonClicked(object? sender, RoutedEventArgs e)
 		=> RaiseImageInfoRequested();
 	private void OnImageEditButtonClicked(object? sender, RoutedEventArgs e)
@@ -728,7 +729,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void UnselectThumbnail()
 		=> _selectedThumbnailBox?.UnselectThumbnail();
 
-	private async void DisplayImage(bool startSlideshow)
+	private async Task DisplayImage(bool startSlideshow)
 	{
 		var imageView = ImageViewFactory!.GetImageView(TabOptions!);
 
@@ -1107,7 +1108,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
-	private void RaiseSlideshowRequested()
+	private async Task RaiseSlideshowRequested()
 	{
 		if (_selectedThumbnailBox is null)
 		{
@@ -1117,7 +1118,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		FocusThumbnailScrollViewer();
 		BringThumbnailIntoView();
 
-		DisplayImage(true);
+		await DisplayImage(true);
 	}
 
 	private void RaiseImageInfoRequested()
