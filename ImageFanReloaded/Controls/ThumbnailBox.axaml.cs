@@ -1,10 +1,12 @@
 using System;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Media;
+using Avalonia.Media.Immutable;
 using Avalonia.Threading;
+using ImageFanReloaded.Controls.Extensions;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
@@ -65,16 +67,18 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	public bool IsSelected { get; private set; }
 
-	public void SetControlProperties(
-		int thumbnailSize, IGlobalParameters globalParameters)
+	public void SetControlProperties(int thumbnailSize, Color accentColor)
 	{
 		_thumbnailImage.MaxWidth = thumbnailSize;
 		_thumbnailImage.MaxHeight = thumbnailSize;
+
+		_thumbnailBoxSelectedBrush = ImmutableSolidColorBrush
+			.FromSystemDrawingColor(accentColor);
 	}
 
 	public void SelectThumbnail()
 	{
-		_thumbnailBoxBorder.BorderBrush = Brushes.DodgerBlue;
+		_thumbnailBoxBorder.BorderBrush = _thumbnailBoxSelectedBrush;
 		Cursor = _zoomCursor!;
 		IsSelected = true;
 
@@ -86,7 +90,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	public void UnselectThumbnail()
 	{
-		_thumbnailBoxBorder.BorderBrush = Brushes.LightGray;
+		_thumbnailBoxBorder.BorderBrush = Avalonia.Media.Brushes.LightGray;
 		Cursor = _standardCursor!;
 		IsSelected = false;
 	}
@@ -146,6 +150,8 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	private Cursor? _standardCursor;
 	private Cursor? _zoomCursor;
+
+	private ImmutableSolidColorBrush? _thumbnailBoxSelectedBrush;
 
 	private CancellationTokenSource? _ctsAnimation;
 	private Task? _animationTask;

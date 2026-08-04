@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
@@ -30,6 +31,8 @@ public interface IContentTabItem
 	IImageViewFactory? ImageViewFactory { get; set; }
 
 	IFolderVisualState? FolderVisualState { get; set; }
+
+	Color? AccentColor { get;  }
 
 	event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	event EventHandler<FolderOrderingChangedEventArgs>? FolderOrderingChanged;

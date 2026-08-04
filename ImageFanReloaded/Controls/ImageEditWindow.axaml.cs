@@ -7,7 +7,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
+using Avalonia.Media.Immutable;
+using ImageFanReloaded.Controls.Extensions;
 using ImageFanReloaded.Controls.MessageBoxControl;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
@@ -127,6 +128,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private Point _topLeftPointToImage;
 	private Point _bottomRightPointToImage;
 
+	private ImmutableSolidColorBrush? _drawingCropRectangleBrush;
+
 	private bool _isLoading;
 	private bool _hasInProgressUiUpdate;
 	private bool _hasUnsavedChanges;
@@ -135,7 +138,13 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private double DisplayImageHeight => _displayImage.Bounds.Height;
 
 	private async void OnWindowLoaded(object? sender, RoutedEventArgs e)
-		=> await LoadImage();
+	{
+		var accentColor = ContentTabItem!.AccentColor!.Value;
+		_drawingCropRectangleBrush = ImmutableSolidColorBrush
+			.FromSystemDrawingColor(accentColor);
+
+		await LoadImage();
+	}
 
 	private async void OnKeyPressing(object? sender, KeyEventArgs e)
 	{
@@ -1313,7 +1322,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		var drawingCropRectangle = new Avalonia.Controls.Shapes.Rectangle
 		{
-			Stroke = Brushes.DodgerBlue,
+			Stroke = _drawingCropRectangleBrush,
 			StrokeThickness = 2,
 			Width = cropToGridRectangle.Width,
 			Height = cropToGridRectangle.Height

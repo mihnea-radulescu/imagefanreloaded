@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
@@ -44,6 +46,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public IImageViewFactory? ImageViewFactory { get; set; }
 
 	public IFolderVisualState? FolderVisualState { get; set; }
+
+	public Color? AccentColor { get; private set; }
 
 	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	public event EventHandler<FolderOrderingChangedEventArgs>?
@@ -292,7 +296,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			var thumbnailInfo = thumbnailInfoCollection[i];
 
-			var aThumbnailBox = new ThumbnailBox();
+			IThumbnailBox aThumbnailBox = new ThumbnailBox();
 			aThumbnailBox.TabOptions = TabOptions;
 			aThumbnailBox.MouseCursorFactory = MouseCursorFactory;
 
@@ -300,7 +304,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
 
 			aThumbnailBox.SetControlProperties(
-				TabOptions!.ThumbnailSize, GlobalParameters!);
+				TabOptions!.ThumbnailSize, AccentColor!.Value);
 
 			thumbnailInfo.ThumbnailBox = aThumbnailBox;
 			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
@@ -314,7 +318,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			}
 
 			var aSurroundingStackPanel = new StackPanel();
-			aSurroundingStackPanel.Children.Add(aThumbnailBox);
+			aSurroundingStackPanel.Children.Add((Control)aThumbnailBox);
 			_thumbnailWrapPanel.Children.Add(aSurroundingStackPanel);
 		}
 
@@ -532,6 +536,19 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private IThumbnailBox? _selectedThumbnailBox;
 
 	private TreeViewItem? _activeFolderTreeViewItem;
+
+	private void OnControlLoaded(object? sender, RoutedEventArgs e)
+	{
+		var platformSettings = _folderTreeView.GetPlatformSettings();
+		var colorValues = platformSettings!.GetColorValues();
+		var primaryAccentColor = colorValues.AccentColor1;
+
+		AccentColor = Color.FromArgb(
+			primaryAccentColor.A,
+			primaryAccentColor.R,
+			primaryAccentColor.G,
+			primaryAccentColor.B);
+	}
 
 	private void OnThumbnailBoxSelected(
 		object? sender, ThumbnailBoxSelectedEventArgs e)

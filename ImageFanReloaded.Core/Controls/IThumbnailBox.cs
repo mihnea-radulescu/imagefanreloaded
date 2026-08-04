@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
@@ -23,8 +24,7 @@ public interface IThumbnailBox
 
 	bool IsSelected { get; }
 
-	void SetControlProperties(
-		int thumbnailSize, IGlobalParameters globalParameters);
+	void SetControlProperties(int thumbnailSize, Color accentColor);
 
 	void SelectThumbnail();
 	void UnselectThumbnail();

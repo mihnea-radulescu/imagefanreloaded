@@ -2,6 +2,8 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media.Immutable;
+using ImageFanReloaded.Controls.Extensions;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 
@@ -29,7 +31,13 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 		=> _tabCloseBorder.IsVisible = showTabCloseButton;
 
 	private void OnControlLoaded(object? sender, RoutedEventArgs e)
-		=> _tabToolTipTextBlock.FontSize = _tabTitleTextBlock.FontSize;
+	{
+		_tabToolTipTextBlock.FontSize = _tabTitleTextBlock.FontSize;
+
+		var accentColor = ContentTabItem!.AccentColor!.Value;
+		_tabCloseBorder.Background = ImmutableSolidColorBrush
+			.FromSystemDrawingColor(accentColor);
+	}
 
 	private void OnTabClone(object? sender, PointerReleasedEventArgs e)
 	{
