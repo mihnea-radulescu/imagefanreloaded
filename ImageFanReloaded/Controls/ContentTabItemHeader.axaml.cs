@@ -40,20 +40,15 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 		{
 			_tabCloseBorder.Background = _accentColorBrush;
 		}
-	}
-
-	private void OnActualThemeVariantChanged(object? sender, EventArgs e)
-	{
-		if (_accentColorBrush is null)
+		else
 		{
 			var accentColor = this.GetAccentColor();
 			if (accentColor is not null)
 			{
 				_accentColorBrush = accentColor.Value.GetColorBrush();
+				_tabCloseBorder.Background = _accentColorBrush;
 			}
 		}
-
-		_tabCloseBorder.Background = _accentColorBrush;
 	}
 
 	private void OnTabClone(object? sender, PointerReleasedEventArgs e)
