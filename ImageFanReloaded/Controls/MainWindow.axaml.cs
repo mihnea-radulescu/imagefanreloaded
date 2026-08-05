@@ -211,6 +211,7 @@ public partial class MainWindow : Window, IMainView
 
 		var contentTabItemHeader = new ContentTabItemHeader
 		{
+			GlobalParameters = GlobalParameters,
 			ContentTabItem = contentTabItem
 		};
 

@@ -6,6 +6,8 @@ using Avalonia.Media;
 using ImageFanReloaded.Controls.Extensions;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
+using ImageFanReloaded.Core.RuntimeEnvironment;
+using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Controls;
 
@@ -16,6 +18,7 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 		InitializeComponent();
 	}
 
+	public IGlobalParameters? GlobalParameters { get; set; }
 	public IContentTabItem? ContentTabItem { get; set; }
 
 	public event EventHandler<ContentTabItemAddedEventArgs>? TabCloned;
@@ -40,7 +43,8 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 		{
 			_tabCloseBorder.Background = _accentColorBrush;
 		}
-		else
+		else if (GlobalParameters!.RuntimeEnvironmentType ==
+		         RuntimeEnvironmentType.Windows)
 		{
 			var accentColor = this.GetAccentColor();
 			if (accentColor is not null)
@@ -49,6 +53,20 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 				_tabCloseBorder.Background = _accentColorBrush;
 			}
 		}
+	}
+
+	private void OnActualThemeVariantChanged(object? sender, EventArgs e)
+	{
+		if (_accentColorBrush is null)
+		{
+			var accentColor = this.GetAccentColor();
+			if (accentColor is not null)
+			{
+				_accentColorBrush = accentColor.Value.GetColorBrush();
+			}
+		}
+
+		_tabCloseBorder.Background = _accentColorBrush;
 	}
 
 	private void OnTabClone(object? sender, PointerReleasedEventArgs e)

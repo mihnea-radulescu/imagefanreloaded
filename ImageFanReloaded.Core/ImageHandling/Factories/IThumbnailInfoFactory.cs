@@ -4,6 +4,6 @@ namespace ImageFanReloaded.Core.ImageHandling.Factories;
 
 public interface IThumbnailInfoFactory
 {
-	public IThumbnailInfo GetThumbnailInfo(
+	IThumbnailInfo GetThumbnailInfo(
 		ITabOptions tabOptions, IImageFile imageFile);
 }
