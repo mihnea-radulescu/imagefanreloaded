@@ -90,15 +90,12 @@ public class AppBootstrap : IAppBootstrap
 		_databaseLogic = new SqliteDatabaseLogic(
 			_globalParameters, _settingsFactory, _fileSizeEngine);
 
-		IImageFileContentLogic imageFileContentLogic =
+		IImageFileContentLogic directImageFileContentLogic =
 			new ImageFileContentLogic(_globalParameters);
-		IImageFileContentLogic cachedReadImageFileContentLogic =
-			new CachedReadImageFileContentLogic(
-				_globalParameters, imageFileContentLogic, _databaseLogic);
-		IImageFileContentLogic cachedWriteImageFileContentLogic =
-			new CachedWriteImageFileContentLogic(
+		IImageFileContentLogic cachedImageFileContentLogic =
+			new CachedImageFileContentLogic(
 				_globalParameters,
-				cachedReadImageFileContentLogic,
+				directImageFileContentLogic,
 				imageDataExtractor,
 				_databaseLogic);
 
@@ -109,8 +106,8 @@ public class AppBootstrap : IAppBootstrap
 			imageResizer,
 			_thumbnailCacheOptions,
 			_fileSizeEngine,
-			cachedReadImageFileContentLogic,
-			cachedWriteImageFileContentLogic);
+			directImageFileContentLogic,
+			cachedImageFileContentLogic);
 
 		IDiscQueryEngineFactory discQueryEngineFactory =
 			new DiscQueryEngineFactory(_globalParameters, _imageFileFactory);

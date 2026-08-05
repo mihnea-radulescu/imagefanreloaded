@@ -12,32 +12,31 @@ public class ImageFileFactory : IImageFileFactory
 		IImageResizer imageResizer,
 		IThumbnailCacheOptions thumbnailCacheOptions,
 		IFileSizeEngine fileSizeEngine,
-		IImageFileContentLogic imageFileContentLogic,
-		IImageFileContentLogic cachingEnabledImageFileContentLogic)
+		IImageFileContentLogic directImageFileContentLogic,
+		IImageFileContentLogic cachedImageFileContentLogic)
 	{
 		_globalParameters = globalParameters;
 
 		_imageResizer = imageResizer;
 		_fileSizeEngine = fileSizeEngine;
 
-		_imageFileContentLogic = imageFileContentLogic;
-		_cachingEnabledImageFileContentLogic =
-			cachingEnabledImageFileContentLogic;
+		_directImageFileContentLogic = directImageFileContentLogic;
+		_cachedImageFileContentLogic = cachedImageFileContentLogic;
 
 		_activeImageFileContentLogic =
 			thumbnailCacheOptions.EnableThumbnailCaching
-				? cachingEnabledImageFileContentLogic
-				: imageFileContentLogic;
+				? cachedImageFileContentLogic
+				: directImageFileContentLogic;
 	}
 
 	public void EnableThumbnailCaching()
 	{
-		_activeImageFileContentLogic = _cachingEnabledImageFileContentLogic;
+		_activeImageFileContentLogic = _cachedImageFileContentLogic;
 	}
 
 	public void DisableThumbnailCaching()
 	{
-		_activeImageFileContentLogic = _imageFileContentLogic;
+		_activeImageFileContentLogic = _directImageFileContentLogic;
 	}
 
 	public IImageFile GetImageFile(ImageFileData imageFileData)
@@ -53,8 +52,8 @@ public class ImageFileFactory : IImageFileFactory
 	private readonly IImageResizer _imageResizer;
 	private readonly IFileSizeEngine _fileSizeEngine;
 
-	private readonly IImageFileContentLogic _imageFileContentLogic;
-	private readonly IImageFileContentLogic _cachingEnabledImageFileContentLogic;
+	private readonly IImageFileContentLogic _directImageFileContentLogic;
+	private readonly IImageFileContentLogic _cachedImageFileContentLogic;
 
 	private IImageFileContentLogic _activeImageFileContentLogic;
 }
