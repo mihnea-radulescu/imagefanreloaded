@@ -7,7 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media.Immutable;
+using Avalonia.Media;
 using ImageFanReloaded.Controls.Extensions;
 using ImageFanReloaded.Controls.MessageBoxControl;
 using ImageFanReloaded.Core.Controls;
@@ -128,8 +128,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private Point _topLeftPointToImage;
 	private Point _bottomRightPointToImage;
 
-	private ImmutableSolidColorBrush? _drawingCropRectangleBrush;
-
 	private bool _isLoading;
 	private bool _hasInProgressUiUpdate;
 	private bool _hasUnsavedChanges;
@@ -137,11 +135,15 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private double DisplayImageWidth => _displayImage.Bounds.Width;
 	private double DisplayImageHeight => _displayImage.Bounds.Height;
 
+	private static IBrush? _accentColorBrush;
+
 	private async void OnWindowLoaded(object? sender, RoutedEventArgs e)
 	{
-		var accentColor = ContentTabItem!.AccentColor!.Value;
-		_drawingCropRectangleBrush = ImmutableSolidColorBrush
-			.FromSystemDrawingColor(accentColor);
+		if (_accentColorBrush is null)
+		{
+			var accentColor = this.GetAccentColor();
+			_accentColorBrush = accentColor!.Value.GetColorBrush();
+		}
 
 		await LoadImage();
 	}
@@ -1322,7 +1324,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		var drawingCropRectangle = new Avalonia.Controls.Shapes.Rectangle
 		{
-			Stroke = _drawingCropRectangleBrush,
+			Stroke = _accentColorBrush,
 			StrokeThickness = 2,
 			Width = cropToGridRectangle.Width,
 			Height = cropToGridRectangle.Height

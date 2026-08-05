@@ -1,10 +1,10 @@
 using System;
-using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Media.Immutable;
+using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Threading;
 using ImageFanReloaded.Controls.Extensions;
 using ImageFanReloaded.Core.Controls;
@@ -67,18 +67,19 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	public bool IsSelected { get; private set; }
 
-	public void SetControlProperties(int thumbnailSize, Color accentColor)
+	public void SetControlProperties(int thumbnailSize)
 	{
 		_thumbnailImage.MaxWidth = thumbnailSize;
 		_thumbnailImage.MaxHeight = thumbnailSize;
-
-		_thumbnailBoxSelectedBrush = ImmutableSolidColorBrush
-			.FromSystemDrawingColor(accentColor);
 	}
 
 	public void SelectThumbnail()
 	{
-		_thumbnailBoxBorder.BorderBrush = _thumbnailBoxSelectedBrush;
+		if (_accentColorBrush is not null)
+		{
+			_thumbnailBoxBorder.BorderBrush = _accentColorBrush;
+		}
+
 		Cursor = _zoomCursor!;
 		IsSelected = true;
 
@@ -90,7 +91,7 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 
 	public void UnselectThumbnail()
 	{
-		_thumbnailBoxBorder.BorderBrush = Avalonia.Media.Brushes.LightGray;
+		_thumbnailBoxBorder.BorderBrush = Brushes.LightGray;
 		Cursor = _standardCursor!;
 		IsSelected = false;
 	}
@@ -151,10 +152,24 @@ public partial class ThumbnailBox : UserControl, IThumbnailBox
 	private Cursor? _standardCursor;
 	private Cursor? _zoomCursor;
 
-	private ImmutableSolidColorBrush? _thumbnailBoxSelectedBrush;
-
 	private CancellationTokenSource? _ctsAnimation;
 	private Task? _animationTask;
+
+	private static IBrush? _accentColorBrush;
+
+	private void OnControlLoaded(object? sender, RoutedEventArgs e)
+	{
+		if (_accentColorBrush is null)
+		{
+			var accentColor = this.GetAccentColor();
+			_accentColorBrush = accentColor!.Value.GetColorBrush();
+
+			if (IsSelected)
+			{
+				_thumbnailBoxBorder.BorderBrush = _accentColorBrush;
+			}
+		}
+	}
 
 	private void OnMouseClick(object? sender, PointerReleasedEventArgs e)
 	{

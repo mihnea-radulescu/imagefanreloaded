@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
@@ -46,8 +44,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public IImageViewFactory? ImageViewFactory { get; set; }
 
 	public IFolderVisualState? FolderVisualState { get; set; }
-
-	public Color? AccentColor { get; private set; }
 
 	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	public event EventHandler<FolderOrderingChangedEventArgs>?
@@ -303,8 +299,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			aThumbnailBox.Index = _maxThumbnailIndex + i;
 			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
 
-			aThumbnailBox.SetControlProperties(
-				TabOptions!.ThumbnailSize, AccentColor!.Value);
+			aThumbnailBox.SetControlProperties(TabOptions!.ThumbnailSize);
 
 			thumbnailInfo.ThumbnailBox = aThumbnailBox;
 			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
@@ -483,7 +478,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				GetSelectedImageFileSizeInBytes();
 
 			var selectedImageFile = GetSelectedImageFile();
-			await Task.Run(() => selectedImageFile.RefreshImageFileData());
+			await Task.Run(selectedImageFile.RefreshImageFileData);
 
 			await _selectedThumbnailBox!.UpdateThumbnailAfterImageFileChange();
 			UpdateSelectedImageStatus();
@@ -537,19 +532,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private TreeViewItem? _activeFolderTreeViewItem;
 
-	private void OnControlLoaded(object? sender, RoutedEventArgs e)
-	{
-		var platformSettings = _folderTreeView.GetPlatformSettings();
-		var colorValues = platformSettings!.GetColorValues();
-		var primaryAccentColor = colorValues.AccentColor1;
-
-		AccentColor = Color.FromArgb(
-			primaryAccentColor.A,
-			primaryAccentColor.R,
-			primaryAccentColor.G,
-			primaryAccentColor.B);
-	}
-
 	private void OnThumbnailBoxSelected(
 		object? sender, ThumbnailBoxSelectedEventArgs e)
 			=> UpdateSelectedImageStatus();
@@ -561,7 +543,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		if (e.MouseClickType == MouseClickType.Left)
 		{
-			if (thumbnailBox.IsSelected)
+			if (IsSelectedThumbnailBox(thumbnailBox))
 			{
 				await DisplayImage(false);
 			}
@@ -572,7 +554,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 		else if (e.MouseClickType == MouseClickType.Right)
 		{
-			if (!thumbnailBox.IsSelected)
+			if (!IsSelectedThumbnailBox(thumbnailBox))
 			{
 				SelectThumbnailBox(thumbnailBox);
 			}
@@ -669,6 +651,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_contentGrid.ColumnDefinitions.Add(_thumbnailsScrollViewerColumn);
 	}
 
+	private static bool IsSelectedThumbnailBox(IThumbnailBox thumbnailBox)
+		=> thumbnailBox.IsSelected;
+
 	private void SelectThumbnailBox(IThumbnailBox thumbnailBox)
 	{
 		if (_selectedThumbnailBox != thumbnailBox)
@@ -724,8 +709,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return canAdvanceToNewSelectedThumbnailIndex;
 	}
 
-	private void SelectThumbnail()
-		=> _selectedThumbnailBox?.SelectThumbnail();
+	private void SelectThumbnail() => _selectedThumbnailBox?.SelectThumbnail();
 	private void UnselectThumbnail()
 		=> _selectedThumbnailBox?.UnselectThumbnail();
 
