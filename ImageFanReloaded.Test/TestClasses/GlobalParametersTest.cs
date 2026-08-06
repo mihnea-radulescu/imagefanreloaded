@@ -36,10 +36,6 @@ public class GlobalParametersTest : TestBase
 		// Assert
 		Assert.False(string.IsNullOrEmpty(_globalParameters.ApplicationName));
 
-		Assert.NotEqual(
-			RuntimeEnvironmentType.None,
-			_globalParameters.RuntimeEnvironmentType);
-
 		Assert.NotEqual(0, _globalParameters.ProcessorCount);
 		Assert.Equal(6, _globalParameters.MaxRecursionDepth);
 

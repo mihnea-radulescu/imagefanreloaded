@@ -17,9 +17,9 @@ public class RuntimeEnvironmentSettings : IRuntimeEnvironmentSettings
 		{
 			RuntimeEnvironmentType = RuntimeEnvironmentType.Windows;
 		}
-		else if (OperatingSystem.IsMacOS())
+		else if (OperatingSystem.IsMacOS() || OperatingSystem.IsFreeBSD())
 		{
-			RuntimeEnvironmentType = RuntimeEnvironmentType.MacOs;
+			RuntimeEnvironmentType = RuntimeEnvironmentType.GenericUnix;
 		}
 		else
 		{

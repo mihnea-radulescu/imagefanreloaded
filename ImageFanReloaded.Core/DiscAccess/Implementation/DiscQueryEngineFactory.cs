@@ -31,9 +31,9 @@ public class DiscQueryEngineFactory : IDiscQueryEngineFactory
 		}
 
 		if (_globalParameters.RuntimeEnvironmentType ==
-			RuntimeEnvironmentType.MacOs)
+			RuntimeEnvironmentType.GenericUnix)
 		{
-			return new MacOsDiscQueryEngine(
+			return new GenericUnixDiscQueryEngine(
 				_globalParameters, _imageFileFactory);
 		}
 
