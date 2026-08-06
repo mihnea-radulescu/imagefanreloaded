@@ -13,11 +13,11 @@ public abstract class GlobalParametersBase : IGlobalParameters
 {
 	public string ApplicationName => "ImageFanReloaded";
 
-	public int ProcessorCount { get; }
-
 	public RuntimeEnvironmentType RuntimeEnvironmentType { get; }
+	public bool HasStartedAsImageView { get; set; }
 
-	public int MaxRecursionDepth => 6;
+	public int ProcessorCount { get; }
+	public int MaxRecursionDepth { get; }
 
 	public KeyModifiers NoneKeyModifier { get; }
 	public KeyModifiers CtrlKeyModifier { get; }
@@ -117,10 +117,11 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	protected GlobalParametersBase(
 		IRuntimeEnvironmentSettings runtimeEnvironmentSettings)
 	{
-		ProcessorCount = Environment.ProcessorCount;
-
 		RuntimeEnvironmentType = runtimeEnvironmentSettings
 			.RuntimeEnvironmentType;
+
+		ProcessorCount = Environment.ProcessorCount;
+		MaxRecursionDepth = 6;
 
 		TabKey = Key.Tab;
 		EscapeKey = Key.Escape;

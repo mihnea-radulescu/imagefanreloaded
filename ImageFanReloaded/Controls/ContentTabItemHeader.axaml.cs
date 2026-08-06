@@ -44,7 +44,8 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 			_tabCloseBorder.Background = _accentColorBrush;
 		}
 		else if (GlobalParameters!.RuntimeEnvironmentType ==
-		         RuntimeEnvironmentType.Windows)
+		         RuntimeEnvironmentType.Windows ||
+		         GlobalParameters!.HasStartedAsImageView)
 		{
 			var accentColor = this.GetAccentColor();
 			if (accentColor is not null)

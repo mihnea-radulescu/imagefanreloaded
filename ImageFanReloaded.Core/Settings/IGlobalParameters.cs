@@ -10,10 +10,10 @@ public interface IGlobalParameters
 {
 	string ApplicationName { get; }
 
-	int ProcessorCount { get; }
-
 	RuntimeEnvironmentType RuntimeEnvironmentType { get; }
+	bool HasStartedAsImageView { get; set; }
 
+	int ProcessorCount { get; }
 	int MaxRecursionDepth { get; }
 
 	KeyModifiers NoneKeyModifier { get; }

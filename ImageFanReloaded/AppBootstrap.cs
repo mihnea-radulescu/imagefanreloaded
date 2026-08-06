@@ -241,6 +241,8 @@ public class AppBootstrap : IAppBootstrap
 
 		if (shouldShowMainView)
 		{
+			_globalParameters.HasStartedAsImageView = true;
+
 			ShowMainView();
 		}
 	}
