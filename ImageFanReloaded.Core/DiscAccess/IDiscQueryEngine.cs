@@ -10,12 +10,12 @@ public interface IDiscQueryEngine
 	Task BuildSkipRecursionFolderPaths();
 
 	Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders();
-	Task<FileSystemEntryInfo> GetFileSystemEntryInfo(string folderPath);
+
+	Task<IReadOnlyList<IImageFile>> GetImageFilesDefault(string folderPath);
 
 	Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
 		string folderPath, ITabOptions tabOptions);
 
 	Task<IReadOnlyList<IImageFile>> GetImageFiles(
 		string folderPath, ITabOptions tabOptions);
-	Task<IReadOnlyList<IImageFile>> GetImageFilesDefault(string folderPath);
 }

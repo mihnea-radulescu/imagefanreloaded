@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
@@ -10,9 +9,9 @@ using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
-public abstract class DiscQueryEngineBase : IDiscQueryEngine
+public class DiscQueryEngineFileSystem : IDiscQueryEngineFileSystem
 {
-	static DiscQueryEngineBase()
+	static DiscQueryEngineFileSystem()
 	{
 		EmptyFileInfoList = Enumerable.Empty<FileInfo>().ToList();
 		EmptyFileSystemEntryInfoList = Enumerable
@@ -23,10 +22,13 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		RandomShuffler = new Random();
 	}
 
-	protected DiscQueryEngineBase(
-		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory)
+	public DiscQueryEngineFileSystem(
+		IGlobalParameters globalParameters,
+		IDriveInfo driveInfo,
+		IImageFileFactory imageFileFactory)
 	{
 		_globalParameters = globalParameters;
+		_driveInfo = driveInfo;
 		_imageFileFactory = imageFileFactory;
 
 		_specialFolderToIconMapping = new Dictionary<string, IImage>
@@ -38,61 +40,7 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		};
 	}
 
-	public async Task BuildSkipRecursionFolderPaths()
-		=> await Task.Run(BuildSkipRecursionFolderPathsInternal);
-
-	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders()
-		=> await Task.Run(GetRootFoldersInternal);
-
-	public async Task<FileSystemEntryInfo> GetFileSystemEntryInfo(
-		string folderPath)
-			=> await Task.Run(() => GetFileSystemEntryInfoInternal(folderPath));
-
-	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
-		string folderPath, ITabOptions tabOptions)
-			=> await Task.Run(() => GetSubFoldersInternal(
-				folderPath,
-				tabOptions.FolderOrdering,
-				tabOptions.FolderOrderingDirection));
-
-	public async Task<IReadOnlyList<IImageFile>> GetImageFiles(
-		string folderPath, ITabOptions tabOptions)
-			=> await Task.Run(() => GetImageFilesInternal(
-				folderPath,
-				tabOptions.ImageFileOrdering,
-				tabOptions.ImageFileOrderingDirection,
-				tabOptions.EnabledImageFileExtensions,
-				tabOptions.RecursiveFolderBrowsing,
-				tabOptions.GlobalOrderingForRecursiveFolderBrowsing));
-
-	public async Task<IReadOnlyList<IImageFile>> GetImageFilesDefault(
-		string folderPath)
-			=> await Task.Run(() => GetImageFilesInternal(
-				folderPath,
-				FileSystemEntryInfoOrdering.Name,
-				FileSystemEntryInfoOrderingDirection.Ascending,
-				_globalParameters.ImageFileExtensions,
-				false,
-				false));
-
-	protected abstract bool IsSupportedDrive(string driveName);
-
-	private static readonly IReadOnlyList<FileInfo> EmptyFileInfoList;
-	private static readonly IReadOnlyList<FileSystemEntryInfo>
-		EmptyFileSystemEntryInfoList;
-	private static readonly IReadOnlyList<IImageFile> EmptyImageFileList;
-
-	private static readonly Random RandomShuffler;
-
-	private readonly IGlobalParameters _globalParameters;
-	private readonly IImageFileFactory _imageFileFactory;
-
-	private readonly IReadOnlyDictionary<string, IImage>
-		_specialFolderToIconMapping;
-
-	private HashSet<string>? _skipRecursionFolderPaths;
-
-	private void BuildSkipRecursionFolderPathsInternal()
+	public void BuildSkipRecursionFolderPaths()
 	{
 		var homePath = _globalParameters.UserHomePath;
 
@@ -105,6 +53,87 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 		_skipRecursionFolderPaths = new HashSet<string>(
 			[homePath, ..drivePaths], _globalParameters.NameComparer);
 	}
+
+	public IReadOnlyList<FileSystemEntryInfo> GetRootFolders()
+	{
+		var userFolders = GetUserFolders();
+		var drives = GetDrives();
+
+		IReadOnlyList<FileSystemEntryInfo> rootFolders =
+			[..userFolders, ..drives];
+		return rootFolders;
+	}
+
+	public IReadOnlyList<IImageFile> GetImageFilesDefault(
+		string folderPath)
+	{
+		return GetImageFilesInternal(
+			folderPath,
+			FileSystemEntryInfoOrdering.Name,
+			FileSystemEntryInfoOrderingDirection.Ascending,
+			_globalParameters.ImageFileExtensions,
+			false,
+			false);
+	}
+
+	public IReadOnlyList<FileSystemEntryInfo> GetSubFolders(
+		string folderPath, ITabOptions tabOptions)
+	{
+		try
+		{
+			var subFolderInfoList = new DirectoryInfo(folderPath)
+				.GetDirectories()
+				.ToList();
+
+			var orderedSubFolderInfoList = GetOrderedFileSystemInfoList(
+				subFolderInfoList,
+				tabOptions.FolderOrdering,
+				tabOptions.FolderOrderingDirection);
+
+			var subFolders = orderedSubFolderInfoList
+				.Select(aDirectory =>
+					new FileSystemEntryInfo(
+						aDirectory.Name,
+						aDirectory.FullName,
+						HasSubFolders(aDirectory.FullName),
+						_globalParameters.FolderIcon))
+				.ToList();
+
+			return subFolders;
+		}
+		catch
+		{
+			return EmptyFileSystemEntryInfoList;
+		}
+	}
+
+	public IReadOnlyList<IImageFile> GetImageFiles(
+		string folderPath, ITabOptions tabOptions)
+	{
+		return GetImageFilesInternal(
+			folderPath,
+			tabOptions.ImageFileOrdering,
+			tabOptions.ImageFileOrderingDirection,
+			tabOptions.EnabledImageFileExtensions,
+			tabOptions.RecursiveFolderBrowsing,
+			tabOptions.GlobalOrderingForRecursiveFolderBrowsing);
+	}
+
+	private static readonly IReadOnlyList<FileInfo> EmptyFileInfoList;
+	private static readonly IReadOnlyList<FileSystemEntryInfo>
+		EmptyFileSystemEntryInfoList;
+	private static readonly IReadOnlyList<IImageFile> EmptyImageFileList;
+
+	private static readonly Random RandomShuffler;
+
+	private readonly IGlobalParameters _globalParameters;
+	private readonly IDriveInfo _driveInfo;
+	private readonly IImageFileFactory _imageFileFactory;
+
+	private readonly IReadOnlyDictionary<string, IImage>
+		_specialFolderToIconMapping;
+
+	private HashSet<string>? _skipRecursionFolderPaths;
 
 	private IReadOnlyList<FileSystemEntryInfo> GetUserFolders()
 	{
@@ -163,66 +192,6 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 				.OrderBy(aDriveInfo =>
 							aDriveInfo.Name, _globalParameters.NameComparer)
 				.ToList();
-		}
-		catch
-		{
-			return EmptyFileSystemEntryInfoList;
-		}
-	}
-
-	private IReadOnlyList<FileSystemEntryInfo> GetRootFoldersInternal()
-	{
-		var userFolders = GetUserFolders();
-		var drives = GetDrives();
-
-		IReadOnlyList<FileSystemEntryInfo> rootFolders =
-			[..userFolders, ..drives];
-		return rootFolders;
-	}
-
-	private FileSystemEntryInfo GetFileSystemEntryInfoInternal(
-		string folderPath)
-	{
-		var folderInfo = new DirectoryInfo(folderPath);
-		var folderName = folderInfo.Name;
-
-		var hasSubFolders = HasSubFolders(folderPath);
-
-		var fileSystemEntryInfo = new FileSystemEntryInfo(
-			folderName,
-			folderPath,
-			hasSubFolders,
-			_globalParameters.FolderIcon);
-
-		return fileSystemEntryInfo;
-	}
-
-	private IReadOnlyList<FileSystemEntryInfo> GetSubFoldersInternal(
-		string folderPath,
-		FileSystemEntryInfoOrdering folderOrdering,
-		FileSystemEntryInfoOrderingDirection folderOrderingDirection)
-	{
-		try
-		{
-			var subFolderInfoList = new DirectoryInfo(folderPath)
-				.GetDirectories()
-				.ToList();
-
-			var orderedSubFolderInfoList = GetOrderedFileSystemInfoList(
-				subFolderInfoList,
-				folderOrdering,
-				folderOrderingDirection);
-
-			var subFolders = orderedSubFolderInfoList
-				.Select(aDirectory =>
-					new FileSystemEntryInfo(
-						aDirectory.Name,
-						aDirectory.FullName,
-						HasSubFolders(aDirectory.FullName),
-						_globalParameters.FolderIcon))
-				.ToList();
-
-			return subFolders;
 		}
 		catch
 		{
@@ -422,6 +391,9 @@ public abstract class DiscQueryEngineBase : IDiscQueryEngine
 			return false;
 		}
 	}
+
+	private bool IsSupportedDrive(string driveName)
+		=> _driveInfo.IsSupportedDrive(driveName);
 
 	private IImage GetIcon(string aSpecialFolderName)
 		=> _specialFolderToIconMapping[aSpecialFolderName];

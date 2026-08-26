@@ -98,7 +98,7 @@ public partial class MainWindow : Window, IMainView
 
 		if (ShouldCloseWindow(keyModifiers, keyPressing))
 		{
-			CloseWindow();
+			Close();
 			e.Handled = true;
 		}
 		else if (ShouldHandleEscapeAction(keyModifiers, keyPressing))
@@ -106,10 +106,6 @@ public partial class MainWindow : Window, IMainView
 			if (contentTabItem.AreSelectedFolderInfoTextOrImageInfoText)
 			{
 				contentTabItem.FocusThumbnailScrollViewer();
-			}
-			else
-			{
-				CloseWindow();
 			}
 			e.Handled = true;
 		}
@@ -391,8 +387,6 @@ public partial class MainWindow : Window, IMainView
 		var hasAtLeastOneTabItem = contentTabItemCount > 1;
 		return hasAtLeastOneTabItem;
 	}
-
-	private void CloseWindow() => Close();
 
 	private void NavigateToNextTab()
 	{

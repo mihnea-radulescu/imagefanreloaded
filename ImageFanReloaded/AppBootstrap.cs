@@ -109,9 +109,13 @@ public class AppBootstrap : IAppBootstrap
 			directImageFileContentLogic,
 			cachedImageFileContentLogic);
 
-		IDiscQueryEngineFactory discQueryEngineFactory =
-			new DiscQueryEngineFactory(_globalParameters, _imageFileFactory);
-		_discQueryEngine = discQueryEngineFactory.GetDiscQueryEngine();
+		IDriveInfoFactory driveInfoFactory = new DriveInfoFactory(
+			_globalParameters);
+		IDriveInfo driveInfo = driveInfoFactory.GetDriveInfo();
+		IDiscQueryEngineFileSystem discQueryEngineFileSystem =
+			new DiscQueryEngineFileSystem(
+				_globalParameters, driveInfo, _imageFileFactory);
+		_discQueryEngine = new DiscQueryEngine(discQueryEngineFileSystem);
 
 		IScreenInfo screenInfo = new ScreenInfo();
 		_imageViewFactory = new ImageViewFactory(

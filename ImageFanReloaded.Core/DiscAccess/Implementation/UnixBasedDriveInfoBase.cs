@@ -1,22 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
-public abstract class UnixDiscQueryEngineBase : DiscQueryEngineBase
+public abstract class UnixBasedDriveInfoBase : IDriveInfo
 {
-	protected UnixDiscQueryEngineBase(
-		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory)
-			: base(globalParameters, imageFileFactory)
+	protected UnixBasedDriveInfoBase(IGlobalParameters globalParameters)
 	{
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
 	}
 
-	protected override bool IsSupportedDrive(string driveName)
+	public bool IsSupportedDrive(string driveName)
 	{
 		if (driveName.Equals(RootPath, _nameComparison))
 		{

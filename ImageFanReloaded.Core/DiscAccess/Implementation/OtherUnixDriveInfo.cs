@@ -1,14 +1,12 @@
 using System.Collections.Generic;
-using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
-public class GenericUnixDiscQueryEngine : UnixDiscQueryEngineBase
+public class OtherUnixDriveInfo : UnixBasedDriveInfoBase
 {
-	public GenericUnixDiscQueryEngine(
-		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory)
-			: base(globalParameters, imageFileFactory)
+	public OtherUnixDriveInfo(IGlobalParameters globalParameters)
+		: base(globalParameters)
 	{
 		_supportedDrivePrefixes = ["/media/", "/mnt/", "/Volumes/"];
 	}

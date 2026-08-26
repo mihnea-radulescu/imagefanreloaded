@@ -1,14 +1,12 @@
 using System.Collections.Generic;
-using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 
-public class LinuxDiscQueryEngine : UnixDiscQueryEngineBase
+public class LinuxDriveInfo : UnixBasedDriveInfoBase
 {
-	public LinuxDiscQueryEngine(
-		IGlobalParameters globalParameters, IImageFileFactory imageFileFactory)
-			: base(globalParameters, imageFileFactory)
+	public LinuxDriveInfo(IGlobalParameters globalParameters)
+		: base(globalParameters)
 	{
 		_supportedDrivePrefixes = ["/media/", "/mnt/", "/run/media/"];
 	}

@@ -80,7 +80,7 @@ User interface:
 • key Enter for entering image view and zoomed image view modes
 • key combos Ctrl+Up, Ctrl+Down, Ctrl+Left and Ctrl+Right for dragging zoomed images
 • key I to toggle showing image info in image view and zoomed image view modes
-• key Esc for exiting image view and zoomed image view modes, and for quitting application
+• key Esc for exiting image view and zoomed image view modes
 ";
 
 	private readonly IAboutInfoProvider _aboutInfoProvider;
