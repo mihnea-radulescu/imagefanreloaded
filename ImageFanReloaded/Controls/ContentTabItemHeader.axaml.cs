@@ -83,7 +83,7 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 				this,
 				new ContentTabItemAddedEventArgs(
 					ContentTabItem!,
-					activeFileSystemEntryInfo!.Path,
+					activeFileSystemEntryInfo,
 					isExpandedFolderTreeViewSelectedItem));
 		}
 	}

@@ -1,12 +1,13 @@
 using System;
 using ImageFanReloaded.Core.ImageCore;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.ImageHandling;
 
 public interface IImageFile
 {
-	ImageFileData ImageFileData { get; }
+	IImageFileData ImageFileData { get; }
 
 	ImageSize ImageSize { get; }
 	bool IsAnimatedImage { get; }

@@ -1,8 +1,9 @@
 using System.IO;
 using ImageFanReloaded.Core.Caching;
-using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Settings;
 
@@ -25,11 +26,11 @@ public class CachedImageFileContentLogic
 		_databaseLogic.CreateDatabaseIfNotExisting();
 	}
 
-	public override ImageData GetImageData(ImageFileData imageFileData)
+	public override ImageData GetImageData(IImageFileData imageFileData)
 		=> _imageFileContentLogic.GetImageData(imageFileData);
 
 	public override ImageData GetImageData(
-		ImageFileData imageFileData,
+		IImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation)
 	{
@@ -62,7 +63,7 @@ public class CachedImageFileContentLogic
 	}
 
 	public override void UpdateThumbnail(
-		ImageFileData imageFileData,
+		IImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation,
 		IImage thumbnail)
@@ -77,7 +78,7 @@ public class CachedImageFileContentLogic
 
 			var thumbnailCacheEntry = new ThumbnailCacheEntry
 			{
-				FilePath = imageFileData.FilePath,
+				FilePath = imageFileData.QualifiedFilePath,
 				FileSizeInBytes = imageFileData.FileSizeInBytes,
 				FileLastModificationTime =
 					imageFileData.FileLastModificationTime,

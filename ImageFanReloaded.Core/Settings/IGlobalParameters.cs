@@ -42,6 +42,7 @@ public interface IGlobalParameters
 	Key AKey { get; }
 	Key DKey { get; }
 
+	Key ZKey { get; }
 	Key RKey { get; }
 	Key GKey { get; }
 	Key EKey { get; }
@@ -96,13 +97,14 @@ public interface IGlobalParameters
 	IImage InvalidImage { get; }
 	HashSet<IImage> PersistentImages { get; }
 
+	IImage HomeFolderIcon { get; }
 	IImage DesktopFolderIcon { get; }
 	IImage DocumentsFolderIcon { get; }
 	IImage DownloadsFolderIcon { get; }
+	IImage PicturesFolderIcon { get; }
 	IImage DriveIcon { get; }
 	IImage FolderIcon { get; }
-	IImage HomeFolderIcon { get; }
-	IImage PicturesFolderIcon { get; }
+	IImage ZipArchiveIcon { get; }
 
 	IImage GetInvalidImageThumbnail(int thumbnailSize);
 	IImage GetLoadingImageThumbnail(int thumbnailSize);

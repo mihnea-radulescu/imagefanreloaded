@@ -14,6 +14,8 @@ public record TabOptionChanges
 
 	public bool HasChangedEnabledImageFileExtensions { get; set; }
 
+	public bool HasChangedZipArchivesEnabled { get; set; }
+
 	public bool HasChangedRecursiveFolderBrowsing { get; set; }
 	public bool HasChangedGlobalOrderingForRecursiveFolderBrowsing { get; set; }
 

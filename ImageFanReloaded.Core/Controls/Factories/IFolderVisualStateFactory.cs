@@ -1,7 +1,10 @@
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
+
 namespace ImageFanReloaded.Core.Controls.Factories;
 
 public interface IFolderVisualStateFactory
 {
 	IFolderVisualState GetFolderVisualState(
-		IContentTabItem contentTabItem, string folderName, string folderPath);
+		IContentTabItem contentTabItem,
+		IFileSystemEntryInfo fileSystemEntryInfo);
 }

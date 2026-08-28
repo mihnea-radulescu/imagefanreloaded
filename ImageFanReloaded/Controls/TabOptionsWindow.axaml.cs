@@ -44,6 +44,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 
 		PopulateEnabledImageFileExtensions();
 
+		SetZipArchivesEnabled();
+
 		SetRecursiveFolderBrowsing();
 		SetGlobalOrderingForRecursiveFolderBrowsing();
 
@@ -173,6 +175,15 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		object? sender, RoutedEventArgs e)
 	{
 		_tabOptionChanges.HasChangedEnabledImageFileExtensions = true;
+	}
+
+	private void OnZipArchivesEnabledIsCheckedChanged(
+		object? sender, RoutedEventArgs e)
+	{
+		var zipArchivesEnabled = _zipArchivesEnabledCheckBox.IsChecked!.Value;
+
+		TabOptions!.ZipArchivesEnabled = zipArchivesEnabled;
+		_tabOptionChanges.HasChangedZipArchivesEnabled = true;
 	}
 
 	private void OnRecursiveFolderBrowsingIsCheckedChanged(
@@ -448,6 +459,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		}
 	}
 
+	private void SetZipArchivesEnabled()
+	{
+		_zipArchivesEnabledCheckBox.IsChecked = TabOptions!.ZipArchivesEnabled;
+	}
+
 	private void SetRecursiveFolderBrowsing()
 	{
 		_recursiveFolderBrowsingCheckBox.IsChecked =
@@ -596,6 +612,9 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 				OnEnabledImageFileExtensionsListBoxCheckBoxIsCheckedChanged;
 		}
 
+		_zipArchivesEnabledCheckBox.IsCheckedChanged +=
+			OnZipArchivesEnabledIsCheckedChanged;
+
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged +=
 			OnRecursiveFolderBrowsingIsCheckedChanged;
 		_globalOrderingForRecursiveFolderBrowsingCheckBox.IsCheckedChanged +=
@@ -644,6 +663,9 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			aCheckBox!.IsCheckedChanged -=
 				OnEnabledImageFileExtensionsListBoxCheckBoxIsCheckedChanged;
 		}
+
+		_zipArchivesEnabledCheckBox.IsCheckedChanged -=
+			OnZipArchivesEnabledIsCheckedChanged;
 
 		_recursiveFolderBrowsingCheckBox.IsCheckedChanged -=
 			OnRecursiveFolderBrowsingIsCheckedChanged;

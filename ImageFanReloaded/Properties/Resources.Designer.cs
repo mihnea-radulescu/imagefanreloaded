@@ -120,6 +120,16 @@
 			}
 		}
 
+		internal static byte[] ZipArchiveIcon
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject(
+					"ZipArchiveIcon", resourceCulture);
+				return ((byte[])(obj));
+			}
+		}
+
 		internal static byte[] InvalidImage
 		{
 			get

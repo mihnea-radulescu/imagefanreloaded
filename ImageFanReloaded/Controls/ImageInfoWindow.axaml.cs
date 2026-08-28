@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using ImageFanReloaded.Controls.Extensions;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Settings;

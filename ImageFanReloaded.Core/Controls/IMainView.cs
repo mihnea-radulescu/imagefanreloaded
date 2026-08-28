@@ -1,5 +1,6 @@
 using System;
 using ImageFanReloaded.Core.CustomEventArgs;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
@@ -21,12 +22,12 @@ public interface IMainView
 
 	void AddContentTabItem(
 		ITabOptions? tabOptions,
-		string? inputPathToClone,
+		IFileSystemEntryInfo? fileSystemEntryInfoToClone,
 		bool isExpandedFolderTreeViewSelectedItem);
 
 	void CloneContentTabItem(
 		ITabOptions? tabOptions,
-		string? inputPathToClone,
+		IFileSystemEntryInfo? fileSystemEntryInfoToClone,
 		bool isExpandedFolderTreeViewSelectedItem);
 
 	void Show();

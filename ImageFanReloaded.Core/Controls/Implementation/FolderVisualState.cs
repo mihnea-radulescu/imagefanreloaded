@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Settings;
@@ -18,8 +19,7 @@ public class FolderVisualState : IFolderVisualState
 		IThumbnailInfoFactory thumbnailInfoFactory,
 		IDiscQueryEngine discQueryEngine,
 		IContentTabItem contentTabItem,
-		string folderName,
-		string folderPath)
+		IFileSystemEntryInfo fileSystemEntryInfo)
 	{
 		_globalParameters = globalParameters;
 		_fileSizeEngine = fileSizeEngine;
@@ -27,9 +27,7 @@ public class FolderVisualState : IFolderVisualState
 		_discQueryEngine = discQueryEngine;
 
 		_contentTabItem = contentTabItem;
-
-		_folderName = folderName;
-		_folderPath = folderPath;
+		_fileSystemEntryInfo = fileSystemEntryInfo;
 
 		_folderChangedMutex = _contentTabItem.FolderChangedMutex!;
 		_ctsThumbnailGeneration = new CancellationTokenSource();
@@ -48,14 +46,15 @@ public class FolderVisualState : IFolderVisualState
 			await _folderChangedMutex.Wait();
 
 			await _contentTabItem.ClearThumbnailBoxes(true);
-			_contentTabItem.SetTabInfo(_folderName, _folderPath);
+			_contentTabItem.SetTabInfo(
+				_fileSystemEntryInfo.Name, _fileSystemEntryInfo.Path);
 
 			var subFolders = await _discQueryEngine.GetSubFolders(
-				_folderPath, tabOptions);
+				_fileSystemEntryInfo, tabOptions);
 			_contentTabItem.PopulateSubFoldersTree(subFolders);
 
 			var imageFiles = await _discQueryEngine.GetImageFiles(
-				_folderPath, tabOptions);
+				_fileSystemEntryInfo, tabOptions);
 
 			_imageFilesCount = imageFiles.Count;
 			_imageFilesTotalSizeInBytes =
@@ -64,7 +63,7 @@ public class FolderVisualState : IFolderVisualState
 			SetFolderInfoText(tabOptions);
 			_contentTabItem.SetImageInfoText(string.Empty);
 
-			var thumbnails = GetThumbnailInfoCollection(tabOptions, imageFiles);
+			var thumbnails = GetThumbnailInfoList(tabOptions, imageFiles);
 
 			await ProcessThumbnails(thumbnails);
 		}
@@ -72,6 +71,21 @@ public class FolderVisualState : IFolderVisualState
 		{
 			_folderChangedMutex.Signal();
 		}
+	}
+
+	public void SetFolderInfoText(ITabOptions tabOptions)
+	{
+		var imageFilesTotalSizeInKilobytes =
+			_fileSizeEngine.ConvertToKilobytes(_imageFilesTotalSizeInBytes);
+		var imageFilesTotalSizeInMegabytes =
+			_fileSizeEngine.ConvertToMegabytes(imageFilesTotalSizeInKilobytes);
+
+		var folderStatusBarText = GetFolderStatusBarText(
+			_imageFilesCount,
+			imageFilesTotalSizeInMegabytes,
+			tabOptions.RecursiveFolderBrowsing);
+
+		_contentTabItem.SetFolderInfoText(folderStatusBarText);
 	}
 
 	public void UpdateFolderInfoText(
@@ -94,9 +108,7 @@ public class FolderVisualState : IFolderVisualState
 	private readonly IDiscQueryEngine _discQueryEngine;
 
 	private readonly IContentTabItem _contentTabItem;
-
-	private readonly string _folderName;
-	private readonly string _folderPath;
+	private readonly IFileSystemEntryInfo _fileSystemEntryInfo;
 
 	private readonly IAsyncMutex _folderChangedMutex;
 	private readonly CancellationTokenSource _ctsThumbnailGeneration;
@@ -104,12 +116,12 @@ public class FolderVisualState : IFolderVisualState
 	private int _imageFilesCount;
 	private long _imageFilesTotalSizeInBytes;
 
-	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoCollection(
+	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoList(
 		ITabOptions tabOptions, IReadOnlyList<IImageFile> imageFiles)
-		=> imageFiles
-			.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(
-						tabOptions, anImageFile))
-			.ToList();
+			=> imageFiles
+				.Select(anImageFile => _thumbnailInfoFactory.GetThumbnailInfo(
+							tabOptions, anImageFile))
+				.ToList();
 
 	private async Task ProcessThumbnails(
 		IReadOnlyList<IThumbnailInfo> thumbnails)
@@ -226,21 +238,6 @@ public class FolderVisualState : IFolderVisualState
 		return imageFilesTotalSizeInBytes;
 	}
 
-	private void SetFolderInfoText(ITabOptions tabOptions)
-	{
-		var imageFilesTotalSizeInKilobytes =
-			_fileSizeEngine.ConvertToKilobytes(_imageFilesTotalSizeInBytes);
-		var imageFilesTotalSizeInMegabytes =
-			_fileSizeEngine.ConvertToMegabytes(imageFilesTotalSizeInKilobytes);
-
-		var folderStatusBarText = GetFolderStatusBarText(
-			_imageFilesCount,
-			imageFilesTotalSizeInMegabytes,
-			tabOptions.RecursiveFolderBrowsing);
-
-		_contentTabItem.SetFolderInfoText(folderStatusBarText);
-	}
-
 	private string GetFolderStatusBarText(
 		int imageFilesCount,
 		decimal imageFilesTotalSizeInMegabytes,
@@ -262,7 +259,7 @@ public class FolderVisualState : IFolderVisualState
 			: string.Empty;
 
 		var folderStatusBarText =
-			$"{_folderPath}{recursiveFolderAccessInfo} - {imageFilesCountAndTotalSizeText}";
+			$"{_fileSystemEntryInfo.QualifiedPath}{recursiveFolderAccessInfo} - {imageFilesCountAndTotalSizeText}";
 
 		return folderStatusBarText;
 	}

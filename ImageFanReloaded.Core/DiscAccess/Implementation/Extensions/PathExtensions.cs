@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 
-namespace ImageFanReloaded.Core.DiscAccess.Implementation;
+namespace ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
 
 public static class PathExtensions
 {
@@ -79,7 +79,7 @@ public static class PathExtensions
 
 	extension(string path)
 	{
-		private int GetDirectorySeparatorCharCountInPath(
+		public int GetDirectorySeparatorCharCountInPath(
 			char directorySeparatorChar)
 				=> path.Count(aPathChar => aPathChar == directorySeparatorChar);
 	}

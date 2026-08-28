@@ -1,8 +1,8 @@
-using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 
 namespace ImageFanReloaded.Core.Controls;
 
 public interface IFileSystemTreeViewItem
 {
-	FileSystemEntryInfo? FileSystemEntryInfo { get; set; }
+	IFileSystemEntryInfo? FileSystemEntryInfo { get; set; }
 }

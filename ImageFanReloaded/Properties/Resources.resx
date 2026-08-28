@@ -80,6 +80,9 @@
 	<data name="PicturesFolderIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
 		<value>../Resources/Icons/PicturesFolderIcon.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</data>
+	<data name="ZipArchiveIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+		<value>../Resources/Icons/ZipArchiveIcon.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</data>
 	<data name="InvalidImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
 		<value>../Resources/Images/InvalidImage.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</data>

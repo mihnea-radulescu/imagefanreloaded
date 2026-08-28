@@ -4,12 +4,14 @@ using System.IO;
 using Avalonia.Media.Imaging;
 using ImageMagick;
 using ImageFanReloaded.Core.DiscAccess;
-using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageCore.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.Core.ImageHandling.Implementation;
 using ImageFanReloaded.Core.Settings;
+using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.ImageHandling;
 
@@ -20,18 +22,18 @@ public class ImageFile : ImageFileBase
 		IImageResizer imageResizer,
 		IFileSizeEngine fileSizeEngine,
 		IImageFileContentLogic imageFileContentLogic,
-		ImageFileData imageFileData)
-		: base(
-			globalParameters,
-			imageResizer,
-			fileSizeEngine,
-			imageFileContentLogic,
-			imageFileData)
+		IImageFileData imageFileData)
+			: base(
+				globalParameters,
+				imageResizer,
+				fileSizeEngine,
+				imageFileContentLogic,
+				imageFileData)
 	{
 	}
 
 	protected override IImage GetImageFromStream(
-		ImageFileData imageFileData,
+		IImageFileData imageFileData,
 		Stream imageFileContentStream,
 		bool isKnownImage,
 		bool applyImageOrientation)
@@ -107,12 +109,11 @@ public class ImageFile : ImageFileBase
 	}
 
 	private IImage BuildIndirectlySupportedImageFromStream(
-		ImageFileData imageFileData,
+		IImageFileData imageFileData,
 		Stream imageFileContentStream)
 	{
-		var magickFormat = GetMagickFormat(imageFileData);
 		using IMagickImage image = new MagickImage(
-			imageFileContentStream, magickFormat);
+			imageFileContentStream, imageFileData.MagickFormat);
 
 		return BuildIndirectlySupportedImage(image);
 	}
@@ -176,24 +177,5 @@ public class ImageFile : ImageFileBase
 		var bitmapSize = new ImageSize(bitmap.Size.Width, bitmap.Size.Height);
 
 		return new Image(bitmap, bitmapSize);
-	}
-
-	private static MagickFormat GetMagickFormat(ImageFileData imageFileData)
-	{
-		var normalizedFileExtension =
-			imageFileData.FileExtension.ToLowerInvariant();
-
-		return normalizedFileExtension switch
-		{
-			".cur" => MagickFormat.Cur,
-			".dng" => MagickFormat.Dng,
-			".ico" => MagickFormat.Ico,
-			".nrw" => MagickFormat.Nrw,
-			".pef" => MagickFormat.Pef,
-			".pict" => MagickFormat.Pict,
-			".tga" => MagickFormat.Tga,
-			".wbmp" => MagickFormat.Wbmp,
-			_ => MagickFormat.Unknown
-		};
 	}
 }

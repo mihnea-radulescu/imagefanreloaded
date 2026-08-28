@@ -1,4 +1,4 @@
-namespace ImageFanReloaded.Core.DiscAccess;
+namespace ImageFanReloaded.Core.DiscAccess.DriveInfo;
 
 public interface IDriveInfo
 {

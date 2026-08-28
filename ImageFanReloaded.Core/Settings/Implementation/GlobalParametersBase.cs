@@ -45,6 +45,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key AKey { get; }
 	public Key DKey { get; }
 
+	public Key ZKey { get; }
 	public Key RKey { get; }
 	public Key GKey { get; }
 	public Key EKey { get; }
@@ -103,13 +104,14 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public abstract IImage InvalidImage { get; }
 	public abstract HashSet<IImage> PersistentImages { get; }
 
+	public abstract IImage HomeFolderIcon { get; }
 	public abstract IImage DesktopFolderIcon { get; }
 	public abstract IImage DocumentsFolderIcon { get; }
 	public abstract IImage DownloadsFolderIcon { get; }
+	public abstract IImage PicturesFolderIcon { get; }
 	public abstract IImage DriveIcon { get; }
 	public abstract IImage FolderIcon { get; }
-	public abstract IImage HomeFolderIcon { get; }
-	public abstract IImage PicturesFolderIcon { get; }
+	public abstract IImage ZipArchiveIcon { get; }
 
 	public abstract IImage GetInvalidImageThumbnail(int thumbnailSize);
 	public abstract IImage GetLoadingImageThumbnail(int thumbnailSize);
@@ -149,6 +151,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		AKey = Key.A;
 		DKey = Key.D;
 
+		ZKey = Key.Z;
 		RKey = Key.R;
 		GKey = Key.G;
 		EKey = Key.E;

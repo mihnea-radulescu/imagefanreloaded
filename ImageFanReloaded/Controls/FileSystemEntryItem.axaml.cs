@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using ImageFanReloaded.Core.Controls;
-using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.Controls;
@@ -13,7 +13,7 @@ public partial class FileSystemTreeViewItem
 		InitializeComponent();
 	}
 
-	public FileSystemEntryInfo? FileSystemEntryInfo
+	public IFileSystemEntryInfo? FileSystemEntryInfo
 	{
 		get => _fileSystemEntryInfo;
 		set
@@ -25,5 +25,5 @@ public partial class FileSystemTreeViewItem
 		}
 	}
 
-	private FileSystemEntryInfo? _fileSystemEntryInfo;
+	private IFileSystemEntryInfo? _fileSystemEntryInfo;
 }

@@ -3,7 +3,7 @@
 		x:Class="ImageFanReloaded.Controls.ImageInfoWindow"
 		Icon="/MainWindowIcon.ico"
 		Width="800"
-		Height="600"
+		Height="625"
 		WindowStartupLocation="CenterOwner"
 		CanMinimize="False"
 		CanResize="False"

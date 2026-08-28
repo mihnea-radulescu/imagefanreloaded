@@ -1,4 +1,5 @@
 using ImageFanReloaded.Core.Controls;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 
 namespace ImageFanReloaded.Core.CustomEventArgs;
 
@@ -6,17 +7,18 @@ public class ContentTabItemAddedEventArgs : ContentTabItemEventArgs
 {
 	public ContentTabItemAddedEventArgs(
 		IContentTabItem contentTabItem,
-		string? inputPathToClone,
+		IFileSystemEntryInfo? fileSystemEntryInfoToClone,
 		bool isExpandedFolderTreeViewSelectedItem)
 			: base(contentTabItem)
 	{
-		InputPathToClone = inputPathToClone;
+		FileSystemEntryInfoToClone = fileSystemEntryInfoToClone;
+
 		IsExpandedFolderTreeViewSelectedItem =
 			isExpandedFolderTreeViewSelectedItem;
 	}
 
-	public string? InputPathToClone { get; }
+	public IFileSystemEntryInfo? FileSystemEntryInfoToClone { get; }
 	public bool IsExpandedFolderTreeViewSelectedItem { get; }
 
-	public bool ShouldCloneInputPath => InputPathToClone is not null;
+	public bool ShouldCloneActiveTab => FileSystemEntryInfoToClone is not null;
 }

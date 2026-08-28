@@ -1,6 +1,6 @@
 using System;
 using Xunit;
-using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
 
 namespace ImageFanReloaded.Test.TestClasses;
 

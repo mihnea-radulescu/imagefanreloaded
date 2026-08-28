@@ -9,7 +9,8 @@ Features:
 * keyboard and mouse user interaction
 * dark and light modes, based on system settings
 * 46 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, jxl, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm
-* image animation support for the formats: avif, gif, jxl, mng, webp
+* browsing and image viewing within zip files
+* animation support for the image formats: avif, gif, jxl, mng, webp
 * fast and seamless full-screen and windowed navigation across images
 * full-screen image upsizing options
 * image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize
@@ -43,6 +44,7 @@ User interface:
 * key T for displaying Image edit view, and for switching from command-line image file access mode to thumbnail navigation mode
 * keys in Image edit view: U for undo, I for redo, R for rotate, F for flip, E for effects, S for save as, C for crop and D for downsize
 * key F for displaying Image info view
+* key Z to toggle browsing through and viewing images within zip files
 * key R to toggle recursive folder browsing
 * key G to toggle global ordering for recursive folder browsing
 * key E for applying EXIF image orientation

@@ -18,6 +18,8 @@ public record TabOptionsDto
 
 	public HashSet<string>? EnabledImageFileExtensions { get; set; }
 
+	public bool ZipArchivesEnabled { get; set; }
+
 	public bool RecursiveFolderBrowsing { get; set; }
 	public bool GlobalOrderingForRecursiveFolderBrowsing { get; set; }
 

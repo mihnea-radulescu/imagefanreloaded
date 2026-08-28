@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 
 namespace ImageFanReloaded.Core.Caching;
 
@@ -12,7 +12,7 @@ public interface IDatabaseLogic
     Task ClearDatabase();
 
     ThumbnailCacheEntry? GetThumbnailCacheEntry(
-		ImageFileData imageFileData,
+		IImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation);
 

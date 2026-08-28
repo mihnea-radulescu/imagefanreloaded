@@ -18,6 +18,8 @@ public interface ITabOptions
 
 	HashSet<string> EnabledImageFileExtensions { get; set; }
 
+	bool ZipArchivesEnabled { get; set; }
+
 	bool RecursiveFolderBrowsing { get; set; }
 	bool GlobalOrderingForRecursiveFolderBrowsing { get; set; }
 

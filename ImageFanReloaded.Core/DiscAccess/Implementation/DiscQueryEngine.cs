@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Settings;
 
@@ -16,8 +17,10 @@ public class DiscQueryEngine : IDiscQueryEngine
 		=> await Task.Run(
 			() => _discQueryEngineFileSystem.BuildSkipRecursionFolderPaths());
 
-	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders()
-		=> await Task.Run(() => _discQueryEngineFileSystem.GetRootFolders());
+	public async Task<IReadOnlyList<IFileSystemEntryInfo>> GetRootFolders(
+		ITabOptions tabOptions)
+		=> await Task.Run(() => _discQueryEngineFileSystem.GetRootFolders(
+			tabOptions));
 
 	public async Task<IReadOnlyList<IImageFile>> GetImageFilesDefault(
 		string folderPath)
@@ -25,15 +28,15 @@ public class DiscQueryEngine : IDiscQueryEngine
 				() => _discQueryEngineFileSystem.GetImageFilesDefault(
 					folderPath));
 
-	public async Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
-		string folderPath, ITabOptions tabOptions)
+	public async Task<IReadOnlyList<IFileSystemEntryInfo>> GetSubFolders(
+		IFileSystemEntryInfo fileSystemEntryInfo, ITabOptions tabOptions)
 			=> await Task.Run(() => _discQueryEngineFileSystem.GetSubFolders(
-				folderPath, tabOptions));
+				fileSystemEntryInfo, tabOptions));
 
 	public async Task<IReadOnlyList<IImageFile>> GetImageFiles(
-		string folderPath, ITabOptions tabOptions)
+		IFileSystemEntryInfo fileSystemEntryInfo, ITabOptions tabOptions)
 			=> await Task.Run(() => _discQueryEngineFileSystem.GetImageFiles(
-				folderPath, tabOptions));
+				fileSystemEntryInfo, tabOptions));
 
 	private readonly IDiscQueryEngineFileSystem _discQueryEngineFileSystem;
 }

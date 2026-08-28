@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
@@ -48,7 +49,7 @@ public partial class MainWindow : Window, IMainView
 
 	public void AddContentTabItem(
 		ITabOptions? tabOptions,
-		string? inputPathToClone,
+		IFileSystemEntryInfo? fileSystemEntryInfoToClone,
 		bool isExpandedFolderTreeViewSelectedItem)
 	{
 		ChangeTabItems(() =>
@@ -62,7 +63,7 @@ public partial class MainWindow : Window, IMainView
 				this,
 				new ContentTabItemAddedEventArgs(
 					contentTabItem,
-					inputPathToClone,
+					fileSystemEntryInfoToClone,
 					isExpandedFolderTreeViewSelectedItem));
 
 			var shouldAllowTabClose = ShouldAllowTabClose();
@@ -73,12 +74,12 @@ public partial class MainWindow : Window, IMainView
 
 	public void CloneContentTabItem(
 		ITabOptions? tabOptions,
-		string? inputPathToClone,
+		IFileSystemEntryInfo? fileSystemEntryInfoToClone,
 		bool isExpandedFolderTreeViewSelectedItem)
 	{
 		AddContentTabItem(
 			tabOptions,
-			inputPathToClone,
+			fileSystemEntryInfoToClone,
 			isExpandedFolderTreeViewSelectedItem);
 
 		SelectLastTabItem();
@@ -171,7 +172,7 @@ public partial class MainWindow : Window, IMainView
 				this,
 				new ContentTabItemAddedEventArgs(
 					contentTabItem,
-					activeFileSystemEntryInfo!.Path,
+					activeFileSystemEntryInfo,
 					isExpandedFolderTreeViewSelectedItem));
 		}
 	}
@@ -258,13 +259,13 @@ public partial class MainWindow : Window, IMainView
 	private void CloneTab(object? sender, ContentTabItemAddedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		var inputPathToClone = e.InputPathToClone;
+		var fileSystemEntryInfoToClone = e.FileSystemEntryInfoToClone;
 		var isExpandedFolderTreeViewSelectedItem =
 			e.IsExpandedFolderTreeViewSelectedItem;
 
 		CloneContentTabItem(
 			contentTabItem.TabOptions,
-			inputPathToClone,
+			fileSystemEntryInfoToClone,
 			isExpandedFolderTreeViewSelectedItem);
 	}
 

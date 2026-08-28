@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using ImageFanReloaded.Core.Settings;
 
-namespace ImageFanReloaded.Core.DiscAccess.Implementation;
+namespace ImageFanReloaded.Core.DiscAccess.Implementation.DriveInfo;
 
 public class LinuxDriveInfo : UnixBasedDriveInfoBase
 {

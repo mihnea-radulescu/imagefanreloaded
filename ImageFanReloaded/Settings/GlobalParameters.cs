@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Avalonia.Media.Imaging;
-using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageCore.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
@@ -38,29 +38,31 @@ public class GlobalParameters : GlobalParametersBase
 
 		var iconSize = new ImageSize(IconSizeSquareLength);
 
+		HomeFolderIcon = GetResizedIcon(Resources.HomeFolderIcon, iconSize);
 		DesktopFolderIcon = GetResizedIcon(
 			Resources.DesktopFolderIcon, iconSize);
 		DocumentsFolderIcon = GetResizedIcon(
 			Resources.DocumentsFolderIcon, iconSize);
 		DownloadsFolderIcon = GetResizedIcon(
 			Resources.DownloadsFolderIcon, iconSize);
-		DriveIcon = GetResizedIcon(Resources.DriveIcon, iconSize);
-		FolderIcon = GetResizedIcon(Resources.FolderIcon, iconSize);
-		HomeFolderIcon = GetResizedIcon(Resources.HomeFolderIcon, iconSize);
 		PicturesFolderIcon = GetResizedIcon(
 			Resources.PicturesFolderIcon, iconSize);
+		DriveIcon = GetResizedIcon(Resources.DriveIcon, iconSize);
+		FolderIcon = GetResizedIcon(Resources.FolderIcon, iconSize);
+		ZipArchiveIcon = GetResizedIcon(Resources.ZipArchiveIcon, iconSize);
 	}
 
 	public override IImage InvalidImage { get; }
 	public override HashSet<IImage> PersistentImages { get; }
 
+	public override IImage HomeFolderIcon { get; }
 	public override IImage DesktopFolderIcon { get; }
 	public override IImage DocumentsFolderIcon { get; }
 	public override IImage DownloadsFolderIcon { get; }
+	public override IImage PicturesFolderIcon { get; }
 	public override IImage DriveIcon { get; }
 	public override IImage FolderIcon { get; }
-	public override IImage HomeFolderIcon { get; }
-	public override IImage PicturesFolderIcon { get; }
+	public override IImage ZipArchiveIcon { get; }
 
 	public override IImage GetInvalidImageThumbnail(int thumbnailSize)
 		=> _invalidImageThumbnails[thumbnailSize];

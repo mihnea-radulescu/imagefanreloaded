@@ -65,6 +65,7 @@ public class GlobalParametersTest : TestBase
 		Assert.NotEqual(Key.Other, _globalParameters.AKey);
 		Assert.NotEqual(Key.Other, _globalParameters.DKey);
 
+		Assert.NotEqual(Key.Other, _globalParameters.ZKey);
 		Assert.NotEqual(Key.Other, _globalParameters.RKey);
 		Assert.NotEqual(Key.Other, _globalParameters.GKey);
 		Assert.NotEqual(Key.Other, _globalParameters.EKey);
@@ -118,8 +119,14 @@ public class GlobalParametersTest : TestBase
 			expectedPersistentImagesCount,
 			_globalParameters.PersistentImages.Count);
 
+		Assert.NotNull(_globalParameters.HomeFolderIcon.Bitmap);
+		Assert.NotNull(_globalParameters.DesktopFolderIcon.Bitmap);
+		Assert.NotNull(_globalParameters.DocumentsFolderIcon.Bitmap);
+		Assert.NotNull(_globalParameters.DownloadsFolderIcon.Bitmap);
+		Assert.NotNull(_globalParameters.PicturesFolderIcon.Bitmap);
 		Assert.NotNull(_globalParameters.DriveIcon.Bitmap);
 		Assert.NotNull(_globalParameters.FolderIcon.Bitmap);
+		Assert.NotNull(_globalParameters.ZipArchiveIcon.Bitmap);
 
 		SaveImageToDisc(
 			_globalParameters.InvalidImage.Bitmap,

@@ -5,9 +5,9 @@
 		Icon="/MainWindowIcon.ico"
 		Title="ImageFan Reloaded"
 		MinWidth="800"
-		MinHeight="600"
+		MinHeight="625"
 		Width="800"
-		Height="600"
+		Height="625"
 		WindowStartupLocation="CenterScreen"
 		WindowState="Maximized">
 	<TabControl Name="_tabControl"/>

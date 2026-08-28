@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ImageFanReloaded.Core.DiscAccess.DriveInfo;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 
-namespace ImageFanReloaded.Core.DiscAccess.Implementation;
+namespace ImageFanReloaded.Core.DiscAccess.Implementation.DriveInfo;
 
 public abstract class UnixBasedDriveInfoBase : IDriveInfo
 {

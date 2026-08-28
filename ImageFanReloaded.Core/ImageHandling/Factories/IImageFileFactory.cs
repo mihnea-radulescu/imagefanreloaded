@@ -1,3 +1,5 @@
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
+
 namespace ImageFanReloaded.Core.ImageHandling.Factories;
 
 public interface IImageFileFactory
@@ -5,5 +7,5 @@ public interface IImageFileFactory
 	void EnableThumbnailCaching();
 	void DisableThumbnailCaching();
 
-	IImageFile GetImageFile(ImageFileData imageFileData);
+	IImageFile GetImageFile(IImageFileData imageFileData);
 }

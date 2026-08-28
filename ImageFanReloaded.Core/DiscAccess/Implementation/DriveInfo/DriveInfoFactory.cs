@@ -1,8 +1,9 @@
+using ImageFanReloaded.Core.DiscAccess.DriveInfo;
 using ImageFanReloaded.Core.Exceptions;
 using ImageFanReloaded.Core.RuntimeEnvironment;
 using ImageFanReloaded.Core.Settings;
 
-namespace ImageFanReloaded.Core.DiscAccess.Implementation;
+namespace ImageFanReloaded.Core.DiscAccess.Implementation.DriveInfo;
 
 public class DriveInfoFactory : IDriveInfoFactory
 {

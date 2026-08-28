@@ -6,18 +6,22 @@ using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using ImageMagick;
 using ImageFanReloaded.Core.BaseTypes;
-using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageCore.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.ImageHandling;
 
 public class EditableImage : DisposableBase, IEditableImage
 {
-	public EditableImage(string imageFilePath, int imageQualityLevel)
+	public EditableImage(
+		IImageFileData imageFileData,
+		int imageQualityLevel)
 	{
+		_imageFileData = imageFileData;
 		_imageQualityLevel = imageQualityLevel;
 
 		MagickImageCollection? imageFramesToEdit = null;
@@ -25,7 +29,11 @@ public class EditableImage : DisposableBase, IEditableImage
 
 		try
 		{
-			imageFramesToEdit = new MagickImageCollection(imageFilePath);
+			using (var imageData = imageFileData.GetImageData())
+			{
+				imageFramesToEdit = new MagickImageCollection(
+					imageData.ImageDataStream!, imageFileData.MagickFormat);
+			}
 
 			if (imageFramesToEdit.Count > 1)
 			{
@@ -321,6 +329,8 @@ public class EditableImage : DisposableBase, IEditableImage
 			editableImageData.Dispose();
 		}
 	}
+
+	private readonly IImageFileData _imageFileData;
 
 	private readonly int _imageQualityLevel;
 

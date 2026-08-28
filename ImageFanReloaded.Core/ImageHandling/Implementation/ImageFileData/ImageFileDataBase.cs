@@ -1,36 +1,43 @@
 using System;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 
-namespace ImageFanReloaded.Core.ImageHandling;
+namespace ImageFanReloaded.Core.ImageHandling.Implementation.ImageFileData;
 
-public record ImageFileData
+public abstract class ImageFileDataBase : IImageFileData
 {
-	public ImageFileData(
+	protected ImageFileDataBase(
 		string fileName,
 		string filePath,
 		string fileExtension,
 		string fileNameWithoutExtension,
 		int fileSizeInBytes,
 		DateTime fileLastModificationTime,
-		string folderPath)
+		string containerPath)
 	{
 		FileName = fileName;
 		FilePath = filePath;
+
 		FileExtension = fileExtension;
 		FileNameWithoutExtension = fileNameWithoutExtension;
 
 		FileSizeInBytes = fileSizeInBytes;
 		FileLastModificationTime = fileLastModificationTime;
 
-		FolderPath = folderPath;
+		ContainerPath = containerPath;
 	}
 
 	public string FileName { get; }
 	public string FilePath { get; }
+	public virtual string QualifiedFilePath => FilePath;
+
 	public string FileExtension { get; }
 	public string FileNameWithoutExtension { get; }
 
 	public int FileSizeInBytes { get; set; }
 	public DateTime FileLastModificationTime { get; set; }
 
-	public string FolderPath { get; }
+	public string ContainerPath { get; }
+	public virtual string FolderPath => ContainerPath;
+
+	public abstract ImageData GetImageData();
 }

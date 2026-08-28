@@ -7,10 +7,11 @@ using System.Xml;
 using System.Xml.Linq;
 using ImageMagick;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
 using ImageFanReloaded.Core.ImageHandling;
-using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.Settings;
+using ImageFanReloaded.ImageHandling.Extensions;
 
 namespace ImageFanReloaded.ImageHandling;
 
@@ -62,20 +63,24 @@ public class ImageInfoBuilder : IImageInfoBuilder
 
 		BuildFileProfile(imageFile, imageInfoBuilder);
 
-		using (IMagickImage image = new MagickImage(
-			imageFile.ImageFileData.FilePath))
+		var imageFileData = imageFile.ImageFileData;
+		using (var imageData = imageFileData.GetImageData())
 		{
-			BuildImageProfile(
-				image,
-				imageFile.ImageSize,
-				imageInfoBuilder,
-				imageFile.IsAnimatedImage);
+			using (IMagickImage image = new MagickImage(
+				       imageData.ImageDataStream!, imageFileData.MagickFormat))
+			{
+				BuildImageProfile(
+					image,
+					imageFile.ImageSize,
+					imageInfoBuilder,
+					imageFile.IsAnimatedImage);
 
-			BuildColorProfile(image, imageInfoBuilder);
+				BuildColorProfile(image, imageInfoBuilder);
 
-			BuildExifProfile(image, imageInfoBuilder);
-			BuildIptcProfile(image, imageInfoBuilder);
-			BuildXmpProfile(image, imageInfoBuilder);
+				BuildExifProfile(image, imageInfoBuilder);
+				BuildIptcProfile(image, imageInfoBuilder);
+				BuildXmpProfile(image, imageInfoBuilder);
+			}
 		}
 
 		var imageInfo = imageInfoBuilder.ToString();
@@ -93,7 +98,7 @@ public class ImageInfoBuilder : IImageInfoBuilder
 		imageInfoBuilder.AppendLine(
 			$"\tFile name:\t{imageFileData.FileName}");
 		imageInfoBuilder.AppendLine(
-			$"\tFile path:\t{imageFileData.FilePath}");
+			$"\tFile path:\t{imageFileData.QualifiedFilePath}");
 
 		var fileSizeInKilobytes =
 			_fileSizeEngine.ConvertToKilobytes(imageFileData.FileSizeInBytes);

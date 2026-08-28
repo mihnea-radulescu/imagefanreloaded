@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
+using ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 
@@ -54,8 +56,8 @@ public class InputPathHandler : IInputPathHandler
 
 	public bool CanHandleInputPath() => InputPathType != InputPathType.NotSet;
 
-	public async Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(
-		IReadOnlyList<FileSystemEntryInfo> folders)
+	public async Task<IFileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(
+		IReadOnlyList<IFileSystemEntryInfo> folders)
 			=> await Task.Run(() =>
 				{
 					var matchingFileSystemEntryInfo = folders

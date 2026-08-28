@@ -1,5 +1,6 @@
 using ImageFanReloaded.Core.Controls.Implementation;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Settings;
 
@@ -20,7 +21,8 @@ public class FolderVisualStateFactory : IFolderVisualStateFactory
 	}
 
 	public IFolderVisualState GetFolderVisualState(
-		IContentTabItem contentTabItem, string folderName, string folderPath)
+		IContentTabItem contentTabItem,
+		IFileSystemEntryInfo fileSystemEntryInfo)
 	{
 		IFolderVisualState folderVisualState = new FolderVisualState(
 			_globalParameters,
@@ -28,8 +30,7 @@ public class FolderVisualStateFactory : IFolderVisualStateFactory
 			_thumbnailInfoFactory,
 			_discQueryEngine,
 			contentTabItem,
-			folderName,
-			folderPath);
+			fileSystemEntryInfo);
 
 		return folderVisualState;
 	}

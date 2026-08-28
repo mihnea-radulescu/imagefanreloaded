@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Settings;
 
@@ -9,13 +10,14 @@ public interface IDiscQueryEngine
 {
 	Task BuildSkipRecursionFolderPaths();
 
-	Task<IReadOnlyList<FileSystemEntryInfo>> GetRootFolders();
+	Task<IReadOnlyList<IFileSystemEntryInfo>> GetRootFolders(
+		ITabOptions tabOptions);
 
 	Task<IReadOnlyList<IImageFile>> GetImageFilesDefault(string folderPath);
 
-	Task<IReadOnlyList<FileSystemEntryInfo>> GetSubFolders(
-		string folderPath, ITabOptions tabOptions);
+	Task<IReadOnlyList<IFileSystemEntryInfo>> GetSubFolders(
+		IFileSystemEntryInfo fileSystemEntryInfo, ITabOptions tabOptions);
 
 	Task<IReadOnlyList<IImageFile>> GetImageFiles(
-		string folderPath, ITabOptions tabOptions);
+		IFileSystemEntryInfo fileSystemEntryInfo, ITabOptions tabOptions);
 }

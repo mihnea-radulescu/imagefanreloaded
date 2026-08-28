@@ -1,18 +1,19 @@
 using ImageFanReloaded.Core.ImageCore;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 
 namespace ImageFanReloaded.Core.ImageHandling;
 
 public interface IImageFileContentLogic
 {
-	ImageData GetImageData(ImageFileData imageFileData);
+	ImageData GetImageData(IImageFileData imageFileData);
 
 	ImageData GetImageData(
-		ImageFileData imageFileData,
+		IImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation);
 
 	void UpdateThumbnail(
-		ImageFileData imageFileData,
+		IImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation,
 		IImage thumbnail);

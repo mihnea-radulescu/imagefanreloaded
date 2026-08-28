@@ -1,6 +1,7 @@
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.ImageHandling.Factories;
@@ -39,7 +40,7 @@ public class ImageFileFactory : IImageFileFactory
 		_activeImageFileContentLogic = _directImageFileContentLogic;
 	}
 
-	public IImageFile GetImageFile(ImageFileData imageFileData)
+	public IImageFile GetImageFile(IImageFileData imageFileData)
 		=> new ImageFile(
 			_globalParameters,
 			_imageResizer,

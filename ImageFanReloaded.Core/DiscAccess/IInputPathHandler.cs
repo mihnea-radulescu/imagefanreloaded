@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 
 namespace ImageFanReloaded.Core.DiscAccess;
 
@@ -12,6 +13,6 @@ public interface IInputPathHandler
 
 	bool CanHandleInputPath();
 
-	Task<FileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(
-		IReadOnlyList<FileSystemEntryInfo> folders);
+	Task<IFileSystemEntryInfo?> GetMatchingFileSystemEntryInfo(
+		IReadOnlyList<IFileSystemEntryInfo> folders);
 }

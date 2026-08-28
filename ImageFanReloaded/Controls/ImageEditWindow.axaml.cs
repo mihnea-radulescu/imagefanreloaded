@@ -13,9 +13,10 @@ using ImageFanReloaded.Controls.MessageBoxControl;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
-using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.TextHandling.Implementation;
@@ -93,7 +94,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 	public ISaveFileImageFormatFactory? SaveFileImageFormatFactory { get; set; }
 	public ISaveFileDialogFactory? SaveFileDialogFactory { get; set; }
 
-	public ImageFileData? ImageFileData { get; set; }
+	public IImageFileData? ImageFileData { get; set; }
 
 	public IContentTabItem? ContentTabItem { get; set; }
 
@@ -487,7 +488,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		SetControlsEnabledStatus(false);
 
 		_editableImage = await EditableImageFactory!.CreateEditableImage(
-			ImageFileData!.FilePath);
+			ImageFileData!);
 
 		var isImageLoaded = _editableImage is not null;
 		SetControlsEnabledStatus(isImageLoaded);
@@ -834,11 +835,12 @@ public partial class ImageEditWindow : Window, IImageEditView
 		{
 			var hasSameFormat = saveFileImageFormat is null;
 
+			var imageFileData = ImageFileData!;
 			var imageFileName = hasSameFormat
-				? ImageFileData!.FileName
-				: $"{ImageFileData!.FileNameWithoutExtension}{saveFileImageFormat!.Extension}";
-			var imageFilePath = ImageFileData!.FilePath;
-			var imageFolderPath = ImageFileData!.FolderPath;
+				? imageFileData.FileName
+				: $"{imageFileData.FileNameWithoutExtension}{saveFileImageFormat!.Extension}";
+			var imageFilePath = imageFileData.FilePath;
+			var imageFolderPath = imageFileData.FolderPath;
 
 			var saveFileDialog = SaveFileDialogFactory!.GetSaveFileDialog();
 			var saveFileDialogTitle = hasSameFormat
@@ -869,17 +871,23 @@ public partial class ImageEditWindow : Window, IImageEditView
 						FolderContentChanged?.Invoke(
 							this, new ContentTabItemEventArgs(ContentTabItem!));
 					}
-					else if (HasOverwrittenCurrentImageFile(
-						imageToSaveFilePath, imageFilePath))
+					else if (ShouldConsiderImageFileOrFolderRefresh(
+						         imageFileData))
 					{
-						ImageFileOverwritten?.Invoke(
-							this, new ContentTabItemEventArgs(ContentTabItem!));
-					}
-					else if (HasSavedImageFileInCurrentFolder(
-						imageToSaveFilePath, imageFolderPath))
-					{
-						FolderContentChanged?.Invoke(
-							this, new ContentTabItemEventArgs(ContentTabItem!));
+						if (HasOverwrittenCurrentImageFile(
+							    imageToSaveFilePath, imageFilePath))
+						{
+							ImageFileOverwritten?.Invoke(
+								this,
+								new ContentTabItemEventArgs(ContentTabItem!));
+						}
+						else if (HasSavedImageFileInCurrentFolder(
+							         imageToSaveFilePath, imageFolderPath))
+						{
+							FolderContentChanged?.Invoke(
+								this,
+								new ContentTabItemEventArgs(ContentTabItem!));
+						}
 					}
 				}
 				catch
@@ -959,8 +967,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private bool HasOverwrittenCurrentImageFile(
 		string imageToSaveFilePath, string imageFilePath)
-		=> imageToSaveFilePath.Equals(imageFilePath,
-			_fileSystemStringComparison!.Value);
+			=> imageToSaveFilePath.Equals(imageFilePath,
+				_fileSystemStringComparison!.Value);
 
 	private bool HasSavedImageFileInCurrentFolder(
 		string imageToSaveFilePath, string imageFolderPath)
@@ -1154,10 +1162,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void ClearDownsizeComboBoxValueToComboBoxItemMapping()
 		=> _downsizeComboBoxValueToComboBoxItemMapping.Clear();
-
-	private static string GetDownsizeComboBoxKey(
-		ComboBox downsizeComboBox, int downsizeValue)
-			=> $"{downsizeComboBox.Name}_{downsizeValue}";
 
 	private async Task PerformUiUpdate(Func<Task> uiUpdateFunc)
 	{
@@ -1393,4 +1397,12 @@ public partial class ImageEditWindow : Window, IImageEditView
 			MessageBoxType.Error,
 			this);
 	}
+
+	private static string GetDownsizeComboBoxKey(
+		ComboBox downsizeComboBox, int downsizeValue)
+			=> $"{downsizeComboBox.Name}_{downsizeValue}";
+
+	private static bool ShouldConsiderImageFileOrFolderRefresh(
+		IImageFileData imageFileData)
+			=> imageFileData.FilePath == imageFileData.QualifiedFilePath;
 }

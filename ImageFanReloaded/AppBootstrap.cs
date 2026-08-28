@@ -13,7 +13,11 @@ using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.Controls.Factories.Implementation;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.DriveInfo;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
+using ImageFanReloaded.Core.DiscAccess.Implementation.DriveInfo;
+using ImageFanReloaded.Core.DiscAccess.Implementation.EntryInfo;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.ImageHandling.Factories.Implementation;
@@ -62,6 +66,7 @@ public class AppBootstrap : IAppBootstrap
 	private IDatabaseLogic _databaseLogic = null!;
 	private IThumbnailCacheOptions _thumbnailCacheOptions = null!;
 	private IImageFileFactory _imageFileFactory = null!;
+	private IFileSystemEntryInfoFactory _fileSystemEntryInfoFactory = null!;
 	private IDiscQueryEngine _discQueryEngine = null!;
 	private IImageViewFactory _imageViewFactory = null!;
 	private IInputPathHandlerFactory _inputPathHandlerFactory = null!;
@@ -112,9 +117,15 @@ public class AppBootstrap : IAppBootstrap
 		IDriveInfoFactory driveInfoFactory = new DriveInfoFactory(
 			_globalParameters);
 		IDriveInfo driveInfo = driveInfoFactory.GetDriveInfo();
+		_fileSystemEntryInfoFactory = new FileSystemEntryInfoFactory(
+			_globalParameters);
+
 		IDiscQueryEngineFileSystem discQueryEngineFileSystem =
 			new DiscQueryEngineFileSystem(
-				_globalParameters, driveInfo, _imageFileFactory);
+				_globalParameters,
+				_fileSystemEntryInfoFactory,
+				driveInfo,
+				_imageFileFactory);
 		_discQueryEngine = new DiscQueryEngine(discQueryEngineFileSystem);
 
 		IScreenInfo screenInfo = new ScreenInfo();
@@ -123,7 +134,7 @@ public class AppBootstrap : IAppBootstrap
 
 		_inputPathHandlerFactory = new InputPathHandlerFactory(
 			_globalParameters);
-		string? commandLineArgsInputPath = GetCommandLineArgsInputPath();
+		var commandLineArgsInputPath = GetCommandLineArgsInputPath();
 		_commandLineArgsInputPathHandler = _inputPathHandlerFactory
 			.GetInputPathHandler(commandLineArgsInputPath);
 	}

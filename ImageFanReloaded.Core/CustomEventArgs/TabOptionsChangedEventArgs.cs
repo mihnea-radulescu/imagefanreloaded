@@ -1,5 +1,5 @@
 using ImageFanReloaded.Core.Controls;
-using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.CustomEventArgs;
@@ -8,7 +8,7 @@ public class TabOptionsChangedEventArgs : ContentTabItemEventArgs
 {
 	public TabOptionsChangedEventArgs(
 		IContentTabItem contentTabItem,
-		FileSystemEntryInfo? fileSystemEntryInfo,
+		IFileSystemEntryInfo? fileSystemEntryInfo,
 		ITabOptions tabOptions,
 		TabOptionChanges tabOptionChanges)
 			: base(contentTabItem)
@@ -19,7 +19,7 @@ public class TabOptionsChangedEventArgs : ContentTabItemEventArgs
 		TabOptionChanges = tabOptionChanges;
 	}
 
-	public FileSystemEntryInfo? FileSystemEntryInfo { get; }
+	public IFileSystemEntryInfo? FileSystemEntryInfo { get; }
 
 	public ITabOptions TabOptions { get; }
 	public TabOptionChanges TabOptionChanges { get; }

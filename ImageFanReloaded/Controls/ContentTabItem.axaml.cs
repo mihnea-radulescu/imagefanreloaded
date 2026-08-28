@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using ImageFanReloaded.Controls.Extensions;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
-using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Mouse;
@@ -48,6 +49,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	public event EventHandler<FolderOrderingChangedEventArgs>?
 		FolderOrderingChanged;
+	public event EventHandler<ContentTabItemEventArgs>? FolderInfoChanged;
 
 	public event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
 	public event EventHandler<ImageSelectedEventArgs>? ImageEditRequested;
@@ -88,6 +90,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			ShouldChangeImageFileOrderingDirection(keyModifiers, keyPressing) ||
 			ShouldChangeImageViewDisplayMode(keyModifiers, keyPressing) ||
 			ShouldChangeThumbnailSize(keyModifiers, keyPressing) ||
+			ShouldToggleZipArchivesEnabled(keyModifiers, keyPressing) ||
 			ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing) ||
 			ShouldToggleGlobalOrderingForRecursiveFolderAccess(
 				keyModifiers, keyPressing) ||
@@ -158,6 +161,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldChangeThumbnailSize(keyModifiers, keyPressing))
 		{
 			ChangeThumbnailSize(keyPressing);
+		}
+		else if (ShouldToggleZipArchivesEnabled(keyModifiers, keyPressing))
+		{
+			ToggleZipArchivesEnabled();
 		}
 		else if (ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing))
 		{
@@ -243,7 +250,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		OnTabCountChanged;
 
 	public void PopulateRootNodesSubFoldersTree(
-		IReadOnlyList<FileSystemEntryInfo> rootFolders)
+		IReadOnlyList<IFileSystemEntryInfo> rootFolders)
 	{
 		var itemCollection = _folderTreeView.Items;
 
@@ -252,7 +259,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	}
 
 	public void PopulateSubFoldersTree(
-		IReadOnlyList<FileSystemEntryInfo> subFolders)
+		IReadOnlyList<IFileSystemEntryInfo> subFolders)
 	{
 		if (_folderTreeView.SelectedItem is not null)
 		{
@@ -267,7 +274,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	}
 
 	public void PopulateSubFoldersTreeOfParentTreeViewItem(
-		IReadOnlyList<FileSystemEntryInfo> subFolders)
+		IReadOnlyList<IFileSystemEntryInfo> subFolders)
 	{
 		if (_activeFolderTreeViewItem is not null)
 		{
@@ -365,9 +372,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public FileSystemEntryInfo? GetActiveFileSystemEntryInfo()
+	public IFileSystemEntryInfo? GetActiveFileSystemEntryInfo()
 	{
-		FileSystemEntryInfo? fileSystemEntryInfo = null;
+		IFileSystemEntryInfo? fileSystemEntryInfo = null;
 
 		if (_activeFolderTreeViewItem?.Header is
 			IFileSystemTreeViewItem fileSystemEntryItem)
@@ -387,9 +394,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_imageInfoSelectableTextBlock.SetText(imageInfoText);
 	}
 
-	public void SaveMatchingTreeViewItem(
-		FileSystemEntryInfo selectedFileSystemEntryInfo,
-		bool startAtRootFolders)
+	public void SaveMatchingTreeViewItem(string path, bool startAtRootFolders)
 	{
 		var subItems = _activeFolderTreeViewItem is null || startAtRootFolders
 			? _folderTreeView.Items
@@ -402,8 +407,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			if (aSubTreeViewItem.Header is
 				IFileSystemTreeViewItem fileSystemTreeViewItem)
 			{
-				if (fileSystemTreeViewItem.FileSystemEntryInfo ==
-					selectedFileSystemEntryInfo)
+				if (fileSystemTreeViewItem.FileSystemEntryInfo?.QualifiedPath ==
+					path)
 				{
 					_activeFolderTreeViewItem = aSubTreeViewItem;
 					break;
@@ -421,32 +426,45 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public void BringThumbnailIntoView()
 		=> _selectedThumbnailBox?.BringThumbnailIntoView();
 
-	public void RaiseFolderOrderingChangedEvent()
-	{
-		var activeFileSystemEntryInfo = GetActiveFileSystemEntryInfo();
-
-		if (activeFileSystemEntryInfo is not null)
-		{
-			var folderOrderingChangedEventArgs =
-				new FolderOrderingChangedEventArgs(
-					this, activeFileSystemEntryInfo);
-
-			FolderOrderingChanged?.Invoke(this, folderOrderingChangedEventArgs);
-		}
-	}
-
 	public void RaiseFolderChangedEvent()
 	{
 		if (_activeFolderTreeViewItem?.Header is
 			IFileSystemTreeViewItem fileSystemEntryItem)
 		{
 			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
+			var fileSystemEntryInfoToRaiseEventOn =
+				GetFileSystemEntryInfoToRaiseEventOn(fileSystemEntryInfo);
 
 			var folderChangedEventArgs =
-				new FolderChangedEventArgs(this, fileSystemEntryInfo);
+				new FolderChangedEventArgs(
+					this, fileSystemEntryInfoToRaiseEventOn);
 
 			FolderChanged?.Invoke(this, folderChangedEventArgs);
 		}
+	}
+
+	public void RaiseFolderOrderingChangedEvent()
+	{
+		var activeFileSystemEntryInfo = GetActiveFileSystemEntryInfo();
+
+		if (activeFileSystemEntryInfo is not null)
+		{
+			var activeFileSystemEntryInfoToRaiseEventOn =
+				GetFileSystemEntryInfoToRaiseEventOn(activeFileSystemEntryInfo);
+
+			var folderOrderingChangedEventArgs =
+				new FolderOrderingChangedEventArgs(
+					this, activeFileSystemEntryInfoToRaiseEventOn);
+
+			FolderOrderingChanged?.Invoke(this, folderOrderingChangedEventArgs);
+		}
+	}
+
+	public void RaiseFolderInfoChangedEvent()
+	{
+		var contentTabItemEventArgs = new ContentTabItemEventArgs(this);
+
+		FolderInfoChanged?.Invoke(this, contentTabItemEventArgs);
 	}
 
 	public void RaisePanelsSplittingRatioChangedEvent()
@@ -566,9 +584,12 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void OnFolderTreeViewSelectedItemChanged(
 		object? sender, SelectionChangedEventArgs e)
 	{
-		_activeFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
+		if (e.AddedItems.Count > 0)
+		{
+			_activeFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
 
-		RaiseFolderChangedEvent();
+			RaiseFolderChangedEvent();
+		}
 	}
 
 	private void OnTreeViewItemPropertyChanged(
@@ -747,7 +768,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void AddSubFoldersToTreeView(
 		ItemCollection itemCollection,
-		IReadOnlyList<FileSystemEntryInfo> subFolders)
+		IReadOnlyList<IFileSystemEntryInfo> subFolders)
 	{
 		foreach (var aSubFolder in subFolders)
 		{
@@ -759,7 +780,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	}
 
 	private static TreeViewItem GetTreeViewItem(
-		FileSystemEntryInfo fileSystemEntryInfo)
+		IFileSystemEntryInfo fileSystemEntryInfo)
 	{
 		IFileSystemTreeViewItem fileSystemTreeViewItem =
 			new FileSystemTreeViewItem
@@ -969,6 +990,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
+	private bool ShouldToggleZipArchivesEnabled(
+		KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+		    keyPressing == GlobalParameters!.ZKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool ShouldToggleRecursiveFolderAccess(
 		KeyModifiers keyModifiers, Key keyPressing)
 	{
@@ -1146,7 +1179,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			this,
 			new ContentTabItemAddedEventArgs(
 				this,
-				activeFileSystemEntryInfo!.Path,
+				activeFileSystemEntryInfo,
 				isExpandedFolderTreeViewSelectedItem));
 	}
 
@@ -1363,6 +1396,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private static void FocusTreeViewItem(TreeViewItem treeViewItem)
 		=> treeViewItem.Focus();
 
+	private void ToggleZipArchivesEnabled()
+	{
+		TabOptions!.ZipArchivesEnabled = !TabOptions!.ZipArchivesEnabled;
+
+		RaiseFolderChangedEvent();
+		RaiseFolderOrderingChangedEvent();
+	}
+
 	private void ToggleRecursiveFolderAccess()
 	{
 		TabOptions!.RecursiveFolderBrowsing =
@@ -1373,6 +1414,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		if (activeFileSystemEntryInfo?.HasSubFolders == true)
 		{
 			RaiseFolderChangedEvent();
+		}
+		else
+		{
+			RaiseFolderInfoChangedEvent();
 		}
 	}
 
@@ -1471,6 +1516,16 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		catch
 		{
 		}
+	}
+
+	private IFileSystemEntryInfo GetFileSystemEntryInfoToRaiseEventOn(
+		IFileSystemEntryInfo fileSystemEntryInfo)
+	{
+		var fileSystemEntryInfoToRaiseEventOn = TabOptions!.ZipArchivesEnabled
+			? fileSystemEntryInfo
+			: fileSystemEntryInfo.DriveOrFolder!;
+
+		return fileSystemEntryInfoToRaiseEventOn;
 	}
 
 	private int GetSelectedImageFileSizeInBytes()

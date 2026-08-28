@@ -4,7 +4,7 @@
 		Icon="/MainWindowIcon.ico"
 		Title="Tab options"
 		Width="800"
-		Height="600"
+		Height="625"
 		WindowStartupLocation="CenterOwner"
 		CanMinimize="False"
 		CanResize="False"
@@ -31,6 +31,8 @@
 			<RowDefinition Height="1.5*"/>
 			<RowDefinition Height="10*"/>
 			<RowDefinition Height="1.5*"/>
+			<RowDefinition Height="10*"/>
+			<RowDefinition Height="1.5*"/>
 			<RowDefinition Height="12*"/>
 			<RowDefinition Height="2*"/>
 			<RowDefinition Height="10*"/>
@@ -44,7 +46,7 @@
 			<RowDefinition Height="10*"/>
 			<RowDefinition Height="1.5*"/>
 			<RowDefinition Height="10*"/>
-			<RowDefinition Height="3*"/>
+			<RowDefinition Height="4*"/>
 			<RowDefinition Height="10*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -59,7 +61,7 @@
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
 				   Text="Folder ordering:"
-				   Margin="0 7 0 0"/>
+				   Margin="0 8 0 0"/>
 		<ComboBox Name="_folderOrderingComboBox"
 				  Grid.Row="1"
 				  Grid.Column="3"
@@ -70,7 +72,7 @@
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
 				   Text="Folder ordering direction:"
-				   Margin="0 7 0 0"/>
+				   Margin="0 8 0 0"/>
 		<ComboBox Name="_folderOrderingDirectionComboBox"
 				  Grid.Row="3"
 				  Grid.Column="3"
@@ -81,7 +83,7 @@
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
 				   Text="Image file ordering:"
-				   Margin="0 7 0 0"/>
+				   Margin="0 8 0 0"/>
 		<ComboBox Name="_imageFileOrderingComboBox"
 				  Grid.Row="5"
 				  Grid.Column="3"
@@ -92,7 +94,7 @@
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
 				   Text="Image file ordering direction:"
-				   Margin="0 7 0 0"/>
+				   Margin="0 8 0 0"/>
 		<ComboBox Name="_imageFileOrderingDirectionComboBox"
 				  Grid.Row="7"
 				  Grid.Column="3"
@@ -103,7 +105,7 @@
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
 				   Text="Image view display mode:"
-				   Margin="0 7 0 0"/>
+				   Margin="0 8 0 0"/>
 		<ComboBox Name="_imageViewDisplayModeComboBox"
 				  Grid.Row="9"
 				  Grid.Column="3"
@@ -114,7 +116,7 @@
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
 				   Text="Thumbnail size:"
-				   Margin="0 7 0 0"/>
+				   Margin="0 8 0 0"/>
 		<ComboBox Name="_thumbnailSizeComboBox"
 				  Grid.Row="11"
 				  Grid.Column="3"
@@ -138,90 +140,88 @@
 		</Button>
 
 		<TextBlock Grid.Row="15"
+		           Grid.Column="1"
+		           HorizontalAlignment="Right"
+		           Text="ZIP archive browsing and image viewing?"
+		           Margin="0 5 0 0"/>
+		<CheckBox Name="_zipArchivesEnabledCheckBox"
+		          Grid.Row="15"
+		          Grid.Column="3"/>
+
+		<TextBlock Grid.Row="17"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
 				   Text="Recursive folder browsing?"
 				   Margin="0 5 0 0"/>
 		<CheckBox Name="_recursiveFolderBrowsingCheckBox"
-				  Grid.Row="15"
-				  Grid.Column="3"/>
-
-		<TextBlock Grid.Row="17"
-				   Grid.Column="1"
-				   HorizontalAlignment="Right"
-				   Text="Apply ordering globally for recursive folder browsing?"
-				   Margin="0 5 0 0"/>
-		<CheckBox Name="_globalOrderingForRecursiveFolderBrowsingCheckBox"
 				  Grid.Row="17"
 				  Grid.Column="3"/>
 
 		<TextBlock Grid.Row="19"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
-				   Text="Show image info in full-screen and borderless image views?"
-				   Margin="0 7 0 0"/>
-		<CheckBox Name="_showImageViewImageInfoCheckBox"
+				   Text="Apply ordering globally for recursive folder browsing?"
+				   Margin="0 5 0 0"/>
+		<CheckBox Name="_globalOrderingForRecursiveFolderBrowsingCheckBox"
 				  Grid.Row="19"
 				  Grid.Column="3"/>
 
 		<TextBlock Grid.Row="21"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
+				   Text="Show image info in full-screen and borderless image views?"
+				   Margin="0 8 0 0"/>
+		<CheckBox Name="_showImageViewImageInfoCheckBox"
+				  Grid.Row="21"
+				  Grid.Column="3"/>
+
+		<TextBlock Grid.Row="23"
+				   Grid.Column="1"
+				   HorizontalAlignment="Right"
 				   Text="Panels splitting ratio:"
 				   Margin="0 1 0 0"/>
 		<Slider Name="_panelsSplittingRatioSlider"
-				Grid.Row="21"
+				Grid.Row="23"
 				Grid.Column="3"
 				Minimum="0"
 				Maximum="100"
 				Padding="0 0 0 28"/>
 
-		<TextBlock Grid.Row="23"
+		<TextBlock Grid.Row="25"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
 				   Text="Slideshow interval:"
-				   Margin="0 7 0 0"/>
+				   Margin="0 8 0 0"/>
 		<ComboBox Name="_slideshowIntervalComboBox"
-				  Grid.Row="23"
+				  Grid.Row="25"
 				  Grid.Column="3"
 				  HorizontalAlignment="Stretch"
 				  VerticalContentAlignment="Center"/>
 
-		<TextBlock Grid.Row="25"
-				   Grid.Column="1"
-				   HorizontalAlignment="Right"
-				   Text="Apply EXIF image orientation (slight performance impact)?"
-				   Margin="0 6 0 0"/>
-		<CheckBox Name="_applyImageOrientationCheckBox"
-				  Grid.Row="25"
-				  Grid.Column="3"/>
-
 		<TextBlock Grid.Row="27"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
-				   Text="Show thumbnail image file name?"
-				   Margin="0 6 0 0"/>
-		<CheckBox Name="_showThumbnailImageFileNameCheckBox"
+				   Text="Apply EXIF image orientation (slight performance impact)?"
+				   Margin="0 4 0 0"/>
+		<CheckBox Name="_applyImageOrientationCheckBox"
 				  Grid.Row="27"
 				  Grid.Column="3"/>
 
 		<TextBlock Grid.Row="29"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
-				   Text="Keyboard scroll thumbnail increment, when using PageUp and PageDown:"
-				   Margin="0 7 0 0"/>
-		<ComboBox Name="_keyboardScrollThumbnailIncrementComboBox"
+				   Text="Show thumbnail image file name?"
+				   Margin="0 5 0 0"/>
+		<CheckBox Name="_showThumbnailImageFileNameCheckBox"
 				  Grid.Row="29"
-				  Grid.Column="3"
-				  HorizontalAlignment="Stretch"
-				  VerticalContentAlignment="Center"/>
+				  Grid.Column="3"/>
 
 		<TextBlock Grid.Row="31"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
-				   Text="Upsize full-screen image scaling factor:"
-				   Margin="0 7 0 0"/>
-		<ComboBox Name="_upsizeFullScreenImageScalingFactorComboBox"
+				   Text="Keyboard scroll thumbnail increment, when using PageUp and PageDown:"
+				   Margin="0 8 0 0"/>
+		<ComboBox Name="_keyboardScrollThumbnailIncrementComboBox"
 				  Grid.Row="31"
 				  Grid.Column="3"
 				  HorizontalAlignment="Stretch"
@@ -230,11 +230,22 @@
 		<TextBlock Grid.Row="33"
 				   Grid.Column="1"
 				   HorizontalAlignment="Right"
+				   Text="Upsize full-screen image scaling factor:"
+				   Margin="0 8 0 0"/>
+		<ComboBox Name="_upsizeFullScreenImageScalingFactorComboBox"
+				  Grid.Row="33"
+				  Grid.Column="3"
+				  HorizontalAlignment="Stretch"
+				  VerticalContentAlignment="Center"/>
+
+		<TextBlock Grid.Row="35"
+				   Grid.Column="1"
+				   HorizontalAlignment="Right"
 				   FontWeight="SemiBold"
 				   Text="Save as default?"
-				   Margin="0 6 0 0"/>
+				   Margin="0 5 0 0"/>
 		<CheckBox Name="_saveAsDefaultCheckBox"
-				  Grid.Row="33"
+				  Grid.Row="35"
 				  Grid.Column="3"/>
 	</Grid>
 </Window>

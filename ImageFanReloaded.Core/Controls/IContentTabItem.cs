@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
-using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Mouse;
@@ -33,6 +33,7 @@ public interface IContentTabItem
 
 	event EventHandler<FolderChangedEventArgs>? FolderChanged;
 	event EventHandler<FolderOrderingChangedEventArgs>? FolderOrderingChanged;
+	event EventHandler<ContentTabItemEventArgs>? FolderInfoChanged;
 
 	event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
 	event EventHandler<ImageSelectedEventArgs>? ImageEditRequested;
@@ -63,10 +64,10 @@ public interface IContentTabItem
 	void UnregisterMainViewEvents();
 
 	void PopulateRootNodesSubFoldersTree(
-		IReadOnlyList<FileSystemEntryInfo> rootFolders);
-	void PopulateSubFoldersTree(IReadOnlyList<FileSystemEntryInfo> subFolders);
+		IReadOnlyList<IFileSystemEntryInfo> rootFolders);
+	void PopulateSubFoldersTree(IReadOnlyList<IFileSystemEntryInfo> subFolders);
 	void PopulateSubFoldersTreeOfParentTreeViewItem(
-		IReadOnlyList<FileSystemEntryInfo> subFolders);
+		IReadOnlyList<IFileSystemEntryInfo> subFolders);
 
 	Task ClearThumbnailBoxes(bool resetContent);
 	void PopulateThumbnailBoxes(
@@ -74,22 +75,21 @@ public interface IContentTabItem
 	void RefreshThumbnailBoxes(
 		IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
 
-	FileSystemEntryInfo? GetActiveFileSystemEntryInfo();
+	IFileSystemEntryInfo? GetActiveFileSystemEntryInfo();
 
 	void SetFolderInfoText(string folderInfoText);
 	void SetImageInfoText(string imageInfoText);
 
-	void SaveMatchingTreeViewItem(
-		FileSystemEntryInfo selectedFileSystemEntryInfo,
-		bool startAtRootFolders);
+	void SaveMatchingTreeViewItem(string path, bool startAtRootFolders);
 
 	bool AreSelectedFolderInfoTextOrImageInfoText { get; }
 
 	void FocusThumbnailScrollViewer();
 	void BringThumbnailIntoView();
 
-	void RaiseFolderOrderingChangedEvent();
 	void RaiseFolderChangedEvent();
+	void RaiseFolderOrderingChangedEvent();
+	void RaiseFolderInfoChangedEvent();
 	void RaisePanelsSplittingRatioChangedEvent();
 
 	void UpdateSelectedImageStatus();

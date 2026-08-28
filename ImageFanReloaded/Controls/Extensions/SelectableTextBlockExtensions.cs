@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace ImageFanReloaded.Controls;
+namespace ImageFanReloaded.Controls.Extensions;
 
 public static class SelectableTextBlockExtensions
 {

@@ -24,7 +24,8 @@
 			<li>keyboard and mouse user interaction</li>
 			<li>dark and light modes, based on system settings</li>
 			<li>46 supported image formats: avif, bmp, cr2, cur, dds, dng, exr, fts, gif, hdr, heic, heif, ico, jfif, jp2, jpe/jpeg/jpg, jps, jxl, mng, nef, nrw, orf, pam, pbm, pcd, pcx, pef, pes, pfm, pgm, picon, pict, png, ppm, psd, qoi, raf, rw2, sgi, svg, tga, tif/tiff, wbmp, webp, xbm, xpm</li>
-			<li>image animation support for the formats: avif, gif, jxl, mng, webp</li>
+			<li>browsing and image viewing within zip files</li>
+			<li>animation support for the image formats: avif, gif, jxl, mng, webp</li>
 			<li>fast and seamless full-screen and windowed navigation across images</li>
 			<li>full-screen image upsizing options</li>
 			<li>image editing capabilities, with undo support: rotate, flip, effects, save in various formats, crop and downsize</li>
@@ -69,6 +70,14 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.08.29" date="2026-08-29">
+			<description>
+				<ul>
+					<li>Added new feature: browse through and view images within zip files</li>
+					<li>Updated application framework and libraries</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.08.07" date="2026-08-07">
 			<description>
 				<p>Fixed minor accent color display issue</p>

@@ -78,6 +78,12 @@ public class TabOptions : ITabOptions
 		set => _tabOptionsDto.EnabledImageFileExtensions = value;
 	}
 
+	public bool ZipArchivesEnabled
+	{
+		get => _tabOptionsDto.ZipArchivesEnabled;
+		set => _tabOptionsDto.ZipArchivesEnabled = value;
+	}
+
 	public bool RecursiveFolderBrowsing
 	{
 		get => _tabOptionsDto.RecursiveFolderBrowsing;
@@ -154,6 +160,8 @@ public class TabOptions : ITabOptions
 			..sourceTabOptions.EnabledImageFileExtensions
 		], _globalParameters.ImageFileExtensionsComparer);
 
+		_tabOptionsDto.ZipArchivesEnabled = sourceTabOptions.ZipArchivesEnabled;
+
 		_tabOptionsDto.RecursiveFolderBrowsing =
 			sourceTabOptions.RecursiveFolderBrowsing;
 		_tabOptionsDto.GlobalOrderingForRecursiveFolderBrowsing =
@@ -212,6 +220,8 @@ public class TabOptions : ITabOptions
 		ImageViewDisplayMode.FullScreen;
 
 	private const int DefaultThumbnailSize = ThumbnailSizes.DefaultValue;
+
+	private const bool DefaultZipArchivesEnabled = false;
 
 	private const bool DefaultRecursiveFolderBrowsing = false;
 	private const bool DefaultGlobalOrderingForRecursiveFolderBrowsing = false;
@@ -369,6 +379,8 @@ public class TabOptions : ITabOptions
 			EnabledImageFileExtensions =
 				GetDefaultEnabledImageFileExtensions(globalParameters),
 
+			ZipArchivesEnabled = DefaultZipArchivesEnabled,
+
 			RecursiveFolderBrowsing = DefaultRecursiveFolderBrowsing,
 			GlobalOrderingForRecursiveFolderBrowsing =
 				DefaultGlobalOrderingForRecursiveFolderBrowsing,
@@ -404,6 +416,9 @@ public class TabOptions : ITabOptions
 		[
 			.._tabOptionsDto.EnabledImageFileExtensions!
 		], _globalParameters.ImageFileExtensionsComparer);
+
+		_defaultTabOptions.ZipArchivesEnabled =
+			_tabOptionsDto.ZipArchivesEnabled;
 
 		_defaultTabOptions.RecursiveFolderBrowsing =
 			_tabOptionsDto.RecursiveFolderBrowsing;

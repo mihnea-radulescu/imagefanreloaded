@@ -5,6 +5,7 @@ using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Settings;
 
@@ -72,28 +73,52 @@ public class MainViewPresenter
 		object? sender, ContentTabItemAddedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		var inputPathToClone = e.InputPathToClone;
-		var shouldCloneInputPath = e.ShouldCloneInputPath;
+		var fileSystemEntryInfoToClone = e.FileSystemEntryInfoToClone;
+		var shouldCloneActiveTab = e.ShouldCloneActiveTab;
 		var isExpandedFolderTreeViewSelectedItem =
 			e.IsExpandedFolderTreeViewSelectedItem;
 
 		contentTabItem.ImageViewFactory = _imageViewFactory;
+
 		var rootFolders = await PopulateRootFolders(contentTabItem);
 
-		var inputPathHandler = _shouldProcessCommandLineArgsInputPath
-			? _commandLineArgsInputPathHandler
-			: _inputPathHandlerFactory.GetInputPathHandler(inputPathToClone);
-
-		var canHandleInputPath =
-			(_shouldProcessCommandLineArgsInputPath || shouldCloneInputPath) &&
-			inputPathHandler.CanHandleInputPath();
-
-		if (canHandleInputPath)
+		if (_shouldProcessCommandLineArgsInputPath)
 		{
-			await BuildInputFolderTreeView(
+			var inputPathHandler = _shouldProcessCommandLineArgsInputPath
+				? _commandLineArgsInputPathHandler
+				: _inputPathHandlerFactory.GetInputPathHandler(
+					fileSystemEntryInfoToClone?.QualifiedPath);
+
+			var shouldProcessInputPath =
+				_shouldProcessCommandLineArgsInputPath &&
+			    inputPathHandler.CanHandleInputPath();
+
+			if (shouldProcessInputPath)
+			{
+				await BuildFolderTreeViewFromInputPath(
+					contentTabItem,
+					inputPathHandler,
+					rootFolders,
+					isExpandedFolderTreeViewSelectedItem);
+
+				EnableContentTabEventHandling(contentTabItem);
+
+				contentTabItem.RaiseFolderChangedEvent();
+			}
+			else
+			{
+				EnableContentTabEventHandling(contentTabItem);
+
+				contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
+			}
+
+			_shouldProcessCommandLineArgsInputPath = false;
+		}
+		else if (shouldCloneActiveTab)
+		{
+			await BuildFolderTreeViewFromActiveTab(
 				contentTabItem,
-				rootFolders,
-				inputPathHandler,
+				fileSystemEntryInfoToClone!,
 				isExpandedFolderTreeViewSelectedItem);
 
 			EnableContentTabEventHandling(contentTabItem);
@@ -105,11 +130,6 @@ public class MainViewPresenter
 			EnableContentTabEventHandling(contentTabItem);
 
 			contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
-		}
-
-		if (_shouldProcessCommandLineArgsInputPath)
-		{
-			_shouldProcessCommandLineArgsInputPath = false;
 		}
 	}
 
@@ -159,13 +179,13 @@ public class MainViewPresenter
 		object? sender, ContentTabItemAddedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		var inputPathToClone = e.InputPathToClone;
+		var fileSystemEntryInfoToClone = e.FileSystemEntryInfoToClone;
 		var isExpandedFolderTreeViewSelectedItem =
 			e.IsExpandedFolderTreeViewSelectedItem;
 
 		_mainView.CloneContentTabItem(
 			contentTabItem.TabOptions,
-			inputPathToClone,
+			fileSystemEntryInfoToClone,
 			isExpandedFolderTreeViewSelectedItem);
 	}
 
@@ -237,12 +257,6 @@ public class MainViewPresenter
 		var tabOptions = e.TabOptions;
 		var tabOptionChanges = e.TabOptionChanges;
 
-		var shouldRaiseFolderOrderingChangedEvent =
-			tabOptionChanges.HasChangedFolderOrdering ||
-			(tabOptions.FolderOrdering !=
-				FileSystemEntryInfoOrdering.RandomShuffle &&
-			 tabOptionChanges.HasChangedFolderOrderingDirection);
-
 		var shouldRaiseFolderChangedEvent =
 			tabOptionChanges.HasChangedImageFileOrdering ||
 			(tabOptions.ImageFileOrdering !=
@@ -250,6 +264,7 @@ public class MainViewPresenter
 			 tabOptionChanges.HasChangedImageFileOrderingDirection) ||
 			tabOptionChanges.HasChangedThumbnailSize ||
 			tabOptionChanges.HasChangedEnabledImageFileExtensions ||
+			tabOptionChanges.HasChangedZipArchivesEnabled ||
 			(tabOptionChanges.HasChangedRecursiveFolderBrowsing &&
 			 fileSystemEntryInfo?.HasSubFolders == true) ||
 			(tabOptions.RecursiveFolderBrowsing &&
@@ -259,19 +274,35 @@ public class MainViewPresenter
 			tabOptionChanges.HasChangedApplyImageOrientation ||
 			tabOptionChanges.HasChangedShowThumbnailImageFileName;
 
+		var shouldRaiseFolderOrderingChangedEvent =
+			tabOptionChanges.HasChangedFolderOrdering ||
+			(tabOptions.FolderOrdering !=
+			 FileSystemEntryInfoOrdering.RandomShuffle &&
+			 tabOptionChanges.HasChangedFolderOrderingDirection) ||
+			tabOptionChanges.HasChangedZipArchivesEnabled;
+
+		var shouldRaiseFolderInfoChangedEvent =
+			!shouldRaiseFolderChangedEvent &&
+			tabOptionChanges.HasChangedRecursiveFolderBrowsing;
+
 		var shouldRaisePanelsSplittingRatioChangedEvent =
 			tabOptionChanges.HasChangedPanelsSplittingRatio;
 
 		var shouldSaveAsDefault = tabOptionChanges.ShouldSaveAsDefault;
+
+		if (shouldRaiseFolderChangedEvent)
+		{
+			contentTabItem.RaiseFolderChangedEvent();
+		}
 
 		if (shouldRaiseFolderOrderingChangedEvent)
 		{
 			contentTabItem.RaiseFolderOrderingChangedEvent();
 		}
 
-		if (shouldRaiseFolderChangedEvent)
+		if (shouldRaiseFolderInfoChangedEvent)
 		{
-			contentTabItem.RaiseFolderChangedEvent();
+			contentTabItem.RaiseFolderInfoChangedEvent();
 		}
 
 		if (shouldRaisePanelsSplittingRatioChangedEvent)
@@ -322,10 +353,7 @@ public class MainViewPresenter
 		previousFolderVisualState?.NotifyStopThumbnailGeneration();
 
 		contentTabItem.FolderVisualState = _folderVisualStateFactory
-			.GetFolderVisualState(
-				contentTabItem,
-				fileSystemEntryInfo.Name,
-				fileSystemEntryInfo.Path);
+			.GetFolderVisualState(contentTabItem, fileSystemEntryInfo);
 
 		await contentTabItem.FolderVisualState.UpdateVisualState(
 			contentTabItem.TabOptions!);
@@ -337,22 +365,18 @@ public class MainViewPresenter
 		object? sender, FolderOrderingChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
-		var fileSystemEntryInfo = e.FileSystemEntryInfo;
+		var fileSystemEntryInfoToClone = e.FileSystemEntryInfoToClone;
 
 		var isExpandedFolderTreeViewSelectedItem = contentTabItem
 			.GetIsExpandedFolderTreeViewSelectedItem();
 
 		DisableContentTabEventHandling(contentTabItem);
 
-		var rootFolders = await PopulateRootFolders(contentTabItem);
+		await PopulateRootFolders(contentTabItem);
 
-		var folderChangedInputPathHandler = _inputPathHandlerFactory
-			.GetInputPathHandler(fileSystemEntryInfo.Path);
-
-		await BuildInputFolderTreeView(
+		await BuildFolderTreeViewFromActiveTab(
 			contentTabItem,
-			rootFolders,
-			folderChangedInputPathHandler,
+			fileSystemEntryInfoToClone,
 			isExpandedFolderTreeViewSelectedItem);
 
 		EnableContentTabEventHandling(contentTabItem);
@@ -360,26 +384,36 @@ public class MainViewPresenter
 		contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
 	}
 
-	private async Task<IReadOnlyList<FileSystemEntryInfo>> PopulateRootFolders(
+	private void OnFolderInfoChanged(object? sender, ContentTabItemEventArgs e)
+	{
+		var contentTabItem = e.ContentTabItem;
+
+		var folderVisualState = contentTabItem.FolderVisualState;
+		folderVisualState?.SetFolderInfoText(contentTabItem.TabOptions!);
+	}
+
+	private async Task<IReadOnlyList<IFileSystemEntryInfo>> PopulateRootFolders(
 		IContentTabItem contentTabItem)
 	{
 		await _discQueryEngine.BuildSkipRecursionFolderPaths();
-		var rootFolders = await _discQueryEngine.GetRootFolders();
+		var rootFolders = await _discQueryEngine.GetRootFolders(
+			contentTabItem.TabOptions!);
 
 		contentTabItem.PopulateRootNodesSubFoldersTree(rootFolders);
 
 		return rootFolders;
 	}
 
-	private async Task BuildInputFolderTreeView(
+	private async Task BuildFolderTreeViewFromInputPath(
 		IContentTabItem contentTabItem,
-		IReadOnlyList<FileSystemEntryInfo> rootFolders,
 		IInputPathHandler inputPathHandler,
+		IReadOnlyList<IFileSystemEntryInfo> rootFolders,
 		bool isExpandedFolderTreeViewSelectedItem)
 	{
-		FileSystemEntryInfo? matchingFileSystemEntryInfo;
-		var subFolders = rootFolders;
+		IFileSystemEntryInfo? matchingFileSystemEntryInfo;
 		var startAtRootFolders = true;
+
+		var subFolders = rootFolders;
 
 		do
 		{
@@ -389,16 +423,55 @@ public class MainViewPresenter
 			if (matchingFileSystemEntryInfo is not null)
 			{
 				contentTabItem.SaveMatchingTreeViewItem(
-					matchingFileSystemEntryInfo, startAtRootFolders);
-				startAtRootFolders = false;
+					matchingFileSystemEntryInfo.QualifiedPath,
+					startAtRootFolders);
 
 				subFolders = await _discQueryEngine.GetSubFolders(
-					matchingFileSystemEntryInfo.Path,
+					matchingFileSystemEntryInfo,
 					contentTabItem.TabOptions!);
+
 				contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(
 					subFolders);
+
+				if (startAtRootFolders)
+				{
+					startAtRootFolders = false;
+				}
 			}
 		} while (matchingFileSystemEntryInfo is not null);
+
+		contentTabItem.SetIsExpandedFolderTreeViewSelectedItem(
+			isExpandedFolderTreeViewSelectedItem);
+	}
+
+	private async Task BuildFolderTreeViewFromActiveTab(
+		IContentTabItem contentTabItem,
+		IFileSystemEntryInfo fileSystemEntryInfo,
+		bool isExpandedFolderTreeViewSelectedItem)
+	{
+		var parentTreeFileSystemEntryInfoList =
+			GetParentTreeFileSystemEntryInfoList(fileSystemEntryInfo);
+		var startAtRootFolders = true;
+
+		foreach (var aParentTreeFileSystemEntryInfo in
+		         parentTreeFileSystemEntryInfoList)
+		{
+			contentTabItem.SaveMatchingTreeViewItem(
+				aParentTreeFileSystemEntryInfo.QualifiedPath,
+				startAtRootFolders);
+
+			var subFolders = await _discQueryEngine.GetSubFolders(
+				aParentTreeFileSystemEntryInfo,
+				contentTabItem.TabOptions!);
+
+			contentTabItem.PopulateSubFoldersTreeOfParentTreeViewItem(
+				subFolders);
+
+			if (startAtRootFolders)
+			{
+				startAtRootFolders = false;
+			}
+		}
 
 		contentTabItem.SetIsExpandedFolderTreeViewSelectedItem(
 			isExpandedFolderTreeViewSelectedItem);
@@ -410,6 +483,7 @@ public class MainViewPresenter
 
 		contentTabItem.FolderChanged += OnFolderChanged;
 		contentTabItem.FolderOrderingChanged += OnFolderOrderingChanged;
+		contentTabItem.FolderInfoChanged += OnFolderInfoChanged;
 
 		contentTabItem.ImageInfoRequested += OnImageInfoRequested;
 		contentTabItem.ImageEditRequested += OnImageEditRequested;
@@ -429,6 +503,7 @@ public class MainViewPresenter
 
 		contentTabItem.FolderChanged -= OnFolderChanged;
 		contentTabItem.FolderOrderingChanged -= OnFolderOrderingChanged;
+		contentTabItem.FolderInfoChanged -= OnFolderInfoChanged;
 
 		contentTabItem.ImageInfoRequested -= OnImageInfoRequested;
 		contentTabItem.ImageEditRequested -= OnImageEditRequested;
@@ -462,5 +537,23 @@ public class MainViewPresenter
 
 			folderVisualState.DisposeCancellationTokenSource();
 		}
+	}
+
+	private static IReadOnlyList<IFileSystemEntryInfo>
+		GetParentTreeFileSystemEntryInfoList(
+			IFileSystemEntryInfo fileSystemEntryInfo)
+	{
+		var parentTreeFileSystemEntryInfoList =
+			new List<IFileSystemEntryInfo>();
+
+		for (var currentFileSystemEntryInfo = fileSystemEntryInfo;
+		     currentFileSystemEntryInfo is not null;
+		     currentFileSystemEntryInfo = currentFileSystemEntryInfo.Parent)
+		{
+			parentTreeFileSystemEntryInfoList.Add(currentFileSystemEntryInfo);
+		}
+
+		parentTreeFileSystemEntryInfoList.Reverse();
+		return parentTreeFileSystemEntryInfoList;
 	}
 }

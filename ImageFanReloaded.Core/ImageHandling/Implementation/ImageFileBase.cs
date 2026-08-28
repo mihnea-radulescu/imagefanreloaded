@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageCore;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.ImageHandling.Implementation;
@@ -14,7 +15,7 @@ public abstract class ImageFileBase : IImageFile
 		IImageResizer imageResizer,
 		IFileSizeEngine fileSizeEngine,
 		IImageFileContentLogic imageFileContentLogic,
-		ImageFileData imageFileData)
+		IImageFileData imageFileData)
 	{
 		GlobalParameters = globalParameters;
 
@@ -28,7 +29,7 @@ public abstract class ImageFileBase : IImageFile
 		_thumbnailGenerationLock = new Lock();
 	}
 
-	public ImageFileData ImageFileData { get; }
+	public IImageFileData ImageFileData { get; }
 
 	public ImageSize ImageSize { get; private set; }
 	public bool IsAnimatedImage { get; private set; }
@@ -261,7 +262,7 @@ public abstract class ImageFileBase : IImageFile
 	public string GetBasicImageInfo(bool longFormat)
 	{
 		var imageFileInfo = longFormat
-			? ImageFileData.FilePath
+			? ImageFileData.QualifiedFilePath
 			: ImageFileData.FileName;
 
 		var fileSizeInKilobytes =
@@ -288,7 +289,7 @@ public abstract class ImageFileBase : IImageFile
 	protected readonly IGlobalParameters GlobalParameters;
 
 	protected abstract IImage GetImageFromStream(
-		ImageFileData imageFileData,
+		IImageFileData imageFileData,
 		Stream imageFileContentStream,
 		bool isKnownImage,
 		bool applyImageOrientation);

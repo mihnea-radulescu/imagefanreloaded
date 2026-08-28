@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace ImageFanReloaded.Core.DiscAccess.Implementation;
+namespace ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
 
 public static class StreamExtensions
 {

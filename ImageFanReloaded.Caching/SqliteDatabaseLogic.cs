@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using ImageFanReloaded.Core.Caching;
 using ImageFanReloaded.Core.DiscAccess;
-using ImageFanReloaded.Core.ImageHandling;
+using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Caching;
@@ -119,7 +119,7 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 	}
 
 	public ThumbnailCacheEntry? GetThumbnailCacheEntry(
-		ImageFileData imageFileData,
+		IImageFileData imageFileData,
 		int thumbnailSize,
 		bool applyImageOrientation)
 	{
@@ -134,7 +134,7 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 					dbCommand.CommandText = GetThumbnailCacheEntryScript;
 
 					dbCommand.Parameters.AddWithValue(
-						"@filePath", imageFileData.FilePath);
+						"@filePath", imageFileData.QualifiedFilePath);
 					dbCommand.Parameters.AddWithValue(
 						"@fileSizeInBytes", imageFileData.FileSizeInBytes);
 					dbCommand.Parameters.AddWithValue(
@@ -155,7 +155,7 @@ public class SqliteDatabaseLogic : IDatabaseLogic
 
 							return new ThumbnailCacheEntry
 							{
-								FilePath = imageFileData.FilePath,
+								FilePath = imageFileData.QualifiedFilePath,
 								FileSizeInBytes = imageFileData.FileSizeInBytes,
 								FileLastModificationTime =
 									imageFileData.FileLastModificationTime,
