@@ -480,12 +480,15 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		var selectedImageFile = GetSelectedImageFile();
 
-		var basicImageInfo = selectedImageFile.GetBasicImageInfo(
-			TabOptions!.RecursiveFolderBrowsing);
-		SetImageInfoText(basicImageInfo);
+		if (selectedImageFile is not null)
+		{
+			var basicImageInfo = selectedImageFile.GetBasicImageInfo(
+				TabOptions!.RecursiveFolderBrowsing);
+			SetImageInfoText(basicImageInfo);
 
-		var hasImageReadError = _selectedThumbnailBox!.HasImageReadError;
-		_imageEditButton.IsEnabled = !hasImageReadError;
+			var hasImageReadError = _selectedThumbnailBox!.HasImageReadError;
+			_imageEditButton.IsEnabled = !hasImageReadError;
+		}
 	}
 
 	public async Task UpdateSelectedThumbnailAfterImageFileChange()
@@ -495,7 +498,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var previousSelectedImageFileSizeInBytes =
 				GetSelectedImageFileSizeInBytes();
 
-			var selectedImageFile = GetSelectedImageFile();
+			var selectedImageFile = GetSelectedImageFile()!;
 			await Task.Run(selectedImageFile.RefreshImageFileData);
 
 			await _selectedThumbnailBox!.UpdateThumbnailAfterImageFileChange();
@@ -627,7 +630,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		if (canAdvanceToDesignatedImage)
 		{
-			var selectedImageFile = GetSelectedImageFile();
+			var selectedImageFile = GetSelectedImageFile()!;
 			await imageView.SetImage(selectedImageFile);
 		}
 	}
@@ -738,7 +741,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		var imageView = ImageViewFactory!.GetImageView(TabOptions!);
 
-		var selectedImageFile = GetSelectedImageFile();
+		var selectedImageFile = GetSelectedImageFile()!;
 		await imageView.SetImage(selectedImageFile);
 
 		imageView.ImageChanged += OnImageViewImageChanged;
@@ -1148,7 +1151,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		FocusThumbnailScrollViewer();
 		BringThumbnailIntoView();
 
-		var selectedImageFile = GetSelectedImageFile();
+		var selectedImageFile = GetSelectedImageFile()!;
 		ImageInfoRequested?.Invoke(this, new ImageSelectedEventArgs(
 			this, selectedImageFile));
 	}
@@ -1164,7 +1167,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		FocusThumbnailScrollViewer();
 		BringThumbnailIntoView();
 
-		var selectedImageFile = GetSelectedImageFile();
+		var selectedImageFile = GetSelectedImageFile()!;
 		ImageEditRequested?.Invoke(this, new ImageSelectedEventArgs(
 			this, selectedImageFile));
 	}
@@ -1490,8 +1493,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private TreeViewItem? GetFolderTreeViewSelectedItem()
 		=> (TreeViewItem?)_folderTreeView.SelectedItem;
 
-	private IImageFile GetSelectedImageFile()
-		=> _selectedThumbnailBox!.ImageFile!;
+	private IImageFile? GetSelectedImageFile()
+		=> _selectedThumbnailBox?.ImageFile;
 
 	private static async Task StopThumbnailAnimation(
 		IReadOnlyList<IThumbnailBox> thumbnailBoxCollectionToClear)
@@ -1530,7 +1533,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private int GetSelectedImageFileSizeInBytes()
 	{
-		var selectedImageFile = GetSelectedImageFile();
+		var selectedImageFile = GetSelectedImageFile()!;
 		var selectedImageFileSizeInBytes =
 			selectedImageFile.ImageFileData.FileSizeInBytes;
 

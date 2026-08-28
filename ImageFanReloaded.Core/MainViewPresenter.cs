@@ -390,6 +390,7 @@ public class MainViewPresenter
 
 		var folderVisualState = contentTabItem.FolderVisualState;
 		folderVisualState?.SetFolderInfoText(contentTabItem.TabOptions!);
+		contentTabItem.UpdateSelectedImageStatus();
 	}
 
 	private async Task<IReadOnlyList<IFileSystemEntryInfo>> PopulateRootFolders(
