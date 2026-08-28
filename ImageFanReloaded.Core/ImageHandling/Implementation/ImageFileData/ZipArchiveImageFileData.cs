@@ -28,7 +28,16 @@ public class ZipArchiveImageFileData : ImageFileDataBase
 	}
 
 	public override string QualifiedFilePath
-		=> $"{_zipArchivePath}{Path.DirectorySeparatorChar}{FilePath}";
+	{
+		get
+		{
+			var normalizedFilePath = FilePath.Replace(
+				Path.ZipArchiveDirectorySeparatorChar,
+				Path.DirectorySeparatorChar);
+
+			return $"{_zipArchivePath}{Path.DirectorySeparatorChar}{normalizedFilePath}";
+		}
+	}
 
 	public override string FolderPath => Path.GetDirectoryName(ContainerPath)!;
 

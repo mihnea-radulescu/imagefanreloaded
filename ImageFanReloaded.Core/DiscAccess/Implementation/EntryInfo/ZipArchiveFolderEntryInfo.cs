@@ -33,7 +33,16 @@ public class ZipArchiveFolderEntryInfo : FileSystemEntryInfoBase
 	}
 
 	public override string QualifiedPath
-		=> $"{_parentArchive.Path}{System.IO.Path.DirectorySeparatorChar}{Path[..^1]}";
+	{
+		get
+		{
+			var normalizedPath = Path[..^1].Replace(
+				System.IO.Path.ZipArchiveDirectorySeparatorChar,
+				System.IO.Path.DirectorySeparatorChar);
+
+			return $"{_parentArchive.Path}{System.IO.Path.DirectorySeparatorChar}{normalizedPath}";
+		}
+	}
 
 	public override IReadOnlyList<IFileSystemEntryInfo> GetSubFolders(
 		IFileSystemEntryInfoFactory fileSystemEntryInfoFactory,

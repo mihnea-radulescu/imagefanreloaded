@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
+using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.Core.Mouse;
@@ -17,6 +18,8 @@ public interface IImageEditView
 	IEditableImageFactory? EditableImageFactory { get; set; }
 	ISaveFileImageFormatFactory? SaveFileImageFormatFactory { get; set; }
 	ISaveFileDialogFactory? SaveFileDialogFactory { get; set; }
+
+	IPathInfo? PathInfo { get; set; }
 
 	IImageFileData? ImageFileData { get; set; }
 

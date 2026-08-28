@@ -13,7 +13,7 @@ using ImageFanReloaded.Controls.MessageBoxControl;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
-using ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
+using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.ImageHandling.ImageFileData;
@@ -93,6 +93,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	public IEditableImageFactory? EditableImageFactory { get; set; }
 	public ISaveFileImageFormatFactory? SaveFileImageFormatFactory { get; set; }
 	public ISaveFileDialogFactory? SaveFileDialogFactory { get; set; }
+
+	public IPathInfo? PathInfo { get; set; }
 
 	public IImageFileData? ImageFileData { get; set; }
 
@@ -972,7 +974,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private bool HasSavedImageFileInCurrentFolder(
 		string imageToSaveFilePath, string imageFolderPath)
-			=> PathExtensions.IsFileInFolder(
+			=> PathInfo!.IsFileInFolder(
 				imageToSaveFilePath,
 				imageFolderPath,
 				Path.DirectorySeparatorChar,

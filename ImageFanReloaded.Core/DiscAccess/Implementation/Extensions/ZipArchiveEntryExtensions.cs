@@ -11,16 +11,16 @@ public static class ZipArchiveEntryExtensions
 		public bool IsFirstLevelSubFolder
 			=> zipArchiveEntry.IsFolder &&
 			   zipArchiveEntry.FullName.GetDirectorySeparatorCharCountInPath(
-				   Path.DirectorySeparatorChar) == 1;
+				   Path.ZipArchiveDirectorySeparatorChar) == 1;
 
 		public bool IsDirectSubFolderOf(string path)
 			=> zipArchiveEntry.IsFolder &&
 			   zipArchiveEntry.FullName.StartsWith(path) &&
 			   zipArchiveEntry.FullName.Length > path.Length &&
 			   zipArchiveEntry.FullName.GetDirectorySeparatorCharCountInPath(
-				   Path.DirectorySeparatorChar) ==
+				   Path.ZipArchiveDirectorySeparatorChar) ==
 			   path.GetDirectorySeparatorCharCountInPath(
-				   Path.DirectorySeparatorChar) + 1;
+				   Path.ZipArchiveDirectorySeparatorChar) + 1;
 
 		public bool IsImageFileDirectlyUnderPath(
 			string path, HashSet<string> enabledImageFileExtensions)
@@ -31,9 +31,9 @@ public static class ZipArchiveEntryExtensions
 				   zipArchiveEntry.FullName.Length > path.Length &&
 				   zipArchiveEntry.FullName
 					   .GetDirectorySeparatorCharCountInPath(
-						   Path.DirectorySeparatorChar) ==
+						   Path.ZipArchiveDirectorySeparatorChar) ==
 				   path.GetDirectorySeparatorCharCountInPath(
-					   Path.DirectorySeparatorChar);
+					   Path.ZipArchiveDirectorySeparatorChar);
 
 		private bool IsFolder => zipArchiveEntry.Length == 0;
 		private bool IsFile => zipArchiveEntry.Length > 0;

@@ -1,5 +1,6 @@
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
+using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.Mouse;
@@ -14,7 +15,8 @@ public class ImageEditViewFactory : IImageEditViewFactory
 		IMouseCursorFactory mouseCursorFactory,
 		IEditableImageFactory editableImageFactory,
 		ISaveFileImageFormatFactory saveFileImageFormatFactory,
-		ISaveFileDialogFactory saveFileDialogFactory)
+		ISaveFileDialogFactory saveFileDialogFactory,
+		IPathInfo pathInfo)
 	{
 		_globalParameters = globalParameters;
 
@@ -22,6 +24,8 @@ public class ImageEditViewFactory : IImageEditViewFactory
 		_editableImageFactory = editableImageFactory;
 		_saveFileImageFormatFactory = saveFileImageFormatFactory;
 		_saveFileDialogFactory = saveFileDialogFactory;
+
+		_pathInfo = pathInfo;
 	}
 
 	public IImageEditView GetImageEditView(
@@ -36,6 +40,8 @@ public class ImageEditViewFactory : IImageEditViewFactory
 		imageEditView.SaveFileImageFormatFactory = _saveFileImageFormatFactory;
 		imageEditView.SaveFileDialogFactory = _saveFileDialogFactory;
 
+		imageEditView.PathInfo = _pathInfo;
+
 		imageEditView.ImageFileData = imageFile.ImageFileData;
 
 		imageEditView.ContentTabItem = contentTabItem;
@@ -49,4 +55,6 @@ public class ImageEditViewFactory : IImageEditViewFactory
 	private readonly IEditableImageFactory _editableImageFactory;
 	private readonly ISaveFileImageFormatFactory _saveFileImageFormatFactory;
 	private readonly ISaveFileDialogFactory _saveFileDialogFactory;
+
+	private readonly IPathInfo _pathInfo;
 }

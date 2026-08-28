@@ -183,12 +183,14 @@ public class AppBootstrap : IAppBootstrap
 				thumbnailInfoFactory,
 				_discQueryEngine);
 
+		IPathInfo pathInfo = new PathInfo();
 		IImageEditViewFactory imageEditViewFactory = new ImageEditViewFactory(
 			_globalParameters,
 			_mouseCursorFactory,
 			editableImageFactory,
 			saveFileImageFormatFactory,
-			saveFileDialogFactory);
+			saveFileDialogFactory,
+			pathInfo);
 
 		ITabOptionsViewFactory tabOptionsViewFactory =
 			new TabOptionsViewFactory(_globalParameters);
