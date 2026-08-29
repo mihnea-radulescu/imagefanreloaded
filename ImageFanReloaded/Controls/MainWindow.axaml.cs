@@ -219,7 +219,7 @@ public partial class MainWindow : Window, IMainView
 		contentTabItem.RegisterMainViewEvents();
 		contentTabItem.SetTabInfo(DefaultTabItemTitle, string.Empty);
 
-		contentTabItem.RaisePanelsSplittingRatioChangedEvent();
+		contentTabItem.UpdatePanelsSplittingRatio();
 
 		var tabItem = new TabItem
 		{

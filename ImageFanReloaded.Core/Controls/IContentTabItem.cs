@@ -31,9 +31,7 @@ public interface IContentTabItem
 
 	IFolderVisualState? FolderVisualState { get; set; }
 
-	event EventHandler<FolderChangedEventArgs>? FolderChanged;
-	event EventHandler<FolderOrderingChangedEventArgs>? FolderOrderingChanged;
-	event EventHandler<ContentTabItemEventArgs>? FolderInfoChanged;
+	event EventHandler<ContentTabItemChangedEventArgs>? ContentTabItemChanged;
 
 	event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
 	event EventHandler<ImageSelectedEventArgs>? ImageEditRequested;
@@ -87,11 +85,18 @@ public interface IContentTabItem
 	void FocusThumbnailScrollViewer();
 	void BringThumbnailIntoView();
 
-	void RaiseFolderChangedEvent();
-	void RaiseFolderOrderingChangedEvent();
+	void RaiseContentTabItemChangedEvent(
+		bool hasChangedFolderTree,
+		bool hasChangedFolderContent,
+		bool hasChangedFolderInfo,
+		bool hasChangedPanelsSplittingRatio);
+
+	void RaiseFolderTreeChangedEvent();
+	void RaiseFolderContentChangedEvent();
 	void RaiseFolderInfoChangedEvent();
 	void RaisePanelsSplittingRatioChangedEvent();
 
+	void UpdatePanelsSplittingRatio();
 	void UpdateSelectedImageStatus();
 	Task UpdateSelectedThumbnailAfterImageFileChange();
 

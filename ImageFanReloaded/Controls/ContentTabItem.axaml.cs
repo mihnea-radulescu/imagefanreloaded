@@ -46,10 +46,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	public IFolderVisualState? FolderVisualState { get; set; }
 
-	public event EventHandler<FolderChangedEventArgs>? FolderChanged;
-	public event EventHandler<FolderOrderingChangedEventArgs>?
-		FolderOrderingChanged;
-	public event EventHandler<ContentTabItemEventArgs>? FolderInfoChanged;
+	public event EventHandler<ContentTabItemChangedEventArgs>?
+		ContentTabItemChanged;
 
 	public event EventHandler<ImageSelectedEventArgs>? ImageInfoRequested;
 	public event EventHandler<ImageSelectedEventArgs>? ImageEditRequested;
@@ -426,48 +424,69 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public void BringThumbnailIntoView()
 		=> _selectedThumbnailBox?.BringThumbnailIntoView();
 
-	public void RaiseFolderChangedEvent()
-	{
-		if (_activeFolderTreeViewItem?.Header is
-			IFileSystemTreeViewItem fileSystemEntryItem)
-		{
-			var fileSystemEntryInfo = fileSystemEntryItem.FileSystemEntryInfo!;
-			var fileSystemEntryInfoToRaiseEventOn =
-				GetFileSystemEntryInfoToRaiseEventOn(fileSystemEntryInfo);
-
-			var folderChangedEventArgs =
-				new FolderChangedEventArgs(
-					this, fileSystemEntryInfoToRaiseEventOn);
-
-			FolderChanged?.Invoke(this, folderChangedEventArgs);
-		}
-	}
-
-	public void RaiseFolderOrderingChangedEvent()
+	public void RaiseContentTabItemChangedEvent(
+		bool hasChangedFolderTree,
+		bool hasChangedFolderContent,
+		bool hasChangedFolderInfo,
+		bool hasChangedPanelsSplittingRatio)
 	{
 		var activeFileSystemEntryInfo = GetActiveFileSystemEntryInfo();
 
 		if (activeFileSystemEntryInfo is not null)
 		{
-			var activeFileSystemEntryInfoToRaiseEventOn =
-				GetFileSystemEntryInfoToRaiseEventOn(activeFileSystemEntryInfo);
+			var normalizedFileSystemEntryInfo =
+				GetNormalizedFileSystemEntryInfo(activeFileSystemEntryInfo);
 
-			var folderOrderingChangedEventArgs =
-				new FolderOrderingChangedEventArgs(
-					this, activeFileSystemEntryInfoToRaiseEventOn);
+			var contentTabItemChangedEventArgs =
+				new ContentTabItemChangedEventArgs(
+					this,
+					normalizedFileSystemEntryInfo,
+					hasChangedFolderTree,
+					hasChangedFolderContent,
+					hasChangedFolderInfo,
+					hasChangedPanelsSplittingRatio);
 
-			FolderOrderingChanged?.Invoke(this, folderOrderingChangedEventArgs);
+			ContentTabItemChanged?.Invoke(this, contentTabItemChangedEventArgs);
 		}
+	}
+
+	public void RaiseFolderTreeChangedEvent()
+	{
+		RaiseContentTabItemChangedEvent(
+			hasChangedFolderTree: true,
+			hasChangedFolderContent: false,
+			hasChangedFolderInfo: false,
+			hasChangedPanelsSplittingRatio: false);
+	}
+
+	public void RaiseFolderContentChangedEvent()
+	{
+		RaiseContentTabItemChangedEvent(
+			hasChangedFolderTree: false,
+			hasChangedFolderContent: true,
+			hasChangedFolderInfo: false,
+			hasChangedPanelsSplittingRatio: false);
 	}
 
 	public void RaiseFolderInfoChangedEvent()
 	{
-		var contentTabItemEventArgs = new ContentTabItemEventArgs(this);
-
-		FolderInfoChanged?.Invoke(this, contentTabItemEventArgs);
+		RaiseContentTabItemChangedEvent(
+			hasChangedFolderTree: false,
+			hasChangedFolderContent: false,
+			hasChangedFolderInfo: true,
+			hasChangedPanelsSplittingRatio: false);
 	}
 
 	public void RaisePanelsSplittingRatioChangedEvent()
+	{
+		RaiseContentTabItemChangedEvent(
+			hasChangedFolderTree: false,
+			hasChangedFolderContent: false,
+			hasChangedFolderInfo: false,
+			hasChangedPanelsSplittingRatio: true);
+	}
+
+	public void UpdatePanelsSplittingRatio()
 	{
 		_folderTreeViewColumn!.Width = new GridLength(
 			TabOptions!.PanelsSplittingRatio, GridUnitType.Star);
@@ -591,7 +610,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			_activeFolderTreeViewItem = (TreeViewItem)e.AddedItems[0]!;
 
-			RaiseFolderChangedEvent();
+			RaiseFolderContentChangedEvent();
 		}
 	}
 
@@ -635,9 +654,8 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	private void OnImageViewClosing(
-		object? sender, ImageViewClosingEventArgs e)
-			=> UpdateSelectedImageStatus();
+	private void OnImageViewClosing(object? sender, ImageViewClosingEventArgs e)
+		=> UpdateSelectedImageStatus();
 
 	private async void OnSlideshowButtonClicked(
 		object? sender, RoutedEventArgs e)
@@ -1238,7 +1256,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			TabOptions!.FolderOrdering = newFolderOrdering;
 
-			RaiseFolderOrderingChangedEvent();
+			RaiseFolderTreeChangedEvent();
 		}
 	}
 
@@ -1264,7 +1282,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			if (TabOptions!.FolderOrdering !=
 				FileSystemEntryInfoOrdering.RandomShuffle)
 			{
-				RaiseFolderOrderingChangedEvent();
+				RaiseFolderTreeChangedEvent();
 			}
 		}
 	}
@@ -1293,7 +1311,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			TabOptions!.ImageFileOrdering = newImageFileOrdering;
 
-			RaiseFolderChangedEvent();
+			RaiseFolderContentChangedEvent();
 		}
 	}
 
@@ -1322,7 +1340,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			if (TabOptions!.ImageFileOrdering !=
 				FileSystemEntryInfoOrdering.RandomShuffle)
 			{
-				RaiseFolderChangedEvent();
+				RaiseFolderContentChangedEvent();
 			}
 		}
 	}
@@ -1367,7 +1385,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		{
 			TabOptions!.ThumbnailSize = newThumbnailSize;
 
-			RaiseFolderChangedEvent();
+			RaiseFolderContentChangedEvent();
 		}
 	}
 
@@ -1403,8 +1421,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		TabOptions!.ZipArchivesEnabled = !TabOptions!.ZipArchivesEnabled;
 
-		RaiseFolderChangedEvent();
-		RaiseFolderOrderingChangedEvent();
+		RaiseContentTabItemChangedEvent(
+			hasChangedFolderTree: true,
+			hasChangedFolderContent: true,
+			hasChangedFolderInfo: false,
+			hasChangedPanelsSplittingRatio: false);
 	}
 
 	private void ToggleRecursiveFolderAccess()
@@ -1416,7 +1437,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		if (activeFileSystemEntryInfo?.HasSubFolders == true)
 		{
-			RaiseFolderChangedEvent();
+			RaiseFolderContentChangedEvent();
 		}
 		else
 		{
@@ -1434,7 +1455,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		if (TabOptions!.RecursiveFolderBrowsing &&
 			activeFileSystemEntryInfo?.HasSubFolders == true)
 		{
-			RaiseFolderChangedEvent();
+			RaiseFolderContentChangedEvent();
 		}
 	}
 
@@ -1442,7 +1463,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	{
 		TabOptions!.ApplyImageOrientation = !TabOptions!.ApplyImageOrientation;
 
-		RaiseFolderChangedEvent();
+		RaiseFolderContentChangedEvent();
 	}
 
 	private void ChangeShowThumbnailImageFileName()
@@ -1450,7 +1471,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		TabOptions!.ShowThumbnailImageFileName =
 			!TabOptions!.ShowThumbnailImageFileName;
 
-		RaiseFolderChangedEvent();
+		RaiseFolderContentChangedEvent();
 	}
 
 	private void HandleThumbnailScrolling(Key keyPressing)
@@ -1521,14 +1542,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	private IFileSystemEntryInfo GetFileSystemEntryInfoToRaiseEventOn(
+	private IFileSystemEntryInfo GetNormalizedFileSystemEntryInfo(
 		IFileSystemEntryInfo fileSystemEntryInfo)
 	{
-		var fileSystemEntryInfoToRaiseEventOn = TabOptions!.ZipArchivesEnabled
+		var normalizedFileSystemEntryInfo = TabOptions!.ZipArchivesEnabled
 			? fileSystemEntryInfo
 			: fileSystemEntryInfo.DriveOrFolder!;
 
-		return fileSystemEntryInfoToRaiseEventOn;
+		return normalizedFileSystemEntryInfo;
 	}
 
 	private int GetSelectedImageFileSizeInBytes()

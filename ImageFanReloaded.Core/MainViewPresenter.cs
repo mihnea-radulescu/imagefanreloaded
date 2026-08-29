@@ -103,7 +103,7 @@ public class MainViewPresenter
 
 				EnableContentTabEventHandling(contentTabItem);
 
-				contentTabItem.RaiseFolderChangedEvent();
+				contentTabItem.RaiseFolderContentChangedEvent();
 			}
 			else
 			{
@@ -123,7 +123,7 @@ public class MainViewPresenter
 
 			EnableContentTabEventHandling(contentTabItem);
 
-			contentTabItem.RaiseFolderChangedEvent();
+			contentTabItem.RaiseFolderContentChangedEvent();
 		}
 		else
 		{
@@ -246,7 +246,7 @@ public class MainViewPresenter
 	{
 		var contentTabItem = e.ContentTabItem;
 
-		contentTabItem.RaiseFolderChangedEvent();
+		contentTabItem.RaiseFolderContentChangedEvent();
 	}
 
 	private static async void OnTabOptionsChanged(
@@ -257,10 +257,17 @@ public class MainViewPresenter
 		var tabOptions = e.TabOptions;
 		var tabOptionChanges = e.TabOptionChanges;
 
-		var shouldRaiseFolderChangedEvent =
+		var hasChangedFolderTree =
+			tabOptionChanges.HasChangedFolderOrdering ||
+			(tabOptions.FolderOrdering !=
+			 FileSystemEntryInfoOrdering.RandomShuffle &&
+			 tabOptionChanges.HasChangedFolderOrderingDirection) ||
+			tabOptionChanges.HasChangedZipArchivesEnabled;
+
+		var hasChangedFolderContent =
 			tabOptionChanges.HasChangedImageFileOrdering ||
 			(tabOptions.ImageFileOrdering !=
-				FileSystemEntryInfoOrdering.RandomShuffle &&
+			 FileSystemEntryInfoOrdering.RandomShuffle &&
 			 tabOptionChanges.HasChangedImageFileOrderingDirection) ||
 			tabOptionChanges.HasChangedThumbnailSize ||
 			tabOptionChanges.HasChangedEnabledImageFileExtensions ||
@@ -270,45 +277,24 @@ public class MainViewPresenter
 			(tabOptions.RecursiveFolderBrowsing &&
 			 fileSystemEntryInfo?.HasSubFolders == true &&
 			 tabOptionChanges
-			 	.HasChangedGlobalOrderingForRecursiveFolderBrowsing) ||
+				 .HasChangedGlobalOrderingForRecursiveFolderBrowsing) ||
 			tabOptionChanges.HasChangedApplyImageOrientation ||
 			tabOptionChanges.HasChangedShowThumbnailImageFileName;
 
-		var shouldRaiseFolderOrderingChangedEvent =
-			tabOptionChanges.HasChangedFolderOrdering ||
-			(tabOptions.FolderOrdering !=
-			 FileSystemEntryInfoOrdering.RandomShuffle &&
-			 tabOptionChanges.HasChangedFolderOrderingDirection) ||
-			tabOptionChanges.HasChangedZipArchivesEnabled;
+		var hasChangedFolderInfo =
+			tabOptionChanges.HasChangedRecursiveFolderBrowsing &&
+			fileSystemEntryInfo?.HasSubFolders == false;
 
-		var shouldRaiseFolderInfoChangedEvent =
-			!shouldRaiseFolderChangedEvent &&
-			tabOptionChanges.HasChangedRecursiveFolderBrowsing;
-
-		var shouldRaisePanelsSplittingRatioChangedEvent =
+		var hasChangedPanelsSplittingRatio =
 			tabOptionChanges.HasChangedPanelsSplittingRatio;
 
 		var shouldSaveAsDefault = tabOptionChanges.ShouldSaveAsDefault;
 
-		if (shouldRaiseFolderChangedEvent)
-		{
-			contentTabItem.RaiseFolderChangedEvent();
-		}
-
-		if (shouldRaiseFolderOrderingChangedEvent)
-		{
-			contentTabItem.RaiseFolderOrderingChangedEvent();
-		}
-
-		if (shouldRaiseFolderInfoChangedEvent)
-		{
-			contentTabItem.RaiseFolderInfoChangedEvent();
-		}
-
-		if (shouldRaisePanelsSplittingRatioChangedEvent)
-		{
-			contentTabItem.RaisePanelsSplittingRatioChangedEvent();
-		}
+		contentTabItem.RaiseContentTabItemChangedEvent(
+			hasChangedFolderTree,
+			hasChangedFolderContent,
+			hasChangedFolderInfo,
+			hasChangedPanelsSplittingRatio);
 
 		if (shouldSaveAsDefault)
 		{
@@ -344,11 +330,64 @@ public class MainViewPresenter
 			_databaseLogic.GetThumbnailCacheSizeInMegabytes();
 	}
 
-	private async void OnFolderChanged(object? sender, FolderChangedEventArgs e)
+	private async void OnContentTabItemChanged(
+		object? sender, ContentTabItemChangedEventArgs e)
 	{
 		var contentTabItem = e.ContentTabItem;
 		var fileSystemEntryInfo = e.FileSystemEntryInfo;
 
+		var hasChangedFolderTree = e.HasChangedFolderTree;
+		var hasChangedFolderContent = e.HasChangedFolderContent;
+		var hasChangedFolderInfo = e.HasChangedFolderInfo;
+		var hasChangedPanelsSplittingRatio = e.HasChangedPanelsSplittingRatio;
+
+		if (hasChangedFolderTree)
+		{
+			await ApplyFolderTreeChanges(contentTabItem, fileSystemEntryInfo);
+		}
+
+		if (hasChangedFolderContent)
+		{
+			await ApplyFolderContentChanges(
+				contentTabItem, fileSystemEntryInfo);
+		}
+
+		if (hasChangedFolderInfo)
+		{
+			ApplyFolderInfoChanges(contentTabItem);
+		}
+
+		if (hasChangedPanelsSplittingRatio)
+		{
+			ApplyPanelsSplittingRatioChanges(contentTabItem);
+		}
+	}
+
+	private async Task ApplyFolderTreeChanges(
+		IContentTabItem contentTabItem,
+		IFileSystemEntryInfo fileSystemEntryInfo)
+	{
+		var isExpandedFolderTreeViewSelectedItem = contentTabItem
+			.GetIsExpandedFolderTreeViewSelectedItem();
+
+		DisableContentTabEventHandling(contentTabItem);
+
+		await PopulateRootFolders(contentTabItem);
+
+		await BuildFolderTreeViewFromActiveTab(
+			contentTabItem,
+			fileSystemEntryInfo,
+			isExpandedFolderTreeViewSelectedItem);
+
+		EnableContentTabEventHandling(contentTabItem);
+
+		contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
+	}
+
+	private async Task ApplyFolderContentChanges(
+		IContentTabItem contentTabItem,
+		IFileSystemEntryInfo fileSystemEntryInfo)
+	{
 		var previousFolderVisualState = contentTabItem.FolderVisualState;
 		previousFolderVisualState?.NotifyStopThumbnailGeneration();
 
@@ -361,36 +400,19 @@ public class MainViewPresenter
 		previousFolderVisualState?.DisposeCancellationTokenSource();
 	}
 
-	private async void OnFolderOrderingChanged(
-		object? sender, FolderOrderingChangedEventArgs e)
+	private static void ApplyFolderInfoChanges(
+		IContentTabItem contentTabItem)
 	{
-		var contentTabItem = e.ContentTabItem;
-		var fileSystemEntryInfoToClone = e.FileSystemEntryInfoToClone;
-
-		var isExpandedFolderTreeViewSelectedItem = contentTabItem
-			.GetIsExpandedFolderTreeViewSelectedItem();
-
-		DisableContentTabEventHandling(contentTabItem);
-
-		await PopulateRootFolders(contentTabItem);
-
-		await BuildFolderTreeViewFromActiveTab(
-			contentTabItem,
-			fileSystemEntryInfoToClone,
-			isExpandedFolderTreeViewSelectedItem);
-
-		EnableContentTabEventHandling(contentTabItem);
-
-		contentTabItem.SetFocusOnSelectedFolderTreeViewItem();
-	}
-
-	private void OnFolderInfoChanged(object? sender, ContentTabItemEventArgs e)
-	{
-		var contentTabItem = e.ContentTabItem;
-
 		var folderVisualState = contentTabItem.FolderVisualState;
 		folderVisualState?.SetFolderInfoText(contentTabItem.TabOptions!);
+
 		contentTabItem.UpdateSelectedImageStatus();
+	}
+
+	private static void ApplyPanelsSplittingRatioChanges(
+		IContentTabItem contentTabItem)
+	{
+		contentTabItem.UpdatePanelsSplittingRatio();
 	}
 
 	private async Task<IReadOnlyList<IFileSystemEntryInfo>> PopulateRootFolders(
@@ -482,9 +504,7 @@ public class MainViewPresenter
 	{
 		contentTabItem.EnableFolderTreeViewSelectedItemChanged();
 
-		contentTabItem.FolderChanged += OnFolderChanged;
-		contentTabItem.FolderOrderingChanged += OnFolderOrderingChanged;
-		contentTabItem.FolderInfoChanged += OnFolderInfoChanged;
+		contentTabItem.ContentTabItemChanged += OnContentTabItemChanged;
 
 		contentTabItem.ImageInfoRequested += OnImageInfoRequested;
 		contentTabItem.ImageEditRequested += OnImageEditRequested;
@@ -502,9 +522,7 @@ public class MainViewPresenter
 	{
 		contentTabItem.DisableFolderTreeViewSelectedItemChanged();
 
-		contentTabItem.FolderChanged -= OnFolderChanged;
-		contentTabItem.FolderOrderingChanged -= OnFolderOrderingChanged;
-		contentTabItem.FolderInfoChanged -= OnFolderInfoChanged;
+		contentTabItem.ContentTabItemChanged -= OnContentTabItemChanged;
 
 		contentTabItem.ImageInfoRequested -= OnImageInfoRequested;
 		contentTabItem.ImageEditRequested -= OnImageEditRequested;

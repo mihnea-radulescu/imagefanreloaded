@@ -29,7 +29,7 @@ public class FileSystemImageFileData : ImageFileDataBase
 	{
 		if (!File.Exists(FilePath))
 		{
-			return new ImageData(null);
+			return ImageData.Null;
 		}
 
 		try
@@ -43,7 +43,7 @@ public class FileSystemImageFileData : ImageFileDataBase
 		}
 		catch
 		{
-			return new ImageData(null);
+			return ImageData.Null;
 		}
 	}
 }

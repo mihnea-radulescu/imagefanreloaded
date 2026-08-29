@@ -35,7 +35,7 @@ public static class ZipArchiveEntryExtensions
 				   path.GetDirectorySeparatorCharCountInPath(
 					   Path.ZipArchiveDirectorySeparatorChar);
 
-		private bool IsFolder => zipArchiveEntry.Length == 0;
-		private bool IsFile => zipArchiveEntry.Length > 0;
+		private bool IsFolder => zipArchiveEntry.Name == string.Empty;
+		private bool IsFile => zipArchiveEntry.Name != string.Empty;
 	}
 }

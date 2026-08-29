@@ -58,7 +58,7 @@ public class ZipArchiveImageFileData : ImageFileDataBase
 		}
 		catch
 		{
-			return new ImageData(null);
+			return ImageData.Null;
 		}
 	}
 

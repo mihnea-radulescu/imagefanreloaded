@@ -5,6 +5,8 @@ namespace ImageFanReloaded.Core.ImageHandling;
 
 public class ImageData : DisposableBase
 {
+	public static readonly ImageData Null = new(null);
+
 	public ImageData(Stream? imageDataStream, bool isKnownImage = false)
 	{
 		ImageDataStream = imageDataStream;
