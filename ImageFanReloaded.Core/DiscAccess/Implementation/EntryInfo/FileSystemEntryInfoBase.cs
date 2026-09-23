@@ -25,6 +25,8 @@ public abstract class FileSystemEntryInfoBase : IFileSystemEntryInfo
 		Path = path;
 		HasSubFolders = hasSubFolders;
 
+		ImageFilesTotalSizeInBytes = 0;
+
 		Icon = icon;
 	}
 
@@ -35,6 +37,9 @@ public abstract class FileSystemEntryInfoBase : IFileSystemEntryInfo
 	public string Path { get; }
 	public virtual string QualifiedPath => Path;
 	public bool HasSubFolders { get; }
+
+	public long ImageFilesTotalSizeInBytes { get; set; }
+
 	public IImage Icon { get; }
 
 	public abstract IReadOnlyList<IFileSystemEntryInfo> GetSubFolders(

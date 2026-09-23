@@ -196,6 +196,9 @@ public class DiscQueryEngineFileSystem : IDiscQueryEngineFileSystem
 				_imageFileFactory.GetImageFile(anImageFileData))
 			.ToList();
 
+		fileSystemEntryInfo.ImageFilesTotalSizeInBytes =
+			GetImageFilesTotalSizeInBytes(imageFiles);
+
 		return imageFiles;
 	}
 
@@ -348,4 +351,14 @@ public class DiscQueryEngineFileSystem : IDiscQueryEngineFileSystem
 
 	private bool IsSupportedDrive(string driveName)
 		=> _driveInfo.IsSupportedDrive(driveName);
+
+	private static long GetImageFilesTotalSizeInBytes(
+		IReadOnlyList<IImageFile> imageFiles)
+	{
+		var imageFilesTotalSizeInBytes = imageFiles
+			.Sum(anImageFile
+				=> (long)anImageFile.ImageFileData.FileSizeInBytes);
+
+		return imageFilesTotalSizeInBytes;
+	}
 }

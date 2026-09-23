@@ -26,7 +26,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 		AddMainGridColumnDefinitions();
 
-		_thumbnailBoxCollection = [];
+		_thumbnailBoxList = [];
 	}
 
 	public IMainView? MainView { get; set; }
@@ -288,43 +288,6 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void PopulateThumbnailBoxes(
-		IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection)
-	{
-		var thumbnailCount = thumbnailInfoCollection.Count;
-
-		for (var i = 0; i < thumbnailCount; i++)
-		{
-			var thumbnailInfo = thumbnailInfoCollection[i];
-
-			IThumbnailBox aThumbnailBox = new ThumbnailBox();
-			aThumbnailBox.TabOptions = TabOptions;
-			aThumbnailBox.MouseCursorFactory = MouseCursorFactory;
-
-			aThumbnailBox.Index = _maxThumbnailIndex + i;
-			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
-
-			aThumbnailBox.SetControlProperties(TabOptions!.ThumbnailSize);
-
-			thumbnailInfo.ThumbnailBox = aThumbnailBox;
-			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
-			aThumbnailBox.ThumbnailBoxClicked += OnThumbnailBoxClicked;
-
-			_thumbnailBoxCollection.Add(aThumbnailBox);
-
-			if (IsFirstThumbnail())
-			{
-				SelectThumbnailBox(aThumbnailBox);
-			}
-
-			var aSurroundingStackPanel = new StackPanel();
-			aSurroundingStackPanel.Children.Add((Control)aThumbnailBox);
-			_thumbnailWrapPanel.Children.Add(aSurroundingStackPanel);
-		}
-
-		_maxThumbnailIndex += thumbnailCount;
-	}
-
 	public async Task ClearThumbnailBoxes(bool resetContent)
 	{
 		_thumbnailWrapPanel.Children.Clear();
@@ -338,14 +301,14 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		_imageInfoButton.IsEnabled = false;
 		_imageEditButton.IsEnabled = false;
 
-		var thumbnailBoxCollectionToClear = _thumbnailBoxCollection.ToList();
-		_thumbnailBoxCollection.Clear();
+		var thumbnailBoxListToClear = _thumbnailBoxList.ToList();
+		_thumbnailBoxList.Clear();
 
-		if (thumbnailBoxCollectionToClear.Any())
+		if (thumbnailBoxListToClear.Any())
 		{
-			await StopThumbnailAnimation(thumbnailBoxCollectionToClear);
+			await StopThumbnailAnimation(thumbnailBoxListToClear);
 
-			foreach (var aThumbnailBox in thumbnailBoxCollectionToClear)
+			foreach (var aThumbnailBox in thumbnailBoxListToClear)
 			{
 				await aThumbnailBox.DisposeThumbnail();
 
@@ -361,10 +324,47 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		}
 	}
 
-	public void RefreshThumbnailBoxes(
-		IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection)
+	public void PopulateThumbnailBoxes(
+		IReadOnlyList<IThumbnailInfo> thumbnailInfoList)
 	{
-		foreach (var thumbnailInfo in thumbnailInfoCollection)
+		var thumbnailCount = thumbnailInfoList.Count;
+
+		for (var i = 0; i < thumbnailCount; i++)
+		{
+			var thumbnailInfo = thumbnailInfoList[i];
+
+			IThumbnailBox aThumbnailBox = new ThumbnailBox();
+			aThumbnailBox.TabOptions = TabOptions;
+			aThumbnailBox.MouseCursorFactory = MouseCursorFactory;
+
+			aThumbnailBox.Index = _maxThumbnailIndex + i;
+			aThumbnailBox.ThumbnailInfo = thumbnailInfo;
+
+			aThumbnailBox.SetControlProperties(TabOptions!.ThumbnailSize);
+
+			thumbnailInfo.ThumbnailBox = aThumbnailBox;
+			aThumbnailBox.ThumbnailBoxSelected += OnThumbnailBoxSelected;
+			aThumbnailBox.ThumbnailBoxClicked += OnThumbnailBoxClicked;
+
+			_thumbnailBoxList.Add(aThumbnailBox);
+
+			if (IsFirstThumbnail())
+			{
+				SelectThumbnailBox(aThumbnailBox);
+			}
+
+			var aSurroundingStackPanel = new StackPanel();
+			aSurroundingStackPanel.Children.Add((Control)aThumbnailBox);
+			_thumbnailWrapPanel.Children.Add(aSurroundingStackPanel);
+		}
+
+		_maxThumbnailIndex += thumbnailCount;
+	}
+
+	public void RefreshThumbnailBoxes(
+		IReadOnlyList<IThumbnailInfo> thumbnailInfoList)
+	{
+		foreach (var thumbnailInfo in thumbnailInfoList)
 		{
 			thumbnailInfo.RefreshThumbnail();
 		}
@@ -526,7 +526,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			var currentSelectedImageFileSizeInBytes =
 				GetSelectedImageFileSizeInBytes();
 
-			FolderVisualState!.UpdateFolderInfoText(
+			FolderVisualState!.UpdateFolderImageFilesTotalSize(
 				TabOptions!,
 				previousSelectedImageFileSizeInBytes,
 				currentSelectedImageFileSizeInBytes);
@@ -564,7 +564,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private ColumnDefinition? _gridSplitterColumn;
 	private ColumnDefinition? _thumbnailsScrollViewerColumn;
 
-	private readonly IList<IThumbnailBox> _thumbnailBoxCollection;
+	private readonly IList<IThumbnailBox> _thumbnailBoxList;
 
 	private int _maxThumbnailIndex;
 	private int _selectedThumbnailIndex;
@@ -728,9 +728,9 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			{
 				newSelectedThumbnailIndex = 0;
 			}
-			else if (newSelectedThumbnailIndex >= _thumbnailBoxCollection.Count)
+			else if (newSelectedThumbnailIndex >= _thumbnailBoxList.Count)
 			{
-				newSelectedThumbnailIndex = _thumbnailBoxCollection.Count - 1;
+				newSelectedThumbnailIndex = _thumbnailBoxList.Count - 1;
 			}
 
 			if (_selectedThumbnailIndex != newSelectedThumbnailIndex)
@@ -742,7 +742,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 				_selectedThumbnailIndex = newSelectedThumbnailIndex;
 
 				_selectedThumbnailBox =
-					_thumbnailBoxCollection[_selectedThumbnailIndex];
+					_thumbnailBoxList[_selectedThumbnailIndex];
 
 				SelectThumbnail();
 			}
@@ -842,7 +842,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private void ShowCloseButton(bool showTabCloseButton)
 		=> ContentTabItemHeader!.ShowTabCloseButton(showTabCloseButton);
 
-	private bool IsFirstThumbnail() => _thumbnailBoxCollection.Count == 1;
+	private bool IsFirstThumbnail() => _thumbnailBoxList.Count == 1;
 
 	private bool ShouldStartSlideshow(
 		KeyModifiers keyModifiers, Key keyPressing)

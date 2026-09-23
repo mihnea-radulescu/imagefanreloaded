@@ -16,6 +16,8 @@ public interface IFileSystemEntryInfo
 	string QualifiedPath { get; }
 	bool HasSubFolders { get; }
 
+	long ImageFilesTotalSizeInBytes { get; set; }
+
 	IImage Icon { get; }
 
 	IReadOnlyList<IFileSystemEntryInfo> GetSubFolders(

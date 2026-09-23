@@ -253,17 +253,17 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".webp"
 		], ImageFileExtensionsComparer);
 
-		IReadOnlyList<string> imageFileExtensionCollection =
+		IReadOnlyList<string> imageFileExtensionList =
 		[
 			..DirectlySupportedImageFileExtensions,
 			..IndirectlySupportedImageFileExtensions,
 			..AnimationEnabledImageFileExtensions
 		];
-		var orderedImageFileExtensionCollection = imageFileExtensionCollection
+		var orderedImageFileExtensionList = imageFileExtensionList
 			.OrderBy(anImageFileExtension => anImageFileExtension)
 			.ToList();
 		ImageFileExtensions = new HashSet<string>(
-			orderedImageFileExtensionCollection, ImageFileExtensionsComparer);
+			orderedImageFileExtensionList, ImageFileExtensionsComparer);
 
 		ImageQualityLevel = 80;
 		DecimalDigitCountForDisplay = 2;

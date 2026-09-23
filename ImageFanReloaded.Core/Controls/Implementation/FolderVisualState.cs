@@ -57,8 +57,6 @@ public class FolderVisualState : IFolderVisualState
 				_fileSystemEntryInfo, tabOptions);
 
 			_imageFilesCount = imageFiles.Count;
-			_imageFilesTotalSizeInBytes =
-				GetImageFilesTotalSizeInBytes(imageFiles);
 
 			SetFolderInfoText(tabOptions);
 			_contentTabItem.SetImageInfoText(string.Empty);
@@ -73,10 +71,26 @@ public class FolderVisualState : IFolderVisualState
 		}
 	}
 
+	public void UpdateFolderImageFilesTotalSize(
+		ITabOptions tabOptions,
+		int previousSelectedImageFileSizeInBytes,
+		int currentSelectedImageFileSizeInBytes)
+	{
+		_fileSystemEntryInfo.ImageFilesTotalSizeInBytes -=
+			previousSelectedImageFileSizeInBytes;
+		_fileSystemEntryInfo.ImageFilesTotalSizeInBytes +=
+			currentSelectedImageFileSizeInBytes;
+
+		SetFolderInfoText(tabOptions);
+	}
+
 	public void SetFolderInfoText(ITabOptions tabOptions)
 	{
+		var imageFilesTotalSizeInBytes =
+			_fileSystemEntryInfo.ImageFilesTotalSizeInBytes;
+
 		var imageFilesTotalSizeInKilobytes =
-			_fileSizeEngine.ConvertToKilobytes(_imageFilesTotalSizeInBytes);
+			_fileSizeEngine.ConvertToKilobytes(imageFilesTotalSizeInBytes);
 		var imageFilesTotalSizeInMegabytes =
 			_fileSizeEngine.ConvertToMegabytes(imageFilesTotalSizeInKilobytes);
 
@@ -86,17 +100,6 @@ public class FolderVisualState : IFolderVisualState
 			tabOptions.RecursiveFolderBrowsing);
 
 		_contentTabItem.SetFolderInfoText(folderStatusBarText);
-	}
-
-	public void UpdateFolderInfoText(
-		ITabOptions tabOptions,
-		int previousSelectedImageFileSizeInBytes,
-		int currentSelectedImageFileSizeInBytes)
-	{
-		_imageFilesTotalSizeInBytes -= previousSelectedImageFileSizeInBytes;
-		_imageFilesTotalSizeInBytes += currentSelectedImageFileSizeInBytes;
-
-		SetFolderInfoText(tabOptions);
 	}
 
 	public void DisposeCancellationTokenSource()
@@ -114,7 +117,6 @@ public class FolderVisualState : IFolderVisualState
 	private readonly CancellationTokenSource _ctsThumbnailGeneration;
 
 	private int _imageFilesCount;
-	private long _imageFilesTotalSizeInBytes;
 
 	private IReadOnlyList<IThumbnailInfo> GetThumbnailInfoList(
 		ITabOptions tabOptions, IReadOnlyList<IImageFile> imageFiles)
@@ -227,16 +229,6 @@ public class FolderVisualState : IFolderVisualState
 				{
 				}
 			});
-
-	private static long GetImageFilesTotalSizeInBytes(
-		IReadOnlyList<IImageFile> imageFiles)
-	{
-		var imageFilesTotalSizeInBytes = imageFiles
-			.Sum(anImageFile
-					=> (long)anImageFile.ImageFileData.FileSizeInBytes);
-
-		return imageFilesTotalSizeInBytes;
-	}
 
 	private string GetFolderStatusBarText(
 		int imageFilesCount,

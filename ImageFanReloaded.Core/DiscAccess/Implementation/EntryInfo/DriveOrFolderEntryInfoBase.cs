@@ -107,6 +107,8 @@ public abstract class DriveOrFolderEntryInfoBase : FileSystemEntryInfoBase
 		}
 	}
 
+	private const string ZipFilesSearchPattern = "*.zip";
+
 	private static readonly EnumerationOptions FilesInFolderEnumerationOptions =
 		new() { MatchCasing = MatchCasing.CaseInsensitive };
 
@@ -131,7 +133,7 @@ public abstract class DriveOrFolderEntryInfoBase : FileSystemEntryInfoBase
 			{
 				var currentFolder = new DirectoryInfo(path);
 				var filesInFolderEnumerable = currentFolder.EnumerateFiles(
-					"*.zip", FilesInFolderEnumerationOptions);
+					ZipFilesSearchPattern, FilesInFolderEnumerationOptions);
 				using var filesInFolderEnumerator = filesInFolderEnumerable
 					.GetEnumerator();
 				var hasZipArchives = filesInFolderEnumerator.MoveNext();
@@ -188,7 +190,7 @@ public abstract class DriveOrFolderEntryInfoBase : FileSystemEntryInfoBase
 		DirectoryInfo folderInfo)
 	{
 		var zipArchiveInfoList = folderInfo
-			.GetFiles("*.zip", FilesInFolderEnumerationOptions)
+			.GetFiles(ZipFilesSearchPattern, FilesInFolderEnumerationOptions)
 			.ToList();
 
 		var orderedZipArchiveInfoList = GetOrderedFileSystemInfoList(

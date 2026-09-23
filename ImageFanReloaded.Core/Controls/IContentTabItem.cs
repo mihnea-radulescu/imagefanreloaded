@@ -69,9 +69,9 @@ public interface IContentTabItem
 
 	Task ClearThumbnailBoxes(bool resetContent);
 	void PopulateThumbnailBoxes(
-		IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
+		IReadOnlyList<IThumbnailInfo> thumbnailInfoList);
 	void RefreshThumbnailBoxes(
-		IReadOnlyList<IThumbnailInfo> thumbnailInfoCollection);
+		IReadOnlyList<IThumbnailInfo> thumbnailInfoList);
 
 	IFileSystemEntryInfo? GetActiveFileSystemEntryInfo();
 

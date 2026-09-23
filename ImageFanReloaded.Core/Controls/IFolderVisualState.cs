@@ -10,11 +10,12 @@ public interface IFolderVisualState
 	Task ClearVisualState();
 	Task UpdateVisualState(ITabOptions tabOptions);
 
-	void SetFolderInfoText(ITabOptions tabOptions);
-	void UpdateFolderInfoText(
+	void UpdateFolderImageFilesTotalSize(
 		ITabOptions tabOptions,
 		int previousSelectedImageFileSizeInBytes,
 		int currentSelectedImageFileSizeInBytes);
+
+	void SetFolderInfoText(ITabOptions tabOptions);
 
 	void DisposeCancellationTokenSource();
 }
