@@ -27,6 +27,8 @@ public class ZipArchiveEntryInfo : ZipArchiveEntryInfoBase
 	{
 		DriveOrFolder = parent;
 
+		_isFirstZipArchiveEntriesEnumeration = true;
+
 		Entries = GetZipArchiveEntries();
 		HasSubFolders = HasArchiveSubFoldersUnderPath(Entries, string.Empty);
 	}
@@ -43,6 +45,15 @@ public class ZipArchiveEntryInfo : ZipArchiveEntryInfoBase
 	{
 		try
 		{
+			if (_isFirstZipArchiveEntriesEnumeration)
+			{
+				_isFirstZipArchiveEntriesEnumeration = false;
+			}
+			else
+			{
+				Entries = GetZipArchiveEntries();
+			}
+
 			var subFolderEntries = Entries
 				.Where(anEntry => anEntry.IsFirstLevelSubFolder)
 				.ToList();
@@ -102,6 +113,8 @@ public class ZipArchiveEntryInfo : ZipArchiveEntryInfoBase
 			return EmptyImageFileDataList;
 		}
 	}
+
+	private bool _isFirstZipArchiveEntriesEnumeration;
 
 	private IReadOnlyList<ZipArchiveEntry> GetZipArchiveEntries()
 	{
