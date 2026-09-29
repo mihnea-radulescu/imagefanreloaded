@@ -11,7 +11,7 @@ using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation.EntryInfo;
 
-public class ZipArchiveEntryInfo : FileSystemEntryInfoBase
+public class ZipArchiveEntryInfo : ZipArchiveEntryInfoBase
 {
 	public ZipArchiveEntryInfo(
 		IFileSystemEntryInfo? parent,
@@ -22,11 +22,16 @@ public class ZipArchiveEntryInfo : FileSystemEntryInfoBase
 				parent,
 				archiveName,
 				archivePath,
-				HasArchiveSubFolders(archivePath),
+				false,
 				archiveIcon)
 	{
 		DriveOrFolder = parent;
+
+		Entries = GetZipArchiveEntries();
+		HasSubFolders = HasArchiveSubFoldersUnderPath(Entries, string.Empty);
 	}
+
+	public IReadOnlyList<ZipArchiveEntry> Entries { get; private set; }
 
 	public override IReadOnlyList<IFileSystemEntryInfo> GetSubFolders(
 		IFileSystemEntryInfoFactory fileSystemEntryInfoFactory,
@@ -38,9 +43,7 @@ public class ZipArchiveEntryInfo : FileSystemEntryInfoBase
 	{
 		try
 		{
-			using var zipArchive = ZipFile.OpenRead(Path);
-
-			var subFolderEntries = zipArchive.Entries
+			var subFolderEntries = Entries
 				.Where(anEntry => anEntry.IsFirstLevelSubFolder)
 				.ToList();
 
@@ -73,9 +76,7 @@ public class ZipArchiveEntryInfo : FileSystemEntryInfoBase
 	{
 		try
 		{
-			using var zipArchive = ZipFile.OpenRead(Path);
-
-			var imageFileEntries = zipArchive.Entries
+			var imageFileEntries = Entries
 				.Where(anEntry => anEntry.IsImageFileDirectlyUnderPath(
 					string.Empty,
 					enabledImageFileExtensions))
@@ -102,20 +103,10 @@ public class ZipArchiveEntryInfo : FileSystemEntryInfoBase
 		}
 	}
 
-	private static bool HasArchiveSubFolders(string path)
+	private IReadOnlyList<ZipArchiveEntry> GetZipArchiveEntries()
 	{
-		try
-		{
-			using var zipArchive = ZipFile.OpenRead(path);
+		using var zipArchive = ZipFile.OpenRead(Path);
 
-			var hasAnySubFolders = zipArchive.Entries
-				.Any(anEntry => anEntry.IsDirectSubFolderOf(string.Empty));
-
-			return hasAnySubFolders;
-		}
-		catch
-		{
-			return false;
-		}
+		return zipArchive.Entries;
 	}
 }

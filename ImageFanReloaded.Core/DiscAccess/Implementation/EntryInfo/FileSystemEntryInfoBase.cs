@@ -31,12 +31,12 @@ public abstract class FileSystemEntryInfoBase : IFileSystemEntryInfo
 	}
 
 	public IFileSystemEntryInfo? Parent { get; }
-	public IFileSystemEntryInfo? DriveOrFolder { get; protected set; }
+	public IFileSystemEntryInfo? DriveOrFolder { get; protected init; }
 
 	public string Name { get; }
 	public string Path { get; }
 	public virtual string QualifiedPath => Path;
-	public bool HasSubFolders { get; }
+	public bool HasSubFolders { get; protected init; }
 
 	public long ImageFilesTotalSizeInBytes { get; set; }
 

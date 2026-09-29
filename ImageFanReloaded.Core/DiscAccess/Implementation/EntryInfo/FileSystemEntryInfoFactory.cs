@@ -27,25 +27,26 @@ public class FileSystemEntryInfoFactory : IFileSystemEntryInfoFactory
 
 	public IFileSystemEntryInfo GetDriveEntryInfo(
 		string path, bool zipArchivesEnabled)
-		=> new DriveEntryInfo(null, path, path, zipArchivesEnabled, _driveIcon);
+			=> new DriveEntryInfo(
+				null, path, path, zipArchivesEnabled, _driveIcon);
 
 	public IFileSystemEntryInfo GetFolderEntryInfo(
 		IFileSystemEntryInfo? parent, string path, bool zipArchivesEnabled)
-		=> new FolderEntryInfo(
-			parent,
-			Path.GetFileName(path),
-			path,
-			zipArchivesEnabled,
-			_folderIcon);
+			=> new FolderEntryInfo(
+				parent,
+				Path.GetFileName(path),
+				path,
+				zipArchivesEnabled,
+				_folderIcon);
 
 	public IFileSystemEntryInfo GetZipArchiveEntryInfo(
 		IFileSystemEntryInfo? parent, string path)
-		=> new ZipArchiveEntryInfo(
-			parent, Path.GetFileName(path), path, _zipArchiveIcon);
+			=> new ZipArchiveEntryInfo(
+				parent, Path.GetFileName(path), path, _zipArchiveIcon);
 
 	public IFileSystemEntryInfo GetZipArchiveFolderEntryInfo(
 		IFileSystemEntryInfo? parent,
-		IFileSystemEntryInfo parentArchive,
+		ZipArchiveEntryInfo parentArchive,
 		string name,
 		string path)
 			=> new ZipArchiveFolderEntryInfo(
@@ -53,8 +54,12 @@ public class FileSystemEntryInfoFactory : IFileSystemEntryInfoFactory
 
 	public IFileSystemEntryInfo GetHomeFolderEntryInfo(
 		string path, bool zipArchivesEnabled)
-		=> new FolderEntryInfo(
-			null, HomeFolderName, path, zipArchivesEnabled, _homeFolderIcon);
+			=> new FolderEntryInfo(
+				null,
+				HomeFolderName,
+				path,
+				zipArchivesEnabled,
+				_homeFolderIcon);
 
 	public IFileSystemEntryInfo GetSpecialFolderEntryInfo(
 		string name, string path, bool zipArchivesEnabled)

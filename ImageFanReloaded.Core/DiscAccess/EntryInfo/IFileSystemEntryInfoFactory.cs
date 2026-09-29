@@ -1,3 +1,5 @@
+using ImageFanReloaded.Core.DiscAccess.Implementation.EntryInfo;
+
 namespace ImageFanReloaded.Core.DiscAccess.EntryInfo;
 
 public interface IFileSystemEntryInfoFactory
@@ -9,7 +11,7 @@ public interface IFileSystemEntryInfoFactory
 		IFileSystemEntryInfo? parent, string path);
 	IFileSystemEntryInfo GetZipArchiveFolderEntryInfo(
 		IFileSystemEntryInfo? parent,
-		IFileSystemEntryInfo parentArchive,
+		ZipArchiveEntryInfo parentArchive,
 		string name,
 		string path);
 

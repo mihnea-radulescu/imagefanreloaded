@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO.Compression;
 using System.Linq;
 using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.DiscAccess.Implementation.Extensions;
@@ -11,11 +10,11 @@ using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.DiscAccess.Implementation.EntryInfo;
 
-public class ZipArchiveFolderEntryInfo : FileSystemEntryInfoBase
+public class ZipArchiveFolderEntryInfo : ZipArchiveEntryInfoBase
 {
 	public ZipArchiveFolderEntryInfo(
 		IFileSystemEntryInfo? parent,
-		IFileSystemEntryInfo parentArchive,
+		ZipArchiveEntryInfo parentArchive,
 		string archiveFolderName,
 		string archiveFolderPath,
 		IImage archiveFolderIcon)
@@ -23,13 +22,14 @@ public class ZipArchiveFolderEntryInfo : FileSystemEntryInfoBase
 				parent,
 				archiveFolderName,
 				archiveFolderPath,
-				HasArchiveSubFoldersUnderPath(
-					parentArchive.Path, archiveFolderPath),
+				false,
 				archiveFolderIcon)
 	{
 		_parentArchive = parentArchive;
 
-		DriveOrFolder = parentArchive.DriveOrFolder;
+		DriveOrFolder = _parentArchive.DriveOrFolder;
+		HasSubFolders = HasArchiveSubFoldersUnderPath(
+			_parentArchive.Entries, Path);
 	}
 
 	public override string QualifiedPath
@@ -54,9 +54,7 @@ public class ZipArchiveFolderEntryInfo : FileSystemEntryInfoBase
 	{
 		try
 		{
-			using var zipArchive = ZipFile.OpenRead(_parentArchive.Path);
-
-			var subFolderEntries = zipArchive.Entries
+			var subFolderEntries = _parentArchive.Entries
 				.Where(anEntry => anEntry.IsDirectSubFolderOf(Path))
 				.ToList();
 
@@ -89,9 +87,7 @@ public class ZipArchiveFolderEntryInfo : FileSystemEntryInfoBase
 	{
 		try
 		{
-			using var zipArchive = ZipFile.OpenRead(_parentArchive.Path);
-
-			var imageFileEntries = zipArchive.Entries
+			var imageFileEntries = _parentArchive.Entries
 				.Where(anEntry => anEntry.IsImageFileDirectlyUnderPath(
 					Path, enabledImageFileExtensions))
 				.ToList();
@@ -117,23 +113,5 @@ public class ZipArchiveFolderEntryInfo : FileSystemEntryInfoBase
 		}
 	}
 
-	private readonly IFileSystemEntryInfo _parentArchive;
-
-	private static bool HasArchiveSubFoldersUnderPath(
-		string archivePath, string path)
-	{
-		try
-		{
-			using var zipArchive = ZipFile.OpenRead(archivePath);
-
-			var hasAnySubFolders = zipArchive.Entries
-				.Any(anEntry => anEntry.IsDirectSubFolderOf(path));
-
-			return hasAnySubFolders;
-		}
-		catch
-		{
-			return false;
-		}
-	}
+	private readonly ZipArchiveEntryInfo _parentArchive;
 }
