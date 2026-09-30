@@ -45,6 +45,7 @@ User interface:
 * keys in Image edit view: U for undo, I for redo, R for rotate, F for flip, E for effects, S for save as, C for crop and D for downsize
 * key F for displaying Image info view
 * key Z to toggle browsing through and viewing images within zip files
+* key L to toggle looping images
 * key R to toggle recursive folder browsing
 * key G to toggle global ordering for recursive folder browsing
 * key E for applying EXIF image orientation

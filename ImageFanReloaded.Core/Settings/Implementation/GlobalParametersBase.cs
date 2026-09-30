@@ -45,7 +45,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key AKey { get; }
 	public Key DKey { get; }
 
-	public Key ZKey { get; }
 	public Key RKey { get; }
 	public Key GKey { get; }
 	public Key EKey { get; }
@@ -54,6 +53,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public Key IKey { get; }
 	public Key UKey { get; }
 	public Key CKey { get; }
+	public Key ZKey { get; }
+	public Key LKey { get; }
 
 	public Key Digit1Key { get; }
 	public Key Digit2Key { get; }
@@ -151,7 +152,6 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		AKey = Key.A;
 		DKey = Key.D;
 
-		ZKey = Key.Z;
 		RKey = Key.R;
 		GKey = Key.G;
 		EKey = Key.E;
@@ -160,6 +160,8 @@ public abstract class GlobalParametersBase : IGlobalParameters
 		IKey = Key.I;
 		UKey = Key.U;
 		CKey = Key.C;
+		ZKey = Key.Z;
+		LKey = Key.L;
 
 		Digit1Key = Key.Digit1;
 		Digit2Key = Key.Digit2;

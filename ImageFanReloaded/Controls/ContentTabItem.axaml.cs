@@ -91,6 +91,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			ShouldChangeImageViewDisplayMode(keyModifiers, keyPressing) ||
 			ShouldChangeThumbnailSize(keyModifiers, keyPressing) ||
 			ShouldToggleZipArchivesEnabled(keyModifiers, keyPressing) ||
+			ShouldToggleLoopImages(keyModifiers, keyPressing) ||
 			ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing) ||
 			ShouldToggleGlobalOrderingForRecursiveFolderAccess(
 				keyModifiers, keyPressing) ||
@@ -165,6 +166,10 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		else if (ShouldToggleZipArchivesEnabled(keyModifiers, keyPressing))
 		{
 			ToggleZipArchivesEnabled();
+		}
+		else if (ShouldToggleLoopImages(keyModifiers, keyPressing))
+		{
+			ToggleLoopImages();
 		}
 		else if (ShouldToggleRecursiveFolderAccess(keyModifiers, keyPressing))
 		{
@@ -1020,6 +1025,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return false;
 	}
 
+	private bool ShouldToggleLoopImages(
+		KeyModifiers keyModifiers, Key keyPressing)
+	{
+		if (keyModifiers == GlobalParameters!.NoneKeyModifier &&
+		    keyPressing == GlobalParameters!.LKey)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool ShouldToggleRecursiveFolderAccess(
 		KeyModifiers keyModifiers, Key keyPressing)
 	{
@@ -1423,6 +1440,11 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 			hasChangedFolderContent: true,
 			hasChangedFolderInfo: false,
 			hasChangedPanelsSplittingRatio: false);
+	}
+
+	private void ToggleLoopImages()
+	{
+		TabOptions!.LoopImages = !TabOptions!.LoopImages;
 	}
 
 	private void ToggleRecursiveFolderAccess()

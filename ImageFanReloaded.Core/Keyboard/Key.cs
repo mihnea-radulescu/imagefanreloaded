@@ -41,6 +41,7 @@ public enum Key
 	U,
 	C,
 	Z,
+	L,
 
 	Digit1,
 	Digit2,

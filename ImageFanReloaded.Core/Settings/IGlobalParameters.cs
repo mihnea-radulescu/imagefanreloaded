@@ -42,7 +42,6 @@ public interface IGlobalParameters
 	Key AKey { get; }
 	Key DKey { get; }
 
-	Key ZKey { get; }
 	Key RKey { get; }
 	Key GKey { get; }
 	Key EKey { get; }
@@ -51,6 +50,8 @@ public interface IGlobalParameters
 	Key IKey { get; }
 	Key UKey { get; }
 	Key CKey { get; }
+	Key ZKey { get; }
+	Key LKey { get; }
 
 	Key Digit1Key { get; }
 	Key Digit2Key { get; }
