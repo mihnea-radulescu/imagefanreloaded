@@ -114,12 +114,22 @@ public class ZipArchiveEntryInfo : ZipArchiveEntryInfoBase
 		}
 	}
 
+	private static readonly IReadOnlyList<ZipArchiveEntry>
+		EmptyZipArchiveEntryList = [];
+
 	private bool _isFirstZipArchiveEntriesEnumeration;
 
 	private IReadOnlyList<ZipArchiveEntry> GetZipArchiveEntries()
 	{
-		using var zipArchive = ZipFile.OpenRead(Path);
+		try
+		{
+			using var zipArchive = ZipFile.OpenRead(Path);
 
-		return zipArchive.Entries;
+			return zipArchive.Entries;
+		}
+		catch
+		{
+			return EmptyZipArchiveEntryList;
+		}
 	}
 }

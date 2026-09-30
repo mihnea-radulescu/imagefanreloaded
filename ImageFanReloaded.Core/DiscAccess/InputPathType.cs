@@ -4,5 +4,6 @@ public enum InputPathType
 {
 	NotSet = 0,
 	Folder = 1,
-	File = 2
+	ImageFile = 2,
+	ZipArchive = 3
 }

@@ -596,7 +596,7 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 				.Cast<CheckBox>()
 				.Where(aCheckBox => aCheckBox.IsChecked == true)
 				.Select(aCheckBox => (string)aCheckBox.Tag!)
-				.ToHashSet(GlobalParameters!.ImageFileExtensionsComparer);
+				.ToHashSet(GlobalParameters!.FileExtensionComparer);
 
 		TabOptions!.EnabledImageFileExtensions =
 			checkedEnabledImageFileExtensions;

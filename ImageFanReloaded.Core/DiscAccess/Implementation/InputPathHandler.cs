@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,9 +12,12 @@ namespace ImageFanReloaded.Core.DiscAccess.Implementation;
 public class InputPathHandler : IInputPathHandler
 {
 	public InputPathHandler(
-		IGlobalParameters globalParameters, string? inputPath)
+		IGlobalParameters globalParameters,
+		ITabOptions tabOptions,
+		string? inputPath)
 	{
-		_nameComparison = globalParameters.NameComparer.ToStringComparison();
+		_globalParameters = globalParameters;
+		_tabOptions = tabOptions;
 
 		InputPathType = InputPathType.NotSet;
 
@@ -33,13 +35,18 @@ public class InputPathHandler : IInputPathHandler
 				{
 					var inputPathFileInfo = new FileInfo(inputPath);
 
-					if (globalParameters.ImageFileExtensions.Contains(
-						inputPathFileInfo.Extension))
+					if (IsImageFile(inputPathFileInfo))
 					{
-						InputPathType = InputPathType.File;
+						InputPathType = InputPathType.ImageFile;
 
 						FolderPath = inputPathFileInfo.DirectoryName;
 						FilePath = inputPathFileInfo.FullName;
+					}
+					else if (IsZipArchive(inputPathFileInfo))
+					{
+						InputPathType = InputPathType.ZipArchive;
+
+						FolderPath = inputPathFileInfo.FullName;
 					}
 				}
 				catch
@@ -60,9 +67,12 @@ public class InputPathHandler : IInputPathHandler
 		IReadOnlyList<IFileSystemEntryInfo> folders)
 			=> await Task.Run(() =>
 				{
+					var nameComparison =
+						_globalParameters.NameComparer.ToStringComparison();
+
 					var matchingFileSystemEntryInfo = folders
 						.Where(aFolder => FolderPath!.StartsWithPath(
-							aFolder.Path, DirectorySeparator, _nameComparison))
+							aFolder.Path, DirectorySeparator, nameComparison))
 						.Select(aFolder => new
 						{
 							Folder = aFolder,
@@ -76,8 +86,22 @@ public class InputPathHandler : IInputPathHandler
 					return matchingFileSystemEntryInfo;
 				});
 
+	private const string ZipArchiveExtension = ".zip";
+
 	private static readonly string DirectorySeparator =
 		Path.DirectorySeparatorChar.ToString();
 
-	private readonly StringComparison _nameComparison;
+	private readonly IGlobalParameters _globalParameters;
+	private readonly ITabOptions _tabOptions;
+
+	private bool IsImageFile(FileInfo inputPathFileInfo)
+		=> _globalParameters.ImageFileExtensions.Contains(
+			inputPathFileInfo.Extension);
+
+	private bool IsZipArchive(FileInfo inputPathFileInfo)
+		=> _tabOptions.ZipArchivesEnabled &&
+		   string.Equals(
+			   inputPathFileInfo.Extension,
+			   ZipArchiveExtension,
+			   _globalParameters.FileExtensionComparison);
 }

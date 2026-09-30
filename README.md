@@ -22,7 +22,7 @@ Features:
 * automatic image orientation according to the EXIF orientation tag
 * toggle-able recursive folder browsing
 * targeted zooming in, and moving over the zoomed image
-* command-line direct access to the specified folder or image file
+* command-line direct access to the specified folder, image file or zip archive
 
 User interface:
 * left mouse button for interacting with tabs and folders, and for selecting, opening, zooming in and out, and dragging images

@@ -85,7 +85,8 @@ public interface IGlobalParameters
 	HashSet<string> ExifEnabledImageFileExtensions { get; }
 	HashSet<string> ImageFileExtensions { get; }
 
-	StringComparer ImageFileExtensionsComparer { get; }
+	StringComparer FileExtensionComparer { get; }
+	StringComparison FileExtensionComparison { get; }
 
 	int ImageQualityLevel { get; }
 	int DecimalDigitCountForDisplay { get; }

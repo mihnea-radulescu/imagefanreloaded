@@ -72,6 +72,7 @@ public class AppBootstrap : IAppBootstrap
 	private IDiscQueryEngine _discQueryEngine = null!;
 	private IImageIndexCalculator _imageIndexCalculator = null!;
 	private IImageViewFactory _imageViewFactory = null!;
+	private ITabOptions _tabOptions = null!;
 	private IInputPathHandlerFactory _inputPathHandlerFactory = null!;
 	private IInputPathHandler _commandLineArgsInputPathHandler = null!;
 
@@ -137,8 +138,10 @@ public class AppBootstrap : IAppBootstrap
 		_imageViewFactory = new ImageViewFactory(
 			_globalParameters, _mouseCursorFactory, screenInfo);
 
+		_tabOptions = _settingsFactory.GetTabOptions();
 		_inputPathHandlerFactory = new InputPathHandlerFactory(
-			_globalParameters);
+			_globalParameters, _tabOptions);
+
 		var commandLineArgsInputPath = GetCommandLineArgsInputPath();
 		_commandLineArgsInputPathHandler = _inputPathHandlerFactory
 			.GetInputPathHandler(commandLineArgsInputPath);
@@ -153,8 +156,10 @@ public class AppBootstrap : IAppBootstrap
 	}
 
 	private bool IsMainViewAccess()
-		=> _commandLineArgsInputPathHandler.InputPathType !=
-			InputPathType.File;
+		=> _commandLineArgsInputPathHandler.InputPathType is
+			InputPathType.NotSet or
+			InputPathType.Folder or
+			InputPathType.ZipArchive;
 
 	private void ShowMainView()
 	{
@@ -238,15 +243,14 @@ public class AppBootstrap : IAppBootstrap
 
 	private async Task ShowImageView()
 	{
-		ITabOptions tabOptions = _settingsFactory.GetTabOptions();
-		IImageView imageView = _imageViewFactory.GetImageView(tabOptions);
+		IImageView imageView = _imageViewFactory.GetImageView(_tabOptions);
 
 		imageView.IsStandaloneView = true;
 		imageView.ViewClosing += OnImageViewClosing;
 
 		var imageViewPresenter = new ImageViewPresenter(
 			_discQueryEngine,
-			tabOptions,
+			_tabOptions,
 			_imageIndexCalculator,
 			_commandLineArgsInputPathHandler,
 			_globalParameters,

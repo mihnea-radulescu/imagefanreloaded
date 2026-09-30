@@ -91,8 +91,11 @@ public abstract class GlobalParametersBase : IGlobalParameters
 	public HashSet<string> ExifEnabledImageFileExtensions { get; }
 	public HashSet<string> ImageFileExtensions { get; }
 
-	public StringComparer ImageFileExtensionsComparer
+	public StringComparer FileExtensionComparer
 		=> StringComparer.InvariantCultureIgnoreCase;
+
+	public StringComparison FileExtensionComparison =>
+		StringComparison.InvariantCultureIgnoreCase;
 
 	public int ImageQualityLevel { get; }
 	public int DecimalDigitCountForDisplay { get; }
@@ -203,7 +206,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".raf",
 			".rw2",
 			".wbmp"
-		], ImageFileExtensionsComparer);
+		], FileExtensionComparer);
 
 		IndirectlySupportedImageFileExtensions = new HashSet<string>(
 		[
@@ -233,7 +236,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".tif", ".tiff",
 			".xbm",
 			".xpm"
-		], ImageFileExtensionsComparer);
+		], FileExtensionComparer);
 
 		AnimationEnabledImageFileExtensions = new HashSet<string>(
 		[
@@ -242,7 +245,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".jxl",
 			".mng",
 			".webp"
-		], ImageFileExtensionsComparer);
+		], FileExtensionComparer);
 
 		ExifEnabledImageFileExtensions = new HashSet<string>(
 		[
@@ -253,7 +256,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			".png",
 			".tif", ".tiff",
 			".webp"
-		], ImageFileExtensionsComparer);
+		], FileExtensionComparer);
 
 		IReadOnlyList<string> imageFileExtensionList =
 		[
@@ -265,7 +268,7 @@ public abstract class GlobalParametersBase : IGlobalParameters
 			.OrderBy(anImageFileExtension => anImageFileExtension)
 			.ToList();
 		ImageFileExtensions = new HashSet<string>(
-			orderedImageFileExtensionList, ImageFileExtensionsComparer);
+			orderedImageFileExtensionList, FileExtensionComparer);
 
 		ImageQualityLevel = 80;
 		DecimalDigitCountForDisplay = 2;

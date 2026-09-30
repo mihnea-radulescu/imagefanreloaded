@@ -164,7 +164,7 @@ public class TabOptions : ITabOptions
 		_tabOptionsDto.EnabledImageFileExtensions = new HashSet<string>(
 		[
 			..sourceTabOptions.EnabledImageFileExtensions
-		], _globalParameters.ImageFileExtensionsComparer);
+		], _globalParameters.FileExtensionComparer);
 
 		_tabOptionsDto.ZipArchivesEnabled = sourceTabOptions.ZipArchivesEnabled;
 
@@ -267,7 +267,7 @@ public class TabOptions : ITabOptions
 			=> new(
 				[
 					..globalParameters.ImageFileExtensions
-				], globalParameters.ImageFileExtensionsComparer);
+				], globalParameters.FileExtensionComparer);
 
 	private TabOptionsDto GetTabOptionsDto()
 	{
@@ -332,8 +332,8 @@ public class TabOptions : ITabOptions
 				[
 					..tabOptionsDto.EnabledImageFileExtensions.Intersect(
 						_globalParameters.ImageFileExtensions,
-						_globalParameters.ImageFileExtensionsComparer)
-				], _globalParameters.ImageFileExtensionsComparer);
+						_globalParameters.FileExtensionComparer)
+				], _globalParameters.FileExtensionComparer);
 			}
 
 			if (!IsValidPanelsSplittingRatio(
@@ -427,7 +427,7 @@ public class TabOptions : ITabOptions
 		_defaultTabOptions.EnabledImageFileExtensions = new HashSet<string>(
 		[
 			.._tabOptionsDto.EnabledImageFileExtensions!
-		], _globalParameters.ImageFileExtensionsComparer);
+		], _globalParameters.FileExtensionComparer);
 
 		_defaultTabOptions.ZipArchivesEnabled =
 			_tabOptionsDto.ZipArchivesEnabled;
