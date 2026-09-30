@@ -139,6 +139,12 @@ public class TabOptions : ITabOptions
 		set => _tabOptionsDto.UpsizeFullScreenImageScalingFactor = value;
 	}
 
+	public bool LoopImages
+	{
+		get => _tabOptionsDto.LoopImages;
+		set => _tabOptionsDto.LoopImages = value;
+	}
+
 	public void CopyPropertyValuesFromSourceTabOptions(
 		ITabOptions sourceTabOptions)
 	{
@@ -180,6 +186,8 @@ public class TabOptions : ITabOptions
 			sourceTabOptions.KeyboardScrollThumbnailIncrement;
 		_tabOptionsDto.UpsizeFullScreenImageScalingFactor =
 			sourceTabOptions.UpsizeFullScreenImageScalingFactor;
+
+		_tabOptionsDto.LoopImages = sourceTabOptions.LoopImages;
 	}
 
 	public async Task SaveDefaultTabOptions()
@@ -227,7 +235,7 @@ public class TabOptions : ITabOptions
 	private const bool DefaultGlobalOrderingForRecursiveFolderBrowsing = false;
 
 	private const bool DefaultShowImageViewImageInfo = false;
-	private const int DefaultPanelsSplittingRatio = 15;
+	private const int DefaultPanelsSplittingRatio = 14;
 	private const decimal DefaultSlideshowInterval =
 		SlideshowIntervalsInSeconds.DefaultValue;
 	private const bool DefaultApplyImageOrientation = false;
@@ -237,6 +245,8 @@ public class TabOptions : ITabOptions
 	private const UpsizeFullScreenImageScalingFactor
 		DefaultUpsizeFullScreenImageScalingFactor =
 			UpsizeFullScreenImageScalingFactor.Disabled;
+
+	private const bool DefaultLoopImages = false;
 
 	private static readonly JsonTypeInfo<TabOptionsDto>
 		TabOptionsDtoJsonTypeInfo = TabOptionsDtoJsonContext
@@ -393,7 +403,9 @@ public class TabOptions : ITabOptions
 			KeyboardScrollThumbnailIncrement =
 				DefaultKeyboardScrollThumbnailIncrement,
 			UpsizeFullScreenImageScalingFactor =
-				DefaultUpsizeFullScreenImageScalingFactor
+				DefaultUpsizeFullScreenImageScalingFactor,
+
+			LoopImages = DefaultLoopImages
 		};
 	}
 
@@ -438,6 +450,8 @@ public class TabOptions : ITabOptions
 			_tabOptionsDto.KeyboardScrollThumbnailIncrement;
 		_defaultTabOptions.UpsizeFullScreenImageScalingFactor =
 			_tabOptionsDto.UpsizeFullScreenImageScalingFactor;
+
+		_defaultTabOptions.LoopImages = _tabOptionsDto.LoopImages;
 	}
 
 	private static bool IsValidEnumValue<TEnum>(TEnum enumValue)

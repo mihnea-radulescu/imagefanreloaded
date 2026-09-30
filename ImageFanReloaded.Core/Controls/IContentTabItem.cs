@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess.EntryInfo;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Mouse;
@@ -20,6 +21,7 @@ public interface IContentTabItem
 	IMouseCursorFactory? MouseCursorFactory { get; set; }
 
 	ITabOptions? TabOptions { get; set; }
+	IImageIndexCalculator? ImageIndexCalculator { get; set; }
 
 	IAsyncMutex? FolderChangedMutex { get; set; }
 	void DisposeFolderChangedMutex();

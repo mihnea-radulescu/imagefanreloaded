@@ -18,6 +18,8 @@ using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.DiscAccess.Implementation;
 using ImageFanReloaded.Core.DiscAccess.Implementation.DriveInfo;
 using ImageFanReloaded.Core.DiscAccess.Implementation.EntryInfo;
+using ImageFanReloaded.Core.ImageCore;
+using ImageFanReloaded.Core.ImageCore.Implementation;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.ImageHandling.Factories.Implementation;
@@ -68,6 +70,7 @@ public class AppBootstrap : IAppBootstrap
 	private IImageFileFactory _imageFileFactory = null!;
 	private IFileSystemEntryInfoFactory _fileSystemEntryInfoFactory = null!;
 	private IDiscQueryEngine _discQueryEngine = null!;
+	private IImageIndexCalculator _imageIndexCalculator = null!;
 	private IImageViewFactory _imageViewFactory = null!;
 	private IInputPathHandlerFactory _inputPathHandlerFactory = null!;
 	private IInputPathHandler _commandLineArgsInputPathHandler = null!;
@@ -128,6 +131,8 @@ public class AppBootstrap : IAppBootstrap
 				_imageFileFactory);
 		_discQueryEngine = new DiscQueryEngine(discQueryEngineFileSystem);
 
+		_imageIndexCalculator = new ImageIndexCalculator();
+
 		IScreenInfo screenInfo = new ScreenInfo();
 		_imageViewFactory = new ImageViewFactory(
 			_globalParameters, _mouseCursorFactory, screenInfo);
@@ -158,7 +163,8 @@ public class AppBootstrap : IAppBootstrap
 			_globalParameters,
 			_mouseCursorFactory,
 			_settingsFactory,
-			asyncMutexFactory);
+			asyncMutexFactory,
+			_imageIndexCalculator);
 
 		IMainView mainView = mainViewFactory.GetMainView();
 
@@ -240,6 +246,8 @@ public class AppBootstrap : IAppBootstrap
 
 		var imageViewPresenter = new ImageViewPresenter(
 			_discQueryEngine,
+			tabOptions,
+			_imageIndexCalculator,
 			_commandLineArgsInputPathHandler,
 			_globalParameters,
 			imageView);

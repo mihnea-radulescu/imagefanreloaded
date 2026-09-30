@@ -31,4 +31,6 @@ public record TabOptionsDto
 	public int KeyboardScrollThumbnailIncrement { get; set; }
 	public UpsizeFullScreenImageScalingFactor
 		UpsizeFullScreenImageScalingFactor { get; set; }
+
+	public bool LoopImages { get; set; }
 }

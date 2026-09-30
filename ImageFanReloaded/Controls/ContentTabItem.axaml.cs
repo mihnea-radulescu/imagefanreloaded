@@ -10,6 +10,7 @@ using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess.EntryInfo;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Mouse;
@@ -35,6 +36,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public IMouseCursorFactory? MouseCursorFactory { get; set; }
 
 	public ITabOptions? TabOptions { get; set; }
+	public IImageIndexCalculator? ImageIndexCalculator { get; set; }
 
 	public IAsyncMutex? FolderChangedMutex { get; set; }
 	public void DisposeFolderChangedMutex() => FolderChangedMutex?.Dispose();
@@ -717,38 +719,33 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private bool AdvanceFromSelectedThumbnail(int increment)
 	{
-		var canAdvanceToNewSelectedThumbnailIndex = false;
-
-		if (_selectedThumbnailBox is not null)
+		if (_selectedThumbnailBox is null)
 		{
-			var newSelectedThumbnailIndex =
-					_selectedThumbnailIndex + increment;
-
-			if (newSelectedThumbnailIndex < 0)
-			{
-				newSelectedThumbnailIndex = 0;
-			}
-			else if (newSelectedThumbnailIndex >= _thumbnailBoxList.Count)
-			{
-				newSelectedThumbnailIndex = _thumbnailBoxList.Count - 1;
-			}
-
-			if (_selectedThumbnailIndex != newSelectedThumbnailIndex)
-			{
-				canAdvanceToNewSelectedThumbnailIndex = true;
-
-				UnselectThumbnail();
-
-				_selectedThumbnailIndex = newSelectedThumbnailIndex;
-
-				_selectedThumbnailBox =
-					_thumbnailBoxList[_selectedThumbnailIndex];
-
-				SelectThumbnail();
-			}
+			return false;
 		}
 
-		return canAdvanceToNewSelectedThumbnailIndex;
+		var incrementedThumbnailIndex = ImageIndexCalculator!
+			.GetIncrementedImageIndex(
+				TabOptions!,
+				_thumbnailBoxList.Count,
+				_selectedThumbnailIndex,
+				increment);
+
+		var canAdvanceToIncrementedThumbnailIndex =
+			incrementedThumbnailIndex != _selectedThumbnailIndex;
+
+		if (canAdvanceToIncrementedThumbnailIndex)
+		{
+			UnselectThumbnail();
+
+			_selectedThumbnailIndex = incrementedThumbnailIndex;
+			_selectedThumbnailBox =
+				_thumbnailBoxList[_selectedThumbnailIndex];
+
+			SelectThumbnail();
+		}
+
+		return canAdvanceToIncrementedThumbnailIndex;
 	}
 
 	private void SelectThumbnail() => _selectedThumbnailBox?.SelectThumbnail();
@@ -1476,17 +1473,18 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 
 	private void HandleThumbnailScrolling(Key keyPressing)
 	{
+		var keyboardScrollThumbnailIncrement =
+			TabOptions!.KeyboardScrollThumbnailIncrement;
+
 		if (_selectedThumbnailBox is not null)
 		{
 			if (keyPressing == GlobalParameters!.PageUpKey)
 			{
-				AdvanceFromSelectedThumbnail(
-					-TabOptions!.KeyboardScrollThumbnailIncrement);
+				AdvanceFromSelectedThumbnail(-keyboardScrollThumbnailIncrement);
 			}
 			else if (keyPressing == GlobalParameters!.PageDownKey)
 			{
-				AdvanceFromSelectedThumbnail(
-					TabOptions!.KeyboardScrollThumbnailIncrement);
+				AdvanceFromSelectedThumbnail(keyboardScrollThumbnailIncrement);
 			}
 			else if (keyPressing == GlobalParameters!.BackspaceKey)
 			{

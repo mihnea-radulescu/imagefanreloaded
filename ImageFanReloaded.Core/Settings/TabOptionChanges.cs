@@ -27,5 +27,7 @@ public record TabOptionChanges
 	public bool HasChangedKeyboardScrollThumbnailIncrement { get; set; }
 	public bool HasChangedUpsizeFullScreenImageScalingFactor { get; set; }
 
+	public bool HasChangedLoopImages { get; set; }
+
 	public bool ShouldSaveAsDefault { get; set; }
 }

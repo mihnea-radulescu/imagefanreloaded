@@ -4,6 +4,7 @@ using Avalonia.Interactivity;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess.EntryInfo;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
@@ -27,6 +28,7 @@ public partial class MainWindow : Window, IMainView
 	public IMouseCursorFactory? MouseCursorFactory { get; set; }
 	public ISettingsFactory? SettingsFactory { get; set; }
 	public IAsyncMutexFactory? AsyncMutexFactory { get; set; }
+	public IImageIndexCalculator? ImageIndexCalculator { get; set; }
 
 	public event EventHandler<ContentTabItemAddedEventArgs>?
 		ContentTabItemAdded;
@@ -197,6 +199,7 @@ public partial class MainWindow : Window, IMainView
 			GlobalParameters = GlobalParameters,
 			MouseCursorFactory = MouseCursorFactory,
 			TabOptions = SettingsFactory!.GetTabOptions(),
+			ImageIndexCalculator = ImageIndexCalculator,
 			FolderChangedMutex = AsyncMutexFactory!.GetAsyncMutex()
 		};
 

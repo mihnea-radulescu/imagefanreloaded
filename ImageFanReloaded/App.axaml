@@ -28,5 +28,20 @@
 			<Setter Property="Margin" Value="4"/>
 			<Setter Property="Spacing" Value="8"/>
 		</Style>
+
+		<Style Selector="Window.DefaultSize">
+			<Setter Property="Width" Value="800"/>
+			<Setter Property="Height" Value="690"/>
+		</Style>
+
+		<Style Selector="Window.DefaultMinSize">
+			<Setter Property="MinWidth" Value="800"/>
+			<Setter Property="MinHeight" Value="690"/>
+		</Style>
+
+		<Style Selector="Window.HalfMinSize">
+			<Setter Property="MinWidth" Value="400"/>
+			<Setter Property="MinHeight" Value="345"/>
+		</Style>
 	</Application.Styles>
 </Application>

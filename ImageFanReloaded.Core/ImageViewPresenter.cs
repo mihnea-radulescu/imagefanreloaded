@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ImageFanReloaded.Core.Collections.Implementation;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
+using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.TextHandling.Implementation;
@@ -16,11 +16,15 @@ public class ImageViewPresenter
 {
 	public ImageViewPresenter(
 		IDiscQueryEngine discQueryEngine,
+		ITabOptions tabOptions,
+		IImageIndexCalculator imageIndexCalculator,
 		IInputPathHandler inputPathHandler,
 		IGlobalParameters globalParameters,
 		IImageView imageView)
 	{
 		_discQueryEngine = discQueryEngine;
+		_tabOptions = tabOptions;
+		_imageIndexCalculator = imageIndexCalculator;
 		_inputPathHandler = inputPathHandler;
 
 		_nameComparison = globalParameters.NameComparer.ToStringComparison();
@@ -48,6 +52,8 @@ public class ImageViewPresenter
 	}
 
 	private readonly IDiscQueryEngine _discQueryEngine;
+	private readonly ITabOptions _tabOptions;
+	private readonly IImageIndexCalculator _imageIndexCalculator;
 	private readonly IInputPathHandler _inputPathHandler;
 
 	private readonly StringComparison _nameComparison;
@@ -63,15 +69,19 @@ public class ImageViewPresenter
 
 	private async void OnImageChanged(object? sender, ImageChangedEventArgs e)
 	{
-		var newImageFileIndex = _currentImageFileIndex + e.Increment;
+		var incrementedImageIndex = _imageIndexCalculator
+			.GetIncrementedImageIndex(
+				_tabOptions,
+				_imageFiles!.Count,
+				_currentImageFileIndex,
+				e.Increment);
 
-		var canAdvanceToDesignatedImage =
-			_imageFiles!.IsIndexWithinBounds(newImageFileIndex);
-		_imageView.CanAdvanceToDesignatedImage = canAdvanceToDesignatedImage;
+		_imageView.CanAdvanceToDesignatedImage =
+			incrementedImageIndex != _currentImageFileIndex;
 
-		if (canAdvanceToDesignatedImage)
+		if (_imageView.CanAdvanceToDesignatedImage)
 		{
-			_currentImageFileIndex = newImageFileIndex;
+			_currentImageFileIndex = incrementedImageIndex;
 			_currentImageFile = _imageFiles![_currentImageFileIndex];
 
 			await LoadCurrentImage();

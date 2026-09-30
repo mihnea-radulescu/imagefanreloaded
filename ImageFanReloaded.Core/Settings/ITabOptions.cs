@@ -32,6 +32,8 @@ public interface ITabOptions
 	UpsizeFullScreenImageScalingFactor UpsizeFullScreenImageScalingFactor
 		{ get; set; }
 
+	bool LoopImages { get; set; }
+
 	void CopyPropertyValuesFromSourceTabOptions(ITabOptions sourceTabOptions);
 
 	Task SaveDefaultTabOptions();

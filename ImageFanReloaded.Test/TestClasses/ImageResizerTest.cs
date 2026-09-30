@@ -1,6 +1,6 @@
+using Avalonia.Media.Imaging;
 using NSubstitute;
 using Xunit;
-using Avalonia.Media.Imaging;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageCore.Implementation;
 using ImageFanReloaded.Core.ImageHandling;

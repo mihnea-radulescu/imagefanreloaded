@@ -61,6 +61,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		PopulateKeyboardScrollThumbnailIncrements();
 		PopulateUpsizeFullScreenImageScalingFactors();
 
+		SetLoopImages();
+
 		RegisterTabOptionEvents();
 	}
 
@@ -282,6 +284,14 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		TabOptions!.UpsizeFullScreenImageScalingFactor =
 			upsizeFullScreenImageScalingFactor;
 		_tabOptionChanges.HasChangedUpsizeFullScreenImageScalingFactor = true;
+	}
+
+	private void OnLoopImagesIsCheckedChanged(object? sender, RoutedEventArgs e)
+	{
+		var loopImages = _loopImagesCheckBox.IsChecked!.Value;
+
+		TabOptions!.LoopImages = loopImages;
+		_tabOptionChanges.HasChangedLoopImages = true;
 	}
 
 	private void OnSaveAsDefaultIsCheckedChanged(
@@ -573,6 +583,11 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		}
 	}
 
+	private void SetLoopImages()
+	{
+		_loopImagesCheckBox.IsChecked = TabOptions!.LoopImages;
+	}
+
 	private void UpdateEnabledImageFileExtensions()
 	{
 		var checkedEnabledImageFileExtensions =
@@ -635,6 +650,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 		_upsizeFullScreenImageScalingFactorComboBox.SelectionChanged +=
 			OnUpsizeFullScreenImageScalingFactorSelectionChanged;
 
+		_loopImagesCheckBox.IsCheckedChanged += OnLoopImagesIsCheckedChanged;
+
 		_saveAsDefaultCheckBox.IsCheckedChanged +=
 			OnSaveAsDefaultIsCheckedChanged;
 	}
@@ -686,6 +703,8 @@ public partial class TabOptionsWindow : Window, ITabOptionsView
 			OnKeyboardScrollThumbnailIncrementSelectionChanged;
 		_upsizeFullScreenImageScalingFactorComboBox.SelectionChanged -=
 			OnUpsizeFullScreenImageScalingFactorSelectionChanged;
+
+		_loopImagesCheckBox.IsCheckedChanged -= OnLoopImagesIsCheckedChanged;
 
 		_saveAsDefaultCheckBox.IsCheckedChanged -=
 			OnSaveAsDefaultIsCheckedChanged;
