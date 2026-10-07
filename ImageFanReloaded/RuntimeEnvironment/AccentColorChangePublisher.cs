@@ -22,7 +22,8 @@ public class AccentColorChangePublisher : IAccentColorChangePublisher
 				await Dispatcher.UIThread.InvokeAsync(
 					() => RefreshAccentColor(window));
 
-				await Task.Delay(RefreshAccentColorInterval);
+				await Task
+					.Delay(RefreshAccentColorInterval).ConfigureAwait(false);
 			}
 		});
 	}
