@@ -1,5 +1,5 @@
+using System.Drawing;
 using Avalonia;
-using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace ImageFanReloaded.Controls.Extensions;
@@ -18,9 +18,11 @@ public static class VisualExtensions
 			}
 
 			var colorValues = platformSettings.GetColorValues();
-			var accentColor = colorValues.AccentColor1;
 
-			return accentColor;
+			var avaloniaAccentColor = colorValues.AccentColor1;
+			var systemAccentColor = avaloniaAccentColor.ToSystemColor();
+
+			return systemAccentColor;
 		}
 	}
 }

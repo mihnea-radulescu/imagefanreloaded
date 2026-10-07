@@ -1,9 +1,11 @@
+using Avalonia.Controls;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.Mouse;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
+using ImageFanReloaded.RuntimeEnvironment;
 
 namespace ImageFanReloaded.Controls.Factories;
 
@@ -32,6 +34,10 @@ public class MainViewFactory : IMainViewFactory
 		mainView.SettingsFactory = _settingsFactory;
 		mainView.AsyncMutexFactory = _asyncMutexFactory;
 		mainView.ImageIndexCalculator = _imageIndexCalculator;
+
+		var mainWindow = (Window)mainView;
+		mainView.AccentColorChangePublisher =
+			new AccentColorChangePublisher(mainWindow);
 
 		return mainView;
 	}

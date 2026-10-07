@@ -7,6 +7,7 @@ using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Mouse;
+using ImageFanReloaded.Core.RuntimeEnvironment;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 using ImageFanReloaded.Keyboard;
@@ -29,6 +30,7 @@ public partial class MainWindow : Window, IMainView
 	public ISettingsFactory? SettingsFactory { get; set; }
 	public IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 	public IImageIndexCalculator? ImageIndexCalculator { get; set; }
+	public IAccentColorChangePublisher? AccentColorChangePublisher { get; set; }
 
 	public event EventHandler<ContentTabItemAddedEventArgs>?
 		ContentTabItemAdded;
@@ -193,10 +195,11 @@ public partial class MainWindow : Window, IMainView
 	private (IContentTabItem contentTabItem, object tabItem) BuildTabItemData(
 		ITabOptions? tabOptions)
 	{
-		var contentTabItem = new ContentTabItem
+		IContentTabItem contentTabItem = new ContentTabItem
 		{
 			MainView = this,
 			GlobalParameters = GlobalParameters,
+			AccentColorChangePublisher = AccentColorChangePublisher,
 			MouseCursorFactory = MouseCursorFactory,
 			TabOptions = SettingsFactory!.GetTabOptions(),
 			ImageIndexCalculator = ImageIndexCalculator,
@@ -205,13 +208,14 @@ public partial class MainWindow : Window, IMainView
 
 		if (tabOptions is not null)
 		{
-			contentTabItem.TabOptions.CopyPropertyValuesFromSourceTabOptions(
+			contentTabItem.TabOptions!.CopyPropertyValuesFromSourceTabOptions(
 				tabOptions);
 		}
 
 		var contentTabItemHeader = new ContentTabItemHeader
 		{
 			GlobalParameters = GlobalParameters,
+			AccentColorChangePublisher = AccentColorChangePublisher,
 			ContentTabItem = contentTabItem
 		};
 
@@ -219,7 +223,7 @@ public partial class MainWindow : Window, IMainView
 		contentTabItem.ContentTabItemHeader.TabCloned += CloneTab;
 		contentTabItem.ContentTabItemHeader.TabClosed += CloseTab;
 
-		contentTabItem.RegisterMainViewEvents();
+		contentTabItem.RegisterEvents();
 		contentTabItem.SetTabInfo(DefaultTabItemTitle, string.Empty);
 
 		contentTabItem.UpdatePanelsSplittingRatio();
@@ -290,7 +294,7 @@ public partial class MainWindow : Window, IMainView
 			contentTabItem.ContentTabItemHeader!.TabClosed -=
 				CloseTab;
 
-			contentTabItem.UnregisterMainViewEvents();
+			contentTabItem.UnregisterEvents();
 		});
 
 		SelectLastTabItem();

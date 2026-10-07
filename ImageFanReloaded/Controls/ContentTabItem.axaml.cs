@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -14,6 +15,7 @@ using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Mouse;
+using ImageFanReloaded.Core.RuntimeEnvironment;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 
@@ -33,6 +35,7 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public IMainView? MainView { get; set; }
 
 	public IGlobalParameters? GlobalParameters { get; set; }
+	public IAccentColorChangePublisher? AccentColorChangePublisher { get; set; }
 	public IMouseCursorFactory? MouseCursorFactory { get; set; }
 
 	public ITabOptions? TabOptions { get; set; }
@@ -249,10 +252,17 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	public void SetTabInfo(string folderName, string folderPath)
 		=> ContentTabItemHeader!.SetTabHeader(folderName, folderPath);
 
-	public void RegisterMainViewEvents() => MainView!.TabCountChanged +=
-		OnTabCountChanged;
-	public void UnregisterMainViewEvents() => MainView!.TabCountChanged -=
-		OnTabCountChanged;
+	public void RegisterEvents()
+	{
+		MainView!.TabCountChanged += OnTabCountChanged;
+		AccentColorChangePublisher!.AccentColorChanged += OnAccentColorChanged;
+	}
+
+	public void UnregisterEvents()
+	{
+		MainView!.TabCountChanged -= OnTabCountChanged;
+		AccentColorChangePublisher!.AccentColorChanged -= OnAccentColorChanged;
+	}
 
 	public void PopulateRootNodesSubFoldersTree(
 		IReadOnlyList<IFileSystemEntryInfo> rootFolders)
@@ -576,8 +586,23 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 	private int _maxThumbnailIndex;
 	private int _selectedThumbnailIndex;
 	private IThumbnailBox? _selectedThumbnailBox;
+	private Color _selectedThumbnailBoxBorderColor;
 
 	private TreeViewItem? _activeFolderTreeViewItem;
+
+	private void OnControlLoaded(object? sender, RoutedEventArgs e)
+	{
+		_selectedThumbnailBoxBorderColor =
+			AccentColorChangePublisher!.GetAccentColor();
+	}
+
+	private void OnAccentColorChanged(
+		object? sender, AccentColorChangedEventArgs e)
+	{
+		_selectedThumbnailBoxBorderColor = e.AccentColor;
+
+		_selectedThumbnailBox?.SetBorderColor(_selectedThumbnailBoxBorderColor);
+	}
 
 	private void OnThumbnailBoxSelected(
 		object? sender, ThumbnailBoxSelectedEventArgs e)
@@ -753,9 +778,17 @@ public partial class ContentTabItem : UserControl, IContentTabItem
 		return canAdvanceToIncrementedThumbnailIndex;
 	}
 
-	private void SelectThumbnail() => _selectedThumbnailBox?.SelectThumbnail();
+	private void SelectThumbnail()
+	{
+		_selectedThumbnailBox?.SelectThumbnail();
+		_selectedThumbnailBox?.SetBorderColor(_selectedThumbnailBoxBorderColor);
+	}
+
 	private void UnselectThumbnail()
-		=> _selectedThumbnailBox?.UnselectThumbnail();
+	{
+		_selectedThumbnailBox?.UnselectThumbnail();
+		_selectedThumbnailBox?.SetBorderColor(Color.LightGray);
+	}
 
 	private async Task DisplayImage(bool startSlideshow)
 	{

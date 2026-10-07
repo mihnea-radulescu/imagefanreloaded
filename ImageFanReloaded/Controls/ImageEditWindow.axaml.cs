@@ -18,6 +18,7 @@ using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.Core.Mouse;
+using ImageFanReloaded.Core.RuntimeEnvironment;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.TextHandling.Implementation;
 using ImageFanReloaded.ImageHandling.Extensions;
@@ -77,6 +78,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 				_globalParameters!.NameComparer.ToStringComparison();
 		}
 	}
+
+	public IAccentColorChangePublisher? AccentColorChangePublisher { get; set; }
 
 	public IMouseCursorFactory? MouseCursorFactory
 	{
@@ -138,17 +141,22 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private double DisplayImageWidth => _displayImage.Bounds.Width;
 	private double DisplayImageHeight => _displayImage.Bounds.Height;
 
-	private static IBrush? _accentColorBrush;
+	private IBrush? _drawingCropRectangleBrush;
 
 	private async void OnWindowLoaded(object? sender, RoutedEventArgs e)
 	{
-		if (_accentColorBrush is null)
-		{
-			var accentColor = this.GetAccentColor();
-			_accentColorBrush = accentColor!.Value.GetColorBrush();
-		}
+		var accentColor = AccentColorChangePublisher!.GetAccentColor();
+		SetDrawingCropRectangleColor(accentColor);
 
 		await LoadImage();
+	}
+
+	private void OnAccentColorChanged(
+		object? sender, AccentColorChangedEventArgs e)
+	{
+		var accentColor = e.AccentColor;
+
+		SetDrawingCropRectangleColor(accentColor);
 	}
 
 	private async void OnKeyPressing(object? sender, KeyEventArgs e)
@@ -481,6 +489,13 @@ public partial class ImageEditWindow : Window, IImageEditView
 		=> await DownsizeToPercentage();
 	private async void OnDownsizeToDimensions(object? sender, RoutedEventArgs e)
 		=> await DownsizeToDimensions();
+
+	private void SetDrawingCropRectangleColor(
+		System.Drawing.Color systemAccentColor)
+	{
+		var avaloniaAccentColor = systemAccentColor.ToAvaloniaColor();
+		_drawingCropRectangleBrush = avaloniaAccentColor.GetColorBrush();
+	}
 
 	private async Task LoadImage()
 	{
@@ -1071,6 +1086,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void RegisterEvents()
 	{
+		AccentColorChangePublisher!.AccentColorChanged += OnAccentColorChanged;
+
 		_snapCropEdgesCheckBox.IsCheckedChanged +=
 			OnSnapCropEdgesCheckBoxIsCheckedChanged;
 
@@ -1085,6 +1102,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 	private void UnregisterEvents()
 	{
+		AccentColorChangePublisher!.AccentColorChanged -= OnAccentColorChanged;
+
 		_snapCropEdgesCheckBox.IsCheckedChanged -=
 			OnSnapCropEdgesCheckBoxIsCheckedChanged;
 
@@ -1330,7 +1349,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		var drawingCropRectangle = new Avalonia.Controls.Shapes.Rectangle
 		{
-			Stroke = _accentColorBrush,
+			Stroke = _drawingCropRectangleBrush,
 			StrokeThickness = 2,
 			Width = cropToGridRectangle.Width,
 			Height = cropToGridRectangle.Height

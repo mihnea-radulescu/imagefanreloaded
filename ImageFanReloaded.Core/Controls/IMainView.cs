@@ -3,6 +3,7 @@ using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess.EntryInfo;
 using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.Mouse;
+using ImageFanReloaded.Core.RuntimeEnvironment;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 
@@ -15,6 +16,7 @@ public interface IMainView
 	ISettingsFactory? SettingsFactory { get; set; }
 	IAsyncMutexFactory? AsyncMutexFactory { get; set; }
 	IImageIndexCalculator? ImageIndexCalculator { get; set; }
+	IAccentColorChangePublisher? AccentColorChangePublisher { get; set; }
 
 	event EventHandler<ContentTabItemAddedEventArgs>? ContentTabItemAdded;
 	event EventHandler<ContentTabItemEventArgs>? ContentTabItemClosed;

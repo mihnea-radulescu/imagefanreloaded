@@ -8,6 +8,7 @@ using ImageFanReloaded.Core.ImageCore;
 using ImageFanReloaded.Core.ImageHandling;
 using ImageFanReloaded.Core.Keyboard;
 using ImageFanReloaded.Core.Mouse;
+using ImageFanReloaded.Core.RuntimeEnvironment;
 using ImageFanReloaded.Core.Settings;
 using ImageFanReloaded.Core.Synchronization;
 
@@ -18,6 +19,7 @@ public interface IContentTabItem
 	IMainView? MainView { get; set; }
 
 	IGlobalParameters? GlobalParameters { get; set; }
+	IAccentColorChangePublisher? AccentColorChangePublisher { get; set; }
 	IMouseCursorFactory? MouseCursorFactory { get; set; }
 
 	ITabOptions? TabOptions { get; set; }
@@ -60,8 +62,8 @@ public interface IContentTabItem
 
 	void SetTabInfo(string folderName, string folderPath);
 
-	void RegisterMainViewEvents();
-	void UnregisterMainViewEvents();
+	void RegisterEvents();
+	void UnregisterEvents();
 
 	void PopulateRootNodesSubFoldersTree(
 		IReadOnlyList<IFileSystemEntryInfo> rootFolders);

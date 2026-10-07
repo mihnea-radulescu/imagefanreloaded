@@ -235,7 +235,7 @@ public class TabOptions : ITabOptions
 	private const bool DefaultGlobalOrderingForRecursiveFolderBrowsing = false;
 
 	private const bool DefaultShowImageViewImageInfo = false;
-	private const int DefaultPanelsSplittingRatio = 14;
+	private const int DefaultPanelsSplittingRatio = 15;
 	private const decimal DefaultSlideshowInterval =
 		SlideshowIntervalsInSeconds.DefaultValue;
 	private const bool DefaultApplyImageOrientation = false;

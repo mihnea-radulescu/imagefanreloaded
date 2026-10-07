@@ -6,6 +6,7 @@ using ImageFanReloaded.Core.DiscAccess;
 using ImageFanReloaded.Core.ImageHandling.Factories;
 using ImageFanReloaded.Core.ImageHandling.ImageFileData;
 using ImageFanReloaded.Core.Mouse;
+using ImageFanReloaded.Core.RuntimeEnvironment;
 using ImageFanReloaded.Core.Settings;
 
 namespace ImageFanReloaded.Core.Controls;
@@ -13,6 +14,7 @@ namespace ImageFanReloaded.Core.Controls;
 public interface IImageEditView
 {
 	IGlobalParameters? GlobalParameters { get; set; }
+	IAccentColorChangePublisher? AccentColorChangePublisher { get; set; }
 
 	IMouseCursorFactory? MouseCursorFactory { get; set; }
 	IEditableImageFactory? EditableImageFactory { get; set; }

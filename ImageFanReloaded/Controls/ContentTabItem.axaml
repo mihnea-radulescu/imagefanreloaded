@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 x:Class="ImageFanReloaded.Controls.ContentTabItem">
+			 x:Class="ImageFanReloaded.Controls.ContentTabItem"
+			 Loaded="OnControlLoaded">
 	<Grid RowDefinitions="Auto,*">
 		<StackPanel Grid.Row="0"
 		            Classes="HorizontalStackPanel"

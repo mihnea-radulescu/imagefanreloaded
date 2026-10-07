@@ -34,6 +34,8 @@ public class ImageEditViewFactory : IImageEditViewFactory
 		IImageEditView imageEditView = new ImageEditWindow();
 
 		imageEditView.GlobalParameters = _globalParameters;
+		imageEditView.AccentColorChangePublisher =
+			contentTabItem.AccentColorChangePublisher;
 
 		imageEditView.MouseCursorFactory = _mouseCursorFactory;
 		imageEditView.EditableImageFactory = _editableImageFactory;

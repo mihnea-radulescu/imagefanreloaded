@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.ImageHandling;
@@ -27,6 +28,7 @@ public interface IThumbnailBox
 
 	void SelectThumbnail();
 	void UnselectThumbnail();
+	void SetBorderColor(Color borderColor);
 
 	void BringThumbnailIntoView();
 	void RefreshThumbnail();

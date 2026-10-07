@@ -1,8 +1,8 @@
 using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 using ImageFanReloaded.Controls.Extensions;
 using ImageFanReloaded.Core.Controls;
 using ImageFanReloaded.Core.CustomEventArgs;
@@ -19,6 +19,7 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 	}
 
 	public IGlobalParameters? GlobalParameters { get; set; }
+	public IAccentColorChangePublisher? AccentColorChangePublisher { get; set; }
 	public IContentTabItem? ContentTabItem { get; set; }
 
 	public event EventHandler<ContentTabItemAddedEventArgs>? TabCloned;
@@ -33,41 +34,28 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 	public void ShowTabCloseButton(bool showTabCloseButton)
 		=> _tabCloseBorder.IsVisible = showTabCloseButton;
 
-	private static IBrush? _accentColorBrush;
-
 	private void OnControlLoaded(object? sender, RoutedEventArgs e)
 	{
+		var accentColor = AccentColorChangePublisher!.GetAccentColor();
+		SetTabCloseBorderBackground(accentColor);
+
 		_tabToolTipTextBlock.FontSize = _tabTitleTextBlock.FontSize;
 
-		if (_accentColorBrush is not null)
-		{
-			_tabCloseBorder.Background = _accentColorBrush;
-		}
-		else if (GlobalParameters!.RuntimeEnvironmentType ==
-		         RuntimeEnvironmentType.Windows ||
-		         GlobalParameters!.HasStartedAsImageView)
-		{
-			var accentColor = this.GetAccentColor();
-			if (accentColor is not null)
-			{
-				_accentColorBrush = accentColor.Value.GetColorBrush();
-				_tabCloseBorder.Background = _accentColorBrush;
-			}
-		}
+		AccentColorChangePublisher!.AccentColorChanged += OnAccentColorChanged;
 	}
 
-	private void OnActualThemeVariantChanged(object? sender, EventArgs e)
+	private void OnControlDetachedFromVisualTree(
+		object? sender, VisualTreeAttachmentEventArgs e)
 	{
-		if (_accentColorBrush is null)
-		{
-			var accentColor = this.GetAccentColor();
-			if (accentColor is not null)
-			{
-				_accentColorBrush = accentColor.Value.GetColorBrush();
-			}
-		}
+		AccentColorChangePublisher!.AccentColorChanged -= OnAccentColorChanged;
+	}
 
-		_tabCloseBorder.Background = _accentColorBrush;
+	private void OnAccentColorChanged(
+		object? sender, AccentColorChangedEventArgs e)
+	{
+		var accentColor = e.AccentColor;
+
+		SetTabCloseBorderBackground(accentColor);
 	}
 
 	private void OnTabClone(object? sender, PointerReleasedEventArgs e)
@@ -95,5 +83,15 @@ public partial class ContentTabItemHeader : UserControl, IContentTabItemHeader
 			TabClosed?.Invoke(
 				this, new ContentTabItemEventArgs(ContentTabItem!));
 		}
+	}
+
+	private void SetTabCloseBorderBackground(
+		System.Drawing.Color tabCloseBorderBackgroundColor)
+	{
+		var avaloniaTabCloseBorderBackgroundColor =
+			tabCloseBorderBackgroundColor.ToAvaloniaColor();
+
+		_tabCloseBorder.Background =
+			avaloniaTabCloseBorderBackgroundColor.GetColorBrush();
 	}
 }
