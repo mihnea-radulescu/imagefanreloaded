@@ -70,6 +70,14 @@
 	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
+		<release version="1.2026.10.10" date="2026-10-10">
+			<description>
+				<ul>
+					<li>Ensured system accent color changes are propagated to the application</li>
+					<li>Updated application libraries</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.2026.10.01" date="2026-10-01">
 			<description>
 				<ul>

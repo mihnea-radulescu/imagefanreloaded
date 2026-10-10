@@ -33,7 +33,7 @@ public class AccentColorChangePublisher : IAccentColorChangePublisher
 	public event EventHandler<AccentColorChangedEventArgs>? AccentColorChanged;
 
 	private static readonly TimeSpan RefreshAccentColorInterval =
-		TimeSpan.FromSeconds(0.5);
+		TimeSpan.FromSeconds(1);
 
 	private Color _accentColor;
 
