@@ -16,6 +16,7 @@ public static class ImageFileDataExtensions
 
 				return normalizedFileExtension switch
 				{
+					".cr2" => MagickFormat.Cr2,
 					".cur" => MagickFormat.Cur,
 					".dng" => MagickFormat.Dng,
 					".ico" => MagickFormat.Ico,
