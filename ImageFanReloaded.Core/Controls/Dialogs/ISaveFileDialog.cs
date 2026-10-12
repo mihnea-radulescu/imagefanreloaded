@@ -9,5 +9,5 @@ public interface ISaveFileDialog
 		string imageFolderPath,
 		string saveFileDialogTitle);
 
-	bool ShouldAlwaysRefreshSaveFolder { get; }
+	bool IsAliasedSaveFolder { get; }
 }

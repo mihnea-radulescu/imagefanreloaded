@@ -9,5 +9,5 @@ public class FlatpakSaveFileDialog : SaveFileDialogBase
 	{
 	}
 
-	public override bool ShouldAlwaysRefreshSaveFolder => true;
+	public override bool IsAliasedSaveFolder => true;
 }

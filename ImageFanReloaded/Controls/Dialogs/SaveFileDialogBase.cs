@@ -31,7 +31,7 @@ public abstract class SaveFileDialogBase : ISaveFileDialog
 		return imageToSaveFilePath;
 	}
 
-	public abstract bool ShouldAlwaysRefreshSaveFolder { get; }
+	public abstract bool IsAliasedSaveFolder { get; }
 
 	protected SaveFileDialogBase(IStorageProvider storageProvider)
 	{

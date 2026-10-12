@@ -9,5 +9,5 @@ public class DefaultSaveFileDialog : SaveFileDialogBase
 	{
 	}
 
-	public override bool ShouldAlwaysRefreshSaveFolder => false;
+	public override bool IsAliasedSaveFolder => false;
 }

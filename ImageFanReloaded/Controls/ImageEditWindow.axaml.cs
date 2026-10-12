@@ -11,6 +11,7 @@ using Avalonia.Media;
 using ImageFanReloaded.Controls.Extensions;
 using ImageFanReloaded.Controls.MessageBoxControl;
 using ImageFanReloaded.Core.Controls;
+using ImageFanReloaded.Core.Controls.Dialogs;
 using ImageFanReloaded.Core.Controls.Factories;
 using ImageFanReloaded.Core.CustomEventArgs;
 using ImageFanReloaded.Core.DiscAccess;
@@ -868,6 +869,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 			if (imageToSaveFilePath is not null)
 			{
+				var imageToSaveFileName = Path.GetFileName(imageToSaveFilePath);
+
 				try
 				{
 					if (hasSameFormat)
@@ -883,23 +886,23 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 					_hasUnsavedChanges = false;
 
-					if (saveFileDialog.ShouldAlwaysRefreshSaveFolder)
+					if (ShouldConsiderImageFileOrFolderRefresh(imageFileData))
 					{
-						FolderContentChanged?.Invoke(
-							this, new ContentTabItemEventArgs(ContentTabItem!));
-					}
-					else if (ShouldConsiderImageFileOrFolderRefresh(
-						         imageFileData))
-					{
-						if (HasOverwrittenCurrentImageFile(
-							    imageToSaveFilePath, imageFilePath))
+						if (ShouldRefreshOnlyImageFile(
+							    saveFileDialog,
+							    imageFilePath,
+							    imageFileName,
+							    imageToSaveFilePath,
+							    imageToSaveFileName))
 						{
 							ImageFileOverwritten?.Invoke(
 								this,
 								new ContentTabItemEventArgs(ContentTabItem!));
 						}
-						else if (HasSavedImageFileInCurrentFolder(
-							         imageToSaveFilePath, imageFolderPath))
+						else if (ShouldRefreshEntireFolder(
+							         saveFileDialog,
+							         imageFolderPath,
+							         imageToSaveFilePath))
 						{
 							FolderContentChanged?.Invoke(
 								this,
@@ -909,9 +912,6 @@ public partial class ImageEditWindow : Window, IImageEditView
 				}
 				catch
 				{
-					var imageToSaveFileName = Path.GetFileName(
-						imageToSaveFilePath);
-
 					await ShowImageSaveErrorMessageBox(imageToSaveFileName);
 				}
 			}
@@ -982,18 +982,45 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 	}
 
-	private bool HasOverwrittenCurrentImageFile(
-		string imageToSaveFilePath, string imageFilePath)
-			=> imageToSaveFilePath.Equals(imageFilePath,
-				_fileSystemStringComparison!.Value);
+	private bool ShouldConsiderImageFileOrFolderRefresh(
+		IImageFileData imageFileData)
+		=> imageFileData.FilePath.Equals(
+			imageFileData.QualifiedFilePath,
+			_fileSystemStringComparison!.Value);
 
-	private bool HasSavedImageFileInCurrentFolder(
-		string imageToSaveFilePath, string imageFolderPath)
-			=> PathInfo!.IsFileInFolder(
-				imageToSaveFilePath,
-				imageFolderPath,
-				Path.DirectorySeparatorChar,
-				_fileSystemStringComparison!.Value);
+	private bool ShouldRefreshOnlyImageFile(
+		ISaveFileDialog saveFileDialog,
+		string imageFilePath,
+		string imageFileName,
+		string imageToSaveFilePath,
+		string imageToSaveFileName)
+	{
+		if (saveFileDialog.IsAliasedSaveFolder)
+		{
+			return imageFileName.Equals(
+				imageToSaveFileName, _fileSystemStringComparison!.Value);
+		}
+
+		return imageFilePath.Equals(
+			imageToSaveFilePath, _fileSystemStringComparison!.Value);
+	}
+
+	private bool ShouldRefreshEntireFolder(
+		ISaveFileDialog saveFileDialog,
+		string imageFolderPath,
+		string imageToSaveFilePath)
+	{
+		if (saveFileDialog.IsAliasedSaveFolder)
+		{
+			return true;
+		}
+
+		return PathInfo!.IsFileInFolder(
+			imageToSaveFilePath,
+			imageFolderPath,
+			Path.DirectorySeparatorChar,
+			_fileSystemStringComparison!.Value);
+	}
 
 	private void RefreshContent()
 	{
@@ -1422,8 +1449,4 @@ public partial class ImageEditWindow : Window, IImageEditView
 	private static string GetDownsizeComboBoxKey(
 		ComboBox downsizeComboBox, int downsizeValue)
 			=> $"{downsizeComboBox.Name}_{downsizeValue}";
-
-	private static bool ShouldConsiderImageFileOrFolderRefresh(
-		IImageFileData imageFileData)
-			=> imageFileData.FilePath == imageFileData.QualifiedFilePath;
 }
