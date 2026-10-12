@@ -517,7 +517,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 		}
 		else
 		{
-			SetImageLoadErrorTitle();
+			SetLoadingImageTitleError();
 		}
 
 		_isLoading = false;
@@ -851,6 +851,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	{
 		await PerformUiUpdate(async () =>
 		{
+			SetSavingImageTitle();
+
 			var hasSameFormat = saveFileImageFormat is null;
 
 			var imageFileData = ImageFileData!;
@@ -968,6 +970,8 @@ public partial class ImageEditWindow : Window, IImageEditView
 	{
 		try
 		{
+			SetPerformImageTransformTitle();
+
 			if (transformImageAction is not null)
 			{
 				await Task.Run(transformImageAction);
@@ -1079,7 +1083,7 @@ public partial class ImageEditWindow : Window, IImageEditView
 
 		SetDownsizeButtonEnabledStatus();
 
-		SetImageTitle();
+		SetDefaultImageTitle();
 
 		FocusLastFocusableControl();
 	}
@@ -1229,16 +1233,18 @@ public partial class ImageEditWindow : Window, IImageEditView
 			_downsizeToPercentageMenuItem.IsEnabled ||
 			_downsizeToDimensionsMenuItem.IsEnabled;
 
+	private void SetDefaultImageTitle()
+		=> Title = $"{ImageFileData!.FileName} - {_editableImage!.ImageSize}";
 	private void SetLoadingImageTitle()
 		=> Title = $"{ImageFileData!.FileName} - loading image...";
-
-	private void SetImageTitle()
-		=> Title = $"{ImageFileData!.FileName} - {_editableImage!.ImageSize}";
+	private void SetLoadingImageTitleError()
+		=> Title = $"{ImageFileData!.FileName} - image read error";
+	private void SetPerformImageTransformTitle()
+		=> Title = $"{ImageFileData!.FileName} - performing image transformation...";
+	private void SetSavingImageTitle()
+		=> Title = $"{ImageFileData!.FileName} - saving image...";
 
 	private void FocusLastFocusableControl() => _lastFocusableControl.Focus();
-
-	private void SetImageLoadErrorTitle()
-		=> Title = $"{ImageFileData!.FileName} - image read error";
 
 	private static void ExpandDropDownButton(DropDownButton dropDownButton)
 	{

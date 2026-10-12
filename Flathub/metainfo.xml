@@ -75,6 +75,7 @@
 				<ul>
 					<li>Optimized folder and image file refresh</li>
 					<li>Fixed .cr2 format image editing</li>
+					<li>Added window title status updates for image editing</li>
 					<li>Updated application libraries</li>
 				</ul>
 			</description>
