@@ -5,18 +5,31 @@
 	<id>io.github.mihnea_radulescu.imagefanreloaded</id>
 
 	<name>ImageFan Reloaded</name>
-	<summary>Feature-rich, tab-based image viewer, supporting multi-core processing</summary>
+	<summary>Tab-based image viewer</summary>
 
 	<developer id="io.github.mihnea_radulescu">
 		<name>Mihnea Rădulescu</name>
 	</developer>
+
 	<content_rating type="oars-1.1" />
 
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
 
+	<supports>
+		<control>keyboard</control>
+		<control>pointing</control>
+		<control>touch</control>
+	</supports>
+
+	<launchable type="desktop-id">io.github.mihnea_radulescu.imagefanreloaded.desktop</launchable>
+
+	<url type="homepage">https://github.com/mihnea-radulescu/imagefanreloaded</url>
+	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
+	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
+
 	<description>
-		<p>ImageFan Reloaded is a fast and easy-to-use image viewer with broad format support for everyday photo browsing and management.</p>
+		<p>ImageFan Reloaded is a feature-rich, tab-based image viewer, supporting multi-core processing.</p>
 		<p>Features:</p>
 		<ul>
 			<li>quick concurrent thumbnail generation, scaling to the number of processor cores present</li>
@@ -40,8 +53,6 @@
 		</ul>
 	</description>
 
-	<launchable type="desktop-id">io.github.mihnea_radulescu.imagefanreloaded.desktop</launchable>
-
 	<screenshots>
 		<screenshot type="default">
 			<image>https://raw.githubusercontent.com/mihnea-radulescu/imagefanreloaded/main/Screenshot-MainDark.jpg</image>
@@ -64,10 +75,6 @@
 			<caption>Tab options view</caption>
 		</screenshot>
 	</screenshots>
-
-	<url type="homepage">https://github.com/mihnea-radulescu/imagefanreloaded</url>
-	<url type="bugtracker">https://github.com/mihnea-radulescu/imagefanreloaded/issues</url>
-	<url type="vcs-browser">https://github.com/mihnea-radulescu</url>
 
 	<releases>
 		<release version="1.2026.10.12" date="2026-10-12">
