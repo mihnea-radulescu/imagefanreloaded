@@ -32,11 +32,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="12.1.4" />
-		<PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
-		<PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4" />
-		<PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
-		<PackageReference Include="Magick.NET-Q8-AnyCPU" Version="15.0.0" />
+		<PackageReference Include="Avalonia" Version="12.1.6" />
+		<PackageReference Include="Avalonia.Desktop" Version="12.1.6" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.6" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.6" />
+		<PackageReference Include="Magick.NET-Q8-AnyCPU" Version="15.1.0" />
 	</ItemGroup>
 
 </Project>

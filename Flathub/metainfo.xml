@@ -77,6 +77,11 @@
 	</screenshots>
 
 	<releases>
+		<release version="1.2026.11.11" date="2026-11-11">
+			<description>
+				<p>Updated application framework and libraries</p>
+			</description>
+		</release>
 		<release version="1.2026.10.12" date="2026-10-12">
 			<description>
 				<ul>
