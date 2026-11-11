@@ -21,6 +21,9 @@
 		<control>pointing</control>
 		<control>touch</control>
 	</supports>
+	<requires>
+		<display_length compare="ge">768</display_length>
+	</requires>
 
 	<launchable type="desktop-id">io.github.mihnea_radulescu.imagefanreloaded.desktop</launchable>
 
